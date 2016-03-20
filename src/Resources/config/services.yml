@@ -22,11 +22,6 @@ services:
     calls:
       - ['registerRouter', ['@east.router']]
 
-  east.controller:
-    class: '%east.controller.class%'
-    calls:
-      - ['setContainer', ['@service_container']]
-
   #events
   east.listener.kernel:
     class: '%east.listener.kernel.class%'
