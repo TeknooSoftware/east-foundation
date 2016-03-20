@@ -3,7 +3,7 @@ parameters:
   east.router.class: 'Teknoo\East\Framework\Router\Router'
   east.manager.class: 'Teknoo\East\Framework\Manager\Manager'
   east.controller.class: 'Teknoo\East\Framework\Controller\Controller'
-  east.listener.kernel.class: 'Teknoo\East\Framework\KernelListener'
+  east.listener.kernel.class: 'Teknoo\East\Framework\Listener\KernelListener'
 
 services:
   east.processor:
