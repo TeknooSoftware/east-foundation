@@ -1,0 +1,38 @@
+parameters:
+  east.processor.class: 'Teknoo\East\Framework\Processor\Processor'
+  east.router.class: 'Teknoo\East\Framework\Router\Router'
+  east.manager.class: 'Teknoo\East\Framework\Manager\Manager'
+  east.controller.class: 'Teknoo\East\Framework\Controller\Controller'
+  east.listener.kernel.class: 'Teknoo\East\Framework\KernelListener'
+
+services:
+  east.processor:
+    class: '%east.processor.class%'
+    arguments:
+      - '@service_container'
+
+  east.router:
+    class: '%east.router.class%'
+    arguments:
+      - '@router'
+      - '@east.processor'
+
+  east.manager:
+    class: '%east.manager.class%'
+    calls:
+      - ['registerRouter', ['@east.router']]
+
+  east.controller:
+    class: '%east.controller.class%'
+    calls:
+      - ['setContainer', ['@service_container']]
+
+  #events
+  east.listener.kernel:
+    class: '%east.listener.kernel.class%'
+    arguments:
+      - '@east.manager'
+      - '@sensio_framework_extra.psr7.http_foundation_factory'
+      - '@sensio_framework_extra.psr7.http_message_factory'
+    tags:
+      - { name: 'kernel.event_listener', event: 'kernel.request', method: 'onKernelRequest' }
