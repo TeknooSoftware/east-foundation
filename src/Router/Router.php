@@ -2,6 +2,7 @@
 
 namespace Teknoo\East\Framework\Router;
 
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Teknoo\East\Framework\Http\ClientInterface;
 use Teknoo\East\Framework\Manager\ManagerInterface;
 use Teknoo\East\Framework\Processor\ProcessorInterface;
@@ -43,9 +44,13 @@ class Router implements RouterInterface
      */
     private function matchRequest(ServerRequestInterface $request): array
     {
-        return $this->matcher->match(
-            str_replace('/app_dev.php', '', $request->getUri()->getPath())
-        );
+        try {
+            return $this->matcher->match(
+                str_replace('/app_dev.php', '', $request->getUri()->getPath())
+            );
+        } catch(ResourceNotFoundException $e) {
+            return false;
+        }
     }
 
     /**
