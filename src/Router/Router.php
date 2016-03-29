@@ -49,7 +49,7 @@ class Router implements RouterInterface
                 str_replace('/app_dev.php', '', $request->getUri()->getPath())
             );
         } catch(ResourceNotFoundException $e) {
-            return false;
+            return [];
         }
     }
 
