@@ -48,7 +48,7 @@ class EastFrameworkExtensionTest extends \PHPUnit_Framework_TestCase
      */
     private function getExtensionClass(): string
     {
-        return 'Symfony\Component\DependencyInjection\ContainerBuilder';
+        return 'Teknoo\East\Framework\DependencyInjection\EastFrameworkExtension';
     }
     
     public function testLoad()

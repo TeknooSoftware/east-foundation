@@ -24,7 +24,7 @@ class EastFrameworkCompilerPassTest extends \PHPUnit_Framework_TestCase
     {
         if (!$this->container instanceof ContainerBuilder) {
             $this->container = $this->getMock(
-                'Symfony\Component\DependencyInjection\ContainerInterface',
+                'Symfony\Component\DependencyInjection\ContainerBuilder',
                 [],
                 [],
                 '',
@@ -48,7 +48,7 @@ class EastFrameworkCompilerPassTest extends \PHPUnit_Framework_TestCase
      */
     public function getCompilerPassClass(): string
     {
-        return 'Symfony\Component\DependencyInjection\ContainerBuilder';
+        return 'Teknoo\East\Framework\DependencyInjection\EastFrameworkCompilerPass';
     }
 
     public function testProcess()
@@ -68,7 +68,7 @@ class EastFrameworkCompilerPassTest extends \PHPUnit_Framework_TestCase
         $this->getContainerBuilderMock()
             ->expects($this->exactly(2))
             ->method('getDefinition')
-            ->withConsecutive('service1', 'service2')
+            ->withConsecutive(['service1'], ['service2'])
             ->willReturn($def);
         
         $this->assertInstanceOf(
