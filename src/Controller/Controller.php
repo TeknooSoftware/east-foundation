@@ -26,10 +26,14 @@ class Controller implements ContainerAwareInterface
      * Sets the container.
      *
      * @param ContainerInterface|null $container A ContainerInterface instance or null
+     *
+     * @return Controller
      */
-    public function setContainer(ContainerInterface $container = null)
+    public function setContainer(ContainerInterface $container = null): Controller
     {
         $this->container = $container;
+
+        return $this;
     }
 
     /**
@@ -43,8 +47,11 @@ class Controller implements ContainerAwareInterface
      *
      * @see UrlGeneratorInterface
      */
-    protected function generateUrl($route, $parameters = array(), $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH)
-    {
+    protected function generateUrl(
+        string $route,
+        $parameters = array(),
+        int $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH
+    ): string {
         return $this->container->get('router')->generate($route, $parameters, $referenceType);
     }
 
@@ -55,9 +62,9 @@ class Controller implements ContainerAwareInterface
      * @param string $url    The URL to redirect to
      * @param int    $status The status code to use for the Response
      *
-     * @return self
+     * @return Controller
      */
-    protected function redirect(ClientInterface $client, $url, $status = 302)
+    protected function redirect(ClientInterface $client, $url, $status = 302): Controller
     {
         $client->successfulResponseFromController(new Response\RedirectResponse($url, $status));
 
@@ -74,8 +81,12 @@ class Controller implements ContainerAwareInterface
      *
      * @return Response\RedirectResponse
      */
-    protected function redirectToRoute(ClientInterface $client, $route, array $parameters = array(), $status = 302)
-    {
+    protected function redirectToRoute(
+        ClientInterface $client,
+        string $route,
+        array $parameters = array(),
+        int $status = 302
+    ): Response\RedirectResponse {
         return $this->redirect($client, $this->generateUrl($route, $parameters), $status);
     }
 
@@ -85,11 +96,11 @@ class Controller implements ContainerAwareInterface
      * @param string $type    The type
      * @param string $message The message
      *
-     * @return self
+     * @return Controller
      *
      * @throws \LogicException
      */
-    protected function addFlash($type, $message)
+    protected function addFlash(string $type, string $message): Controller
     {
         if (!$this->container->has('session')) {
             throw new \LogicException('You can not use the addFlash method if sessions are disabled.');
@@ -110,7 +121,7 @@ class Controller implements ContainerAwareInterface
      *
      * @throws \LogicException
      */
-    protected function isGranted($attributes, $object = null)
+    protected function isGranted($attributes, $object = null): bool
     {
         if (!$this->container->has('security.authorization_checker')) {
             throw new \LogicException('The SecurityBundle is not registered in your application.');
@@ -129,7 +140,7 @@ class Controller implements ContainerAwareInterface
      *
      * @throws AccessDeniedException
      */
-    protected function denyAccessUnlessGranted($attributes, $object = null, $message = 'Access Denied.')
+    protected function denyAccessUnlessGranted($attributes, $object = null, string $message = 'Access Denied.')
     {
         if (!$this->isGranted($attributes, $object)) {
             throw $this->createAccessDeniedException($message);
@@ -144,7 +155,7 @@ class Controller implements ContainerAwareInterface
      *
      * @return string The rendered view
      */
-    protected function renderView($view, array $parameters = array())
+    protected function renderView(string $view, array $parameters = array()): string
     {
         if ($this->container->has('templating')) {
             return $this->container->get('templating')->render($view, $parameters);
@@ -164,9 +175,9 @@ class Controller implements ContainerAwareInterface
      * @param string   $view       The view name
      * @param array    $parameters An array of parameters to pass to the view
      *
-     * @return self
+     * @return Controller
      */
-    protected function render(ClientInterface $client, $view, array $parameters = array())
+    protected function render(ClientInterface $client, string $view, array $parameters = array()): Controller
     {
         if (!$this->container->has('twig')) {
             throw new \LogicException('You can not use the "render" method if the Templating Component or the Twig Bundle are not available.');
@@ -191,8 +202,10 @@ class Controller implements ContainerAwareInterface
      *
      * @return NotFoundHttpException
      */
-    protected function createNotFoundException($message = 'Not Found', \Exception $previous = null)
-    {
+    protected function createNotFoundException(
+        string $message = 'Not Found',
+        \Exception $previous = null
+    ): NotFoundHttpException {
         return new NotFoundHttpException($message, $previous);
     }
 
@@ -208,8 +221,10 @@ class Controller implements ContainerAwareInterface
      *
      * @return AccessDeniedException
      */
-    protected function createAccessDeniedException($message = 'Access Denied.', \Exception $previous = null)
-    {
+    protected function createAccessDeniedException(
+        string $message = 'Access Denied.',
+        \Exception $previous = null
+    ): AccessDeniedException {
         return new AccessDeniedException($message, $previous);
     }
 
@@ -222,7 +237,7 @@ class Controller implements ContainerAwareInterface
      *
      * @return Form
      */
-    protected function createForm($type, $data = null, array $options = array())
+    protected function createForm(string $type, $data = null, array $options = array()): Form
     {
         return $this->container->get('form.factory')->create($type, $data, $options);
     }
@@ -235,7 +250,7 @@ class Controller implements ContainerAwareInterface
      *
      * @return FormBuilder
      */
-    protected function createFormBuilder($data = null, array $options = array())
+    protected function createFormBuilder($data = null, array $options = array()): FormBuilder
     {
         return $this->container->get('form.factory')->createBuilder(FormType::class, $data, $options);
     }
@@ -247,7 +262,7 @@ class Controller implements ContainerAwareInterface
      *
      * @throws \LogicException If DoctrineBundle is not available
      */
-    protected function getDoctrine()
+    protected function getDoctrine(): Registry
     {
         if (!$this->container->has('doctrine')) {
             throw new \LogicException('The DoctrineBundle is not registered in your application.');
@@ -275,7 +290,7 @@ class Controller implements ContainerAwareInterface
             return null;
         }
 
-        if (!is_object($user = $token->getUser())) {
+        if (!is_callable([$token, 'getUser']) || !is_object($user = $token->getUser())) {
             // e.g. anonymous authentication
             return null;
         }
@@ -290,7 +305,7 @@ class Controller implements ContainerAwareInterface
      *
      * @return bool true if the service id is defined, false otherwise
      */
-    protected function has($id)
+    protected function has(string $id): bool
     {
         return $this->container->has($id);
     }
@@ -302,7 +317,7 @@ class Controller implements ContainerAwareInterface
      *
      * @return object The service
      */
-    protected function get($id)
+    protected function get(string $id)
     {
         return $this->container->get($id);
     }
@@ -314,7 +329,7 @@ class Controller implements ContainerAwareInterface
      *
      * @return mixed
      */
-    protected function getParameter($name)
+    protected function getParameter(string $name)
     {
         return $this->container->getParameter($name);
     }
@@ -327,7 +342,7 @@ class Controller implements ContainerAwareInterface
      *
      * @return bool
      */
-    protected function isCsrfTokenValid($id, $token)
+    protected function isCsrfTokenValid(string $id, string $token)
     {
         if (!$this->container->has('security.csrf.token_manager')) {
             throw new \LogicException('CSRF protection is not enabled in your application.');
