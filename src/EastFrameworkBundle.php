@@ -8,10 +8,12 @@ use Teknoo\East\Framework\DependencyInjection\EastFrameworkCompilerPass;
 
 class EastFrameworkBundle extends Bundle
 {
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): EastFrameworkBundle
     {
         parent::build($container);
 
         $container->addCompilerPass(new EastFrameworkCompilerPass());
+
+        return $this;
     }
 }

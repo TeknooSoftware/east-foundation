@@ -18,4 +18,30 @@ class EastFrameworkBundleTest extends \PHPUnit_Framework_TestCase
     {
         return new EastFrameworkBundle();
     }
+
+    /**
+     * @return string
+     */
+    private function getBundleClass(): string
+    {
+        return 'Teknoo\East\Framework\EastFrameworkBundle';
+    }
+
+    public function testBuild()
+    {
+        $this->assertInstanceOf(
+            $this->getBundleClass(),
+            $this->buildBundle()->build(
+                $this->getMock('Symfony\Component\DependencyInjection\ContainerBuilder', [], [], '', false)
+            )
+        );
+    }
+
+    /**
+     * @expectedException \TypeError
+     */
+    public function testBuildErrorContainer()
+    {
+        $this->buildBundle()->build(new \stdClass());
+    }
 }
