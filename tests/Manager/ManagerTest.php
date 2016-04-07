@@ -83,11 +83,18 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testUnregisterRouter()
     {
+        $router = $this->getMock('Teknoo\East\Framework\Router\RouterInterface');
         $this->assertInstanceOf(
             $this->getManagerClass(),
             $this->buildManager()->unregisterRouter(
-                $this->getMock('Teknoo\East\Framework\Router\RouterInterface')
+                $router
             )
+        );
+
+        $router = $this->getMock('Teknoo\East\Framework\Router\RouterInterface');
+        $this->assertInstanceOf(
+            $this->getManagerClass(),
+            $this->buildManager()->registerRouter($router)->unregisterRouter($router)
         );
     }
 
