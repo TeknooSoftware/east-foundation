@@ -3,11 +3,13 @@
 namespace Teknoo\Tests\East\Framework\Router;
 
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UriInterface;
 use Teknoo\East\Framework\Http\ClientInterface;
 use Teknoo\East\Framework\Manager\ManagerInterface;
 use Teknoo\East\Framework\Router\Router;
 use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 use Teknoo\East\Framework\Processor\ProcessorInterface;
+use Zend\Diactoros\Uri;
 
 /**
  * Class RouterTest
@@ -88,11 +90,14 @@ class RouterTest extends \PHPUnit_Framework_TestCase
          * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject $client $request
          */
         $request = $this->getMock('Psr\Http\Message\ServerRequestInterface');
+        $request->expects($this->any())->method('getUri')->willReturn(new class extends Uri{});
         /**
          * @var ManagerInterface|\PHPUnit_Framework_MockObject_MockObject $client $manager
          */
         $manager = $this->getMock('Teknoo\East\Framework\Manager\ManagerInterface');
         $manager->expects($this->never())->method('stopPropagation');
+
+        $this->getUrlMatcherMock()->expects($this->any())->method('match')->willReturn([]);
 
         $this->assertInstanceOf(
             $this->getRouterClass(),
@@ -110,13 +115,14 @@ class RouterTest extends \PHPUnit_Framework_TestCase
          * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject $client $request
          */
         $request = $this->getMock('Psr\Http\Message\ServerRequestInterface');
+        $request->expects($this->any())->method('getUri')->willReturn(new class extends Uri{});
         /**
          * @var ManagerInterface|\PHPUnit_Framework_MockObject_MockObject $client $manager
          */
         $manager = $this->getMock('Teknoo\East\Framework\Manager\ManagerInterface');
         $manager->expects($this->once())->method('stopPropagation')->willReturnSelf();
 
-        $this->getUrlMatcherMock()->expects($this->any())->method('matchRequest')->willReturn(['foo','bar']);
+        $this->getUrlMatcherMock()->expects($this->any())->method('match')->willReturn(['foo','bar']);
 
         $this->assertInstanceOf(
             $this->getRouterClass(),

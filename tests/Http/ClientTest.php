@@ -87,13 +87,13 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->getGetResponseEventMock()
             ->expects($this->any())
             ->method('setResponse')
-            ->with(function($response){ return $response instanceof Response; })
+            ->with($this->callback(function($response){ return $response instanceof Response; }))
             ->willReturnSelf();
 
         $this->getHttpFoundationFactoryMock()
             ->expects($this->any())
             ->method('createResponse')
-            ->with(function($response){ return $response instanceof ResponseInterface; })
+            ->with($this->callback(function($response){ return $response instanceof ResponseInterface; }))
             ->willReturn($this->getMock('Symfony\Component\HttpFoundation\Response', [], [], '', false));
 
         $this->assertInstanceOf(
@@ -115,7 +115,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->getGetResponseEventMock()
             ->expects($this->any())
             ->method('setResponse')
-            ->with(function($response){ return $response instanceof ResponseInterface; })
+            ->with($this->callback(function($response){ return $response instanceof Response; }))
             ->willReturnSelf();
 
         $this->assertInstanceOf(

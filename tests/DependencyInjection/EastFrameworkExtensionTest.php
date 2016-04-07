@@ -20,11 +20,11 @@ class EastFrameworkExtensionTest extends \PHPUnit_Framework_TestCase
     /**
      * @return ContainerBuilder|\PHPUnit_Framework_MockObject_MockObject
      */
-    private function getContainerBuilderMock(): ContainerBuilder
+    private function getContainerBuilderMock()
     {
         if (!$this->container instanceof ContainerBuilder) {
             $this->container = $this->getMock(
-                'Symfony\Component\DependencyInjection\ContainerInterface',
+                'Symfony\Component\DependencyInjection\ContainerBuilder',
                 [],
                 [],
                 '',

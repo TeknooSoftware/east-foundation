@@ -2,10 +2,12 @@
 
 namespace Teknoo\Tests\East\Framework\Listener;
 
+use Symfony\Component\HttpFoundation\Request;
 use Teknoo\East\Framework\Listener\KernelListener;
 use Teknoo\East\Framework\Manager\ManagerInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
+use Zend\Diactoros\ServerRequest;
 
 /**
  * Class KernelListenerTest
@@ -32,7 +34,7 @@ class KernelListenerTest extends \PHPUnit_Framework_TestCase
     /**
      * @return ManagerInterface
      */
-    private function getManagerMock(): ManagerInterface
+    private function getManagerMock()
     {
         if (!$this->manager instanceof ManagerInterface) {
             $this->manager = $this->getMock(
@@ -50,7 +52,7 @@ class KernelListenerTest extends \PHPUnit_Framework_TestCase
     /**
      * @return HttpFoundationFactory
      */
-    private function getHttpFoundationFactoryMock(): HttpFoundationFactory
+    private function getHttpFoundationFactoryMock()
     {
         if (!$this->httpFoundationFactory instanceof HttpFoundationFactory) {
             $this->httpFoundationFactory = $this->getMock(
@@ -66,9 +68,9 @@ class KernelListenerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return DiactorosFactory
+     * @return DiactorosFactory|\PHPUnit_Framework_MockObject_MockObject
      */
-    private function getDiactorosFactoryMock(): DiactorosFactory
+    private function getDiactorosFactoryMock()
     {
         if (!$this->diactorosFactory instanceof DiactorosFactory) {
             $this->diactorosFactory = $this->getMock(
@@ -105,10 +107,18 @@ class KernelListenerTest extends \PHPUnit_Framework_TestCase
 
     public function testOnKernelRequest()
     {
+        $request = $this->getMock('Symfony\Component\HttpKernel\Event\GetResponseEvent', [], [], '', false);
+        $request->expects($this->any())->method('getRequest')->willReturn(new Request());
+
+        $this->getDiactorosFactoryMock()
+            ->expects($this->any())
+            ->method('createRequest')
+            ->willReturn(new ServerRequest());
+
         $this->assertInstanceOf(
             $this->getKernelListenerClass(),
             $this->buildKernelListener()->onKernelRequest(
-                $this->getMock('Symfony\Component\HttpKernel\Event\GetResponseEvent', [], [], '', false)
+                $request
             )
         );
     }

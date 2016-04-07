@@ -136,7 +136,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
                 $this->assertEquals($clientPassed, $clientMock);
                 $this->assertEquals($requestPassed, $serverRequestMock);
                 $this->assertNotSame($managerPassed, $manager);
-                $manager->stopPropagation();
+                $managerPassed->stopPropagation();
             }
         );
 

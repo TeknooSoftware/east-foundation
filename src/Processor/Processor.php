@@ -61,9 +61,9 @@ class Processor implements ProcessorInterface
      */
     protected function getController(ServerRequestInterface $request, array $requestParameters): callable
     {
-        if (empty($requestParameters['_controller'])) {
+        if (empty($requestParameters['_controller']) || !is_string($requestParameters['_controller'])) {
             throw new \InvalidArgumentException(
-                sprintf('The controller for URI "%s" is not callable. %s', $request->getUri())
+                sprintf('The controller for URI "%s" is not callable.', $request->getUri())
             );
         }
 
@@ -85,7 +85,7 @@ class Processor implements ProcessorInterface
 
         if (!is_callable($callable)) {
             throw new \InvalidArgumentException(
-                sprintf('The controller for URI "%s" is not callable. %s', $request->getUri())
+                sprintf('The controller for URI "%s" is not callable.', $request->getUri())
             );
         }
 

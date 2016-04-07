@@ -23,7 +23,7 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
     /**
      * @return ContainerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private function getContainerMock(): ContainerInterface
+    private function getContainerMock()
     {
         if (!$this->container instanceof ContainerInterface) {
             $this->container = $this->getMock(
@@ -41,7 +41,7 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
     /**
      * @return Processor
      */
-    private function buildProcessor(): Processor
+    private function buildProcessor()
     {
         return new Processor($this->getContainerMock());
     }
