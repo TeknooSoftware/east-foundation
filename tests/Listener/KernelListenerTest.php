@@ -94,4 +94,30 @@ class KernelListenerTest extends \PHPUnit_Framework_TestCase
             $this->getDiactorosFactoryMock()
         );
     }
+
+    /**
+     * @return string
+     */
+    private function getKernelListenerClass(): string
+    {
+        return 'Teknoo\East\Framework\Listener\KernelListener';
+    }
+
+    public function testOnKernelRequest()
+    {
+        $this->assertInstanceOf(
+            $this->getKernelListenerClass(),
+            $this->buildKernelListener()->onKernelRequest(
+                $this->getMock('Symfony\Component\HttpKernel\Event\GetResponseEvent', [], [], '', false)
+            )
+        );
+    }
+
+    /**
+     * @expectedException \TypeError
+     */
+    public function testOnKernelRequestError()
+    {
+        $this->buildKernelListener()->onKernelRequest(new \stdClass());
+    }
 }
