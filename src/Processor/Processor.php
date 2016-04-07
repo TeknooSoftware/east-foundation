@@ -117,6 +117,22 @@ class Processor implements ProcessorInterface
     }
 
     /**
+     * Returns an instantiated controller.
+     *
+     * @param string $class A class name
+     *
+     * @return object
+     */
+    private function instantiateController(string $class)
+    {
+        if ($this->container->has($class)) {
+            return $this->container->get($class);
+        }
+
+        return new $class();
+    }
+
+    /**
      * @param ClientInterface $client
      * @param ServerRequestInterface $request
      * @param callable|object $controller
@@ -180,21 +196,5 @@ class Processor implements ProcessorInterface
         }
 
         return $arguments;
-    }
-
-    /**
-     * Returns an instantiated controller.
-     *
-     * @param string $class A class name
-     *
-     * @return object
-     */
-    private function instantiateController(string $class)
-    {
-        if ($this->container->has($class)) {
-            return $this->container->get($class);
-        }
-        
-        return new $class();
     }
 }
