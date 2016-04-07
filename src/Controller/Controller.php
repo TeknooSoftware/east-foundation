@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Zend\Diactoros\Response;
 
-class Controller implements ContainerAwareInterface
+abstract class Controller implements ContainerAwareInterface
 {
     /**
      * @var ContainerInterface

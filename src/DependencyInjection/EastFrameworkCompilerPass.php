@@ -15,8 +15,9 @@ class EastFrameworkCompilerPass implements CompilerPassInterface
 {
     /**
      * @param ContainerBuilder $container
+     * @return EastFrameworkCompilerPass
      */
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): EastFrameworkCompilerPass
     {
         $taggedControllerService = $container->findTaggedServiceIds('east.controller.service');
 
@@ -27,5 +28,7 @@ class EastFrameworkCompilerPass implements CompilerPassInterface
                 [new Reference('service_container')]
             );
         }
+
+        return $this;
     }
 }
