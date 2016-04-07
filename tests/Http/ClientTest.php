@@ -2,6 +2,8 @@
 
 namespace Teknoo\Tests\East\Framework\Http;
 
+use Psr\Http\Message\ResponseInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Teknoo\East\Framework\Http\Client;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
@@ -24,7 +26,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     private $httpFoundationFactory;
 
     /**
-     * @return GetResponseEvent
+     * @return GetResponseEvent|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getGetResponseEventMock(): GetResponseEvent
     {
@@ -42,7 +44,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return HttpFoundationFactory
+     * @return HttpFoundationFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getHttpFoundationFactoryMock(): HttpFoundationFactory
     {
@@ -65,5 +67,68 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     private function buildClient(): Client
     {
         return new Client($this->getGetResponseEventMock(), $this->getHttpFoundationFactoryMock());
+    }
+
+    /**
+     * @return string
+     */
+    private function getClientClass(): string
+    {
+        return 'Teknoo\East\Framework\Http\Client';
+    }
+
+    public function testSuccessfulResponseFromController()
+    {
+        /**
+         * @var ResponseInterface
+         */
+        $response = $this->getMock('Psr\Http\Message\ResponseInterface');
+
+        $this->getGetResponseEventMock()
+            ->expects($this->any())
+            ->method('setResponse')
+            ->with(function($response){ return $response instanceof Response; })
+            ->willReturnSelf();
+
+        $this->getHttpFoundationFactoryMock()
+            ->expects($this->any())
+            ->method('createResponse')
+            ->with(function($response){ return $response instanceof ResponseInterface; })
+            ->willReturn($this->getMock('Symfony\Component\HttpFoundation\Response', [], [], '', false));
+
+        $this->assertInstanceOf(
+            $this->getClientClass(),
+            $this->buildClient()->successfulResponseFromController($response)
+        );
+    }
+
+    /**
+     * @expectedException \TypeError
+     */
+    public function testSuccessfulResponseFromControllerError()
+    {
+        $this->buildClient()->successfulResponseFromController(new \stdClass());
+    }
+
+    public function testErrorInRequest()
+    {
+        $this->getGetResponseEventMock()
+            ->expects($this->any())
+            ->method('setResponse')
+            ->with(function($response){ return $response instanceof ResponseInterface; })
+            ->willReturnSelf();
+
+        $this->assertInstanceOf(
+            $this->getClientClass(),
+            $this->buildClient()->errorInRequest(new \Exception('fooBar'))
+        );
+    }
+
+    /**
+     * @expectedException \TypeError
+     */
+    public function testErrorInRequestError()
+    {
+        $this->buildClient()->errorInRequest(new \stdClass());
     }
 }
