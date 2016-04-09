@@ -26,7 +26,12 @@ use Teknoo\East\Framework\DependencyInjection\EastFrameworkCompilerPass;
 
 /**
  * Class EastFrameworkCompilerPassTest
- * @package Teknoo\Tests\East\Framework\DependencyInjection
+ * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
+ *
+ * @link        http://teknoo.software/states Project website
+ *
+ * @license     http://teknoo.software/license/mit         MIT License
+ * @author      Richard Déloge <richarddeloge@gmail.com>
  * @covers Teknoo\East\Framework\DependencyInjection\EastFrameworkCompilerPass
  */
 class EastFrameworkCompilerPassTest extends \PHPUnit_Framework_TestCase

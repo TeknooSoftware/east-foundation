@@ -28,7 +28,12 @@ use Teknoo\East\Framework\Router\RouterInterface;
 
 /**
  * Class ManagerTest
- * @package Teknoo\Tests\East\Framework\Manager
+ * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
+ *
+ * @link        http://teknoo.software/states Project website
+ *
+ * @license     http://teknoo.software/license/mit         MIT License
+ * @author      Richard Déloge <richarddeloge@gmail.com>
  * @covers Teknoo\East\Framework\Manager\Manager
  */
 class ManagerTest extends \PHPUnit_Framework_TestCase

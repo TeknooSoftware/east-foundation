@@ -30,7 +30,12 @@ use Zend\Diactoros\ServerRequest;
 
 /**
  * Class KernelListenerTest
- * @package Teknoo\Tests\East\Framework\Listener
+ * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
+ *
+ * @link        http://teknoo.software/states Project website
+ *
+ * @license     http://teknoo.software/license/mit         MIT License
+ * @author      Richard Déloge <richarddeloge@gmail.com>
  * @covers Teknoo\East\Framework\Listener\KernelListener
  */
 class KernelListenerTest extends \PHPUnit_Framework_TestCase

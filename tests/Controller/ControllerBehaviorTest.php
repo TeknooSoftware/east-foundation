@@ -30,7 +30,12 @@ use Zend\Diactoros\Response\RedirectResponse;
 
 /**
  * Class ControllerTest
- * @package Teknoo\Tests\East\Framework\Controller
+ * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
+ *
+ * @link        http://teknoo.software/states Project website
+ *
+ * @license     http://teknoo.software/license/mit         MIT License
+ * @author      Richard Déloge <richarddeloge@gmail.com>
  * @covers Teknoo\East\Framework\Controller\Controller
  */
 class ControllerBehaviorTest extends \PHPUnit_Framework_TestCase

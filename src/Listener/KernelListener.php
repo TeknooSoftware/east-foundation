@@ -29,7 +29,13 @@ use Teknoo\East\Framework\Manager\ManagerInterface;
 
 /**
  * Class KernelListener
- * @package Teknoo\East\Framework
+ *
+ * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
+ *
+ * @link        http://teknoo.software/states Project website
+ *
+ * @license     http://teknoo.software/license/mit         MIT License
+ * @author      Richard Déloge <richarddeloge@gmail.com>
  */
 class KernelListener
 {

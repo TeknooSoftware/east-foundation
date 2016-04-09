@@ -25,6 +25,16 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Teknoo\East\Framework\DependencyInjection\EastFrameworkCompilerPass;
 
+/**
+ * Class EastFrameworkBundle
+ *
+ * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
+ *
+ * @link        http://teknoo.software/states Project website
+ *
+ * @license     http://teknoo.software/license/mit         MIT License
+ * @author      Richard Déloge <richarddeloge@gmail.com>
+ */
 class EastFrameworkBundle extends Bundle
 {
     public function build(ContainerBuilder $container): EastFrameworkBundle

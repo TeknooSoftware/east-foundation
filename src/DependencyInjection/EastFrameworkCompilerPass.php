@@ -28,7 +28,13 @@ use Symfony\Component\DependencyInjection\Reference;
 /**
  * Class BlockCompilerPass
  * To link all services able to provide content for blocks
- * @package BoxOffice\FilmBundle\DependencyInjection
+ *
+ * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
+ *
+ * @link        http://teknoo.software/states Project website
+ *
+ * @license     http://teknoo.software/license/mit         MIT License
+ * @author      Richard Déloge <richarddeloge@gmail.com>
  */
 class EastFrameworkCompilerPass implements CompilerPassInterface
 {

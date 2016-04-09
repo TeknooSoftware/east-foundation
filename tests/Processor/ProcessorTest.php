@@ -28,7 +28,12 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class ProcessorTest
- * @package Teknoo\Tests\East\Framework\Processor
+ * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
+ *
+ * @link        http://teknoo.software/states Project website
+ *
+ * @license     http://teknoo.software/license/mit         MIT License
+ * @author      Richard Déloge <richarddeloge@gmail.com>
  * @covers Teknoo\East\Framework\Processor\Processor
  */
 class ProcessorTest extends \PHPUnit_Framework_TestCase
