@@ -3,7 +3,6 @@
 namespace Teknoo\East\Framework\Controller;
 
 use Teknoo\East\Framework\Http\ClientInterface;
-use Monolog\Registry;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -183,11 +182,7 @@ abstract class Controller implements ContainerAwareInterface
      */
     protected function render(ClientInterface $client, string $view, array $parameters = array()): Controller
     {
-        if (!$this->container->has('twig')) {
-            throw new \LogicException('You can not use the "render" method if the Templating Component or the Twig Bundle are not available.');
-        }
-
-        $htmlBody = $this->container->get('twig')->render($view, $parameters);
+        $htmlBody = $this->renderView($view, $parameters);
 
         $client->successfulResponseFromController(new Response\HtmlResponse($htmlBody));
 
@@ -243,6 +238,10 @@ abstract class Controller implements ContainerAwareInterface
      */
     protected function createForm(string $type, $data = null, array $options = array()): Form
     {
+        if (!$this->container->has('form.factory')) {
+            throw new \LogicException('The form factory is not available');
+        }
+
         return $this->container->get('form.factory')->create($type, $data, $options);
     }
 
@@ -256,6 +255,10 @@ abstract class Controller implements ContainerAwareInterface
      */
     protected function createFormBuilder($data = null, array $options = array()): FormBuilder
     {
+        if (!$this->container->has('form.factory')) {
+            throw new \LogicException('The form factory is not available');
+        }
+
         return $this->container->get('form.factory')->createBuilder(FormType::class, $data, $options);
     }
 
@@ -266,7 +269,7 @@ abstract class Controller implements ContainerAwareInterface
      *
      * @throws \LogicException If DoctrineBundle is not available
      */
-    protected function getDoctrine(): Registry
+    protected function getDoctrine()
     {
         if (!$this->container->has('doctrine')) {
             throw new \LogicException('The DoctrineBundle is not registered in your application.');

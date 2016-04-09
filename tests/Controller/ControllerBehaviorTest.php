@@ -3,6 +3,7 @@
 namespace Teknoo\Tests\East\Framework\Controller;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Teknoo\East\Framework\Controller\Controller;
 use Teknoo\East\Framework\Http\ClientInterface;
 use Zend\Diactoros\Response\RedirectResponse;
@@ -185,7 +186,7 @@ class ControllerBehaviorTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \LogicException
      */
-    public function testisGrantedNoSession()
+    public function testIsGrantedNoSession()
     {
         $this->getContainerMock()
             ->expects($this->any())
@@ -194,14 +195,14 @@ class ControllerBehaviorTest extends \PHPUnit_Framework_TestCase
             ->willReturn(false);
 
         (new class extends Controller {
-            public function getisGranted()
+            public function getIsGranted()
             {
-                return $this->isGranted('foo', 'bar');
+                return $this->IsGranted('foo', 'bar');
             }
         })->setContainer($this->getContainerMock())->getisGranted();
     }
 
-    public function testisGranted()
+    public function testIsGranted()
     {
         $checker = $this->getMock('Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface');
         $checker->expects($this->any())
@@ -222,7 +223,7 @@ class ControllerBehaviorTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue(
             (new class extends Controller {
-                public function getisGranted()
+                public function getIsGranted()
                 {
                     return $this->isGranted('foo', 'bar');
                 }
@@ -397,7 +398,7 @@ class ControllerBehaviorTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \LogicException
      */
-    public function testIsCsrfTokenValidNoSession()
+    public function testIsCsrfTokenValidNoManager()
     {
         $this->getContainerMock()
             ->expects($this->any())
@@ -439,6 +440,308 @@ class ControllerBehaviorTest extends \PHPUnit_Framework_TestCase
                     return $this->isCsrfTokenValid('foo', 'bar');
                 }
             })->setContainer($this->getContainerMock())->getIsCsrfTokenValid()
+        );
+    }
+
+    /**
+     * @expectedException \LogicException
+     */
+    public function testGetDoctrineNoDoctrine()
+    {
+        $this->getContainerMock()
+            ->expects($this->any())
+            ->method('has')
+            ->with('doctrine')
+            ->willReturn(false);
+
+        (new class extends Controller {
+            public function getGetDoctrine()
+            {
+                return $this->GetDoctrine('foo', 'bar');
+            }
+        })->setContainer($this->getContainerMock())->getgetDoctrine();
+    }
+
+    public function testGetDoctrine()
+    {
+        $this->getContainerMock()
+            ->expects($this->any())
+            ->method('get')
+            ->with('doctrine')
+            ->willReturn(new \stdClass());
+
+        $this->getContainerMock()
+            ->expects($this->any())
+            ->method('has')
+            ->with('doctrine')
+            ->willReturn(true);
+
+        $this->assertInstanceOf(
+            '\stdClass',
+            (new class extends Controller {
+                public function getGetDoctrine()
+                {
+                    return $this->getDoctrine('foo', 'bar');
+                }
+            })->setContainer($this->getContainerMock())->getgetDoctrine()
+        );
+    }
+
+    /**
+     * @expectedException \LogicException
+     */
+    public function testCreateFormNoBundle()
+    {
+        $this->getContainerMock()
+            ->expects($this->any())
+            ->method('has')
+            ->with('form.factory')
+            ->willReturn(false);
+
+        (new class extends Controller {
+            public function getCreateForm()
+            {
+                return $this->createForm('foo');
+            }
+        })->setContainer($this->getContainerMock())->getcreateForm();
+    }
+
+    public function testCreateForm()
+    {$builder = $this->getMock('Symfony\Component\Form\FormFactory', [], [], '', false);
+        $builder->expects($this->any())
+            ->method('create')
+            ->willReturn($this->getMock('Symfony\Component\Form\Form', [], [], '', false));
+
+        $this->getContainerMock()
+            ->expects($this->any())
+            ->method('get')
+            ->with('form.factory')
+            ->willReturn($builder);
+
+        $this->getContainerMock()
+            ->expects($this->any())
+            ->method('has')
+            ->with('form.factory')
+            ->willReturn(true);
+
+        $this->assertInstanceOf(
+            'Symfony\Component\Form\Form',
+            (new class extends Controller {
+                public function getCreateForm()
+                {
+                    return $this->createForm('foo');
+                }
+            })->setContainer($this->getContainerMock())->getcreateForm()
+        );
+    }
+
+    /**
+     * @expectedException \LogicException
+     */
+    public function testCreateFormBuilderNoBundle()
+    {
+        $this->getContainerMock()
+            ->expects($this->any())
+            ->method('has')
+            ->with('form.factory')
+            ->willReturn(false);
+
+        (new class extends Controller {
+            public function getCreateFormBuilder()
+            {
+                return $this->createFormBuilder();
+            }
+        })->setContainer($this->getContainerMock())->getcreateFormBuilder();
+    }
+
+    public function testCreateFormBuilder()
+    {
+        $builder = $this->getMock('Symfony\Component\Form\FormFactory', [], [], '', false);
+        $builder->expects($this->any())
+            ->method('createBuilder')
+            ->willReturn($this->getMock('Symfony\Component\Form\FormBuilder', [], [], '', false));
+
+        $this->getContainerMock()
+            ->expects($this->any())
+            ->method('get')
+            ->with('form.factory')
+            ->willReturn($builder);
+
+        $this->getContainerMock()
+            ->expects($this->any())
+            ->method('has')
+            ->with('form.factory')
+            ->willReturn(true);
+
+        $this->assertInstanceOf(
+            'Symfony\Component\Form\FormBuilder',
+            (new class extends Controller {
+                public function getCreateFormBuilder()
+                {
+                    return $this->createFormBuilder();
+                }
+            })->setContainer($this->getContainerMock())->getcreateFormBuilder()
+        );
+    }
+
+    /**
+     * @expectedException \LogicException
+     */
+    public function testGetUserNoStorage()
+    {
+        $this->getContainerMock()
+            ->expects($this->any())
+            ->method('has')
+            ->with('security.token_storage')
+            ->willReturn(false);
+
+        (new class extends Controller {
+            public function getGetUser()
+            {
+                return $this->getUser();
+            }
+        })->setContainer($this->getContainerMock())->getgetUser();
+    }
+
+    public function testGetUser()
+    {
+        $storage = $this->getMock('Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface', [], [], '', false);
+
+        $this->getContainerMock()
+            ->expects($this->any())
+            ->method('get')
+            ->with('security.token_storage')
+            ->willReturn($storage);
+
+        $this->getContainerMock()
+            ->expects($this->any())
+            ->method('has')
+            ->with('security.token_storage')
+            ->willReturn(true);
+
+        $this->assertEmpty(
+            (new class extends Controller {
+                public function getGetUser()
+                {
+                    return $this->getUser();
+                }
+            })->setContainer($this->getContainerMock())->getgetUser()
+        );
+    }
+
+    public function testGetUserBadTocken()
+    {
+        $storage = $this->getMock('Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface', [], [], '', false);
+        $storage->expects($this->any())
+            ->method('getToken')
+            ->willReturn('fooBar');
+
+        $this->getContainerMock()
+            ->expects($this->any())
+            ->method('get')
+            ->with('security.token_storage')
+            ->willReturn($storage);
+
+        $this->getContainerMock()
+            ->expects($this->any())
+            ->method('has')
+            ->with('security.token_storage')
+            ->willReturn(true);
+
+        $this->assertEmpty(
+            (new class extends Controller {
+                public function getGetUser()
+                {
+                    return $this->getUser();
+                }
+            })->setContainer($this->getContainerMock())->getgetUser()
+        );
+    }
+
+    public function testGetUserBadEmptyUser()
+    {
+        $storage = $this->getMock('Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface', [], [], '', false);
+        $storage->expects($this->any())
+            ->method('getToken')
+            ->willReturn(new class {
+                public function getUser(){
+                    return null;
+                }
+            });
+
+        $this->getContainerMock()
+            ->expects($this->any())
+            ->method('get')
+            ->with('security.token_storage')
+            ->willReturn($storage);
+
+        $this->getContainerMock()
+            ->expects($this->any())
+            ->method('has')
+            ->with('security.token_storage')
+            ->willReturn(true);
+
+        $this->assertEmpty(
+            (new class extends Controller {
+                public function getGetUser()
+                {
+                    return $this->getUser();
+                }
+            })->setContainer($this->getContainerMock())->getgetUser()
+        );
+    }
+
+    public function testGetUserUser()
+    {
+        $storage = $this->getMock('Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface', [], [], '', false);
+        $storage->expects($this->any())
+            ->method('getToken')
+            ->willReturn(new class {
+                public function getUser(){
+                    return new class implements UserInterface{
+                        public function getRoles()
+                        {
+                        }
+
+                        public function getPassword()
+                        {
+                        }
+
+                        public function getSalt()
+                        {
+                        }
+
+                        public function getUsername()
+                        {
+                        }
+
+                        public function eraseCredentials()
+                        {
+                        }
+                    };
+                }
+            });
+
+        $this->getContainerMock()
+            ->expects($this->any())
+            ->method('get')
+            ->with('security.token_storage')
+            ->willReturn($storage);
+
+        $this->getContainerMock()
+            ->expects($this->any())
+            ->method('has')
+            ->with('security.token_storage')
+            ->willReturn(true);
+
+        $this->assertInstanceOf(
+            'Symfony\Component\Security\Core\User\UserInterface',
+            (new class extends Controller {
+                public function getGetUser()
+                {
+                    return $this->getUser();
+                }
+            })->setContainer($this->getContainerMock())->getgetUser()
         );
     }
 }
