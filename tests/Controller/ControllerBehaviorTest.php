@@ -40,14 +40,6 @@ class ControllerBehaviorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return Controller
-     */
-    private function buildController(): Controller
-    {
-        return new class extends Controller{};
-    }
-
-    /**
      * @return string
      */
     private function getControllerClassName(): string
