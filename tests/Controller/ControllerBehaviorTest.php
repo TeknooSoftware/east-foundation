@@ -6,6 +6,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Teknoo\East\Framework\Controller\Controller;
 use Teknoo\East\Framework\Http\ClientInterface;
+use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\RedirectResponse;
 
 /**
@@ -197,7 +198,7 @@ class ControllerBehaviorTest extends \PHPUnit_Framework_TestCase
         (new class extends Controller {
             public function getIsGranted()
             {
-                return $this->IsGranted('foo', 'bar');
+                return $this->isGranted('foo', 'bar');
             }
         })->setContainer($this->getContainerMock())->getisGranted();
     }
@@ -743,5 +744,97 @@ class ControllerBehaviorTest extends \PHPUnit_Framework_TestCase
                 }
             })->setContainer($this->getContainerMock())->getgetUser()
         );
+    }
+
+    public function testRenderTemplating()
+    {
+        $client = $this->getMock('Teknoo\East\Framework\Http\ClientInterface');
+        $client->expects($this->once())
+            ->method('successfulResponseFromController')
+            ->with($this->callback(function ($instance) {return $instance instanceof HtmlResponse;}))
+            ->willReturnSelf();
+
+        $this->getContainerMock()
+            ->expects($this->any())
+            ->method('get')
+            ->with('templating')
+            ->willReturn(new class {
+                public function render($view, $parameters) {
+                    return '<html>';
+                }
+            });
+
+        $this->getContainerMock()
+            ->expects($this->any())
+            ->method('has')
+            ->with('templating')
+            ->willReturn(true);
+
+        $this->assertInstanceOf(
+            $this->getControllerClassName(),
+            (new class extends Controller {
+                public function getRender(ClientInterface $client)
+                {
+                    return $this->render($client, 'routeName');
+                }
+            })->setContainer($this->getContainerMock())->getRender($client)
+        );
+    }
+
+    public function testRenderTwig()
+    {
+        $client = $this->getMock('Teknoo\East\Framework\Http\ClientInterface');
+        $client->expects($this->once())
+            ->method('successfulResponseFromController')
+            ->with($this->callback(function ($instance) {return $instance instanceof HtmlResponse;}))
+            ->willReturnSelf();
+
+        $this->getContainerMock()
+            ->expects($this->any())
+            ->method('get')
+            ->with('twig')
+            ->willReturn(new class {
+                public function render($view, $parameters) {
+                    return '<html>';
+                }
+            });
+
+        $this->getContainerMock()
+            ->expects($this->any())
+            ->method('has')
+            ->willReturnMap([['templating', false], ['twig', true]]);
+
+        $this->assertInstanceOf(
+            $this->getControllerClassName(),
+            (new class extends Controller {
+                public function getRender(ClientInterface $client)
+                {
+                    return $this->render($client, 'routeName');
+                }
+            })->setContainer($this->getContainerMock())->getRender($client)
+        );
+    }
+
+    /**
+     * @expectedException \LogicException
+     */
+    public function testRenderNoRendering()
+    {
+        $client = $this->getMock('Teknoo\East\Framework\Http\ClientInterface');
+        $client->expects($this->never())
+            ->method('successfulResponseFromController');
+
+        $this->getContainerMock()
+            ->expects($this->any())
+            ->method('has')
+            ->willReturn(false);
+
+
+        (new class extends Controller {
+            public function getRender(ClientInterface $client)
+            {
+                return $this->render($client, 'routeName');
+            }
+        })->setContainer($this->getContainerMock())->getRender($client);
     }
 }
