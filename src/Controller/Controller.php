@@ -79,14 +79,14 @@ abstract class Controller implements ContainerAwareInterface
      * @param array  $parameters An array of parameters
      * @param int    $status     The status code to use for the Response
      *
-     * @return Response\RedirectResponse
+     * @return Controller
      */
     protected function redirectToRoute(
         ClientInterface $client,
         string $route,
         array $parameters = array(),
         int $status = 302
-    ): Response\RedirectResponse {
+    ): Controller {
         return $this->redirect($client, $this->generateUrl($route, $parameters), $status);
     }
 
@@ -138,13 +138,17 @@ abstract class Controller implements ContainerAwareInterface
      * @param mixed  $object     The object
      * @param string $message    The message passed to the exception
      *
+     * @return Controller
+     *
      * @throws AccessDeniedException
      */
-    protected function denyAccessUnlessGranted($attributes, $object = null, string $message = 'Access Denied.')
+    protected function denyAccessUnlessGranted($attributes, $object = null, string $message = 'Access Denied.'): Controller
     {
         if (!$this->isGranted($attributes, $object)) {
             throw $this->createAccessDeniedException($message);
         }
+
+        return $this;
     }
 
     /**
