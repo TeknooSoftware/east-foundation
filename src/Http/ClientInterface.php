@@ -36,6 +36,7 @@ use Psr\Http\Message\ResponseInterface;
 interface ClientInterface
 {
     /**
+     * 
      * @param ResponseInterface $response
      * @return ClientInterface
      */

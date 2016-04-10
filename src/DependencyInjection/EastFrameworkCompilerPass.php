@@ -26,8 +26,8 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
- * Class BlockCompilerPass
- * To link all services able to provide content for blocks
+ * Class EastFrameworkCompilerPass
+ * Compiler pass to inject service container to east framework controller
  *
  * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
  *
