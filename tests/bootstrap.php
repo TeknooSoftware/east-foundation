@@ -18,7 +18,6 @@
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-
 defined('RUN_CLI_MODE')
     || define('RUN_CLI_MODE', true);
 
