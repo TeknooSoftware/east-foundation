@@ -2,7 +2,7 @@
     "name": "teknoo/east-framework",
     "type": "library",
     "description": "Symfony bundle to allow developer to use the #East philosophy into there Symfony project and create #east controller",
-    "keywords": ["east", "#east", "controller", "design"],
+    "keywords": ["east", "controller", "design"],
     "homepage": "http://teknoo.software/east-framework",
     "license": ["MIT"],
     "authors": [
