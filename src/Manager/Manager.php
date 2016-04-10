@@ -61,8 +61,12 @@ class Manager implements ManagerInterface, ImmutableInterface
     private function iterateRouter()
     {
         foreach ($this->routersList as $router) {
+            //Fetch eatch router
             yield $router;
 
+            //Stop propagation logic is written here to avoid complex instructions in dispatchRequest.
+            //The loop in dispatchRequest is agnostic.
+            //Stop to fetch a router if the current router has sent a signal to this manager.
             if (false === $this->doRequestPropagation) {
                 break;
             }
@@ -94,6 +98,7 @@ class Manager implements ManagerInterface, ImmutableInterface
      */
     public function receiveRequestFromClient(ClientInterface $client, ServerRequestInterface $request): ManagerInterface
     {
+        //CLone this manager, it is immutable.
         $manager = clone $this;
         $manager->dispatchRequest($client, $request);
 

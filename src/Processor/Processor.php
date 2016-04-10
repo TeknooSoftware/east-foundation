@@ -100,6 +100,7 @@ class Processor implements ProcessorInterface
 
         $controller = $requestParameters['_controller'];
 
+        //If the controller is referenced by canonical class name / function name
         if (is_string($requestParameters['_controller']) && false === strpos($controller, ':')) {
             if (method_exists($controller, '__invoke')) {
                 return $this->instantiateController($controller);
@@ -108,10 +109,12 @@ class Processor implements ProcessorInterface
             }
         }
 
+        //If the controller value is a callable instance, returns it directly
         if (!is_string($controller) && is_callable($controller)) {
             return $controller;
         }
 
+        //Controller is referenced as Controller in Symfony format ("ControllerName:ActionName")
         $callable = $this->createController($controller);
 
         if (!is_callable($callable)) {
@@ -177,9 +180,10 @@ class Processor implements ProcessorInterface
         ServerRequestInterface $request,
         callable $controller
     ): array {
-        if (is_array($controller)) {
+        if (is_array($controller)) { //Reflection the method's argument in the controller class
             $r = new \ReflectionMethod($controller[0], $controller[1]);
         } elseif (is_object($controller) && !$controller instanceof \Closure) {
+            //Reflection the method's arguments of the callable object
             $r = new \ReflectionObject($controller);
             $r = $r->getMethod('__invoke');
         } else {
@@ -210,14 +214,20 @@ class Processor implements ProcessorInterface
         $arguments = array();
         foreach ($parameters as $param) {
             if (array_key_exists($param->name, $attributes)) {
+                //Parameter's value is available in the request
                 $arguments[] = $attributes[$param->name];
             } elseif ($param->getClass() && $param->getClass()->isInstance($request)) {
+                //The parameter need a instance of the request, pass it
                 $arguments[] = $request;
             } elseif ($param->getClass() && $param->getClass()->isInstance($client)) {
+                //The parameter need a instance of the client, pass it
                 $arguments[] = $client;
             } elseif ($param->isDefaultValueAvailable()) {
+                //The parameter's value is not available in the request but has a default value, get it
                 $arguments[] = $param->getDefaultValue();
             } else {
+                //The parameter's value is not available in the request and has not a default value.
+                //Throw an exception, all values are needed to avoid PHP error.
                 if (is_array($controller)) {
                     $repr = sprintf('%s::%s()', get_class($controller[0]), $controller[1]);
                 } elseif (is_object($controller)) {
