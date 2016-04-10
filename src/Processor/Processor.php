@@ -135,7 +135,7 @@ class Processor implements ProcessorInterface
      *
      * @throws \InvalidArgumentException
      */
-    private function createController(string $controller): callable
+    private function createController(string $controller)
     {
         if (false === strpos($controller, '::')) {
             throw new \InvalidArgumentException(sprintf('Unable to find controller "%s".', $controller));
