@@ -26,11 +26,14 @@ use Teknoo\East\Framework\Router\RouterInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Interface ManagerInterface
+ * Interface ManagerInterface is a contract to create manager to process requests in East Framework. The manager
+ * passes the request to each router as the spread has not been stopped.
+ *
+ * All public method of the manager must only return the self client or a clone instance.
  *
  * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
  *
- * @link        http://teknoo.software/states Project website
+ * @link        http://teknoo.software/east Project website
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
@@ -38,6 +41,8 @@ use Psr\Http\Message\ServerRequestInterface;
 interface ManagerInterface
 {
     /**
+     * Method to call to process a request in East Framework by East's controller
+     *
      * @param ClientInterface $client
      * @param ServerRequestInterface $request
      * @return ManagerInterface
@@ -45,18 +50,25 @@ interface ManagerInterface
     public function receiveRequestFromClient(ClientInterface $client, ServerRequestInterface $request): ManagerInterface;
 
     /**
+     * Method to register router in the manager to process request
+     *
      * @param RouterInterface $router
      * @return ManagerInterface
      */
     public function registerRouter(RouterInterface $router): ManagerInterface;
 
     /**
+     * Method to unregister router in the manager to process request
+     *
      * @param RouterInterface $router
      * @return ManagerInterface
      */
     public function unregisterRouter(RouterInterface $router): ManagerInterface;
 
     /**
+     * Method to stop propagation to other routers when a router has determined the request is handle by one of its
+     * controllers
+     *
      * @return ManagerInterface
      */
     public function stopPropagation(): ManagerInterface;

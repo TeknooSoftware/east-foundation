@@ -29,11 +29,16 @@ use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 
 /**
- * Class Router
+ * Class Router to check if a request is runnable by one of its controller and pass it to the selected controller.
+ * This router reuse the Symfony matcher component to find controller and routes to use.
+ *
+ * The router can stop the propagation in the manager by calling stopPropagation.
+ *
+ * All public method of the manager must only return the self client or a clone instance.
  *
  * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
  *
- * @link        http://teknoo.software/states Project website
+ * @link        http://teknoo.software/east Project website
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
@@ -64,6 +69,8 @@ class Router implements RouterInterface
     }
 
     /**
+     * Method to find the controller to call for this method via the Symfony Matcher
+     *
      * @param ServerRequestInterface $request
      * @return array
      */

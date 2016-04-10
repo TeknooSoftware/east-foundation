@@ -24,11 +24,13 @@ namespace Teknoo\East\Framework\Http;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * Interface ClientInterface
+ * ClientInterface is a contract to create object representing the client in the server side. The client must be
+ * agnostic and accepts only \Throwable exception and PSR7 response.
+ * All public method of the client must only return the self client or a clone instance.
  *
  * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
  *
- * @link        http://teknoo.software/states Project website
+ * @link        http://teknoo.software/east Project website
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
@@ -36,13 +38,16 @@ use Psr\Http\Message\ResponseInterface;
 interface ClientInterface
 {
     /**
-     * 
+     * To accept a response from the controller action and send it to the HTTP client.
+     *
      * @param ResponseInterface $response
      * @return ClientInterface
      */
     public function successfulResponseFromController(ResponseInterface $response): ClientInterface;
 
     /**
+     * To intercept an error during a request and forward the message to the HTTP client.
+     *
      * @param \Throwable $throwable
      * @return ClientInterface
      */

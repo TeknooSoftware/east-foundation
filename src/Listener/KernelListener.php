@@ -28,11 +28,14 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Teknoo\East\Framework\Manager\ManagerInterface;
 
 /**
- * Class KernelListener
+ * Class KernelListener to listen the event "kernel.request" sent by Symfony and pass requests to the East Framework's
+ * manager to be processed. See http://symfony.com/doc/current/reference/events.html#kernel-request
+ *
+ * It converts Symfony Request to PSR Request (East Framework accepts use only PSR Request and Response).
  *
  * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
  *
- * @link        http://teknoo.software/states Project website
+ * @link        http://teknoo.software/east Project website
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>

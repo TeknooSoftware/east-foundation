@@ -26,11 +26,13 @@ use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class Processor
+ * Class Processor to instantiate controller action and pass the request.
+ *
+ * All public method of the manager must only return the self client or a clone instance.
  *
  * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
  *
- * @link        http://teknoo.software/states Project website
+ * @link        http://teknoo.software/east Project website
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
@@ -71,6 +73,8 @@ class Processor implements ProcessorInterface
     }
 
     /**
+     * To call the controller and pass it the request and all params
+     *
      * @param callable $controller
      * @param array $arguments
      */
@@ -80,6 +84,8 @@ class Processor implements ProcessorInterface
     }
 
     /**
+     * Analyze the request's params from the router to find and instantiate the controller
+     *
      * @param ServerRequestInterface ServerRequestInterface $request
      * @param array $requestParameters
      * @return callable
@@ -126,7 +132,7 @@ class Processor implements ProcessorInterface
      *
      * @throws \InvalidArgumentException
      */
-    private function createController(string $controller)
+    private function createController(string $controller): callable
     {
         if (false === strpos($controller, '::')) {
             throw new \InvalidArgumentException(sprintf('Unable to find controller "%s".', $controller));
@@ -158,13 +164,19 @@ class Processor implements ProcessorInterface
     }
 
     /**
+     * Analyze the request's params from the router to prepares parameters to inject to the controller before the
+     * request processing
+     *
      * @param ClientInterface $client
      * @param ServerRequestInterface $request
      * @param callable|object $controller
      * @return array
      */
-    protected function getArguments(ClientInterface $client, ServerRequestInterface $request, callable $controller): array
-    {
+    protected function getArguments(
+        ClientInterface $client,
+        ServerRequestInterface $request,
+        callable $controller
+    ): array {
         if (is_array($controller)) {
             $r = new \ReflectionMethod($controller[0], $controller[1]);
         } elseif (is_object($controller) && !$controller instanceof \Closure) {
@@ -178,6 +190,10 @@ class Processor implements ProcessorInterface
     }
 
     /**
+     * Parse arguments needed by the controller method (class's method, function or closure) to inject in the good order
+     * values from the request. Detect also parameters needed the client instance and the server request instance to
+     * pass them, like Symfony with Request instance.
+     *
      * @param ClientInterface $client
      * @param ServerRequestInterface $request
      * @param callable $controller

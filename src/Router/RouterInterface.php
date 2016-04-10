@@ -26,11 +26,16 @@ use Teknoo\East\Framework\Manager\ManagerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Interface RouterInterface
+ * Interface RouterInterface is a contract to create router to check if a request is runnable by one of its
+ * controller and pass it to the selected controller.
+ *
+ * The router can stop the propagation in the manager by calling stopPropagation.
+ *
+ * All public method of the manager must only return the self client or a clone instance.
  *
  * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
  *
- * @link        http://teknoo.software/states Project website
+ * @link        http://teknoo.software/east Project website
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
@@ -38,6 +43,8 @@ use Psr\Http\Message\ServerRequestInterface;
 interface RouterInterface
 {
     /**
+     * Method called by a manager to ask the router if it can process the request.
+     *
      * @param ClientInterface $client
      * @param ServerRequestInterface $request
      * @param ManagerInterface $manager

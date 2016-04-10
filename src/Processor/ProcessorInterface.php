@@ -25,11 +25,13 @@ use Teknoo\East\Framework\Http\ClientInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Interface ProcessorInterface
+ * Interface ProcessorInterface is a contract to create processor to instantiate controller action and pass the request.
+ *
+ * All public method of the manager must only return the self client or a clone instance.
  *
  * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
  *
- * @link        http://teknoo.software/states Project website
+ * @link        http://teknoo.software/east Project website
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
