@@ -21,9 +21,12 @@
 
 namespace Teknoo\East\Framework\Processor;
 
+use Psr\Log\LoggerInterface;
 use Teknoo\East\Framework\Http\ClientInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Teknoo\Immutable\ImmutableInterface;
+use Teknoo\Immutable\ImmutableTrait;
 
 /**
  * Class Processor to instantiate controller action and pass the request.
@@ -37,20 +40,29 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-class Processor implements ProcessorInterface
+class Processor implements ProcessorInterface, ImmutableInterface
 {
+    use ImmutableTrait;
+
     /**
      * @var ContainerInterface
      */
     private $container;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Processor constructor.
      * @param ContainerInterface $container
+     * @param LoggerInterface $logger
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerInterface $container, LoggerInterface $logger)
     {
         $this->container = $container;
+        $this->logger = $logger;
     }
 
     /**
@@ -62,12 +74,39 @@ class Processor implements ProcessorInterface
         array $requestParameters
     ): ProcessorInterface
     {
-        //Get controller
-        $controller = $this->getController($request, $requestParameters);
-        // controller arguments
-        $arguments = $this->getArguments($client, $request, $controller);
-        //execute the controller
-        $this->callController($controller, $arguments);
+        $processor = clone $this;
+        $processor->doExecuteRequest($client, $request, $requestParameters);
+
+        return $processor;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function doExecuteRequest(
+        ClientInterface $client,
+        ServerRequestInterface $request,
+        array $requestParameters
+    ): ProcessorInterface
+    {
+        $controller = null;
+        $arguments = null;
+        try {
+            //Get controller
+            $controller = $this->getController($request, $requestParameters);
+            // controller arguments
+            $arguments = $this->getArguments($client, $request, $controller);
+            //execute the controller
+        } catch (\InvalidArgumentException $e) {
+            $controller = null;
+            $arguments = null;
+            
+            $this->logger->info('East Processor: '.$e->getMessage());
+        }
+
+        if (is_callable($controller)) {
+            $this->callController($controller, $arguments);
+        }
 
         return $this;
     }

@@ -22,6 +22,7 @@
 namespace Teknoo\Tests\East\Framework\Processor;
 
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerInterface;
 use Teknoo\East\Framework\Http\ClientInterface;
 use Teknoo\East\Framework\Processor\Processor;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -44,6 +45,11 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
     private $container;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * @return ContainerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getContainerMock()
@@ -62,11 +68,29 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @return LoggerInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private function getLoggerMock()
+    {
+        if (!$this->logger instanceof LoggerInterface) {
+            $this->logger = $this->getMock(
+                'Psr\Log\LoggerInterface',
+                [],
+                [],
+                '',
+                false
+            );
+        }
+
+        return $this->logger;
+    }
+
+    /**
      * @return Processor
      */
     private function buildProcessor()
     {
-        return new Processor($this->getContainerMock());
+        return new Processor($this->getContainerMock(), $this->getLoggerMock());
     }
 
     /**
@@ -105,9 +129,6 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testExecuteRequestExceptionNoController()
     {
         /**
@@ -121,16 +142,19 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
         $requestMock = $this->getMock('Psr\Http\Message\ServerRequestInterface');
         $requestMock->expects($this->any())->method('getAttributes')->willReturn([]);
 
-        $this->buildProcessor()->executeRequest(
-            $clientMock,
-            $requestMock,
-            []
+        $this->getLoggerMock()->expects($this->once())->method('info')->willReturnSelf();
+
+        $processor = $this->buildProcessor();
+        $this->assertInstanceOf(
+            get_class($processor),
+            $processor->executeRequest(
+                $clientMock,
+                $requestMock,
+                []
+            )
         );
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testExecuteRequestExceptionBadController()
     {
         /**
@@ -144,16 +168,19 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
         $requestMock = $this->getMock('Psr\Http\Message\ServerRequestInterface');
         $requestMock->expects($this->any())->method('getAttributes')->willReturn([]);
 
-        $this->buildProcessor()->executeRequest(
-            $clientMock,
-            $requestMock,
-            ['_controller' => 'fooBar']
+        $this->getLoggerMock()->expects($this->once())->method('info')->willReturnSelf();
+
+        $processor = $this->buildProcessor();
+        $this->assertInstanceOf(
+            get_class($processor),
+            $processor->executeRequest(
+                $clientMock,
+                $requestMock,
+                ['_controller' => 'fooBar']
+            )
         );
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testExecuteRequestExceptionInexistantController()
     {
         /**
@@ -167,16 +194,19 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
         $requestMock = $this->getMock('Psr\Http\Message\ServerRequestInterface');
         $requestMock->expects($this->any())->method('getAttributes')->willReturn([]);
 
-        $this->buildProcessor()->executeRequest(
-            $clientMock,
-            $requestMock,
-            ['_controller' => 'foo::bar']
+        $this->getLoggerMock()->expects($this->once())->method('info')->willReturnSelf();
+
+        $processor = $this->buildProcessor();
+        $this->assertInstanceOf(
+            get_class($processor),
+            $processor->executeRequest(
+                $clientMock,
+                $requestMock,
+                ['_controller' => 'foo::bar']
+            )
         );
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testExecuteRequestExceptionNoCallableController()
     {
         /**
@@ -193,10 +223,16 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
         $this->getContainerMock()->expects($this->any())->method('has')->willReturn(true);
         $this->getContainerMock()->expects($this->any())->method('get')->willReturn('fooBar');
 
-        $this->buildProcessor()->executeRequest(
-            $clientMock,
-            $requestMock,
-            ['_controller' => 'foo::bar']
+        $this->getLoggerMock()->expects($this->once())->method('info')->willReturnSelf();
+
+        $processor = $this->buildProcessor();
+        $this->assertInstanceOf(
+            get_class($processor),
+            $processor->executeRequest(
+                $clientMock,
+                $requestMock,
+                ['_controller' => 'foo::bar']
+            )
         );
     }
 

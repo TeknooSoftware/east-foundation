@@ -39,6 +39,8 @@ use Psr\Http\Message\ServerRequestInterface;
 interface ProcessorInterface
 {
     /**
+     * Called by a router to execute a request and passing a the client
+     *
      * @param ClientInterface $client
      * @param ServerRequestInterface $request
      * @param array $requestParameters
