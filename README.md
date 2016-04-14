@@ -12,6 +12,11 @@ to manage routes and find controller to call.
 
 It is a prototype, other adaptation for others framework may be released :).
 
+Demo
+----
+
+Simple demo with Symfony 3.0 available [here](https://github.com/TeknooSoftware/east-framework-demo)
+
 Installation
 ------------
 To install this library with composer, run this command :
