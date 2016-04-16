@@ -21,7 +21,10 @@
 
 namespace Teknoo\East\Framework\Http\Client\States;
 
+use Psr\Http\Message\ResponseInterface;
+use Teknoo\East\Framework\Http\ClientInterface;
 use Teknoo\States\State\AbstractState;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
@@ -34,5 +37,34 @@ use Teknoo\States\State\AbstractState;
 
 class Pending extends AbstractState
 {
+    /**
+     * {@inheritdoc}
+     */
+    private function doSuccessfulResponseFromController(ResponseInterface $response): ClientInterface
+    {
+        $this->getResponseEvent->setResponse(
+            $this->httpFoundationFactory->createResponse($response)
+        );
 
+        $this->switchState('Success');
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function doErrorInRequest(\Throwable $throwable): ClientInterface
+    {
+        $this->getResponseEvent->setResponse(
+            new Response(
+                $throwable->getMessage(),
+                500
+            )
+        );
+
+        $this->switchState('Error');
+
+        return $this;
+    }
 }

@@ -34,5 +34,12 @@ use Teknoo\States\State\AbstractState;
 
 class Error extends AbstractState
 {
-
+    /**
+     * To know if the request for the client has a success
+     * @return bool
+     */
+    public function hasSuccessFull(): bool
+    {
+        return false;
+    }
 }

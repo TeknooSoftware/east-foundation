@@ -18,13 +18,12 @@
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-
 namespace Teknoo\East\Framework\Http\Client;
 
 use Teknoo\States\Factory\Integrated;
 
 /**
- * Factory for Client stated class
+ * Factory for Client stated class.
  *
  * @link        http://teknoo.software/east Project website
  *

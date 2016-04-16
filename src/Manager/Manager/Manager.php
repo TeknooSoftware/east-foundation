@@ -53,65 +53,44 @@ class Manager implements
 {
     use ImmutableTrait,
         ProxyTrait,
-        IntegratedTrait;
+        IntegratedTrait {
+        ProxyTrait::__set insteadof ImmutableTrait;
+        ImmutableTrait::__unset insteadof ProxyTrait; //Disabling __unset() from States
+    }
+
+    /**
+     * Class name of the factory to use in set up to initialize this object in this construction.
+     *
+     * @var string
+     */
+    protected static $startupFactoryClassName = '\Teknoo\States\Factory\StandardStartupFactory';
 
     /**
      * @var RouterInterface[]
      */
-    protected $routersList = [];
+    private $routersList;
 
     /**
      * @var boolean
      */
-    protected $doRequestPropagation;
+    private $doRequestPropagation = false;
 
+    /**
+     * Manager constructor.
+     * Initialize States behavior and Immutable behavior
+     */
     public function __construct()
     {
+        //Use ArrayObject instead of array type
+        $this->routersList = new \ArrayObject();
         //Call the method of the trait to initialize local attributes of the proxy
         $this->initializeProxy();
         //Call the startup factory to initialize this proxy
         $this->initializeObjectWithFactory();
         //Behavior for Immutable
         $this->uniqueConstructorCheck();
-    }
-
-    /**
-     * Build a Generator to stop the list at reception of the stop message
-     * @return \Generator
-     */
-    private function iterateRouter()
-    {
-        foreach ($this->routersList as $router) {
-            //Fetch eatch router
-            yield $router;
-
-            //Stop propagation logic is written here to avoid complex instructions in dispatchRequest.
-            //The loop in dispatchRequest is agnostic.
-            //Stop to fetch a router if the current router has sent a signal to this manager.
-            if (false === $this->doRequestPropagation) {
-                break;
-            }
-        }
-    }
-
-    /**
-     * To dispatch the request to all routers while a message was not receive to stop the propaggation
-     * @param ClientInterface $client
-     * @param ServerRequestInterface $request
-     * @return ManagerInterface
-     */
-    private function dispatchRequest(ClientInterface $client, ServerRequestInterface $request): ManagerInterface
-    {
-        $this->doRequestPropagation = true;
-
-        /**
-         * @var RouterInterface $router
-         */
-        foreach ($this->iterateRouter() as $router) {
-            $router->receiveRequestFromServer($client, $request, $this);
-        }
-
-        return $this;
+        //Enable the main state "Service"
+        $this->enableState('Service');
     }
 
     /**
@@ -119,11 +98,8 @@ class Manager implements
      */
     public function receiveRequestFromClient(ClientInterface $client, ServerRequestInterface $request): ManagerInterface
     {
-        //CLone this manager, it is immutable.
-        $manager = clone $this;
-        $manager->dispatchRequest($client, $request);
-
-        return $this;
+        //Run this request
+        return $this->running($client, $request);
     }
 
     /**
@@ -131,9 +107,7 @@ class Manager implements
      */
     public function registerRouter(RouterInterface $router): ManagerInterface
     {
-        $this->routersList[spl_object_hash($router)] = $router;
-
-        return $this;
+        return $this->doRegisterRouter($router);
     }
 
     /**
@@ -141,12 +115,7 @@ class Manager implements
      */
     public function unregisterRouter(RouterInterface $router): ManagerInterface
     {
-        $routerHash = spl_object_hash($router);
-        if (isset($this->routersList[$routerHash])) {
-            unset($this->routersList[$routerHash]);
-        }
-
-        return $this;
+        return $this->doUnregisterRouter($router);
     }
 
     /**
@@ -154,8 +123,6 @@ class Manager implements
      */
     public function stopPropagation(): ManagerInterface
     {
-        $this->doRequestPropagation = false;
-
-        return $this;
+        return $this->doStopPropagation();
     }
 }

@@ -23,7 +23,8 @@ namespace Teknoo\Tests\East\Framework\Manager;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Teknoo\East\Framework\Http\ClientInterface;
-use Teknoo\East\Framework\Manager\Manager;
+use Teknoo\East\Framework\Manager\Manager\Manager;
+use Teknoo\East\Framework\Manager\ManagerInterface;
 use Teknoo\East\Framework\Router\RouterInterface;
 
 /**
@@ -35,6 +36,9 @@ use Teknoo\East\Framework\Router\RouterInterface;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  * @covers Teknoo\East\Framework\Manager\Manager
+ * @covers Teknoo\East\Framework\Manager\Manager\States\HadRun
+ * @covers Teknoo\East\Framework\Manager\Manager\States\Running
+ * @covers Teknoo\East\Framework\Manager\Manager\States\Service
  */
 class ManagerTest extends \PHPUnit_Framework_TestCase
 {
@@ -49,7 +53,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     /**
      * @return string
      */
-    private function getManagerClass(): string
+    public function getManagerClass(): string
     {
         return 'Teknoo\East\Framework\Manager\Manager';
     }
@@ -132,10 +136,46 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testStopPropagation()
     {
-        $this->assertInstanceOf(
-            $this->getManagerClass(),
-            $this->buildManager()->stopPropagation()
-        );
+        $router = new class($this) implements RouterInterface {
+            /**
+             * @var ManagerTest
+             */
+            private $testSuite;
+
+            public function __construct(ManagerTest $that)
+            {
+                $this->testSuite = $that;
+            }
+
+            public function receiveRequestFromServer(
+                ClientInterface $client,
+                ServerRequestInterface $request,
+                ManagerInterface $manager
+            ): RouterInterface
+            {
+                $this->testSuite->assertInstanceOf(
+                    $this->testSuite->getManagerClass(),
+                    $manager->stopPropagation()
+                );
+
+                return $this;
+            }
+        };
+
+
+        /**
+         * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $clientMock
+         */
+        $clientMock = $this->getMock('Teknoo\East\Framework\Http\ClientInterface');
+
+        /**
+         * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject $serverRequestMock
+         */
+        $serverRequestMock = $this->getMock('Psr\Http\Message\ServerRequestInterface');
+
+        $manager = $this->buildManager();
+        $manager->registerRouter($router);
+        $manager->receiveRequestFromClient($clientMock,$serverRequestMock);
     }
 
     public function testBehaviorReceiveRequestFromClient()

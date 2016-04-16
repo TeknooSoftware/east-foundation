@@ -21,6 +21,10 @@
 
 namespace Teknoo\East\Framework\Manager\Manager\States;
 
+use Psr\Http\Message\ServerRequestInterface;
+use Teknoo\East\Framework\Http\ClientInterface;
+use Teknoo\East\Framework\Manager\ManagerInterface;
+use Teknoo\East\Framework\Router\RouterInterface;
 use Teknoo\States\State\AbstractState;
 
 /**
@@ -33,5 +37,36 @@ use Teknoo\States\State\AbstractState;
  */
 class Service extends AbstractState
 {
-    
+    private function running(ClientInterface $client, ServerRequestInterface $request): ManagerInterface
+    {
+        //Clone this manager, it is immutable and switch it's state
+        $manager = clone $this;
+        $manager->switchState('Running');
+        $manager->dispatchRequest($client, $request);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    private function doRegisterRouter(RouterInterface $router): ManagerInterface
+    {
+        $this->routersList[spl_object_hash($router)] = $router;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    private function doUnregisterRouter(RouterInterface $router): ManagerInterface
+    {
+        $routerHash = spl_object_hash($router);
+        if (isset($this->routersList[$routerHash])) {
+            unset($this->routersList[$routerHash]);
+        }
+
+        return $this;
+    }
 }

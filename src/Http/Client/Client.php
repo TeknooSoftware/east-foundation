@@ -50,6 +50,13 @@ class Client implements
 {
     use ProxyTrait,
         IntegratedTrait;
+
+    /**
+     * Class name of the factory to use in set up to initialize this object in this construction.
+     *
+     * @var string
+     */
+    protected static $startupFactoryClassName = '\Teknoo\States\Factory\StandardStartupFactory';
     
     /**
      * @var GetResponseEvent
@@ -74,6 +81,8 @@ class Client implements
         $this->initializeProxy();
         //Call the startup factory to initialize this proxy
         $this->initializeObjectWithFactory();
+        //Enable default pending
+        $this->enableState('Pending');
     }
 
     /**
@@ -81,11 +90,7 @@ class Client implements
      */
     public function successfulResponseFromController(ResponseInterface $response): ClientInterface
     {
-        $this->getResponseEvent->setResponse(
-            $this->httpFoundationFactory->createResponse($response)
-        );
-
-        return $this;
+        return $this->doSuccessfulResponseFromController($response);
     }
 
     /**
@@ -93,13 +98,6 @@ class Client implements
      */
     public function errorInRequest(\Throwable $throwable): ClientInterface
     {
-        $this->getResponseEvent->setResponse(
-            new Response(
-                $throwable->getMessage(),
-                500
-            )
-        );
-
-        return $this;
+        return $this->doErrorInRequest($throwable);
     }
 }

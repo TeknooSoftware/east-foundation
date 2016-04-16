@@ -21,7 +21,7 @@
 
 namespace Teknoo\East\Framework\Listener;
 
-use Teknoo\East\Framework\Http\Client;
+use Teknoo\East\Framework\Http\Client\Client;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;

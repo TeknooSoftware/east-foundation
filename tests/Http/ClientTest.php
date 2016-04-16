@@ -23,7 +23,7 @@ namespace Teknoo\Tests\East\Framework\Http;
 
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\Response;
-use Teknoo\East\Framework\Http\Client;
+use Teknoo\East\Framework\Http\Client\Client;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
@@ -35,7 +35,10 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
- * @covers Teknoo\East\Framework\Http\Client
+ * @covers Teknoo\East\Framework\Http\Client\Client
+ * @covers Teknoo\East\Framework\Http\Client\States\Error
+ * @covers Teknoo\East\Framework\Http\Client\States\Pending
+ * @covers Teknoo\East\Framework\Http\Client\States\Success
  */
 class ClientTest extends \PHPUnit_Framework_TestCase
 {
@@ -120,10 +123,12 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             ->with($this->callback(function($response){ return $response instanceof ResponseInterface; }))
             ->willReturn($this->getMock('Symfony\Component\HttpFoundation\Response', [], [], '', false));
 
+        $client = $this->buildClient();
         $this->assertInstanceOf(
             $this->getClientClass(),
-            $this->buildClient()->successfulResponseFromController($response)
+            $client->successfulResponseFromController($response)
         );
+        $this->assertTrue($client->hasSuccessFull());
     }
 
     /**
@@ -142,10 +147,12 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             ->with($this->callback(function($response){ return $response instanceof Response; }))
             ->willReturnSelf();
 
+        $client = $this->buildClient();
         $this->assertInstanceOf(
             $this->getClientClass(),
-            $this->buildClient()->errorInRequest(new \Exception('fooBar'))
+            $client->errorInRequest(new \Exception('fooBar'))
         );
+        $this->assertFalse($client->hasSuccessFull());
     }
 
     /**

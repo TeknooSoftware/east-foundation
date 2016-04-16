@@ -18,13 +18,12 @@
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-
 namespace Teknoo\East\Framework\Manager\Manager;
 
 use Teknoo\States\Factory\Integrated;
 
 /**
- * Factory for Manager stated class
+ * Factory for Manager stated class.
  *
  * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
  *
