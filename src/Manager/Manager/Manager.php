@@ -19,13 +19,18 @@
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
 
-namespace Teknoo\East\Framework\Manager;
+namespace Teknoo\East\Framework\Manager\Manager;
 
 use Teknoo\East\Framework\Http\ClientInterface;
+use Teknoo\East\Framework\Manager\ManagerInterface;
 use Teknoo\East\Framework\Router\RouterInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Teknoo\Immutable\ImmutableInterface;
 use Teknoo\Immutable\ImmutableTrait;
+use Teknoo\States\Proxy\IntegratedInterface;
+use Teknoo\States\Proxy\IntegratedTrait;
+use Teknoo\States\Proxy\ProxyInterface;
+use Teknoo\States\Proxy\ProxyTrait;
 
 /**
  * Class Manager to process requests in East Framework. The manager
@@ -40,9 +45,15 @@ use Teknoo\Immutable\ImmutableTrait;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-class Manager implements ManagerInterface, ImmutableInterface
+class Manager implements
+    ManagerInterface,
+    ImmutableInterface,
+    ProxyInterface,
+    IntegratedInterface
 {
-    use ImmutableTrait;
+    use ImmutableTrait,
+        ProxyTrait,
+        IntegratedTrait;
 
     /**
      * @var RouterInterface[]

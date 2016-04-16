@@ -19,12 +19,17 @@
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
 
-namespace Teknoo\East\Framework\Http;
+namespace Teknoo\East\Framework\Http\Client;
 
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Teknoo\East\Framework\Http\ClientInterface;
+use Teknoo\States\Proxy\IntegratedInterface;
+use Teknoo\States\Proxy\IntegratedTrait;
+use Teknoo\States\Proxy\ProxyInterface;
+use Teknoo\States\Proxy\ProxyTrait;
 
 /**
  * Class Client implementing ClientInterface to represent the client in the server side. The client is agnostic and 
@@ -38,8 +43,14 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-class Client implements ClientInterface
+class Client implements
+    ProxyInterface,
+    IntegratedInterface,
+    ClientInterface
 {
+    use ProxyTrait,
+        IntegratedTrait;
+    
     /**
      * @var GetResponseEvent
      */
