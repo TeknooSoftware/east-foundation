@@ -24,7 +24,7 @@ defined('RUN_CLI_MODE')
 defined('PHPUNIT')
     || define('PHPUNIT', true);
 
-ini_set('memory_limit', '16M');
+ini_set('memory_limit', '32M');
 
 $loader = require_once __DIR__.'/../vendor/teknoo/states/src/bootstrap.php';
 $loader->registerNamespace('\\Teknoo\\East\\Framework', __DIR__.'../src');
