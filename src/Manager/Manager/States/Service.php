@@ -37,6 +37,13 @@ use Teknoo\States\State\AbstractState;
  */
 class Service extends AbstractState
 {
+    /**
+     * Method to call to process a request in East Framework by East's controller
+     *
+     * @param ClientInterface $client
+     * @param ServerRequestInterface $request
+     * @return ManagerInterface
+     */
     private function running(ClientInterface $client, ServerRequestInterface $request): ManagerInterface
     {
         //Clone this manager, it is immutable and switch it's state
@@ -48,7 +55,10 @@ class Service extends AbstractState
     }
 
     /**
-     * {@inheritdoc}
+     * Method to register router in the manager to process request
+     *
+     * @param RouterInterface $router
+     * @return ManagerInterface
      */
     private function doRegisterRouter(RouterInterface $router): ManagerInterface
     {
@@ -58,7 +68,10 @@ class Service extends AbstractState
     }
 
     /**
-     * {@inheritdoc}
+     * Method to unregister router in the manager to process request
+     *
+     * @param RouterInterface $router
+     * @return ManagerInterface
      */
     private function doUnregisterRouter(RouterInterface $router): ManagerInterface
     {

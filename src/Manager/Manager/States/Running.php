@@ -79,7 +79,10 @@ class Running extends AbstractState
     }
 
     /**
-     * {@inheritdoc}
+     * Method to stop propagation to other routers when a router has determined the request is handle by one of its
+     * controllers
+     *
+     * @return ManagerInterface
      */
     private function doStopPropagation(): ManagerInterface
     {

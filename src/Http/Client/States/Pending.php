@@ -38,7 +38,10 @@ use Symfony\Component\HttpFoundation\Response;
 class Pending extends AbstractState
 {
     /**
-     * {@inheritdoc}
+     * To accept a response from the controller action and send it to the HTTP client.
+     *
+     * @param ResponseInterface $response
+     * @return ClientInterface
      */
     private function doSuccessfulResponseFromController(ResponseInterface $response): ClientInterface
     {
@@ -52,7 +55,10 @@ class Pending extends AbstractState
     }
 
     /**
-     * {@inheritdoc}
+     * To intercept an error during a request and forward the message to the HTTP client.
+     *
+     * @param \Throwable $throwable
+     * @return ClientInterface
      */
     public function doErrorInRequest(\Throwable $throwable): ClientInterface
     {
