@@ -70,6 +70,10 @@ class Client implements
     {
         $this->getResponseEvent = $event;
         $this->httpFoundationFactory = $factory;
+        //Call the method of the trait to initialize local attributes of the proxy
+        $this->initializeProxy();
+        //Call the startup factory to initialize this proxy
+        $this->initializeObjectWithFactory();
     }
 
     /**

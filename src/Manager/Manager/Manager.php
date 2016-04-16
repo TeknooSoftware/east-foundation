@@ -65,6 +65,16 @@ class Manager implements
      */
     protected $doRequestPropagation;
 
+    public function __construct()
+    {
+        //Call the method of the trait to initialize local attributes of the proxy
+        $this->initializeProxy();
+        //Call the startup factory to initialize this proxy
+        $this->initializeObjectWithFactory();
+        //Behavior for Immutable
+        $this->uniqueConstructorCheck();
+    }
+
     /**
      * Build a Generator to stop the list at reception of the stop message
      * @return \Generator
