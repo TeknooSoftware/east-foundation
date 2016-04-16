@@ -1,5 +1,10 @@
 #Teknoo Software - East Framework - Change Log
 
+##[0.0.1-alpha2] - 2016-04-16
+###Updated
+    - Update Manager to use Teknoo / States to implement a defective behavior to avoid multiple requests by instance
+    - Update Client to use Teknoo / States to implement a defective behavior to avoid multiple requests by instance
+
 ##[0.0.1-alpha1] - 2016-04-11
 ###Added
     - First release
