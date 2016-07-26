@@ -4,6 +4,7 @@
 ###Updated
 - First stable release
 - Improve documentation and add API Doc
+- Fix CS Style
 
 ##[0.0.1-alpha3] - 2016-04-16
 ###Updated
