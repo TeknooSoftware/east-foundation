@@ -18,7 +18,6 @@
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-
 namespace Teknoo\East\Framework\Http;
 
 use Psr\Http\Message\ResponseInterface;
@@ -41,6 +40,7 @@ interface ClientInterface
      * To accept a response from the controller action and send it to the HTTP client.
      *
      * @param ResponseInterface $response
+     *
      * @return ClientInterface
      */
     public function successfulResponseFromController(ResponseInterface $response): ClientInterface;
@@ -49,6 +49,7 @@ interface ClientInterface
      * To intercept an error during a request and forward the message to the HTTP client.
      *
      * @param \Throwable $throwable
+     *
      * @return ClientInterface
      */
     public function errorInRequest(\Throwable $throwable): ClientInterface;

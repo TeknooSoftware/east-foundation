@@ -1,5 +1,10 @@
 #Teknoo Software - East Framework - Change Log
 
+##[0.0.1] - 2016-07-26
+###Updated
+- First stable release
+- Improve documentation and add API Doc
+
 ##[0.0.1-alpha3] - 2016-04-16
 ###Updated
     - Update Manager to use Teknoo / States to implement a defective behavior to avoid multiple requests by instance

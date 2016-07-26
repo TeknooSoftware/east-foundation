@@ -18,7 +18,6 @@
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-
 namespace Teknoo\East\Framework\Router;
 
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
@@ -69,9 +68,10 @@ class Router implements RouterInterface
     }
 
     /**
-     * Method to find the controller to call for this method via the Symfony Matcher
+     * Method to find the controller to call for this method via the Symfony Matcher.
      *
      * @param ServerRequestInterface $request
+     *
      * @return array
      */
     private function matchRequest(ServerRequestInterface $request): array
@@ -80,7 +80,7 @@ class Router implements RouterInterface
             return $this->matcher->match(
                 str_replace('/app_dev.php', '', $request->getUri()->getPath())
             );
-        } catch(ResourceNotFoundException $e) {
+        } catch (ResourceNotFoundException $e) {
             return [];
         }
     }

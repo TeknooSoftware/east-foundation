@@ -18,7 +18,6 @@
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-
 namespace Teknoo\East\Framework;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -26,7 +25,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Teknoo\East\Framework\DependencyInjection\EastFrameworkCompilerPass;
 
 /**
- * Class EastFrameworkBundle
+ * Class EastFrameworkBundle.
  *
  * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
  *

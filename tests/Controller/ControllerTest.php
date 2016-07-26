@@ -47,7 +47,7 @@ class ControllerTest extends \PHPUnit_Framework_TestCase
     private function getContainerMock(): ContainerInterface
     {
         if (!$this->container instanceof ContainerInterface) {
-            $this->container = $this->getMock(
+            $this->container = $this->createMock(
                 'Symfony\Component\DependencyInjection\ContainerInterface',
                 [],
                 [],

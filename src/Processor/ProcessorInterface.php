@@ -18,7 +18,6 @@
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-
 namespace Teknoo\East\Framework\Processor;
 
 use Teknoo\East\Framework\Http\ClientInterface;
@@ -39,11 +38,12 @@ use Psr\Http\Message\ServerRequestInterface;
 interface ProcessorInterface
 {
     /**
-     * Called by a router to execute a request and passing a the client
+     * Called by a router to execute a request and passing a the client.
      *
-     * @param ClientInterface $client
+     * @param ClientInterface        $client
      * @param ServerRequestInterface $request
-     * @param array $requestParameters
+     * @param array                  $requestParameters
+     *
      * @return ProcessorInterface
      */
     public function executeRequest(

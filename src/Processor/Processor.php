@@ -18,7 +18,6 @@
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-
 namespace Teknoo\East\Framework\Processor;
 
 use Psr\Log\LoggerInterface;
@@ -56,8 +55,9 @@ class Processor implements ProcessorInterface, ImmutableInterface
 
     /**
      * Processor constructor.
+     *
      * @param ContainerInterface $container
-     * @param LoggerInterface $logger
+     * @param LoggerInterface    $logger
      */
     public function __construct(ContainerInterface $container, LoggerInterface $logger)
     {
@@ -72,8 +72,7 @@ class Processor implements ProcessorInterface, ImmutableInterface
         ClientInterface $client,
         ServerRequestInterface $request,
         array $requestParameters
-    ): ProcessorInterface
-    {
+    ): ProcessorInterface {
         $processor = clone $this;
         $processor->doExecuteRequest($client, $request, $requestParameters);
 
@@ -87,8 +86,7 @@ class Processor implements ProcessorInterface, ImmutableInterface
         ClientInterface $client,
         ServerRequestInterface $request,
         array $requestParameters
-    ): ProcessorInterface
-    {
+    ): ProcessorInterface {
         $controller = null;
         $arguments = null;
         try {
@@ -100,7 +98,7 @@ class Processor implements ProcessorInterface, ImmutableInterface
         } catch (\InvalidArgumentException $e) {
             $controller = null;
             $arguments = null;
-            
+
             $this->logger->info('East Processor: '.$e->getMessage());
         }
 
@@ -112,10 +110,10 @@ class Processor implements ProcessorInterface, ImmutableInterface
     }
 
     /**
-     * To call the controller and pass it the request and all params
+     * To call the controller and pass it the request and all params.
      *
      * @param callable $controller
-     * @param array $arguments
+     * @param array    $arguments
      */
     private function callController(callable $controller, array $arguments)
     {
@@ -123,10 +121,11 @@ class Processor implements ProcessorInterface, ImmutableInterface
     }
 
     /**
-     * Analyze the request's params from the router to find and instantiate the controller
+     * Analyze the request's params from the router to find and instantiate the controller.
      *
      * @param ServerRequestInterface ServerRequestInterface $request
-     * @param array $requestParameters
+     * @param array                                         $requestParameters
+     *
      * @return callable
      */
     protected function getController(ServerRequestInterface $request, array $requestParameters): callable
@@ -207,11 +206,12 @@ class Processor implements ProcessorInterface, ImmutableInterface
 
     /**
      * Analyze the request's params from the router to prepares parameters to inject to the controller before the
-     * request processing
+     * request processing.
      *
-     * @param ClientInterface $client
+     * @param ClientInterface        $client
      * @param ServerRequestInterface $request
-     * @param callable|object $controller
+     * @param callable|object        $controller
+     *
      * @return array
      */
     protected function getArguments(
@@ -237,10 +237,11 @@ class Processor implements ProcessorInterface, ImmutableInterface
      * values from the request. Detect also parameters needed the client instance and the server request instance to
      * pass them, like Symfony with Request instance.
      *
-     * @param ClientInterface $client
+     * @param ClientInterface        $client
      * @param ServerRequestInterface $request
-     * @param callable $controller
+     * @param callable               $controller
      * @param \ReflectionParameter[] $parameters
+     *
      * @return array
      */
     private function doGetArguments(

@@ -58,7 +58,7 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     private function getUrlMatcherMock(): UrlMatcherInterface
     {
         if (!$this->matcher instanceof UrlMatcherInterface) {
-            $this->matcher = $this->getMock(
+            $this->matcher = $this->createMock(
                 'Symfony\Component\Routing\Matcher\UrlMatcherInterface',
                 [],
                 [],
@@ -76,7 +76,7 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     private function getProcessorMock(): ProcessorInterface
     {
         if (!$this->processor instanceof ProcessorInterface) {
-            $this->processor = $this->getMock(
+            $this->processor = $this->createMock(
                 'Teknoo\East\Framework\Processor\ProcessorInterface',
                 [],
                 [],
@@ -109,16 +109,16 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         /**
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $client $client
          */
-        $client = $this->getMock('Teknoo\East\Framework\Http\ClientInterface');
+        $client = $this->createMock('Teknoo\East\Framework\Http\ClientInterface');
         /**
          * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject $client $request
          */
-        $request = $this->getMock('Psr\Http\Message\ServerRequestInterface');
+        $request = $this->createMock('Psr\Http\Message\ServerRequestInterface');
         $request->expects($this->any())->method('getUri')->willReturn(new class extends Uri{});
         /**
          * @var ManagerInterface|\PHPUnit_Framework_MockObject_MockObject $client $manager
          */
-        $manager = $this->getMock('Teknoo\East\Framework\Manager\ManagerInterface');
+        $manager = $this->createMock('Teknoo\East\Framework\Manager\ManagerInterface');
         $manager->expects($this->never())->method('stopPropagation');
 
         $this->getUrlMatcherMock()->expects($this->any())->method('match')->willReturn([]);
@@ -134,16 +134,16 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         /**
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $client $client
          */
-        $client = $this->getMock('Teknoo\East\Framework\Http\ClientInterface');
+        $client = $this->createMock('Teknoo\East\Framework\Http\ClientInterface');
         /**
          * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject $client $request
          */
-        $request = $this->getMock('Psr\Http\Message\ServerRequestInterface');
+        $request = $this->createMock('Psr\Http\Message\ServerRequestInterface');
         $request->expects($this->any())->method('getUri')->willReturn(new class extends Uri{});
         /**
          * @var ManagerInterface|\PHPUnit_Framework_MockObject_MockObject $client $manager
          */
-        $manager = $this->getMock('Teknoo\East\Framework\Manager\ManagerInterface');
+        $manager = $this->createMock('Teknoo\East\Framework\Manager\ManagerInterface');
         $manager->expects($this->never())->method('stopPropagation');
 
         $this->getUrlMatcherMock()->expects($this->any())->method('match')->willThrowException(new ResourceNotFoundException());
@@ -162,16 +162,16 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         /**
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $client $client
          */
-        $client = $this->getMock('Teknoo\East\Framework\Http\ClientInterface');
+        $client = $this->createMock('Teknoo\East\Framework\Http\ClientInterface');
         /**
          * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject $client $request
          */
-        $request = $this->getMock('Psr\Http\Message\ServerRequestInterface');
+        $request = $this->createMock('Psr\Http\Message\ServerRequestInterface');
         $request->expects($this->any())->method('getUri')->willReturn(new class extends Uri{});
         /**
          * @var ManagerInterface|\PHPUnit_Framework_MockObject_MockObject $client $manager
          */
-        $manager = $this->getMock('Teknoo\East\Framework\Manager\ManagerInterface');
+        $manager = $this->createMock('Teknoo\East\Framework\Manager\ManagerInterface');
         $manager->expects($this->never())->method('stopPropagation');
 
         $this->getUrlMatcherMock()->expects($this->any())->method('match')->willThrowException(new \Exception());
@@ -184,16 +184,16 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         /**
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $client $client
          */
-        $client = $this->getMock('Teknoo\East\Framework\Http\ClientInterface');
+        $client = $this->createMock('Teknoo\East\Framework\Http\ClientInterface');
         /**
          * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject $client $request
          */
-        $request = $this->getMock('Psr\Http\Message\ServerRequestInterface');
+        $request = $this->createMock('Psr\Http\Message\ServerRequestInterface');
         $request->expects($this->any())->method('getUri')->willReturn(new class extends Uri{});
         /**
          * @var ManagerInterface|\PHPUnit_Framework_MockObject_MockObject $client $manager
          */
-        $manager = $this->getMock('Teknoo\East\Framework\Manager\ManagerInterface');
+        $manager = $this->createMock('Teknoo\East\Framework\Manager\ManagerInterface');
         $manager->expects($this->once())->method('stopPropagation')->willReturnSelf();
 
         $this->getUrlMatcherMock()->expects($this->any())->method('match')->willReturn(['foo','bar']);
@@ -211,8 +211,8 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     {
         $this->buildRouter()->receiveRequestFromServer(
             new \stdClass(),
-            $this->getMock('Psr\Http\Message\ServerRequestInterface'),
-            $this->getMock('Teknoo\East\Framework\Manager\ManagerInterface')
+            $this->createMock('Psr\Http\Message\ServerRequestInterface'),
+            $this->createMock('Teknoo\East\Framework\Manager\ManagerInterface')
         );
     }
 
@@ -222,9 +222,9 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     public function testReceiveRequestFromServerErrorRequest()
     {
         $this->buildRouter()->receiveRequestFromServer(
-            $this->getMock('Teknoo\East\Framework\Http\ClientInterface'),
+            $this->createMock('Teknoo\East\Framework\Http\ClientInterface'),
             new \stdClass(),
-            $this->getMock('Teknoo\East\Framework\Manager\ManagerInterface')
+            $this->createMock('Teknoo\East\Framework\Manager\ManagerInterface')
         );
     }
 
@@ -234,8 +234,8 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     public function testReceiveRequestFromServerErrorManager()
     {
         $this->buildRouter()->receiveRequestFromServer(
-            $this->getMock('Teknoo\East\Framework\Http\ClientInterface'),
-            $this->getMock('Psr\Http\Message\ServerRequestInterface'),
+            $this->createMock('Teknoo\East\Framework\Http\ClientInterface'),
+            $this->createMock('Psr\Http\Message\ServerRequestInterface'),
             new \stdClass()
         );
     }

@@ -51,7 +51,7 @@ class ControllerBehaviorTest extends \PHPUnit_Framework_TestCase
     private function getContainerMock(): ContainerInterface
     {
         if (!$this->container instanceof ContainerInterface) {
-            $this->container = $this->getMock(
+            $this->container = $this->createMock(
                 'Symfony\Component\DependencyInjection\ContainerInterface',
                 [],
                 [],
@@ -73,7 +73,7 @@ class ControllerBehaviorTest extends \PHPUnit_Framework_TestCase
 
     public function testGenerateUrl()
     {
-        $router = $this->getMock('Symfony\Component\Routing\RouterInterface');
+        $router = $this->createMock('Symfony\Component\Routing\RouterInterface');
         $router->expects($this->any())
             ->method('generate')
             ->with('routeName', ['foo'=>'bar'])
@@ -98,7 +98,7 @@ class ControllerBehaviorTest extends \PHPUnit_Framework_TestCase
 
     public function testRedirect()
     {
-        $client = $this->getMock('Teknoo\East\Framework\Http\ClientInterface');
+        $client = $this->createMock('Teknoo\East\Framework\Http\ClientInterface');
         $client->expects($this->once())
             ->method('successfulResponseFromController')
             ->with($this->callback(function ($instance) {return $instance instanceof RedirectResponse;}))
@@ -117,7 +117,7 @@ class ControllerBehaviorTest extends \PHPUnit_Framework_TestCase
 
     public function testRedirectToRoute()
     {
-        $router = $this->getMock('Symfony\Component\Routing\RouterInterface');
+        $router = $this->createMock('Symfony\Component\Routing\RouterInterface');
         $router->expects($this->any())
             ->method('generate')
             ->with('routeName', ['foo'=>'bar'])
@@ -129,7 +129,7 @@ class ControllerBehaviorTest extends \PHPUnit_Framework_TestCase
             ->with('router')
             ->willReturn($router);
 
-        $client = $this->getMock('Teknoo\East\Framework\Http\ClientInterface');
+        $client = $this->createMock('Teknoo\East\Framework\Http\ClientInterface');
         $client->expects($this->once())
             ->method('successfulResponseFromController')
             ->with($this->callback(function ($instance) {return $instance instanceof RedirectResponse;}))
@@ -167,12 +167,12 @@ class ControllerBehaviorTest extends \PHPUnit_Framework_TestCase
 
     public function testAddFlash()
     {
-        $flash = $this->getMock('Symfony\Component\HttpFoundation\Session\Flash\FlashBag');
+        $flash = $this->createMock('Symfony\Component\HttpFoundation\Session\Flash\FlashBag');
         $flash->expects($this->any())
             ->method('add')
             ->willReturnSelf();
 
-        $session = $this->getMock('Symfony\Component\HttpFoundation\Session\Session');
+        $session = $this->createMock('Symfony\Component\HttpFoundation\Session\Session');
         $session->expects($this->any())
             ->method('getFlashBag')
             ->willReturn($flash);
@@ -221,7 +221,7 @@ class ControllerBehaviorTest extends \PHPUnit_Framework_TestCase
 
     public function testIsGranted()
     {
-        $checker = $this->getMock('Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface');
+        $checker = $this->createMock('Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface');
         $checker->expects($this->any())
             ->method('isGranted')
             ->willReturn(true);
@@ -269,7 +269,7 @@ class ControllerBehaviorTest extends \PHPUnit_Framework_TestCase
 
     public function testDenyAccessUnlessGranted()
     {
-        $checker = $this->getMock('Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface');
+        $checker = $this->createMock('Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface');
         $checker->expects($this->any())
             ->method('isGranted')
             ->willReturn(true);
@@ -302,7 +302,7 @@ class ControllerBehaviorTest extends \PHPUnit_Framework_TestCase
      */
     public function testDenyAccessUnlessGrantedError()
     {
-        $checker = $this->getMock('Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface');
+        $checker = $this->createMock('Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface');
         $checker->expects($this->any())
             ->method('isGranted')
             ->willReturn(false);
@@ -433,7 +433,7 @@ class ControllerBehaviorTest extends \PHPUnit_Framework_TestCase
 
     public function testIsCsrfTokenValid()
     {
-        $checker = $this->getMock('Symfony\Component\Security\Csrf\CsrfTokenManagerInterface');
+        $checker = $this->createMock('Symfony\Component\Security\Csrf\CsrfTokenManagerInterface');
         $checker->expects($this->any())
             ->method('isTokenValid')
             ->willReturn(true);
@@ -524,10 +524,10 @@ class ControllerBehaviorTest extends \PHPUnit_Framework_TestCase
     }
 
     public function testCreateForm()
-    {$builder = $this->getMock('Symfony\Component\Form\FormFactory', [], [], '', false);
+    {$builder = $this->createMock('Symfony\Component\Form\FormFactory', [], [], '', false);
         $builder->expects($this->any())
             ->method('create')
-            ->willReturn($this->getMock('Symfony\Component\Form\Form', [], [], '', false));
+            ->willReturn($this->createMock('Symfony\Component\Form\Form', [], [], '', false));
 
         $this->getContainerMock()
             ->expects($this->any())
@@ -573,10 +573,10 @@ class ControllerBehaviorTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateFormBuilder()
     {
-        $builder = $this->getMock('Symfony\Component\Form\FormFactory', [], [], '', false);
+        $builder = $this->createMock('Symfony\Component\Form\FormFactory', [], [], '', false);
         $builder->expects($this->any())
             ->method('createBuilder')
-            ->willReturn($this->getMock('Symfony\Component\Form\FormBuilder', [], [], '', false));
+            ->willReturn($this->createMock('Symfony\Component\Form\FormBuilder', [], [], '', false));
 
         $this->getContainerMock()
             ->expects($this->any())
@@ -622,7 +622,7 @@ class ControllerBehaviorTest extends \PHPUnit_Framework_TestCase
 
     public function testGetUser()
     {
-        $storage = $this->getMock('Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface', [], [], '', false);
+        $storage = $this->createMock('Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface', [], [], '', false);
 
         $this->getContainerMock()
             ->expects($this->any())
@@ -648,7 +648,7 @@ class ControllerBehaviorTest extends \PHPUnit_Framework_TestCase
 
     public function testGetUserBadTocken()
     {
-        $storage = $this->getMock('Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface', [], [], '', false);
+        $storage = $this->createMock('Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface', [], [], '', false);
         $storage->expects($this->any())
             ->method('getToken')
             ->willReturn('fooBar');
@@ -677,7 +677,7 @@ class ControllerBehaviorTest extends \PHPUnit_Framework_TestCase
 
     public function testGetUserBadEmptyUser()
     {
-        $storage = $this->getMock('Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface', [], [], '', false);
+        $storage = $this->createMock('Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface', [], [], '', false);
         $storage->expects($this->any())
             ->method('getToken')
             ->willReturn(new class {
@@ -710,7 +710,7 @@ class ControllerBehaviorTest extends \PHPUnit_Framework_TestCase
 
     public function testGetUserUser()
     {
-        $storage = $this->getMock('Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface', [], [], '', false);
+        $storage = $this->createMock('Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface', [], [], '', false);
         $storage->expects($this->any())
             ->method('getToken')
             ->willReturn(new class {
@@ -764,7 +764,7 @@ class ControllerBehaviorTest extends \PHPUnit_Framework_TestCase
 
     public function testRenderTemplating()
     {
-        $client = $this->getMock('Teknoo\East\Framework\Http\ClientInterface');
+        $client = $this->createMock('Teknoo\East\Framework\Http\ClientInterface');
         $client->expects($this->once())
             ->method('successfulResponseFromController')
             ->with($this->callback(function ($instance) {return $instance instanceof HtmlResponse;}))
@@ -799,7 +799,7 @@ class ControllerBehaviorTest extends \PHPUnit_Framework_TestCase
 
     public function testRenderTwig()
     {
-        $client = $this->getMock('Teknoo\East\Framework\Http\ClientInterface');
+        $client = $this->createMock('Teknoo\East\Framework\Http\ClientInterface');
         $client->expects($this->once())
             ->method('successfulResponseFromController')
             ->with($this->callback(function ($instance) {return $instance instanceof HtmlResponse;}))
@@ -836,7 +836,7 @@ class ControllerBehaviorTest extends \PHPUnit_Framework_TestCase
      */
     public function testRenderNoRendering()
     {
-        $client = $this->getMock('Teknoo\East\Framework\Http\ClientInterface');
+        $client = $this->createMock('Teknoo\East\Framework\Http\ClientInterface');
         $client->expects($this->never())
             ->method('successfulResponseFromController');
 

@@ -18,7 +18,6 @@
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-
 namespace Teknoo\East\Framework\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -27,7 +26,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * Class EastFrameworkCompilerPass
- * Compiler pass to inject service container to east framework controller
+ * Compiler pass to inject service container to east framework controller.
  *
  * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
  *
@@ -40,6 +39,7 @@ class EastFrameworkCompilerPass implements CompilerPassInterface
 {
     /**
      * @param ContainerBuilder $container
+     *
      * @return EastFrameworkCompilerPass
      */
     public function process(ContainerBuilder $container): EastFrameworkCompilerPass

@@ -18,7 +18,6 @@
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-
 namespace Teknoo\East\Framework\Manager\Manager\States;
 
 use Psr\Http\Message\ServerRequestInterface;
@@ -38,10 +37,11 @@ use Teknoo\States\State\AbstractState;
 class Service extends AbstractState
 {
     /**
-     * Method to call to process a request in East Framework by East's controller
+     * Method to call to process a request in East Framework by East's controller.
      *
-     * @param ClientInterface $client
+     * @param ClientInterface        $client
      * @param ServerRequestInterface $request
+     *
      * @return ManagerInterface
      */
     private function running(ClientInterface $client, ServerRequestInterface $request): ManagerInterface
@@ -55,9 +55,10 @@ class Service extends AbstractState
     }
 
     /**
-     * Method to register router in the manager to process request
+     * Method to register router in the manager to process request.
      *
      * @param RouterInterface $router
+     *
      * @return ManagerInterface
      */
     private function doRegisterRouter(RouterInterface $router): ManagerInterface
@@ -68,9 +69,10 @@ class Service extends AbstractState
     }
 
     /**
-     * Method to unregister router in the manager to process request
+     * Method to unregister router in the manager to process request.
      *
      * @param RouterInterface $router
+     *
      * @return ManagerInterface
      */
     private function doUnregisterRouter(RouterInterface $router): ManagerInterface

@@ -47,7 +47,7 @@ class EastFrameworkCompilerPassTest extends \PHPUnit_Framework_TestCase
     private function getContainerBuilderMock()
     {
         if (!$this->container instanceof ContainerBuilder) {
-            $this->container = $this->getMock(
+            $this->container = $this->createMock(
                 'Symfony\Component\DependencyInjection\ContainerBuilder',
                 [],
                 [],
@@ -77,7 +77,7 @@ class EastFrameworkCompilerPassTest extends \PHPUnit_Framework_TestCase
 
     public function testProcess()
     {
-        $def = $this->getMock('Symfony\Component\DependencyInjection\Definition');
+        $def = $this->createMock('Symfony\Component\DependencyInjection\Definition');
         $def->expects($this->exactly(2))->method('addMethodCall')->willReturnSelf();
 
         $this->getContainerBuilderMock()

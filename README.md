@@ -15,7 +15,8 @@ It is a prototype, other adaptation for others framework may be released :).
 Demo
 ----
 
-Simple demo with Symfony 3.0 available [here](https://github.com/TeknooSoftware/east-framework-demo)
+Sorry, there are no simple example to show here, but you can watch a demo demo with 
+Symfony 3.0 available [here](https://github.com/TeknooSoftware/east-framework-demo)
 
 Installation & Requirements
 ---------------------------

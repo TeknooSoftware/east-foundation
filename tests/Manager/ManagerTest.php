@@ -63,8 +63,8 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(
             $this->getManagerClass(),
             $this->buildManager()->receiveRequestFromClient(
-                $this->getMock('Teknoo\East\Framework\Http\ClientInterface'),
-                $this->getMock('Psr\Http\Message\ServerRequestInterface')
+                $this->createMock('Teknoo\East\Framework\Http\ClientInterface'),
+                $this->createMock('Psr\Http\Message\ServerRequestInterface')
             )
         );
     }
@@ -76,7 +76,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     {
         $this->buildManager()->receiveRequestFromClient(
             new \stdClass(),
-            $this->getMock('Psr\Http\Message\ServerRequestInterface')
+            $this->createMock('Psr\Http\Message\ServerRequestInterface')
         );
     }
 
@@ -86,7 +86,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     public function testReceiveRequestFromClientErrorRequest()
     {
         $this->buildManager()->receiveRequestFromClient(
-            $this->getMock('Teknoo\East\Framework\Http\ClientInterface'),
+            $this->createMock('Teknoo\East\Framework\Http\ClientInterface'),
             new \stdClass()
         );
     }
@@ -96,7 +96,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(
             $this->getManagerClass(),
             $this->buildManager()->registerRouter(
-                $this->getMock('Teknoo\East\Framework\Router\RouterInterface')
+                $this->createMock('Teknoo\East\Framework\Router\RouterInterface')
             )
         );
     }
@@ -111,7 +111,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testUnregisterRouter()
     {
-        $router = $this->getMock('Teknoo\East\Framework\Router\RouterInterface');
+        $router = $this->createMock('Teknoo\East\Framework\Router\RouterInterface');
         $this->assertInstanceOf(
             $this->getManagerClass(),
             $this->buildManager()->unregisterRouter(
@@ -119,7 +119,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
             )
         );
 
-        $router = $this->getMock('Teknoo\East\Framework\Router\RouterInterface');
+        $router = $this->createMock('Teknoo\East\Framework\Router\RouterInterface');
         $this->assertInstanceOf(
             $this->getManagerClass(),
             $this->buildManager()->registerRouter($router)->unregisterRouter($router)
@@ -166,12 +166,12 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         /**
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $clientMock
          */
-        $clientMock = $this->getMock('Teknoo\East\Framework\Http\ClientInterface');
+        $clientMock = $this->createMock('Teknoo\East\Framework\Http\ClientInterface');
 
         /**
          * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject $serverRequestMock
          */
-        $serverRequestMock = $this->getMock('Psr\Http\Message\ServerRequestInterface');
+        $serverRequestMock = $this->createMock('Psr\Http\Message\ServerRequestInterface');
 
         $manager = $this->buildManager();
         $manager->registerRouter($router);
@@ -185,22 +185,22 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         /**
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $clientMock
          */
-        $clientMock = $this->getMock('Teknoo\East\Framework\Http\ClientInterface');
+        $clientMock = $this->createMock('Teknoo\East\Framework\Http\ClientInterface');
 
         /**
          * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject $serverRequestMock
          */
-        $serverRequestMock = $this->getMock('Psr\Http\Message\ServerRequestInterface');
+        $serverRequestMock = $this->createMock('Psr\Http\Message\ServerRequestInterface');
 
         /**
          * @var RouterInterface|\PHPUnit_Framework_MockObject_MockObject $router1
          */
-        $router1 = $this->getMock('Teknoo\East\Framework\Router\RouterInterface');
+        $router1 = $this->createMock('Teknoo\East\Framework\Router\RouterInterface');
         $router1->expects($this->once())->method('receiveRequestFromServer')->willReturnSelf();
         /**
          * @var RouterInterface|\PHPUnit_Framework_MockObject_MockObject $router1
          */
-        $router2 = $this->getMock('Teknoo\East\Framework\Router\RouterInterface');
+        $router2 = $this->createMock('Teknoo\East\Framework\Router\RouterInterface');
         $router2->expects($this->once())->method('receiveRequestFromServer');
         $router2->expects($this->once())->method('receiveRequestFromServer')->willReturnCallback(
             function ($clientPassed, $requestPassed, $managerPassed) use ($clientMock, $serverRequestMock, $manager) {
@@ -214,7 +214,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         /**
          * @var RouterInterface|\PHPUnit_Framework_MockObject_MockObject $router1
          */
-        $router3 = $this->getMock('Teknoo\East\Framework\Router\RouterInterface');
+        $router3 = $this->createMock('Teknoo\East\Framework\Router\RouterInterface');
         $router3->expects($this->never())->method('receiveRequestFromServer');
 
         $manager->registerRouter($router1);

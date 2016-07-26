@@ -56,7 +56,7 @@ class EastFrameworkBundleTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(
             $this->getBundleClass(),
             $this->buildBundle()->build(
-                $this->getMock('Symfony\Component\DependencyInjection\ContainerBuilder', [], [], '', false)
+                $this->createMock('Symfony\Component\DependencyInjection\ContainerBuilder', [], [], '', false)
             )
         );
     }

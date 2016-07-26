@@ -18,7 +18,6 @@
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-
 namespace Teknoo\East\Framework\Listener;
 
 use Teknoo\East\Framework\Http\Client\Client;
@@ -29,7 +28,7 @@ use Teknoo\East\Framework\Manager\ManagerInterface;
 
 /**
  * Class KernelListener to listen the event "kernel.request" sent by Symfony and pass requests to the East Framework's
- * manager to be processed. See http://symfony.com/doc/current/reference/events.html#kernel-request
+ * manager to be processed. See http://symfony.com/doc/current/reference/events.html#kernel-request.
  *
  * It converts Symfony Request to PSR Request (East Framework accepts use only PSR Request and Response).
  *
@@ -59,9 +58,10 @@ class KernelListener
 
     /**
      * KernelListener constructor.
-     * @param ManagerInterface $manager
+     *
+     * @param ManagerInterface      $manager
      * @param HttpFoundationFactory $httpFactory
-     * @param DiactorosFactory $diactorosFactory
+     * @param DiactorosFactory      $diactorosFactory
      */
     public function __construct(
         ManagerInterface $manager,
@@ -75,6 +75,7 @@ class KernelListener
 
     /**
      * @param GetResponseEvent $event
+     *
      * @return KernelListener
      */
     public function onKernelRequest(GetResponseEvent $event): KernelListener

@@ -18,7 +18,6 @@
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-
 namespace Teknoo\East\Framework\Http\Client\States;
 
 use Teknoo\States\State\AbstractState;
@@ -31,11 +30,11 @@ use Teknoo\States\State\AbstractState;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-
 class Error extends AbstractState
 {
     /**
-     * To know if the request for the client has a success
+     * To know if the request for the client has a success.
+     *
      * @return bool
      */
     public function hasSuccessFull(): bool

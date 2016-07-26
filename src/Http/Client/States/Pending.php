@@ -18,7 +18,6 @@
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-
 namespace Teknoo\East\Framework\Http\Client\States;
 
 use Psr\Http\Message\ResponseInterface;
@@ -34,13 +33,13 @@ use Symfony\Component\HttpFoundation\Response;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-
 class Pending extends AbstractState
 {
     /**
      * To accept a response from the controller action and send it to the HTTP client.
      *
      * @param ResponseInterface $response
+     *
      * @return ClientInterface
      */
     private function doSuccessfulResponseFromController(ResponseInterface $response): ClientInterface
@@ -58,6 +57,7 @@ class Pending extends AbstractState
      * To intercept an error during a request and forward the message to the HTTP client.
      *
      * @param \Throwable $throwable
+     *
      * @return ClientInterface
      */
     public function doErrorInRequest(\Throwable $throwable): ClientInterface

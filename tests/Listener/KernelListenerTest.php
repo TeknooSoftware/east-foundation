@@ -61,7 +61,7 @@ class KernelListenerTest extends \PHPUnit_Framework_TestCase
     private function getManagerMock()
     {
         if (!$this->manager instanceof ManagerInterface) {
-            $this->manager = $this->getMock(
+            $this->manager = $this->createMock(
                 'Teknoo\East\Framework\Manager\ManagerInterface',
                 [],
                 [],
@@ -79,7 +79,7 @@ class KernelListenerTest extends \PHPUnit_Framework_TestCase
     private function getHttpFoundationFactoryMock()
     {
         if (!$this->httpFoundationFactory instanceof HttpFoundationFactory) {
-            $this->httpFoundationFactory = $this->getMock(
+            $this->httpFoundationFactory = $this->createMock(
                 'Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory',
                 [],
                 [],
@@ -97,7 +97,7 @@ class KernelListenerTest extends \PHPUnit_Framework_TestCase
     private function getDiactorosFactoryMock()
     {
         if (!$this->diactorosFactory instanceof DiactorosFactory) {
-            $this->diactorosFactory = $this->getMock(
+            $this->diactorosFactory = $this->createMock(
                 'Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory',
                 [],
                 [],
@@ -131,7 +131,7 @@ class KernelListenerTest extends \PHPUnit_Framework_TestCase
 
     public function testOnKernelRequest()
     {
-        $request = $this->getMock('Symfony\Component\HttpKernel\Event\GetResponseEvent', [], [], '', false);
+        $request = $this->createMock('Symfony\Component\HttpKernel\Event\GetResponseEvent', [], [], '', false);
         $request->expects($this->any())->method('getRequest')->willReturn(new Request());
 
         $this->getDiactorosFactoryMock()

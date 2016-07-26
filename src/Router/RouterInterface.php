@@ -18,7 +18,6 @@
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-
 namespace Teknoo\East\Framework\Router;
 
 use Teknoo\East\Framework\Http\ClientInterface;
@@ -45,9 +44,10 @@ interface RouterInterface
     /**
      * Method called by a manager to ask the router if it can process the request.
      *
-     * @param ClientInterface $client
+     * @param ClientInterface        $client
      * @param ServerRequestInterface $request
-     * @param ManagerInterface $manager
+     * @param ManagerInterface       $manager
+     *
      * @return RouterInterface
      */
     public function receiveRequestFromServer(

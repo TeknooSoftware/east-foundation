@@ -58,7 +58,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     private function getGetResponseEventMock(): GetResponseEvent
     {
         if (!$this->getResponseEvent instanceof GetResponseEvent) {
-            $this->getResponseEvent = $this->getMock(
+            $this->getResponseEvent = $this->createMock(
                 'Symfony\Component\HttpKernel\Event\GetResponseEvent',
                 [],
                 [],
@@ -76,7 +76,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     private function getHttpFoundationFactoryMock(): HttpFoundationFactory
     {
         if (!$this->httpFoundationFactory instanceof HttpFoundationFactory) {
-            $this->httpFoundationFactory = $this->getMock(
+            $this->httpFoundationFactory = $this->createMock(
                 'Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory',
                 [],
                 [],
@@ -109,7 +109,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         /**
          * @var ResponseInterface
          */
-        $response = $this->getMock('Psr\Http\Message\ResponseInterface');
+        $response = $this->createMock('Psr\Http\Message\ResponseInterface');
 
         $this->getGetResponseEventMock()
             ->expects($this->any())
@@ -121,7 +121,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             ->expects($this->any())
             ->method('createResponse')
             ->with($this->callback(function($response){ return $response instanceof ResponseInterface; }))
-            ->willReturn($this->getMock('Symfony\Component\HttpFoundation\Response', [], [], '', false));
+            ->willReturn($this->createMock('Symfony\Component\HttpFoundation\Response', [], [], '', false));
 
         $client = $this->buildClient();
         $this->assertInstanceOf(

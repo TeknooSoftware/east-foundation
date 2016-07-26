@@ -18,7 +18,6 @@
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-
 namespace Teknoo\East\Framework\Manager\Manager;
 
 use Teknoo\East\Framework\Http\ClientInterface;
@@ -71,13 +70,13 @@ class Manager implements
     private $routersList;
 
     /**
-     * @var boolean
+     * @var bool
      */
     private $doRequestPropagation = false;
 
     /**
      * Manager constructor.
-     * Initialize States behavior and Immutable behavior
+     * Initialize States behavior and Immutable behavior.
      */
     public function __construct()
     {

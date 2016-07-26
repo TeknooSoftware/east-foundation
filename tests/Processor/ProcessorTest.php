@@ -55,7 +55,7 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
     private function getContainerMock()
     {
         if (!$this->container instanceof ContainerInterface) {
-            $this->container = $this->getMock(
+            $this->container = $this->createMock(
                 'Symfony\Component\DependencyInjection\ContainerInterface',
                 [],
                 [],
@@ -73,7 +73,7 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
     private function getLoggerMock()
     {
         if (!$this->logger instanceof LoggerInterface) {
-            $this->logger = $this->getMock(
+            $this->logger = $this->createMock(
                 'Psr\Log\LoggerInterface',
                 [],
                 [],
@@ -100,7 +100,7 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
     {
         $this->buildProcessor()->executeRequest(
             new \stdClass(),
-            $this->getMock('Psr\Http\Message\ServerRequestInterface'),
+            $this->createMock('Psr\Http\Message\ServerRequestInterface'),
             []
         );
     }
@@ -111,7 +111,7 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
     public function testExecuteRequestErrorRequest()
     {
         $this->buildProcessor()->executeRequest(
-            $this->getMock('Teknoo\East\Framework\Http\ClientInterface'),
+            $this->createMock('Teknoo\East\Framework\Http\ClientInterface'),
             new \stdClass(),
             []
         );
@@ -123,8 +123,8 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
     public function testExecuteRequestErrorParameters()
     {
         $this->buildProcessor()->executeRequest(
-            $this->getMock('Teknoo\East\Framework\Http\ClientInterface'),
-            $this->getMock('Psr\Http\Message\ServerRequestInterface'),
+            $this->createMock('Teknoo\East\Framework\Http\ClientInterface'),
+            $this->createMock('Psr\Http\Message\ServerRequestInterface'),
             new \stdClass()
         );
     }
@@ -134,12 +134,12 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
         /**
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $clientMock
          */
-        $clientMock = $this->getMock('Teknoo\East\Framework\Http\ClientInterface');
+        $clientMock = $this->createMock('Teknoo\East\Framework\Http\ClientInterface');
 
         /**
          * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject $requestMock
          */
-        $requestMock = $this->getMock('Psr\Http\Message\ServerRequestInterface');
+        $requestMock = $this->createMock('Psr\Http\Message\ServerRequestInterface');
         $requestMock->expects($this->any())->method('getAttributes')->willReturn([]);
 
         $this->getLoggerMock()->expects($this->once())->method('info')->willReturnSelf();
@@ -160,12 +160,12 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
         /**
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $clientMock
          */
-        $clientMock = $this->getMock('Teknoo\East\Framework\Http\ClientInterface');
+        $clientMock = $this->createMock('Teknoo\East\Framework\Http\ClientInterface');
 
         /**
          * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject $requestMock
          */
-        $requestMock = $this->getMock('Psr\Http\Message\ServerRequestInterface');
+        $requestMock = $this->createMock('Psr\Http\Message\ServerRequestInterface');
         $requestMock->expects($this->any())->method('getAttributes')->willReturn([]);
 
         $this->getLoggerMock()->expects($this->once())->method('info')->willReturnSelf();
@@ -186,12 +186,12 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
         /**
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $clientMock
          */
-        $clientMock = $this->getMock('Teknoo\East\Framework\Http\ClientInterface');
+        $clientMock = $this->createMock('Teknoo\East\Framework\Http\ClientInterface');
 
         /**
          * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject $requestMock
          */
-        $requestMock = $this->getMock('Psr\Http\Message\ServerRequestInterface');
+        $requestMock = $this->createMock('Psr\Http\Message\ServerRequestInterface');
         $requestMock->expects($this->any())->method('getAttributes')->willReturn([]);
 
         $this->getLoggerMock()->expects($this->once())->method('info')->willReturnSelf();
@@ -212,12 +212,12 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
         /**
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $clientMock
          */
-        $clientMock = $this->getMock('Teknoo\East\Framework\Http\ClientInterface');
+        $clientMock = $this->createMock('Teknoo\East\Framework\Http\ClientInterface');
 
         /**
          * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject $requestMock
          */
-        $requestMock = $this->getMock('Psr\Http\Message\ServerRequestInterface');
+        $requestMock = $this->createMock('Psr\Http\Message\ServerRequestInterface');
         $requestMock->expects($this->any())->method('getAttributes')->willReturn([]);
 
         $this->getContainerMock()->expects($this->any())->method('has')->willReturn(true);
@@ -244,12 +244,12 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
         /**
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $clientMock
          */
-        $clientMock = $this->getMock('Teknoo\East\Framework\Http\ClientInterface');
+        $clientMock = $this->createMock('Teknoo\East\Framework\Http\ClientInterface');
 
         /**
          * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject $requestMock
          */
-        $requestMock = $this->getMock('Psr\Http\Message\ServerRequestInterface');
+        $requestMock = $this->createMock('Psr\Http\Message\ServerRequestInterface');
         $requestMock->expects($this->any())->method('getAttributes')->willReturn(['bar' => 123]);
 
         $callableController = new class
@@ -275,12 +275,12 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
         /**
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $clientMock
          */
-        $clientMock = $this->getMock('Teknoo\East\Framework\Http\ClientInterface');
+        $clientMock = $this->createMock('Teknoo\East\Framework\Http\ClientInterface');
 
         /**
          * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject $requestMock
          */
-        $requestMock = $this->getMock('Psr\Http\Message\ServerRequestInterface');
+        $requestMock = $this->createMock('Psr\Http\Message\ServerRequestInterface');
         $requestMock->expects($this->any())->method('getAttributes')->willReturn(['bar' => 123]);
 
         $callableController = new class
@@ -306,12 +306,12 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
         /**
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $clientMock
          */
-        $clientMock = $this->getMock('Teknoo\East\Framework\Http\ClientInterface');
+        $clientMock = $this->createMock('Teknoo\East\Framework\Http\ClientInterface');
 
         /**
          * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject $requestMock
          */
-        $requestMock = $this->getMock('Psr\Http\Message\ServerRequestInterface');
+        $requestMock = $this->createMock('Psr\Http\Message\ServerRequestInterface');
         $requestMock->expects($this->any())->method('getAttributes')->willReturn([]);
 
         $this->buildProcessor()->executeRequest(
@@ -327,12 +327,12 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
         /**
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $clientMock
          */
-        $clientMock = $this->getMock('Teknoo\East\Framework\Http\ClientInterface');
+        $clientMock = $this->createMock('Teknoo\East\Framework\Http\ClientInterface');
 
         /**
          * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject $requestMock
          */
-        $requestMock = $this->getMock('Psr\Http\Message\ServerRequestInterface');
+        $requestMock = $this->createMock('Psr\Http\Message\ServerRequestInterface');
         $requestMock->expects($this->any())->method('getAttributes')->willReturn(['bar' => 456,'foo' => 123]);
 
         $callableController = new class
@@ -386,12 +386,12 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
         /**
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $clientMock
          */
-        $clientMock = $this->getMock('Teknoo\East\Framework\Http\ClientInterface');
+        $clientMock = $this->createMock('Teknoo\East\Framework\Http\ClientInterface');
 
         /**
          * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject $requestMock
          */
-        $requestMock = $this->getMock('Psr\Http\Message\ServerRequestInterface');
+        $requestMock = $this->createMock('Psr\Http\Message\ServerRequestInterface');
         $requestMock->expects($this->any())->method('getAttributes')->willReturn(['bar' => 456,'foo' => 123]);
 
         $callableController = new class
@@ -445,12 +445,12 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
         /**
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $clientMock
          */
-        $clientMock = $this->getMock('Teknoo\East\Framework\Http\ClientInterface');
+        $clientMock = $this->createMock('Teknoo\East\Framework\Http\ClientInterface');
 
         /**
          * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject $requestMock
          */
-        $requestMock = $this->getMock('Psr\Http\Message\ServerRequestInterface');
+        $requestMock = $this->createMock('Psr\Http\Message\ServerRequestInterface');
         $requestMock->expects($this->any())->method('getAttributes')->willReturn(['bar' => 456,'foo' => 123]);
 
         $callableController = new class
@@ -504,12 +504,12 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
         /**
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $clientMock
          */
-        $clientMock = $this->getMock('Teknoo\East\Framework\Http\ClientInterface');
+        $clientMock = $this->createMock('Teknoo\East\Framework\Http\ClientInterface');
 
         /**
          * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject $requestMock
          */
-        $requestMock = $this->getMock('Psr\Http\Message\ServerRequestInterface');
+        $requestMock = $this->createMock('Psr\Http\Message\ServerRequestInterface');
         $requestMock->expects($this->any())->method('getAttributes')->willReturn(['get_as_float' => true]);
 
         $this->buildProcessor()->executeRequest(

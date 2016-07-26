@@ -18,7 +18,6 @@
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-
 namespace Teknoo\East\Framework\Controller;
 
 use Teknoo\East\Framework\Http\ClientInterface;
@@ -34,7 +33,7 @@ use Symfony\Component\Security\Csrf\CsrfToken;
 use Zend\Diactoros\Response;
 
 /**
- * Class Controller
+ * Class Controller.
  * 
  * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
  *
@@ -87,8 +86,8 @@ abstract class Controller implements ContainerAwareInterface
      * Returns a RedirectResponse to the given URL.
      *
      * @param ClientInterface $client
-     * @param string $url    The URL to redirect to
-     * @param int    $status The status code to use for the Response
+     * @param string          $url    The URL to redirect to
+     * @param int             $status The status code to use for the Response
      *
      * @return Controller
      */
@@ -103,9 +102,9 @@ abstract class Controller implements ContainerAwareInterface
      * Returns a RedirectResponse to the given route with the given parameters.
      *
      * @param ClientInterface $client
-     * @param string $route      The name of the route
-     * @param array  $parameters An array of parameters
-     * @param int    $status     The status code to use for the Response
+     * @param string          $route      The name of the route
+     * @param array           $parameters An array of parameters
+     * @param int             $status     The status code to use for the Response
      *
      * @return Controller
      */
@@ -204,8 +203,8 @@ abstract class Controller implements ContainerAwareInterface
      * Renders a view.
      *
      * @param ClientInterface $client
-     * @param string   $view       The view name
-     * @param array    $parameters An array of parameters to pass to the view
+     * @param string          $view       The view name
+     * @param array           $parameters An array of parameters to pass to the view
      *
      * @return Controller
      */
@@ -323,12 +322,12 @@ abstract class Controller implements ContainerAwareInterface
         }
 
         if (null === $token = $this->container->get('security.token_storage')->getToken()) {
-            return null;
+            return;
         }
 
         if (!is_callable([$token, 'getUser']) || !is_object($user = $token->getUser())) {
             // e.g. anonymous authentication
-            return null;
+            return;
         }
 
         return $user;

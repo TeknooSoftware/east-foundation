@@ -18,7 +18,6 @@
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-
 namespace Teknoo\East\Framework\Http\Client;
 
 use Psr\Http\Message\ResponseInterface;
@@ -57,7 +56,7 @@ class Client implements
      * @var string
      */
     protected static $startupFactoryClassName = '\Teknoo\States\Factory\StandardStartupFactory';
-    
+
     /**
      * @var GetResponseEvent
      */
@@ -70,7 +69,8 @@ class Client implements
 
     /**
      * Client constructor.
-     * @param GetResponseEvent $event
+     *
+     * @param GetResponseEvent      $event
      * @param HttpFoundationFactory $factory
      */
     public function __construct(GetResponseEvent $event, HttpFoundationFactory $factory)
