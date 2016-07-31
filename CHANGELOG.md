@@ -1,5 +1,9 @@
 #Teknoo Software - East Framework - Change Log
 
+##[0.0.2] - 2016-08-01
+###Fixed
+- Error when the framework is used with a lower configurations
+
 ##[0.0.1] - 2016-07-26
 ###Updated
 - First stable release
