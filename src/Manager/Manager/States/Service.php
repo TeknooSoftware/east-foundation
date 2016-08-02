@@ -63,7 +63,7 @@ class Service extends AbstractState
      */
     private function doRegisterRouter(RouterInterface $router): ManagerInterface
     {
-        $this->routersList[spl_object_hash($router)] = $router;
+        $this->routersList[\spl_object_hash($router)] = $router;
 
         return $this;
     }

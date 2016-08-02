@@ -78,7 +78,7 @@ class Router implements RouterInterface
     {
         try {
             return $this->matcher->match(
-                str_replace('/app_dev.php', '', $request->getUri()->getPath())
+                \str_replace('/app_dev.php', '', $request->getUri()->getPath())
             );
         } catch (ResourceNotFoundException $e) {
             return [];

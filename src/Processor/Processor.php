@@ -102,7 +102,7 @@ class Processor implements ProcessorInterface, ImmutableInterface
             $this->logger->info('East Processor: '.$e->getMessage());
         }
 
-        if (is_callable($controller)) {
+        if (\is_callable($controller)) {
             $this->callController($controller, $arguments);
         }
 
@@ -139,25 +139,25 @@ class Processor implements ProcessorInterface, ImmutableInterface
         $controller = $requestParameters['_controller'];
 
         //If the controller is referenced by canonical class name / function name
-        if (is_string($requestParameters['_controller']) && false === strpos($controller, ':')) {
-            if (method_exists($controller, '__invoke')) {
+        if (\is_string($requestParameters['_controller']) && false === \strpos($controller, ':')) {
+            if (\method_exists($controller, '__invoke')) {
                 return $this->instantiateController($controller);
-            } elseif (function_exists($controller)) {
+            } elseif (\function_exists($controller)) {
                 return $controller;
             }
         }
 
         //If the controller value is a callable instance, returns it directly
-        if (!is_string($controller) && is_callable($controller)) {
+        if (!\is_string($controller) && \is_callable($controller)) {
             return $controller;
         }
 
         //Controller is referenced as Controller in Symfony format ("ControllerName:ActionName")
         $callable = $this->createController($controller);
 
-        if (!is_callable($callable)) {
+        if (!\is_callable($callable)) {
             throw new \InvalidArgumentException(
-                sprintf('The controller for URI "%s" is not callable.', $request->getUri())
+                \sprintf('The controller for URI "%s" is not callable.', $request->getUri())
             );
         }
 
@@ -175,14 +175,14 @@ class Processor implements ProcessorInterface, ImmutableInterface
      */
     private function createController(string $controller)
     {
-        if (false === strpos($controller, '::')) {
-            throw new \InvalidArgumentException(sprintf('Unable to find controller "%s".', $controller));
+        if (false === \strpos($controller, '::')) {
+            throw new \InvalidArgumentException(\sprintf('Unable to find controller "%s".', $controller));
         }
 
-        list($class, $method) = explode('::', $controller, 2);
+        list($class, $method) = \explode('::', $controller, 2);
 
-        if (!class_exists($class) && !$this->container->has($class)) {
-            throw new \InvalidArgumentException(sprintf('Class "%s" does not exist.', $class));
+        if (!\class_exists($class) && !$this->container->has($class)) {
+            throw new \InvalidArgumentException(\sprintf('Class "%s" does not exist.', $class));
         }
 
         return array($this->instantiateController($class), $method);
@@ -219,9 +219,9 @@ class Processor implements ProcessorInterface, ImmutableInterface
         ServerRequestInterface $request,
         callable $controller
     ): array {
-        if (is_array($controller)) { //Reflection the method's argument in the controller class
+        if (\is_array($controller)) { //Reflection the method's argument in the controller class
             $r = new \ReflectionMethod($controller[0], $controller[1]);
-        } elseif (is_object($controller) && !$controller instanceof \Closure) {
+        } elseif (\is_object($controller) && !$controller instanceof \Closure) {
             //Reflection the method's arguments of the callable object
             $r = new \ReflectionObject($controller);
             $r = $r->getMethod('__invoke');
@@ -253,7 +253,7 @@ class Processor implements ProcessorInterface, ImmutableInterface
         $attributes = $request->getAttributes();
         $arguments = array();
         foreach ($parameters as $param) {
-            if (array_key_exists($param->name, $attributes)) {
+            if (\array_key_exists($param->name, $attributes)) {
                 //Parameter's value is available in the request
                 $arguments[] = $attributes[$param->name];
             } elseif ($param->getClass() && $param->getClass()->isInstance($request)) {
@@ -268,16 +268,16 @@ class Processor implements ProcessorInterface, ImmutableInterface
             } else {
                 //The parameter's value is not available in the request and has not a default value.
                 //Throw an exception, all values are needed to avoid PHP error.
-                if (is_array($controller)) {
-                    $repr = sprintf('%s::%s()', get_class($controller[0]), $controller[1]);
-                } elseif (is_object($controller)) {
-                    $repr = get_class($controller);
+                if (\is_array($controller)) {
+                    $repr = \sprintf('%s::%s()', \get_class($controller[0]), $controller[1]);
+                } elseif (\is_object($controller)) {
+                    $repr = \get_class($controller);
                 } else {
                     $repr = $controller;
                 }
 
                 throw new \RuntimeException(
-                    sprintf(
+                    \sprintf(
                         'Controller "%s" requires that you provide a value for the "$%s" argument '
                         .'(because there is no default value or because there is a non optional argument after this one).',
                         $repr, $param->name
