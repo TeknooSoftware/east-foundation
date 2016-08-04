@@ -1,5 +1,9 @@
 #Teknoo Software - East Framework - Change Log
 
+##[0.0.3] - 2016-08-04
+###Fixed
+- Improve optimization on call to native function and optimized
+
 ##[0.0.2] - 2016-08-01
 ###Fixed
 - Error when the framework is used with a lower configurations
