@@ -21,13 +21,14 @@
 namespace Teknoo\East\Framework\Manager\Manager;
 
 use Teknoo\East\Framework\Http\ClientInterface;
+use Teknoo\East\Framework\Manager\Manager\States\HadRun;
+use Teknoo\East\Framework\Manager\Manager\States\Running;
+use Teknoo\East\Framework\Manager\Manager\States\Service;
 use Teknoo\East\Framework\Manager\ManagerInterface;
 use Teknoo\East\Framework\Router\RouterInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Teknoo\Immutable\ImmutableInterface;
 use Teknoo\Immutable\ImmutableTrait;
-use Teknoo\States\Proxy\IntegratedInterface;
-use Teknoo\States\Proxy\IntegratedTrait;
 use Teknoo\States\Proxy\ProxyInterface;
 use Teknoo\States\Proxy\ProxyTrait;
 
@@ -47,15 +48,10 @@ use Teknoo\States\Proxy\ProxyTrait;
 class Manager implements
     ManagerInterface,
     ImmutableInterface,
-    ProxyInterface,
-    IntegratedInterface
+    ProxyInterface
 {
     use ImmutableTrait,
-        ProxyTrait,
-        IntegratedTrait {
-        ProxyTrait::__set insteadof ImmutableTrait;
-        ImmutableTrait::__unset insteadof ProxyTrait; //Disabling __unset() from States
-    }
+        ProxyTrait;
 
     /**
      * Class name of the factory to use in set up to initialize this object in this construction.
@@ -84,12 +80,22 @@ class Manager implements
         $this->routersList = new \ArrayObject();
         //Call the method of the trait to initialize local attributes of the proxy
         $this->initializeProxy();
-        //Call the startup factory to initialize this proxy
-        $this->initializeObjectWithFactory();
         //Behavior for Immutable
         $this->uniqueConstructorCheck();
         //Enable the main state "Service"
-        $this->enableState('Service');
+        $this->enableState(Service::class);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function statesListDeclaration(): array
+    {
+        return [
+            HadRun::class,
+            Running::class,
+            Service::class
+        ];
     }
 
     /**

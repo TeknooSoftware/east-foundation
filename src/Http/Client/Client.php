@@ -22,11 +22,11 @@ namespace Teknoo\East\Framework\Http\Client;
 
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Teknoo\East\Framework\Http\Client\States\Error;
+use Teknoo\East\Framework\Http\Client\States\Pending;
+use Teknoo\East\Framework\Http\Client\States\Success;
 use Teknoo\East\Framework\Http\ClientInterface;
-use Teknoo\States\Proxy\IntegratedInterface;
-use Teknoo\States\Proxy\IntegratedTrait;
 use Teknoo\States\Proxy\ProxyInterface;
 use Teknoo\States\Proxy\ProxyTrait;
 
@@ -41,14 +41,14 @@ use Teknoo\States\Proxy\ProxyTrait;
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
+ * @method ClientInterface doSuccessfulResponseFromController(ResponseInterface $response)
+ * @method ClientInterface doErrorInRequest(\Throwable $throwable)
  */
 class Client implements
     ProxyInterface,
-    IntegratedInterface,
     ClientInterface
 {
-    use ProxyTrait,
-        IntegratedTrait;
+    use ProxyTrait;
 
     /**
      * Class name of the factory to use in set up to initialize this object in this construction.
@@ -79,10 +79,20 @@ class Client implements
         $this->httpFoundationFactory = $factory;
         //Call the method of the trait to initialize local attributes of the proxy
         $this->initializeProxy();
-        //Call the startup factory to initialize this proxy
-        $this->initializeObjectWithFactory();
         //Enable default pending
-        $this->enableState('Pending');
+        $this->enableState(Pending::class);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function statesListDeclaration(): array
+    {
+        return [
+            Error::class,
+            Pending::class,
+            Success::class
+        ];
     }
 
     /**

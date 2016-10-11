@@ -21,9 +21,11 @@
 namespace Teknoo\East\Framework\Http\Client\States;
 
 use Psr\Http\Message\ResponseInterface;
+use Teknoo\East\Framework\Http\Client\Client;
 use Teknoo\East\Framework\Http\ClientInterface;
-use Teknoo\States\State\AbstractState;
 use Symfony\Component\HttpFoundation\Response;
+use Teknoo\States\State\StateInterface;
+use Teknoo\States\State\StateTrait;
 
 /**
  * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
@@ -32,45 +34,52 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
+ * @mixin Client
  */
-class Pending extends AbstractState
+class Pending implements StateInterface
 {
-    /**
-     * To accept a response from the controller action and send it to the HTTP client.
-     *
-     * @param ResponseInterface $response
-     *
-     * @return ClientInterface
-     */
-    private function doSuccessfulResponseFromController(ResponseInterface $response): ClientInterface
+    use StateTrait;
+
+    private function doSuccessfulResponseFromController()
     {
-        $this->getResponseEvent->setResponse(
-            $this->httpFoundationFactory->createResponse($response)
-        );
+        /**
+         * To accept a response from the controller action and send it to the HTTP client.
+         *
+         * @param ResponseInterface $response
+         *
+         * @return ClientInterface
+         */
+        return function (ResponseInterface $response): ClientInterface {
+            $this->getResponseEvent->setResponse(
+                $this->httpFoundationFactory->createResponse($response)
+            );
 
-        $this->switchState('Success');
+            $this->switchState(Success::class);
 
-        return $this;
+            return $this;
+        };
     }
 
-    /**
-     * To intercept an error during a request and forward the message to the HTTP client.
-     *
-     * @param \Throwable $throwable
-     *
-     * @return ClientInterface
-     */
-    public function doErrorInRequest(\Throwable $throwable): ClientInterface
+    public function doErrorInRequest()
     {
-        $this->getResponseEvent->setResponse(
-            new Response(
-                $throwable->getMessage(),
-                500
-            )
-        );
+        /**
+         * To intercept an error during a request and forward the message to the HTTP client.
+         *
+         * @param \Throwable $throwable
+         *
+         * @return ClientInterface
+         */
+        return function (\Throwable $throwable): ClientInterface {
+            $this->getResponseEvent->setResponse(
+                new Response(
+                    $throwable->getMessage(),
+                    500
+                )
+            );
 
-        $this->switchState('Error');
+            $this->switchState(Error::class);
 
-        return $this;
+            return $this;
+        };
     }
 }

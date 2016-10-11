@@ -20,7 +20,9 @@
  */
 namespace Teknoo\East\Framework\Http\Client\States;
 
-use Teknoo\States\State\AbstractState;
+use Teknoo\East\Framework\Http\Client\Client;
+use Teknoo\States\State\StateInterface;
+use Teknoo\States\State\StateTrait;
 
 /**
  * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
@@ -29,16 +31,21 @@ use Teknoo\States\State\AbstractState;
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
+ * @mixin Client
  */
-class Success extends AbstractState
+class Success implements StateInterface
 {
-    /**
-     * To know if the request for the client has a success.
-     *
-     * @return bool
-     */
-    public function hasSuccessFull(): bool
+    use StateTrait;
+
+    public function hasSuccessFull()
     {
-        return true;
+        /**
+         * To know if the request for the client has a success.
+         *
+         * @return bool
+         */
+        return function (): bool {
+            return true;
+        };
     }
 }

@@ -22,9 +22,11 @@ namespace Teknoo\East\Framework\Manager\Manager\States;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Teknoo\East\Framework\Http\ClientInterface;
+use Teknoo\East\Framework\Manager\Manager\Manager;
 use Teknoo\East\Framework\Manager\ManagerInterface;
 use Teknoo\East\Framework\Router\RouterInterface;
-use Teknoo\States\State\AbstractState;
+use Teknoo\States\State\StateInterface;
+use Teknoo\States\State\StateTrait;
 
 /**
  * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
@@ -33,63 +35,72 @@ use Teknoo\States\State\AbstractState;
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
+ * @mixin Manager
  */
-class Running extends AbstractState
+class Running implements StateInterface
 {
-    /**
-     * Build a Generator to stop the list at reception of the stop message.
-     *
-     * @return \Generator
-     */
+    use StateTrait;
+
     private function iterateRouter()
     {
-        foreach ($this->routersList as $router) {
-            //Fetch eatch router
-            yield $router;
-
-            //Stop propagation logic is written here to avoid complex instructions in dispatchRequest.
-            //The loop in dispatchRequest is agnostic.
-            //Stop to fetch a router if the current router has sent a signal to this manager.
-            if (false === $this->doRequestPropagation) {
-                break;
-            }
-        }
-    }
-
-    /**
-     * To dispatch the request to all routers while a message was not receive to stop the propaggation.
-     *
-     * @param ClientInterface        $client
-     * @param ServerRequestInterface $request
-     *
-     * @return ManagerInterface
-     */
-    private function dispatchRequest(ClientInterface $client, ServerRequestInterface $request): ManagerInterface
-    {
-        $this->doRequestPropagation = true;
-
         /**
-         * @var RouterInterface
+         * Build a Generator to stop the list at reception of the stop message.
+         *
+         * @return \Generator
          */
-        foreach ($this->iterateRouter() as $router) {
-            $router->receiveRequestFromServer($client, $request, $this);
-        }
+        return function () {
+            foreach ($this->routersList as $router) {
+                //Fetch eatch router
+                yield $router;
 
-        $this->switchState('HadRun');
-
-        return $this;
+                //Stop propagation logic is written here to avoid complex instructions in dispatchRequest.
+                //The loop in dispatchRequest is agnostic.
+                //Stop to fetch a router if the current router has sent a signal to this manager.
+                if (false === $this->doRequestPropagation) {
+                    break;
+                }
+            }
+        };
     }
 
-    /**
-     * Method to stop propagation to other routers when a router has determined the request is handle by one of its
-     * controllers.
-     *
-     * @return ManagerInterface
-     */
-    private function doStopPropagation(): ManagerInterface
+    private function dispatchRequest()
     {
-        $this->doRequestPropagation = false;
+        /**
+         * To dispatch the request to all routers while a message was not receive to stop the propaggation.
+         *
+         * @param ClientInterface        $client
+         * @param ServerRequestInterface $request
+         *
+         * @return ManagerInterface
+         */
+        return function (ClientInterface $client, ServerRequestInterface $request): ManagerInterface {
+            $this->doRequestPropagation = true;
 
-        return $this;
+            /**
+             * @var RouterInterface $router
+             */
+            foreach ($this->iterateRouter() as $router) {
+                $router->receiveRequestFromServer($client, $request, $this);
+            }
+
+            $this->switchState(HadRun::class);
+
+            return $this;
+        };
+    }
+
+    private function doStopPropagation()
+    {
+        /**
+         * Method to stop propagation to other routers when a router has determined the request is handle by one of its
+         * controllers.
+         *
+         * @return ManagerInterface
+         */
+        return function(): ManagerInterface {
+            $this->doRequestPropagation = false;
+
+            return $this;
+        };
     }
 }

@@ -26,9 +26,6 @@ defined('PHPUNIT')
 
 ini_set('memory_limit', '32M');
 
-$loader = require_once __DIR__.'/../vendor/teknoo/states/src/bootstrap.php';
-$loader->registerNamespace('\\Teknoo\\East\\Framework', __DIR__.'../src');
-
 date_default_timezone_set('UTC');
 
 error_reporting(E_ALL | E_STRICT);

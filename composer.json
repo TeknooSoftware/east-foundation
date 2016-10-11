@@ -18,8 +18,8 @@
         "zendframework/zend-diactoros": "^1.3.0",
         "symfony/psr-http-message-bridge":"~0.2",
         "teknoo/immutable": "~0.0.1",
-        "teknoo/states": "^2.0.3",
-        "teknoo/states-bundle": "^2.1.0"
+        "teknoo/states": "^3.0.0-alpha2",
+        "teknoo/states-bundle": "^3.0.0-alpha1"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.4.8",

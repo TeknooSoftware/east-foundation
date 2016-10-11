@@ -101,7 +101,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
      */
     private function getClientClass(): string
     {
-        return 'Teknoo\East\Framework\Http\Client';
+        return Client::class;
     }
 
     public function testSuccessfulResponseFromController()

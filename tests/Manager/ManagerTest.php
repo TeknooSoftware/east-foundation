@@ -55,7 +55,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function getManagerClass(): string
     {
-        return 'Teknoo\East\Framework\Manager\Manager';
+        return Manager::class;
     }
 
     public function testReceiveRequestFromClient()

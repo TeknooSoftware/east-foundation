@@ -20,6 +20,7 @@
  */
 namespace Teknoo\East\Framework\Controller;
 
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Teknoo\East\Framework\Http\ClientInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -322,12 +323,15 @@ abstract class Controller implements ContainerAwareInterface
         }
 
         if (null === $token = $this->container->get('security.token_storage')->getToken()) {
-            return;
+            return null;
         }
 
+        /**
+         * @var TokenInterface $token
+         */
         if (!is_callable([$token, 'getUser']) || !is_object($user = $token->getUser())) {
             // e.g. anonymous authentication
-            return;
+            return null;
         }
 
         return $user;

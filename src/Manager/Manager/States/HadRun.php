@@ -20,7 +20,9 @@
  */
 namespace Teknoo\East\Framework\Manager\Manager\States;
 
-use Teknoo\States\State\AbstractState;
+use Teknoo\East\Framework\Manager\Manager\Manager;
+use Teknoo\States\State\StateInterface;
+use Teknoo\States\State\StateTrait;
 
 /**
  * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
@@ -29,7 +31,9 @@ use Teknoo\States\State\AbstractState;
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
+ * @mixin Manager
  */
-class HadRun extends AbstractState
+class HadRun implements StateInterface
 {
+    use StateTrait;
 }

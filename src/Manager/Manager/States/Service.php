@@ -22,9 +22,11 @@ namespace Teknoo\East\Framework\Manager\Manager\States;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Teknoo\East\Framework\Http\ClientInterface;
+use Teknoo\East\Framework\Manager\Manager\Manager;
 use Teknoo\East\Framework\Manager\ManagerInterface;
 use Teknoo\East\Framework\Router\RouterInterface;
-use Teknoo\States\State\AbstractState;
+use Teknoo\States\State\StateInterface;
+use Teknoo\States\State\StateTrait;
 
 /**
  * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
@@ -33,55 +35,64 @@ use Teknoo\States\State\AbstractState;
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
+ * @mixin Manager
  */
-class Service extends AbstractState
+class Service implements StateInterface
 {
-    /**
-     * Method to call to process a request in East Framework by East's controller.
-     *
-     * @param ClientInterface        $client
-     * @param ServerRequestInterface $request
-     *
-     * @return ManagerInterface
-     */
-    private function running(ClientInterface $client, ServerRequestInterface $request): ManagerInterface
-    {
-        //Clone this manager, it is immutable and switch it's state
-        $manager = clone $this;
-        $manager->switchState('Running');
-        $manager->dispatchRequest($client, $request);
+    use StateTrait;
 
-        return $this;
+    private function running()
+    {
+        /**
+         * Method to call to process a request in East Framework by East's controller.
+         *
+         * @param ClientInterface        $client
+         * @param ServerRequestInterface $request
+         *
+         * @return ManagerInterface
+         */
+        return function (ClientInterface $client, ServerRequestInterface $request): ManagerInterface {
+            //Clone this manager, it is immutable and switch it's state
+            $manager = clone $this;
+            $manager->switchState(Running::class);
+            $manager->dispatchRequest($client, $request);
+
+            return $this;
+        };
+    }
+    private function doRegisterRouter()
+    {
+        /**
+         * Method to register router in the manager to process request.
+         *
+         * @param RouterInterface $router
+         *
+         * @return ManagerInterface
+         */
+        return function (RouterInterface $router): ManagerInterface {
+            $this->routersList[\spl_object_hash($router)] = $router;
+
+            return $this;
+        };
     }
 
-    /**
-     * Method to register router in the manager to process request.
-     *
-     * @param RouterInterface $router
-     *
-     * @return ManagerInterface
-     */
-    private function doRegisterRouter(RouterInterface $router): ManagerInterface
+    private function doUnregisterRouter()
     {
-        $this->routersList[\spl_object_hash($router)] = $router;
+        /**
+         * Method to unregister router in the manager to process request.
+         *
+         * @param RouterInterface $router
+         *
+         * @return ManagerInterface
+         */
 
-        return $this;
-    }
+        return function (RouterInterface $router): ManagerInterface {
+            $routerHash = spl_object_hash($router);
+            if (isset($this->routersList[$routerHash])) {
+                unset($this->routersList[$routerHash]);
+            }
 
-    /**
-     * Method to unregister router in the manager to process request.
-     *
-     * @param RouterInterface $router
-     *
-     * @return ManagerInterface
-     */
-    private function doUnregisterRouter(RouterInterface $router): ManagerInterface
-    {
-        $routerHash = spl_object_hash($router);
-        if (isset($this->routersList[$routerHash])) {
-            unset($this->routersList[$routerHash]);
-        }
-
-        return $this;
+            return $this;
+        };
     }
 }
