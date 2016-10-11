@@ -23,7 +23,7 @@ namespace Teknoo\Tests\East\Framework\Manager;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Teknoo\East\Framework\Http\ClientInterface;
-use Teknoo\East\Framework\Manager\Manager\Manager;
+use Teknoo\East\Framework\Manager\Manager;
 use Teknoo\East\Framework\Manager\ManagerInterface;
 use Teknoo\East\Framework\Router\RouterInterface;
 
@@ -35,10 +35,10 @@ use Teknoo\East\Framework\Router\RouterInterface;
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
- * @covers Teknoo\East\Framework\Manager\Manager
- * @covers Teknoo\East\Framework\Manager\Manager\States\HadRun
- * @covers Teknoo\East\Framework\Manager\Manager\States\Running
- * @covers Teknoo\East\Framework\Manager\Manager\States\Service
+ * @covers \Teknoo\East\Framework\Manager\Manager
+ * @covers \Teknoo\East\Framework\Manager\States\HadRun
+ * @covers \Teknoo\East\Framework\Manager\States\Running
+ * @covers \Teknoo\East\Framework\Manager\States\Service
  */
 class ManagerTest extends \PHPUnit_Framework_TestCase
 {

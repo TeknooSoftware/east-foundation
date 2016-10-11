@@ -18,11 +18,11 @@
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-namespace Teknoo\East\Framework\Manager\Manager\States;
+namespace Teknoo\East\Framework\Manager\States;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Teknoo\East\Framework\Http\ClientInterface;
-use Teknoo\East\Framework\Manager\Manager\Manager;
+use Teknoo\East\Framework\Manager\Manager;
 use Teknoo\East\Framework\Manager\ManagerInterface;
 use Teknoo\East\Framework\Router\RouterInterface;
 use Teknoo\States\State\StateInterface;

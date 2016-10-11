@@ -18,13 +18,12 @@
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-namespace Teknoo\East\Framework\Manager\Manager;
+namespace Teknoo\East\Framework\Manager;
 
 use Teknoo\East\Framework\Http\ClientInterface;
-use Teknoo\East\Framework\Manager\Manager\States\HadRun;
-use Teknoo\East\Framework\Manager\Manager\States\Running;
-use Teknoo\East\Framework\Manager\Manager\States\Service;
-use Teknoo\East\Framework\Manager\ManagerInterface;
+use Teknoo\East\Framework\Manager\States\HadRun;
+use Teknoo\East\Framework\Manager\States\Running;
+use Teknoo\East\Framework\Manager\States\Service;
 use Teknoo\East\Framework\Router\RouterInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Teknoo\Immutable\ImmutableInterface;
@@ -52,13 +51,6 @@ class Manager implements
 {
     use ImmutableTrait,
         ProxyTrait;
-
-    /**
-     * Class name of the factory to use in set up to initialize this object in this construction.
-     *
-     * @var string
-     */
-    protected static $startupFactoryClassName = '\Teknoo\States\Factory\StandardStartupFactory';
 
     /**
      * @var RouterInterface[]
