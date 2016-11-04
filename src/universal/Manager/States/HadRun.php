@@ -18,16 +18,22 @@
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-defined('RUN_CLI_MODE')
-    || define('RUN_CLI_MODE', true);
+namespace Teknoo\East\Foundation\Manager\States;
 
-defined('PHPUNIT')
-    || define('PHPUNIT', true);
+use Teknoo\East\Foundation\Manager\Manager;
+use Teknoo\States\State\StateInterface;
+use Teknoo\States\State\StateTrait;
 
-ini_set('memory_limit', '32M');
-
-require_once __DIR__.'/../vendor/autoload.php';
-
-date_default_timezone_set('UTC');
-
-error_reporting(E_ALL | E_STRICT);
+/**
+ * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
+ *
+ * @link        http://teknoo.software/east Project website
+ *
+ * @license     http://teknoo.software/license/mit         MIT License
+ * @author      Richard Déloge <richarddeloge@gmail.com>
+ * @mixin Manager
+ */
+class HadRun implements StateInterface
+{
+    use StateTrait;
+}

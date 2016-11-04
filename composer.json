@@ -1,7 +1,7 @@
 {
     "name": "teknoo/east-framework",
     "type": "library",
-    "description": "Symfony bundle to allow developer to use the #East philosophy into there Symfony project and create #east controller",
+    "description": "Universal package, including a symfony bundle, to allow developer to use the #East philosophy into there project with any framework supporting PSR-11 or with Symfony 3+.",
     "keywords": ["east", "controller", "design"],
     "homepage": "http://teknoo.software/east-framework",
     "license": ["MIT"],
@@ -27,17 +27,20 @@
         "symfony/framework-bundle": "~3.0",
         "symfony/console": "~3.0",
         "symfony/validator": "~3.0",
-        "symfony/monolog-bundle": "~2.9"
+        "symfony/monolog-bundle": "~2.9",
+        "container-interop/service-provider":"^0.3.0"
     },
     "minimum-stability": "stable",
     "autoload": {
         "psr-4": {
-            "Teknoo\\East\\Framework\\": "src/"
+            "Teknoo\\East\\Foundation\\": "src/universal",
+            "Teknoo\\East\\FoundationBundle\\": "src/symfony"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Teknoo\\Tests\\East\\Framework\\": "tests/"
+            "Teknoo\\Tests\\East\\Fundation\\": "tests/universal",
+            "Teknoo\\Tests\\East\\FundationBundle\\": "tests/symfony"
         }
     },
     "archive": {
