@@ -43,7 +43,7 @@ interface ClientInterface
      *
      * @return ClientInterface
      */
-    public function successfulResponseFromController(ResponseInterface $response): ClientInterface;
+    public function responseFromController(ResponseInterface $response): ClientInterface;
 
     /**
      * To intercept an error during a request and forward the message to the HTTP client.

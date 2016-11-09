@@ -22,6 +22,7 @@ namespace Teknoo\East\Foundation\Processor;
 
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Teknoo\East\Foundation\Router\ResultInterface;
 
 /**
  * Interface ProcessorInterface is a contract to create processor to instantiate controller action and pass the request.
@@ -42,13 +43,13 @@ interface ProcessorInterface
      *
      * @param ClientInterface        $client
      * @param ServerRequestInterface $request
-     * @param array                  $requestParameters
+     * @param ResultInterface        $routerResult
      *
      * @return ProcessorInterface
      */
     public function executeRequest(
         ClientInterface $client,
         ServerRequestInterface $request,
-        array $requestParameters
+        ResultInterface $routerResult
     ): ProcessorInterface;
 }

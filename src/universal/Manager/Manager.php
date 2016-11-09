@@ -43,6 +43,10 @@ use Teknoo\States\Proxy\ProxyTrait;
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
+ * @method ManagerInterface running(ClientInterface $client, ServerRequestInterface $request)
+ * @method ManagerInterface doRegisterRouter(RouterInterface $router)
+ * @method ManagerInterface doUnregisterRouter(RouterInterface $router)
+ * @method ManagerInterface doStopPropagation()
  */
 class Manager implements
     ManagerInterface,

@@ -36,6 +36,8 @@ use Teknoo\States\State\StateTrait;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  * @mixin Manager
+ * @property  RouterInterface[] $routersList
+ * @method ManagerInterface dispatchRequest(ClientInterface $client, ServerRequestInterface $request)
  */
 class Service implements StateInterface
 {

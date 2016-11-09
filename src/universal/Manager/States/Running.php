@@ -36,6 +36,8 @@ use Teknoo\States\State\StateTrait;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  * @mixin Manager
+ * @property  RouterInterface[] $routersList
+ * @property bool $doRequestPropagation
  */
 class Running implements StateInterface
 {

@@ -19,7 +19,7 @@
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
 
-namespace Teknoo\Tests\East\Foundation\Router;
+namespace Teknoo\Tests\East\FoundationBundle\Router;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;

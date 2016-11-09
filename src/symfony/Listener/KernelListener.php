@@ -88,6 +88,15 @@ class KernelListener
             )
         );
 
+        if (true === $client->hasSuccessFull()) {
+            $response = $this->diactorosFactory->createResponse($client->getResponse);
+            $event->setResponse($response);
+        } elseif (false === $client->hasSuccessFull()) {
+            $throwable = $client->getThrowable();
+            $response = new Response($throwable->getMessage(), 500);
+            $event->setResponse($response);
+        }
+
         return $this;
     }
 }
