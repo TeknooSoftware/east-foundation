@@ -146,10 +146,10 @@ class Processor implements ProcessorInterface, ImmutableInterface
             } else {
                 //The parameter's value is not available in the request and has not a default value.
                 //Throw an exception, all values are needed to avoid PHP error.
-                if (\is_array($controller) && 2 >= \count($controller)) {
-                    $repr = \sprintf('%s::%s()', \get_class($controller[0]), $controller[1]);
-                } elseif (\is_object($controller)) {
+                if (\is_object($controller)) {
                     $repr = \get_class($controller);
+                } elseif (\is_array($controller) && 2 >= \count($controller)) {
+                    $repr = \sprintf('%s::%s()', \get_class($controller[0]), $controller[1]);
                 } else {
                     $repr = $controller;
                 }
