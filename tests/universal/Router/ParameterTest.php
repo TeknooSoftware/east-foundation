@@ -51,4 +51,12 @@ class ParameterTest extends AbstractParameterTest
     {
         $this->buildParameter()->__construct('foo', false, null, null);
     }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testConstructBadClass()
+    {
+        new Parameter('foo', false, null, new \DateTime());
+    }
 }

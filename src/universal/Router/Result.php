@@ -75,7 +75,7 @@ class Result implements ResultInterface
      * a method of an object, a invokable object, or a function.
      * @return \ReflectionFunction|\ReflectionMethod
      */
-    private function getReflectionInstance(): \ReflectionFunction
+    private function getReflectionInstance()
     {
         if (\is_array($this->controller) && 2 == \count($this->controller)) {
             //Reflection the method's argument in the controller class

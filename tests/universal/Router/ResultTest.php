@@ -50,4 +50,127 @@ class ResultTest extends AbstractResultTest
     {
         $this->buildResult()->__construct(function(int $a, string $b, \DateTime $d, $test='foo'){}, null);
     }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testConstructBadNext()
+    {
+        new Result(function(){}, new \DateTime());
+    }
+
+    public function testGetParmetersValueFromClosure()
+    {
+        $parameters = $this->buildResult()->getParameters();
+
+        self::assertInternalType('array', $parameters);
+        self::assertCount(4, $parameters);
+        
+        self::assertInstanceOf(ParameterInterface::class, $parameters['a']);
+        self::assertEquals('a', $parameters['a']->getName());
+        self::assertFalse($parameters['a']->hasDefaultValue());
+        self::assertNull($parameters['a']->getDefaultValue());
+        self::assertFalse($parameters['a']->hasClass());
+
+        self::assertInstanceOf(ParameterInterface::class, $parameters['b']);
+        self::assertEquals('b', $parameters['b']->getName());
+        self::assertFalse($parameters['b']->hasDefaultValue());
+        self::assertNull($parameters['b']->getDefaultValue());
+        self::assertFalse($parameters['b']->hasClass());
+
+        self::assertInstanceOf(ParameterInterface::class, $parameters['d']);
+        self::assertEquals('d', $parameters['d']->getName());
+        self::assertFalse($parameters['d']->hasDefaultValue());
+        self::assertNull($parameters['d']->getDefaultValue());
+        self::assertTrue($parameters['d']->hasClass());
+        self::assertInstanceOf(\ReflectionClass::class, $parameters['d']->getClass());
+
+        self::assertInstanceOf(ParameterInterface::class, $parameters['test']);
+        self::assertEquals('test', $parameters['test']->getName());
+        self::assertTrue($parameters['test']->hasDefaultValue());
+        self::assertEquals('foo', $parameters['test']->getDefaultValue());
+        self::assertFalse($parameters['test']->hasClass());
+    }
+
+    public function testGetParmetersValueFromInvokable()
+    {
+        $invokable = new class
+        {
+            public function __invoke(int $a, string $b, \DateTime $d, $test='foo')
+            {
+            }
+        };
+
+        $result = new Result($invokable, null);
+        $parameters = $result->getParameters();
+
+        self::assertInternalType('array', $parameters);
+        self::assertCount(4, $parameters);
+
+        self::assertInstanceOf(ParameterInterface::class, $parameters['a']);
+        self::assertEquals('a', $parameters['a']->getName());
+        self::assertFalse($parameters['a']->hasDefaultValue());
+        self::assertNull($parameters['a']->getDefaultValue());
+        self::assertFalse($parameters['a']->hasClass());
+
+        self::assertInstanceOf(ParameterInterface::class, $parameters['b']);
+        self::assertEquals('b', $parameters['b']->getName());
+        self::assertFalse($parameters['b']->hasDefaultValue());
+        self::assertNull($parameters['b']->getDefaultValue());
+        self::assertFalse($parameters['b']->hasClass());
+
+        self::assertInstanceOf(ParameterInterface::class, $parameters['d']);
+        self::assertEquals('d', $parameters['d']->getName());
+        self::assertFalse($parameters['d']->hasDefaultValue());
+        self::assertNull($parameters['d']->getDefaultValue());
+        self::assertTrue($parameters['d']->hasClass());
+        self::assertInstanceOf(\ReflectionClass::class, $parameters['d']->getClass());
+
+        self::assertInstanceOf(ParameterInterface::class, $parameters['test']);
+        self::assertEquals('test', $parameters['test']->getName());
+        self::assertTrue($parameters['test']->hasDefaultValue());
+        self::assertEquals('foo', $parameters['test']->getDefaultValue());
+        self::assertFalse($parameters['test']->hasClass());
+    }
+
+    public function testGetParmetersValueFromMethod()
+    {
+        $object = new class
+        {
+            public function test(int $a, string $b, \DateTime $d, $test='foo')
+            {
+            }
+        };
+
+        $result = new Result([$object, 'test'], null);
+        $parameters = $result->getParameters();
+
+        self::assertInternalType('array', $parameters);
+        self::assertCount(4, $parameters);
+
+        self::assertInstanceOf(ParameterInterface::class, $parameters['a']);
+        self::assertEquals('a', $parameters['a']->getName());
+        self::assertFalse($parameters['a']->hasDefaultValue());
+        self::assertNull($parameters['a']->getDefaultValue());
+        self::assertFalse($parameters['a']->hasClass());
+
+        self::assertInstanceOf(ParameterInterface::class, $parameters['b']);
+        self::assertEquals('b', $parameters['b']->getName());
+        self::assertFalse($parameters['b']->hasDefaultValue());
+        self::assertNull($parameters['b']->getDefaultValue());
+        self::assertFalse($parameters['b']->hasClass());
+
+        self::assertInstanceOf(ParameterInterface::class, $parameters['d']);
+        self::assertEquals('d', $parameters['d']->getName());
+        self::assertFalse($parameters['d']->hasDefaultValue());
+        self::assertNull($parameters['d']->getDefaultValue());
+        self::assertTrue($parameters['d']->hasClass());
+        self::assertInstanceOf(\ReflectionClass::class, $parameters['d']->getClass());
+
+        self::assertInstanceOf(ParameterInterface::class, $parameters['test']);
+        self::assertEquals('test', $parameters['test']->getName());
+        self::assertTrue($parameters['test']->hasDefaultValue());
+        self::assertEquals('foo', $parameters['test']->getDefaultValue());
+        self::assertFalse($parameters['test']->hasClass());
+    }
 }
