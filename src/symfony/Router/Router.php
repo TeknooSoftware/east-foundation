@@ -26,6 +26,7 @@ use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\East\Foundation\Processor\ProcessorInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
+use Teknoo\East\Foundation\Router\Result;
 use Teknoo\East\Foundation\Router\RouterInterface;
 
 /**
@@ -73,16 +74,24 @@ class Router implements RouterInterface
      *
      * @param ServerRequestInterface $request
      *
-     * @return array
+     * @return callable
      */
-    private function matchRequest(ServerRequestInterface $request): array
+    private function matchRequest(ServerRequestInterface $request)
     {
         try {
-            return $this->matcher->match(
-                \str_replace('/app_dev.php', '', $request->getUri()->getPath())
+            $parameters = $this->matcher->match(
+                \str_replace(
+                    ['/app.php', '/app_dev.php'],
+                    '',
+                    $request->getUri()->getPath()
+                )
             );
+
+            if (isset($parameters['_controller']) && \is_callable($parameters['_controller'])) {
+                return $parameters['_controller'];
+            }
         } catch (ResourceNotFoundException $e) {
-            return [];
+            return null;
         }
     }
 
@@ -94,10 +103,11 @@ class Router implements RouterInterface
         ServerRequestInterface $request,
         ManagerInterface $manager
     ): RouterInterface {
-        $parameters = $this->matchRequest($request);
+        $controller = $this->matchRequest($request);
 
-        if (!empty($parameters)) {
-            $this->processor->executeRequest($client, $request, $parameters);
+        if (\is_callable($controller)) {
+            $result = new Result($controller);
+            $this->processor->executeRequest($client, $request, $result);
 
             $manager->stopPropagation();
         }

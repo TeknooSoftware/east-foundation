@@ -20,11 +20,11 @@
  */
 namespace Teknoo\East\FoundationBundle\Listener;
 
-use Teknoo\East\Foundation\Http\Client\Client;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
+use Teknoo\East\FoundationBundle\Http\Client;
 
 /**
  * Class KernelListener to listen the event "kernel.request" sent by Symfony and pass requests to the East Foundation's
@@ -87,15 +87,6 @@ class KernelListener
                 $event->getRequest()
             )
         );
-
-        if (true === $client->hasSuccessFull()) {
-            $response = $this->diactorosFactory->createResponse($client->getResponse);
-            $event->setResponse($response);
-        } elseif (false === $client->hasSuccessFull()) {
-            $throwable = $client->getThrowable();
-            $response = new Response($throwable->getMessage(), 500);
-            $event->setResponse($response);
-        }
 
         return $this;
     }

@@ -1,5 +1,5 @@
 {
-    "name": "teknoo/east-framework",
+    "name": "teknoo/east-foundation",
     "type": "library",
     "description": "Universal package, including a symfony bundle, to allow developer to use the #East philosophy into there project with any framework supporting PSR-11 or with Symfony 3+.",
     "keywords": ["east", "controller", "design"],
@@ -15,11 +15,11 @@
     "require": {
         "php": "~7.0",
         "psr/http-message": "~1.0",
-        "zendframework/zend-diactoros": "^1.3.0",
-        "symfony/psr-http-message-bridge":"~0.2",
         "teknoo/immutable": "~0.0.1",
-        "teknoo/states": "^3.0.0-alpha2",
-        "teknoo/states-bundle": "^3.0.0-alpha1"
+        "teknoo/states": "^3.0.0-alpha4",
+        "teknoo/states-life-cycle": "^2.0.0-alpha4",
+        "teknoo/states-bundle": "^3.0.0-alpha7",
+        "container-interop/service-provider":"^0.3.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.4.8",
@@ -28,7 +28,8 @@
         "symfony/console": "~3.0",
         "symfony/validator": "~3.0",
         "symfony/monolog-bundle": "~2.9",
-        "container-interop/service-provider":"^0.3.0"
+        "zendframework/zend-diactoros": "^1.3.0",
+        "symfony/psr-http-message-bridge":"~0.2"
     },
     "minimum-stability": "stable",
     "autoload": {
