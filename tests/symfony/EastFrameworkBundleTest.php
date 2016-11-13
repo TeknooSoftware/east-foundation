@@ -25,7 +25,8 @@ use Teknoo\East\FoundationBundle\EastFoundationBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
- * Class EastFoundationBundleTest
+ * Class EastFoundationBundleTest.
+ *
  * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
  *
  * @link        http://teknoo.software/east Project website
@@ -34,7 +35,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  * @author      Richard Déloge <richarddeloge@gmail.com>
  * @covers \Teknoo\East\FoundationBundle\EastFoundationBundle
  */
-class EastFoundationBundleTest extends \PHPUnit_Framework_TestCase
+class EastFrameworkBundleTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @return EastFoundationBundle

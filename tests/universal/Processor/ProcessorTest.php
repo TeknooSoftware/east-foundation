@@ -30,7 +30,8 @@ use Teknoo\East\Foundation\Router\Parameter;
 use Teknoo\East\Foundation\Router\ResultInterface;
 
 /**
- * Class ProcessorTest
+ * Class ProcessorTest.
+ *
  * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
  *
  * @link        http://teknoo.software/east Project website
@@ -69,22 +70,22 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
     public function testExecuteRequest()
     {
         /**
-         * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $clientMock
+         * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
 
         /**
-         * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject $requestMock
+         * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject
          */
         $requestMock = $this->createMock(ServerRequestInterface::class);
-        $requestMock->expects(self::any())->method('getAttributes')->willReturn(['bar' => 456,'foo' => 123]);
+        $requestMock->expects(self::any())->method('getAttributes')->willReturn(['bar' => 456, 'foo' => 123]);
 
-        $callableController = function(
+        $callableController = function (
             ServerRequestInterface $r,
             ClientInterface $c,
             $foo,
             $bar,
-            $default=789
+            $default = 789
         ) use ($requestMock, $clientMock) {
             self::assertEquals($requestMock, $r);
             self::assertEquals($clientMock, $c);
@@ -100,7 +101,7 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
             new Parameter('c', false, null, new \ReflectionClass(ClientInterface::class)),
             new Parameter('foo', false, null, null),
             new Parameter('bar', false, null, null),
-            new Parameter('default', true, 789, null)
+            new Parameter('default', true, 789, null),
         ]);
         $routerResult->expects(self::any())->method('getNext')->willReturn(null);
 
@@ -114,24 +115,24 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
     public function testExecuteRequestChaining()
     {
         /**
-         * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $clientMock
+         * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
 
         /**
-         * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject $requestMock
+         * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject
          */
         $requestMock = $this->createMock(ServerRequestInterface::class);
-        $requestMock->expects(self::any())->method('getAttributes')->willReturn(['bar' => 456,'foo' => 123]);
+        $requestMock->expects(self::any())->method('getAttributes')->willReturn(['bar' => 456, 'foo' => 123]);
 
-        $output=null;
+        $output = null;
 
-        $callableController1 = function(
+        $callableController1 = function (
             ServerRequestInterface $r,
             ClientInterface $c,
             $foo,
             $bar,
-            $default=789
+            $default = 789
         ) use ($requestMock, $clientMock, &$output) {
             self::assertEquals($requestMock, $r);
             self::assertEquals($clientMock, $c);
@@ -141,12 +142,12 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
             $output = 'result1';
         };
 
-        $callableController2 = function(
+        $callableController2 = function (
             ServerRequestInterface $r,
             ClientInterface $c,
             $foo,
             $bar,
-            $default=111
+            $default = 111
         ) use ($requestMock, $clientMock, &$output) {
             self::assertEquals($requestMock, $r);
             self::assertEquals($clientMock, $c);
@@ -157,7 +158,7 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
             $output = 'result2';
         };
 
-        $callableController3 = function(
+        $callableController3 = function (
             ClientInterface $c
         ) use ($clientMock, &$output) {
             self::assertEquals($clientMock, $c);
@@ -168,7 +169,7 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
         $routerResult3 = $this->createMock(ResultInterface::class);
         $routerResult3->expects(self::any())->method('getController')->willReturn($callableController3);
         $routerResult3->expects(self::any())->method('getParameters')->willReturn([
-            new Parameter('c', false, null, new \ReflectionClass(ClientInterface::class))
+            new Parameter('c', false, null, new \ReflectionClass(ClientInterface::class)),
         ]);
         $routerResult3->expects(self::any())->method('getNext')->willReturn(null);
 
@@ -179,7 +180,7 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
             new Parameter('c', false, null, new \ReflectionClass(ClientInterface::class)),
             new Parameter('foo', false, null, null),
             new Parameter('bar', false, null, null),
-            new Parameter('default', true, 111, null)
+            new Parameter('default', true, 111, null),
         ]);
         $routerResult2->expects(self::any())->method('getNext')->willReturn($routerResult3);
 
@@ -189,7 +190,7 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
             new Parameter('r', false, null, new \ReflectionClass(ServerRequestInterface::class)),
             new Parameter('c', false, null, new \ReflectionClass(ClientInterface::class)),
             new Parameter('foo', false, null, null),
-            new Parameter('default', true, 789, null)
+            new Parameter('default', true, 789, null),
         ]);
         $routerResult1->expects(self::any())->method('getNext')->willReturn($routerResult2);
 
@@ -208,23 +209,24 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
     public function testExecuteRequestMissingArgument()
     {
         /**
-         * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $clientMock
+         * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
 
         /**
-         * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject $requestMock
+         * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject
          */
         $requestMock = $this->createMock(ServerRequestInterface::class);
         $requestMock->expects(self::any())->method('getAttributes')->willReturn(['bar' => 456]);
 
-        $callableController = function(
+        $callableController = function (
             ServerRequestInterface $r,
             ClientInterface $c,
             $foo,
             $bar,
-            $default=789
-        ){};
+            $default = 789
+        ) {
+        };
 
         $routerResult = $this->createMock(ResultInterface::class);
         $routerResult->expects(self::any())->method('getController')->willReturn($callableController);
@@ -233,7 +235,7 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
             new Parameter('c', false, null, new \ReflectionClass(ClientInterface::class)),
             new Parameter('foo', false, null, null),
             new Parameter('bar', false, null, null),
-            new Parameter('default', true, 789, null)
+            new Parameter('default', true, 789, null),
         ]);
         $routerResult->expects(self::any())->method('getNext')->willReturn(null);
 
@@ -247,18 +249,17 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
     public function testExecuteRequestInvokableConstructor()
     {
         /**
-         * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $clientMock
+         * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
 
         /**
-         * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject $requestMock
+         * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject
          */
         $requestMock = $this->createMock(ServerRequestInterface::class);
-        $requestMock->expects(self::any())->method('getAttributes')->willReturn(['bar' => 456,'foo' => 123]);
+        $requestMock->expects(self::any())->method('getAttributes')->willReturn(['bar' => 456, 'foo' => 123]);
 
-        $callableController = new class
-        {
+        $callableController = new class() {
             /**
              * @var ClientInterface
              */
@@ -283,7 +284,7 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
                 return $this;
             }
 
-            public function __invoke(ServerRequestInterface $request, ClientInterface $client, $foo, $bar, $default=789)
+            public function __invoke(ServerRequestInterface $request, ClientInterface $client, $foo, $bar, $default = 789)
             {
                 $this->testCase->assertEquals($this->request, $request);
                 $this->testCase->assertEquals($this->client, $client);
@@ -302,7 +303,7 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
             new Parameter('c', false, null, new \ReflectionClass(ClientInterface::class)),
             new Parameter('foo', false, null, null),
             new Parameter('bar', false, null, null),
-            new Parameter('default', true, 789, null)
+            new Parameter('default', true, 789, null),
         ]);
         $routerResult->expects(self::any())->method('getNext')->willReturn(null);
 
@@ -319,19 +320,18 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
     public function testExecuteRequestInvokableConstructorMissingArgument()
     {
         /**
-         * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $clientMock
+         * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
 
         /**
-         * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject $requestMock
+         * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject
          */
         $requestMock = $this->createMock(ServerRequestInterface::class);
         $requestMock->expects(self::any())->method('getAttributes')->willReturn(['bar' => 456]);
 
-        $callableController = new class
-        {
-            public function __invoke(ServerRequestInterface $request, ClientInterface $client, $foo, $bar, $default=789)
+        $callableController = new class() {
+            public function __invoke(ServerRequestInterface $request, ClientInterface $client, $foo, $bar, $default = 789)
             {
             }
         };
@@ -343,7 +343,7 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
             new Parameter('c', false, null, new \ReflectionClass(ClientInterface::class)),
             new Parameter('foo', false, null, null),
             new Parameter('bar', false, null, null),
-            new Parameter('default', true, 789, null)
+            new Parameter('default', true, 789, null),
         ]);
         $routerResult->expects(self::any())->method('getNext')->willReturn(null);
 
@@ -357,18 +357,17 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
     public function testExecuteRequestClassController()
     {
         /**
-         * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $clientMock
+         * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
 
         /**
-         * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject $requestMock
+         * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject
          */
         $requestMock = $this->createMock(ServerRequestInterface::class);
-        $requestMock->expects(self::any())->method('getAttributes')->willReturn(['bar' => 456,'foo' => 123]);
+        $requestMock->expects(self::any())->method('getAttributes')->willReturn(['bar' => 456, 'foo' => 123]);
 
-        $callableController = new class
-        {
+        $callableController = new class() {
             /**
              * @var ClientInterface
              */
@@ -393,7 +392,7 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
                 return $this;
             }
 
-            public function testAction(ServerRequestInterface $request, ClientInterface $client, $foo, $bar, $default=789)
+            public function testAction(ServerRequestInterface $request, ClientInterface $client, $foo, $bar, $default = 789)
             {
                 $this->testCase->assertEquals($this->request, $request);
                 $this->testCase->assertEquals($this->client, $client);
@@ -412,7 +411,7 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
             new Parameter('c', false, null, new \ReflectionClass(ClientInterface::class)),
             new Parameter('foo', false, null, null),
             new Parameter('bar', false, null, null),
-            new Parameter('default', true, 789, null)
+            new Parameter('default', true, 789, null),
         ]);
         $routerResult->expects(self::any())->method('getNext')->willReturn(null);
 
@@ -429,19 +428,18 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
     public function testExecuteRequestClassControllerMissingArgument()
     {
         /**
-         * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $clientMock
+         * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
 
         /**
-         * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject $requestMock
+         * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject
          */
         $requestMock = $this->createMock(ServerRequestInterface::class);
         $requestMock->expects(self::any())->method('getAttributes')->willReturn(['bar' => 456]);
 
-        $callableController = new class
-        {
-            public function testAction(ServerRequestInterface $request, ClientInterface $client, $foo, $bar, $default=789)
+        $callableController = new class() {
+            public function testAction(ServerRequestInterface $request, ClientInterface $client, $foo, $bar, $default = 789)
             {
             }
         };
@@ -453,7 +451,7 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
             new Parameter('c', false, null, new \ReflectionClass(ClientInterface::class)),
             new Parameter('foo', false, null, null),
             new Parameter('bar', false, null, null),
-            new Parameter('default', true, 789, null)
+            new Parameter('default', true, 789, null),
         ]);
         $routerResult->expects(self::any())->method('getNext')->willReturn(null);
 
@@ -467,12 +465,12 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
     public function testExecuteRequestControllerHasFunction()
     {
         /**
-         * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $clientMock
+         * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
 
         /**
-         * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject $requestMock
+         * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject
          */
         $requestMock = $this->createMock(ServerRequestInterface::class);
         $requestMock->expects(self::any())->method('getAttributes')->willReturn(['get_as_float' => true]);
@@ -480,7 +478,7 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
         $routerResult = $this->createMock(ResultInterface::class);
         $routerResult->expects(self::any())->method('getController')->willReturn('microtime');
         $routerResult->expects(self::any())->method('getParameters')->willReturn([
-            new Parameter('get_as_float', true, false, null)
+            new Parameter('get_as_float', true, false, null),
         ]);
         $routerResult->expects(self::any())->method('getNext')->willReturn(null);
 
@@ -497,12 +495,12 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
     public function testExecuteRequestControllerHasFunctionMissingArgument()
     {
         /**
-         * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject $clientMock
+         * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
 
         /**
-         * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject $requestMock
+         * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject
          */
         $requestMock = $this->createMock(ServerRequestInterface::class);
         $requestMock->expects(self::any())->method('getAttributes')->willReturn([]);
@@ -510,7 +508,7 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
         $routerResult = $this->createMock(ResultInterface::class);
         $routerResult->expects(self::any())->method('getController')->willReturn('microtime');
         $routerResult->expects(self::any())->method('getParameters')->willReturn([
-            new Parameter('get_as_float', false, false, null)
+            new Parameter('get_as_float', false, false, null),
         ]);
         $routerResult->expects(self::any())->method('getNext')->willReturn(null);
 

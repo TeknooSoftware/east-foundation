@@ -28,7 +28,8 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Teknoo\East\FoundationBundle\Http\Client;
 
 /**
- * Class ClientTest
+ * Class ClientTest.
+ *
  * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
  *
  * @link        http://teknoo.software/east Project website
@@ -99,13 +100,17 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->getGetResponseEventMock()
             ->expects(self::any())
             ->method('setResponse')
-            ->with($this->callback(function($response){ return $response instanceof Response; }))
+            ->with($this->callback(function ($response) {
+                return $response instanceof Response;
+            }))
             ->willReturnSelf();
 
         $this->getHttpFoundationFactoryMock()
             ->expects(self::any())
             ->method('createResponse')
-            ->with($this->callback(function($response){ return $response instanceof ResponseInterface; }))
+            ->with($this->callback(function ($response) {
+                return $response instanceof ResponseInterface;
+            }))
             ->willReturn($this->createMock(Response::class, [], [], '', false));
 
         $client = $this->buildClient();
@@ -128,7 +133,9 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $this->getGetResponseEventMock()
             ->expects(self::any())
             ->method('setResponse')
-            ->with($this->callback(function($response){ return $response instanceof Response; }))
+            ->with($this->callback(function ($response) {
+                return $response instanceof Response;
+            }))
             ->willReturnSelf();
 
         $client = $this->buildClient();

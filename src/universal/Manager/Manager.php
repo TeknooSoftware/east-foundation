@@ -18,6 +18,7 @@
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
+
 namespace Teknoo\East\Foundation\Manager;
 
 use Teknoo\East\Foundation\Http\ClientInterface;
@@ -43,6 +44,7 @@ use Teknoo\States\Proxy\ProxyTrait;
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
+ *
  * @method ManagerInterface running(ClientInterface $client, ServerRequestInterface $request)
  * @method ManagerInterface doRegisterRouter(RouterInterface $router)
  * @method ManagerInterface doUnregisterRouter(RouterInterface $router)
@@ -90,7 +92,7 @@ class Manager implements
         return [
             HadRun::class,
             Running::class,
-            Service::class
+            Service::class,
         ];
     }
 

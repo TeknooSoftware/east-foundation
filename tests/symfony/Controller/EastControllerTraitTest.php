@@ -31,7 +31,8 @@ use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\RedirectResponse;
 
 /**
- * Class ControllerTest
+ * Class ControllerTest.
+ *
  * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
  *
  * @link        http://teknoo.software/east Project website
@@ -49,12 +50,12 @@ class EastControllerTraitTest extends \PHPUnit_Framework_TestCase
     {
         self::assertEquals(
             '/foo/bar',
-            (new class {
+            (new class() {
                 use EastControllerTrait;
 
                 public function getUrl()
                 {
-                    return $this->generateUrl('routeName', ['foo'=>'bar']);
+                    return $this->generateUrl('routeName', ['foo' => 'bar']);
                 }
             })->getUrl()
         );
@@ -65,17 +66,17 @@ class EastControllerTraitTest extends \PHPUnit_Framework_TestCase
         $router = $this->createMock(RouterInterface::class);
         $router->expects(self::any())
             ->method('generate')
-            ->with('routeName', ['foo'=>'bar'])
+            ->with('routeName', ['foo' => 'bar'])
             ->willReturn('/foo/bar');
 
         self::assertEquals(
             '/foo/bar',
-            (new class {
+            (new class() {
                 use EastControllerTrait;
 
                 public function getUrl()
                 {
-                    return $this->generateUrl('routeName', ['foo'=>'bar']);
+                    return $this->generateUrl('routeName', ['foo' => 'bar']);
                 }
             })->setRouter($router)->getUrl()
         );
@@ -86,10 +87,12 @@ class EastControllerTraitTest extends \PHPUnit_Framework_TestCase
         $client = $this->createMock(ClientInterface::class);
         $client->expects(self::once())
             ->method('responseFromController')
-            ->with($this->callback(function ($instance) {return $instance instanceof RedirectResponse;}))
+            ->with($this->callback(function ($instance) {
+                return $instance instanceof RedirectResponse;
+            }))
             ->willReturnSelf();
 
-        $controller = (new class {
+        $controller = (new class() {
             use EastControllerTrait;
             public function getRedirect(ClientInterface $client)
             {
@@ -108,21 +111,23 @@ class EastControllerTraitTest extends \PHPUnit_Framework_TestCase
         $router = $this->createMock(RouterInterface::class);
         $router->expects(self::any())
             ->method('generate')
-            ->with('routeName', ['foo'=>'bar'])
+            ->with('routeName', ['foo' => 'bar'])
             ->willReturn('/foo/bar');
 
         $client = $this->createMock(ClientInterface::class);
         $client->expects(self::once())
             ->method('responseFromController')
-            ->with($this->callback(function ($instance) {return $instance instanceof RedirectResponse;}))
+            ->with($this->callback(function ($instance) {
+                return $instance instanceof RedirectResponse;
+            }))
             ->willReturnSelf();
 
-        $controller = (new class {
+        $controller = (new class() {
             use EastControllerTrait;
 
             public function getRedirect(ClientInterface $client)
             {
-                return $this->redirectToRoute($client, 'routeName', ['foo'=>'bar']);
+                return $this->redirectToRoute($client, 'routeName', ['foo' => 'bar']);
             }
         });
 
@@ -137,20 +142,21 @@ class EastControllerTraitTest extends \PHPUnit_Framework_TestCase
         $client = $this->createMock(ClientInterface::class);
         $client->expects(self::once())
             ->method('responseFromController')
-            ->with($this->callback(function ($instance) {return $instance instanceof HtmlResponse;}))
+            ->with($this->callback(function ($instance) {
+                return $instance instanceof HtmlResponse;
+            }))
             ->willReturnSelf();
 
         $twigEngine = $this->createMock(TwigEngine::class);
         $twigEngine->expects(self::once())->method('render')->willReturn('fooBar');
 
-        $controller = (new class {
+        $controller = (new class() {
             use EastControllerTrait;
 
             public function getRender(ClientInterface $client)
             {
                 return $this->render($client, 'routeName');
             }
-
         });
 
         self::assertInstanceOf(
@@ -164,10 +170,12 @@ class EastControllerTraitTest extends \PHPUnit_Framework_TestCase
         $client = $this->createMock(ClientInterface::class);
         $client->expects(self::once())
             ->method('responseFromController')
-            ->with($this->callback(function ($instance) {return $instance instanceof HtmlResponse;}))
+            ->with($this->callback(function ($instance) {
+                return $instance instanceof HtmlResponse;
+            }))
             ->willReturnSelf();
 
-        $controller = (new class {
+        $controller = (new class() {
             use EastControllerTrait;
 
             public function getRender(ClientInterface $client)
@@ -194,7 +202,7 @@ class EastControllerTraitTest extends \PHPUnit_Framework_TestCase
         $client->expects($this->never())
             ->method('responseFromController');
 
-        (new class {
+        (new class() {
             use EastControllerTrait;
 
             public function getRender(ClientInterface $client)
@@ -209,7 +217,7 @@ class EastControllerTraitTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateNotFoundException()
     {
-        (new class {
+        (new class() {
             use EastControllerTrait;
 
             public function getCreateNotFoundException()
@@ -224,7 +232,7 @@ class EastControllerTraitTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateAccessDeniedException()
     {
-        (new class {
+        (new class() {
             use EastControllerTrait;
 
             public function getCreateAccessDeniedException()
@@ -234,13 +242,12 @@ class EastControllerTraitTest extends \PHPUnit_Framework_TestCase
         })->getCreateAccessDeniedException();
     }
 
-
     /**
      * @expectedException \LogicException
      */
     public function testGetUserNoStorage()
     {
-        (new class {
+        (new class() {
             use EastControllerTrait;
 
             public function getGetUser()
@@ -255,7 +262,7 @@ class EastControllerTraitTest extends \PHPUnit_Framework_TestCase
         $storage = $this->createMock(TokenStorageInterface::class, [], [], '', false);
 
         self::assertEmpty(
-            (new class {
+            (new class() {
                 use EastControllerTrait;
 
                 public function getGetUser()
@@ -274,7 +281,7 @@ class EastControllerTraitTest extends \PHPUnit_Framework_TestCase
             ->willReturn('fooBar');
 
         self::assertEmpty(
-            (new class {
+            (new class() {
                 use EastControllerTrait;
 
                 public function getGetUser()
@@ -290,14 +297,15 @@ class EastControllerTraitTest extends \PHPUnit_Framework_TestCase
         $storage = $this->createMock(TokenStorageInterface::class, [], [], '', false);
         $storage->expects(self::any())
             ->method('getToken')
-            ->willReturn(new class {
-                public function getUser(){
+            ->willReturn(new class() {
+                public function getUser()
+                {
                     return null;
                 }
             });
 
         self::assertEmpty(
-            (new class {
+            (new class() {
                 use EastControllerTrait;
 
                 public function getGetUser()
@@ -313,9 +321,10 @@ class EastControllerTraitTest extends \PHPUnit_Framework_TestCase
         $storage = $this->createMock(TokenStorageInterface::class, [], [], '', false);
         $storage->expects(self::any())
             ->method('getToken')
-            ->willReturn(new class {
-                public function getUser(){
-                    return new class implements UserInterface{
+            ->willReturn(new class() {
+                public function getUser()
+                {
+                    return new class() implements UserInterface {
                         public function getRoles()
                         {
                         }
@@ -341,7 +350,7 @@ class EastControllerTraitTest extends \PHPUnit_Framework_TestCase
 
         self::assertInstanceOf(
             UserInterface::class,
-            (new class {
+            (new class() {
                 use EastControllerTrait;
 
                 public function getGetUser()
@@ -352,4 +361,3 @@ class EastControllerTraitTest extends \PHPUnit_Framework_TestCase
         );
     }
 }
-

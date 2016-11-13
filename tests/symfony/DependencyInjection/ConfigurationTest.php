@@ -25,7 +25,8 @@ use Teknoo\East\FoundationBundle\DependencyInjection\Configuration;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 
 /**
- * Class ConfigurationTest
+ * Class ConfigurationTest.
+ *
  * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
  *
  * @link        http://teknoo.software/east Project website

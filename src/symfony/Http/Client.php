@@ -18,6 +18,7 @@
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
+
 namespace Teknoo\East\FoundationBundle\Http;
 
 use Psr\Http\Message\ResponseInterface;
@@ -40,7 +41,8 @@ class Client implements ClientInterface
 
     /**
      * Client constructor.
-     * @param GetResponseEvent $getResponseEvent
+     *
+     * @param GetResponseEvent      $getResponseEvent
      * @param HttpFoundationFactory $httpFoundationFactory
      */
     public function __construct(GetResponseEvent $getResponseEvent, HttpFoundationFactory $httpFoundationFactory)

@@ -18,6 +18,7 @@
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
+
 namespace Teknoo\East\Foundation\Router;
 
 use Teknoo\Immutable\ImmutableTrait;
@@ -47,10 +48,11 @@ class Result implements ResultInterface
 
     /**
      * Result constructor.
-     * @param callable $controller
+     *
+     * @param callable             $controller
      * @param null|ResultInterface $next
      */
-    public function __construct(callable $controller, $next=null)
+    public function __construct(callable $controller, $next = null)
     {
         $this->uniqueConstructorCheck();
 
@@ -73,6 +75,7 @@ class Result implements ResultInterface
     /**
      * To generate the \Reflection object dedicated to the controller. The controller is a callable, so it can be
      * a method of an object, a invokable object, or a function.
+     *
      * @return \ReflectionFunction|\ReflectionMethod
      */
     private function getReflectionInstance()
@@ -83,6 +86,7 @@ class Result implements ResultInterface
         } elseif (\is_object($this->controller) && !$this->controller instanceof \Closure) {
             //Reflection the method's arguments of the callable object
             $r = new \ReflectionObject($this->controller);
+
             return $r->getMethod('__invoke');
         }
 
@@ -90,7 +94,8 @@ class Result implements ResultInterface
     }
 
     /**
-     * To extract controller's parameter from \Reflection Api and convert into ParameterInterface instance
+     * To extract controller's parameter from \Reflection Api and convert into ParameterInterface instance.
+     *
      * @return array
      */
     private function extractArguments(): array

@@ -18,6 +18,7 @@
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
+
 namespace Teknoo\East\Foundation\Router;
 
 use Teknoo\Immutable\ImmutableTrait;
@@ -51,10 +52,12 @@ class Parameter implements ParameterInterface
 
     /**
      * Parameter constructor.
+     *
      * @param string $name
-     * @param bool $hasDefaultValue
-     * @param mixed $defaultValue
+     * @param bool   $hasDefaultValue
+     * @param mixed  $defaultValue
      * @param $classHinted
+     *
      * @throws \InvalidArgumentException when $classHinted is invalid (not a \ReflectionClass or null value
      */
     public function __construct(string $name, bool $hasDefaultValue, $defaultValue, $classHinted)

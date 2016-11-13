@@ -30,7 +30,8 @@ use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Zend\Diactoros\ServerRequest;
 
 /**
- * Class KernelListenerTest
+ * Class KernelListenerTest.
+ *
  * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
  *
  * @link        http://teknoo.software/east Project website

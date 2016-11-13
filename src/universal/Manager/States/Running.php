@@ -18,6 +18,7 @@
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
+
 namespace Teknoo\East\Foundation\Manager\States;
 
 use Psr\Http\Message\ServerRequestInterface;
@@ -36,6 +37,7 @@ use Teknoo\States\State\StateTrait;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  * @mixin Manager
+ *
  * @property  RouterInterface[] $routersList
  * @property bool $doRequestPropagation
  */
@@ -45,7 +47,7 @@ class Running implements StateInterface
 
     private function iterateRouter()
     {
-        /**
+        /*
          * Build a Generator to stop the list at reception of the stop message.
          *
          * @return \Generator
@@ -67,7 +69,7 @@ class Running implements StateInterface
 
     private function dispatchRequest()
     {
-        /**
+        /*
          * To dispatch the request to all routers while a message was not receive to stop the propaggation.
          *
          * @param ClientInterface        $client
@@ -79,7 +81,7 @@ class Running implements StateInterface
             $this->doRequestPropagation = true;
 
             /**
-             * @var RouterInterface $router
+             * @var RouterInterface
              */
             foreach ($this->iterateRouter() as $router) {
                 $router->receiveRequestFromServer($client, $request, $this);
@@ -93,13 +95,13 @@ class Running implements StateInterface
 
     private function doStopPropagation()
     {
-        /**
+        /*
          * Method to stop propagation to other routers when a router has determined the request is handle by one of its
          * controllers.
          *
          * @return ManagerInterface
          */
-        return function(): ManagerInterface {
+        return function (): ManagerInterface {
             $this->doRequestPropagation = false;
 
             return $this;

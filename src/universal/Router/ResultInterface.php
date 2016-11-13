@@ -18,6 +18,7 @@
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
+
 namespace Teknoo\East\Foundation\Router;
 
 use Teknoo\Immutable\ImmutableInterface;
@@ -29,14 +30,14 @@ use Teknoo\Immutable\ImmutableInterface;
 interface ResultInterface extends ImmutableInterface
 {
     /**
-     * To know the controller to call for this route
+     * To know the controller to call for this route.
      *
      * @return callable
      */
     public function getController(): callable;
 
     /**
-     * To list all parameters of the controllers
+     * To list all parameters of the controllers.
      *
      * @return ParameterInterface[];
      */

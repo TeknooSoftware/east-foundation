@@ -18,6 +18,7 @@
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
+
 namespace Teknoo\East\Foundation\Processor;
 
 use Psr\Log\LoggerInterface;
@@ -52,7 +53,7 @@ class Processor implements ProcessorInterface, ImmutableInterface
     /**
      * Processor constructor.
      *
-     * @param LoggerInterface    $logger
+     * @param LoggerInterface $logger
      */
     public function __construct(LoggerInterface $logger)
     {
@@ -75,7 +76,8 @@ class Processor implements ProcessorInterface, ImmutableInterface
 
     /**
      * Method called to execute each controller retourned by the router and call the next controller defined in the
-     * router's result
+     * router's result.
+     *
      * @param ClientInterface        $client
      * @param ServerRequestInterface $request
      * @param ResultInterface        $routerResult
@@ -128,7 +130,7 @@ class Processor implements ProcessorInterface, ImmutableInterface
 
         $arguments = array();
         /**
-         * @var ParameterInterface $param
+         * @var ParameterInterface
          */
         foreach ($parameters as $param) {
             if (\array_key_exists($param->getName(), $attributes)) {

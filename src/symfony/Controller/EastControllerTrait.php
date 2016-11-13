@@ -18,6 +18,7 @@
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
+
 namespace Teknoo\East\FoundationBundle\Controller;
 
 use Symfony\Bundle\TwigBundle\TwigEngine;
@@ -32,7 +33,7 @@ use Zend\Diactoros\Response;
 
 /**
  * Class Controller.
- * 
+ *
  * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
  *
  * @link        http://teknoo.software/east Project website
@@ -64,6 +65,7 @@ trait EastControllerTrait
 
     /**
      * @param RouterInterface $router
+     *
      * @return EastControllerTrait
      */
     public function setRouter(RouterInterface $router)
@@ -75,6 +77,7 @@ trait EastControllerTrait
 
     /**
      * @param TwigEngine $templating
+     *
      * @return EastControllerTrait
      */
     public function setTemplating(TwigEngine $templating)
@@ -86,6 +89,7 @@ trait EastControllerTrait
 
     /**
      * @param \Twig_Environment $twig
+     *
      * @return EastControllerTrait
      */
     public function setTwig(\Twig_Environment $twig)
@@ -97,6 +101,7 @@ trait EastControllerTrait
 
     /**
      * @param TokenStorageInterface $tokenStorage
+     *
      * @return EastControllerTrait
      */
     public function setTokenStorage(TokenStorageInterface $tokenStorage)
@@ -105,7 +110,6 @@ trait EastControllerTrait
 
         return $this;
     }
-
 
     /**
      * Generates a URL from the given parameters.
@@ -262,7 +266,7 @@ trait EastControllerTrait
         }
 
         /**
-         * @var TokenInterface $token
+         * @var TokenInterface
          */
         if (!is_callable([$token, 'getUser']) || !is_object($user = $token->getUser())) {
             // e.g. anonymous authentication

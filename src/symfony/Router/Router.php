@@ -18,6 +18,7 @@
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
+
 namespace Teknoo\East\FoundationBundle\Router;
 
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
@@ -91,7 +92,7 @@ class Router implements RouterInterface
                 return $parameters['_controller'];
             }
         } catch (ResourceNotFoundException $e) {
-            /** Do nothing, keep the framework to manage it */
+            /* Do nothing, keep the framework to manage it */
         }
 
         return null;

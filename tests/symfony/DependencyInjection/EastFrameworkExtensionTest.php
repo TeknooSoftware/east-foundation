@@ -25,7 +25,8 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Teknoo\East\FoundationBundle\DependencyInjection\EastFoundationExtension;
 
 /**
- * Class EastFoundationExtensionTest
+ * Class EastFoundationExtensionTest.
+ *
  * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
  *
  * @link        http://teknoo.software/east Project website
@@ -34,7 +35,7 @@ use Teknoo\East\FoundationBundle\DependencyInjection\EastFoundationExtension;
  * @author      Richard Déloge <richarddeloge@gmail.com>
  * @covers \Teknoo\East\FoundationBundle\DependencyInjection\EastFoundationExtension
  */
-class EastFoundationExtensionTest extends \PHPUnit_Framework_TestCase
+class EastFrameworkExtensionTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var ContainerBuilder
@@ -68,7 +69,7 @@ class EastFoundationExtensionTest extends \PHPUnit_Framework_TestCase
     {
         return EastFoundationExtension::class;
     }
-    
+
     public function testLoad()
     {
         self::assertInstanceOf(

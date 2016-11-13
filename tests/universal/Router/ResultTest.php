@@ -32,14 +32,17 @@ class ResultTest extends AbstractResultTest
 {
     public function buildResult(): ResultInterface
     {
-        return new Result(function(int $a, string $b, \DateTime $d, $test='foo'){}, null);
+        return new Result(function (int $a, string $b, \DateTime $d, $test = 'foo') {
+        }, null);
     }
 
     public function buildResultWithNext(): ResultInterface
     {
         return new Result(
-            function(){},
-            new Result(function(int $a, string $b, \DateTime $d, $test='foo'){})
+            function () {
+            },
+            new Result(function (int $a, string $b, \DateTime $d, $test = 'foo') {
+            })
         );
     }
 
@@ -48,7 +51,8 @@ class ResultTest extends AbstractResultTest
      */
     public function testValueObjectBehaviorConstructor()
     {
-        $this->buildResult()->__construct(function(int $a, string $b, \DateTime $d, $test='foo'){}, null);
+        $this->buildResult()->__construct(function (int $a, string $b, \DateTime $d, $test = 'foo') {
+        }, null);
     }
 
     /**
@@ -56,7 +60,8 @@ class ResultTest extends AbstractResultTest
      */
     public function testConstructBadNext()
     {
-        new Result(function(){}, new \DateTime());
+        new Result(function () {
+        }, new \DateTime());
     }
 
     public function testGetParmetersValueFromClosure()
@@ -65,7 +70,7 @@ class ResultTest extends AbstractResultTest
 
         self::assertInternalType('array', $parameters);
         self::assertCount(4, $parameters);
-        
+
         self::assertInstanceOf(ParameterInterface::class, $parameters['a']);
         self::assertEquals('a', $parameters['a']->getName());
         self::assertFalse($parameters['a']->hasDefaultValue());
@@ -94,9 +99,8 @@ class ResultTest extends AbstractResultTest
 
     public function testGetParmetersValueFromInvokable()
     {
-        $invokable = new class
-        {
-            public function __invoke(int $a, string $b, \DateTime $d, $test='foo')
+        $invokable = new class() {
+            public function __invoke(int $a, string $b, \DateTime $d, $test = 'foo')
             {
             }
         };
@@ -135,9 +139,8 @@ class ResultTest extends AbstractResultTest
 
     public function testGetParmetersValueFromMethod()
     {
-        $object = new class
-        {
-            public function test(int $a, string $b, \DateTime $d, $test='foo')
+        $object = new class() {
+            public function test(int $a, string $b, \DateTime $d, $test = 'foo')
             {
             }
         };

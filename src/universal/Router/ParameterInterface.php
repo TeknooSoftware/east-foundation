@@ -18,6 +18,7 @@
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
+
 namespace Teknoo\East\Foundation\Router;
 
 use Teknoo\Immutable\ImmutableInterface;
@@ -35,7 +36,7 @@ interface ParameterInterface extends ImmutableInterface
     public function getName(): string;
 
     /**
-     * To know if the controller's parameter has a default value
+     * To know if the controller's parameter has a default value.
      *
      * @return bool
      */
@@ -46,6 +47,7 @@ interface ParameterInterface extends ImmutableInterface
      * If the parameter has no default value, the method must throw a \LogicException.
      *
      * @return mixed
+     *
      * @throws \LogicException
      */
     public function getDefaultValue();
@@ -62,6 +64,7 @@ interface ParameterInterface extends ImmutableInterface
      * If the parameter has no default value, the method must throw a \LogicException.
      *
      * @return \ReflectionClass
+     *
      * @throws \LogicException
      */
     public function getClass(): \ReflectionClass;

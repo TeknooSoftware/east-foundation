@@ -18,6 +18,7 @@
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
+
 namespace Teknoo\East\Foundation\Manager\States;
 
 use Psr\Http\Message\ServerRequestInterface;
@@ -36,7 +37,9 @@ use Teknoo\States\State\StateTrait;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  * @mixin Manager
+ *
  * @property  RouterInterface[] $routersList
+ *
  * @method ManagerInterface dispatchRequest(ClientInterface $client, ServerRequestInterface $request)
  */
 class Service implements StateInterface
@@ -45,7 +48,7 @@ class Service implements StateInterface
 
     private function running()
     {
-        /**
+        /*
          * Method to call to process a request in East Foundation by East's controller.
          *
          * @param ClientInterface        $client
@@ -64,7 +67,7 @@ class Service implements StateInterface
     }
     private function doRegisterRouter()
     {
-        /**
+        /*
          * Method to register router in the manager to process request.
          *
          * @param RouterInterface $router
@@ -80,7 +83,7 @@ class Service implements StateInterface
 
     private function doUnregisterRouter()
     {
-        /**
+        /*
          * Method to unregister router in the manager to process request.
          *
          * @param RouterInterface $router

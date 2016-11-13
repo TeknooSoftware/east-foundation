@@ -26,7 +26,8 @@ use Teknoo\East\FoundationBundle\DependencyInjection\EastFoundationCompilerPass;
 use Symfony\Component\DependencyInjection\Definition;
 
 /**
- * Class EastFoundationCompilerPassTest
+ * Class EastFoundationCompilerPassTest.
+ *
  * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
  *
  * @link        http://teknoo.software/east Project website
@@ -35,7 +36,7 @@ use Symfony\Component\DependencyInjection\Definition;
  * @author      Richard Déloge <richarddeloge@gmail.com>
  * @covers \Teknoo\East\FoundationBundle\DependencyInjection\EastFoundationCompilerPass
  */
-class EastFoundationCompilerPassTest extends \PHPUnit_Framework_TestCase
+class EastFrameworkCompilerPassTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var ContainerBuilder
@@ -53,7 +54,7 @@ class EastFoundationCompilerPassTest extends \PHPUnit_Framework_TestCase
 
         return $this->container;
     }
-    
+
     /**
      * @return EastFoundationCompilerPass
      */
@@ -81,7 +82,7 @@ class EastFoundationCompilerPassTest extends \PHPUnit_Framework_TestCase
             ->with('east.controller.service')
             ->willReturn([
                 'service1' => ['foo' => 'bar'],
-                'service2' => ['bar' => 'foo']
+                'service2' => ['bar' => 'foo'],
             ]);
 
         $this->getContainerBuilderMock()
@@ -89,7 +90,7 @@ class EastFoundationCompilerPassTest extends \PHPUnit_Framework_TestCase
             ->method('getDefinition')
             ->withConsecutive(['service1'], ['service2'])
             ->willReturn($def);
-        
+
         self::assertInstanceOf(
             $this->getCompilerPassClass(),
             $this->buildCompilerPass()->process(
