@@ -115,14 +115,14 @@ class KernelListenerTest extends \PHPUnit_Framework_TestCase
     public function testOnKernelRequest()
     {
         $request = $this->createMock(GetResponseEvent::class);
-        $request->expects($this->any())->method('getRequest')->willReturn(new Request());
+        $request->expects(self::any())->method('getRequest')->willReturn(new Request());
 
         $this->getDiactorosFactoryMock()
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('createRequest')
             ->willReturn(new ServerRequest());
 
-        $this->assertInstanceOf(
+        self::assertInstanceOf(
             $this->getKernelListenerClass(),
             $this->buildKernelListener()->onKernelRequest(
                 $request

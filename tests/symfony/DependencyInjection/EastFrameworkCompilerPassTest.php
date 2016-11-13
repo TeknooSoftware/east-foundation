@@ -76,7 +76,7 @@ class EastFoundationCompilerPassTest extends \PHPUnit_Framework_TestCase
         $def->expects($this->exactly(2))->method('addMethodCall')->willReturnSelf();
 
         $this->getContainerBuilderMock()
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('findTaggedServiceIds')
             ->with('east.controller.service')
             ->willReturn([
@@ -90,7 +90,7 @@ class EastFoundationCompilerPassTest extends \PHPUnit_Framework_TestCase
             ->withConsecutive(['service1'], ['service2'])
             ->willReturn($def);
         
-        $this->assertInstanceOf(
+        self::assertInstanceOf(
             $this->getCompilerPassClass(),
             $this->buildCompilerPass()->process(
                 $this->getContainerBuilderMock()

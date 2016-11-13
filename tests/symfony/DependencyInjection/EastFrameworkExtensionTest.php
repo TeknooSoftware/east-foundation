@@ -71,7 +71,7 @@ class EastFoundationExtensionTest extends \PHPUnit_Framework_TestCase
     
     public function testLoad()
     {
-        $this->assertInstanceOf(
+        self::assertInstanceOf(
             $this->getExtensionClass(),
             $this->buildExtension()->load([], $this->getContainerBuilderMock())
         );

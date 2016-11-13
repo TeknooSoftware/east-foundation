@@ -60,7 +60,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testReceiveRequestFromClient()
     {
-        $this->assertInstanceOf(
+        self::assertInstanceOf(
             $this->getManagerClass(),
             $this->buildManager()->receiveRequestFromClient(
                 $this->createMock(ClientInterface::class),
@@ -93,7 +93,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testRegisterRouter()
     {
-        $this->assertInstanceOf(
+        self::assertInstanceOf(
             $this->getManagerClass(),
             $this->buildManager()->registerRouter(
                 $this->createMock(RouterInterface::class)
@@ -112,7 +112,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     public function testUnregisterRouter()
     {
         $router = $this->createMock(RouterInterface::class);
-        $this->assertInstanceOf(
+        self::assertInstanceOf(
             $this->getManagerClass(),
             $this->buildManager()->unregisterRouter(
                 $router
@@ -120,7 +120,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         );
 
         $router = $this->createMock(RouterInterface::class);
-        $this->assertInstanceOf(
+        self::assertInstanceOf(
             $this->getManagerClass(),
             $this->buildManager()->registerRouter($router)->unregisterRouter($router)
         );
@@ -196,17 +196,17 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
          * @var RouterInterface|\PHPUnit_Framework_MockObject_MockObject $router1
          */
         $router1 = $this->createMock(RouterInterface::class);
-        $router1->expects($this->once())->method('receiveRequestFromServer')->willReturnSelf();
+        $router1->expects(self::once())->method('receiveRequestFromServer')->willReturnSelf();
         /**
          * @var RouterInterface|\PHPUnit_Framework_MockObject_MockObject $router1
          */
         $router2 = $this->createMock(RouterInterface::class);
-        $router2->expects($this->once())->method('receiveRequestFromServer');
-        $router2->expects($this->once())->method('receiveRequestFromServer')->willReturnCallback(
+        $router2->expects(self::once())->method('receiveRequestFromServer');
+        $router2->expects(self::once())->method('receiveRequestFromServer')->willReturnCallback(
             function ($clientPassed, $requestPassed, $managerPassed) use ($clientMock, $serverRequestMock, $manager) {
-                $this->assertEquals($clientPassed, $clientMock);
-                $this->assertEquals($requestPassed, $serverRequestMock);
-                $this->assertNotSame($managerPassed, $manager);
+                self::assertEquals($clientPassed, $clientMock);
+                self::assertEquals($requestPassed, $serverRequestMock);
+                self::assertNotSame($managerPassed, $manager);
                 $managerPassed->stopPropagation();
             }
         );
@@ -215,12 +215,12 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
          * @var RouterInterface|\PHPUnit_Framework_MockObject_MockObject $router1
          */
         $router3 = $this->createMock(RouterInterface::class);
-        $router3->expects($this->never())->method('receiveRequestFromServer');
+        $router3->expects(self::never())->method('receiveRequestFromServer');
 
         $manager->registerRouter($router1);
         $manager->registerRouter($router2);
         $manager->registerRouter($router3);
-        $this->assertInstanceOf(
+        self::assertInstanceOf(
             $this->getManagerClass(),
             $manager->receiveRequestFromClient($clientMock,$serverRequestMock)
         );

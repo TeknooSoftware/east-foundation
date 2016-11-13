@@ -97,19 +97,19 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $response = $this->createMock(ResponseInterface::class);
 
         $this->getGetResponseEventMock()
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('setResponse')
             ->with($this->callback(function($response){ return $response instanceof Response; }))
             ->willReturnSelf();
 
         $this->getHttpFoundationFactoryMock()
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('createResponse')
             ->with($this->callback(function($response){ return $response instanceof ResponseInterface; }))
             ->willReturn($this->createMock(Response::class, [], [], '', false));
 
         $client = $this->buildClient();
-        $this->assertInstanceOf(
+        self::assertInstanceOf(
             $this->getClientClass(),
             $client->responseFromController($response)
         );
@@ -126,13 +126,13 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     public function testErrorInRequest()
     {
         $this->getGetResponseEventMock()
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('setResponse')
             ->with($this->callback(function($response){ return $response instanceof Response; }))
             ->willReturnSelf();
 
         $client = $this->buildClient();
-        $this->assertInstanceOf(
+        self::assertInstanceOf(
             $this->getClientClass(),
             $client->errorInRequest(new \Exception('fooBar'))
         );
