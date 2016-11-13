@@ -43,14 +43,6 @@ use Zend\Diactoros\Response\RedirectResponse;
 class EastControllerTraitTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @return string
-     */
-    private function getControllerClassName(): string
-    {
-        return EastControllerTrait::class;
-    }
-
-    /**
      * @expectedException \LogicException
      */
     public function testGenerateUrlMissingRouter()
