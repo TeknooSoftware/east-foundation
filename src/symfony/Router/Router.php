@@ -91,8 +91,10 @@ class Router implements RouterInterface
                 return $parameters['_controller'];
             }
         } catch (ResourceNotFoundException $e) {
-            return null;
+            /** Do nothing, keep the framework to manage it */
         }
+
+        return null;
     }
 
     /**
