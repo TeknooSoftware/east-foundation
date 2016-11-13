@@ -66,7 +66,7 @@ trait EastControllerTrait
      * @param RouterInterface $router
      * @return EastControllerTrait
      */
-    public function setRouter(RouterInterface $router): EastControllerTrait
+    public function setRouter(RouterInterface $router)
     {
         $this->router = $router;
 
@@ -77,7 +77,7 @@ trait EastControllerTrait
      * @param TwigEngine $templating
      * @return EastControllerTrait
      */
-    public function setTemplating(TwigEngine $templating): EastControllerTrait
+    public function setTemplating(TwigEngine $templating)
     {
         $this->templating = $templating;
 
@@ -88,7 +88,7 @@ trait EastControllerTrait
      * @param \Twig_Environment $twig
      * @return EastControllerTrait
      */
-    public function setTwig(\Twig_Environment $twig): EastControllerTrait
+    public function setTwig(\Twig_Environment $twig)
     {
         $this->twig = $twig;
 
@@ -99,7 +99,7 @@ trait EastControllerTrait
      * @param TokenStorageInterface $tokenStorage
      * @return EastControllerTrait
      */
-    public function setTokenStorage(TokenStorageInterface $tokenStorage): EastControllerTrait
+    public function setTokenStorage(TokenStorageInterface $tokenStorage)
     {
         $this->tokenStorage = $tokenStorage;
 
@@ -139,7 +139,7 @@ trait EastControllerTrait
      *
      * @return EastControllerTrait
      */
-    protected function redirect(ClientInterface $client, $url, $status = 302): EastControllerTrait
+    protected function redirect(ClientInterface $client, $url, $status = 302)
     {
         $client->responseFromController(new Response\RedirectResponse($url, $status));
 
@@ -161,7 +161,7 @@ trait EastControllerTrait
         string $route,
         array $parameters = array(),
         int $status = 302
-    ): EastControllerTrait {
+    ) {
         return $this->redirect($client, $this->generateUrl($route, $parameters), $status);
     }
 
@@ -195,7 +195,7 @@ trait EastControllerTrait
      *
      * @return EastControllerTrait
      */
-    protected function render(ClientInterface $client, string $view, array $parameters = array()): EastControllerTrait
+    protected function render(ClientInterface $client, string $view, array $parameters = array())
     {
         $htmlBody = $this->renderView($view, $parameters);
 
