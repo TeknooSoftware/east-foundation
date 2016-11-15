@@ -47,14 +47,14 @@ class Running implements StateInterface
 
     private function iterateRouter()
     {
-        /*
+        /**
          * Build a Generator to stop the list at reception of the stop message.
          *
          * @return \Generator
          */
         return function () {
             foreach ($this->routersList as $router) {
-                //Fetch eatch router
+                //Fetch each router
                 yield $router;
 
                 //Stop propagation logic is written here to avoid complex instructions in dispatchRequest.
@@ -69,7 +69,7 @@ class Running implements StateInterface
 
     private function dispatchRequest()
     {
-        /*
+        /**
          * To dispatch the request to all routers while a message was not receive to stop the propaggation.
          *
          * @param ClientInterface        $client
@@ -81,7 +81,7 @@ class Running implements StateInterface
             $this->doRequestPropagation = true;
 
             /**
-             * @var RouterInterface
+             * @var RouterInterface $router
              */
             foreach ($this->iterateRouter() as $router) {
                 $router->receiveRequestFromServer($client, $request, $this);
@@ -95,7 +95,7 @@ class Running implements StateInterface
 
     private function doStopPropagation()
     {
-        /*
+        /**
          * Method to stop propagation to other routers when a router has determined the request is handle by one of its
          * controllers.
          *

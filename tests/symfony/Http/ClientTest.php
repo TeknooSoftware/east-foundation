@@ -79,7 +79,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
      */
     private function buildClient(): Client
     {
-        return new Client($this->getGetResponseEventMock(), $this->getHttpFoundationFactoryMock());
+        return new Client($this->getHttpFoundationFactoryMock(), $this->getGetResponseEventMock());
     }
 
     /**
@@ -151,5 +151,22 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     public function testErrorInRequestError()
     {
         $this->buildClient()->errorInRequest(new \stdClass());
+    }
+
+    public function testSetGetResponseEvent()
+    {
+        $client = $this->buildClient();
+        self::assertInstanceOf(
+            $this->getClientClass(),
+            $client->setGetResponseEvent($this->createMock(GetResponseEvent::class))
+        );
+    }
+
+    /**
+     * @expectedException \TypeError
+     */
+    public function testSetGetResponseEventError()
+    {
+        $this->buildClient()->setGetResponseEvent(new \stdClass());
     }
 }

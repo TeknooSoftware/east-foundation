@@ -23,9 +23,9 @@ namespace Teknoo\Tests\East\FoundationBundle\Listener;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Teknoo\East\FoundationBundle\Http\ClientWithResponseEventInterface;
 use Teknoo\East\FoundationBundle\Listener\KernelListener;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
-use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Zend\Diactoros\ServerRequest;
 
@@ -48,9 +48,9 @@ class KernelListenerTest extends \PHPUnit_Framework_TestCase
     private $manager;
 
     /**
-     * @var HttpFoundationFactory
+     * @var ClientWithResponseEventInterface
      */
-    private $httpFoundationFactory;
+    private $clientWithResponseEventInterface;
 
     /**
      * @var DiactorosFactory
@@ -58,7 +58,7 @@ class KernelListenerTest extends \PHPUnit_Framework_TestCase
     private $diactorosFactory;
 
     /**
-     * @return ManagerInterface
+     * @return ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getManagerMock()
     {
@@ -70,15 +70,15 @@ class KernelListenerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return HttpFoundationFactory
+     * @return ClientWithResponseEventInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private function getHttpFoundationFactoryMock()
+    private function getClientWithResponseEventInterfaceMock()
     {
-        if (!$this->httpFoundationFactory instanceof HttpFoundationFactory) {
-            $this->httpFoundationFactory = $this->createMock(HttpFoundationFactory::class);
+        if (!$this->clientWithResponseEventInterface instanceof ClientWithResponseEventInterface) {
+            $this->clientWithResponseEventInterface = $this->createMock(ClientWithResponseEventInterface::class);
         }
 
-        return $this->httpFoundationFactory;
+        return $this->clientWithResponseEventInterface;
     }
 
     /**
@@ -100,7 +100,7 @@ class KernelListenerTest extends \PHPUnit_Framework_TestCase
     {
         return new KernelListener(
             $this->getManagerMock(),
-            $this->getHttpFoundationFactoryMock(),
+            $this->getClientWithResponseEventInterfaceMock(),
             $this->getDiactorosFactoryMock()
         );
     }
@@ -122,6 +122,12 @@ class KernelListenerTest extends \PHPUnit_Framework_TestCase
             ->expects(self::any())
             ->method('createRequest')
             ->willReturn(new ServerRequest());
+
+        $this->getClientWithResponseEventInterfaceMock()
+            ->expects(self::once())
+            ->method('setGetResponseEvent')
+            ->with($request)
+            ->willReturnSelf();
 
         self::assertInstanceOf(
             $this->getKernelListenerClass(),

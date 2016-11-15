@@ -32,7 +32,9 @@ use Teknoo\East\Foundation\Router\RouterInterface;
 
 /**
  * Class Router to check if a request is runnable by one of its controller and pass it to the selected controller.
- * This router reuse the Symfony matcher component to find controller and routes to use.
+ * This router reuse the Symfony matcher component to find controller and routes to use. Only controller as service
+ * (The matcher returns a callable and not the controller's identifier Controller::Action). If the controller is not
+ * a callable, this router ignores the route.
  *
  * The router can stop the propagation in the manager by calling stopPropagation.
  *
@@ -57,7 +59,7 @@ class Router implements RouterInterface
      */
     private $processor;
 
-    /**self
+    /**
      * Router constructor.
      * @param UrlMatcherInterface $urlMatcher
      * @param ProcessorInterface $processor
@@ -71,7 +73,8 @@ class Router implements RouterInterface
     }
 
     /**
-     * Method to find the controller to call for this method via the Symfony Matcher.
+     * Method to find the controller to call for this method via the Symfony Matcher. Return only controller as service
+     * (callable provided by the Symfony matcher), ignore other.
      *
      * @param ServerRequestInterface $request
      *

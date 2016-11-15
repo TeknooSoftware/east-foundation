@@ -60,7 +60,7 @@ interface ParameterInterface extends ImmutableInterface
     public function hasClass(): bool;
 
     /**
-     * Toget the \ReflectionClass instance representing the accepted class's instance for this controller's parameter.
+     * To get the \ReflectionClass instance representing the accepted class's instance for this controller's parameter.
      * If the parameter has no default value, the method must throw a \LogicException.
      *
      * @return \ReflectionClass

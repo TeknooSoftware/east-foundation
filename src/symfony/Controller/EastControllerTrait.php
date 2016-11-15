@@ -265,7 +265,7 @@ trait EastControllerTrait
             return null;
         }
 
-        /**
+        /*
          * @var TokenInterface
          */
         if (!is_callable([$token, 'getUser']) || !is_object($user = $token->getUser())) {

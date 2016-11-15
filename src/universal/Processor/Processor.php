@@ -30,9 +30,12 @@ use Teknoo\Immutable\ImmutableInterface;
 use Teknoo\Immutable\ImmutableTrait;
 
 /**
- * Class Processor to instantiate controller action and pass the request.
+ * Processor implementation to call each controller callable returned by the
+ * router the PSR11 Server Request, the ClientInterface instance and other callable's argument founded in the request.
  *
- * All public method of the manager must only return the self client or a clone instance.
+ * If some arguments are missing in the request. The processor must throws exceptions.
+ *
+ * The Processor is independent of Symfony.
  *
  * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
  *
@@ -129,7 +132,7 @@ class Processor implements ProcessorInterface, ImmutableInterface
         $attributes = $request->getAttributes();
 
         $arguments = array();
-        /**
+        /*
          * @var ParameterInterface
          */
         foreach ($parameters as $param) {

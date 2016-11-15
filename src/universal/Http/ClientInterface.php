@@ -26,6 +26,7 @@ use Psr\Http\Message\ResponseInterface;
 /**
  * ClientInterface is a contract to create object representing the client in the server side. The client must be
  * agnostic and accepts only \Throwable exception and PSR7 response.
+ *
  * All public method of the client must only return the self client or a clone instance.
  *
  * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)

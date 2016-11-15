@@ -31,8 +31,6 @@ use Psr\Http\Message\ServerRequestInterface;
  *
  * The router can stop the propagation in the manager by calling stopPropagation.
  *
- * All public method of the manager must only return the self client or a clone instance.
- *
  * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
  *
  * @link        http://teknoo.software/east Project website

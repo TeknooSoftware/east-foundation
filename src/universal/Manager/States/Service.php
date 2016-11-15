@@ -48,7 +48,7 @@ class Service implements StateInterface
 
     private function running()
     {
-        /*
+        /**
          * Method to call to process a request in East Foundation by East's controller.
          *
          * @param ClientInterface        $client
@@ -67,7 +67,7 @@ class Service implements StateInterface
     }
     private function doRegisterRouter()
     {
-        /*
+        /**
          * Method to register router in the manager to process request.
          *
          * @param RouterInterface $router
@@ -83,7 +83,7 @@ class Service implements StateInterface
 
     private function doUnregisterRouter()
     {
-        /*
+        /**
          * Method to unregister router in the manager to process request.
          *
          * @param RouterInterface $router

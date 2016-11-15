@@ -102,9 +102,12 @@ class Result implements ResultInterface
     {
         $parameters = [];
 
+        //Use the Reflection API to create Parameter Value object
         foreach ($this->getReflectionInstance()->getParameters() as $param) {
             $name = $param->getName();
             $hasDefault = $param->isDefaultValueAvailable();
+
+            //Default value. To null if the parameter has no default value
             $defaultValue = null;
             if (true === $hasDefault) {
                 $defaultValue = $param->getDefaultValue();

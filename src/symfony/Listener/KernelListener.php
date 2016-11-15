@@ -22,10 +22,9 @@
 namespace Teknoo\East\FoundationBundle\Listener;
 
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
-use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
-use Teknoo\East\FoundationBundle\Http\Client;
+use Teknoo\East\FoundationBundle\Http\ClientWithResponseEventInterface;
 
 /**
  * Class KernelListener to listen the event "kernel.request" sent by Symfony and pass requests to the East Foundation's
@@ -48,9 +47,9 @@ class KernelListener
     private $manager;
 
     /**
-     * @var HttpFoundationFactory
+     * @var ClientWithResponseEventInterface
      */
-    private $httpFoundationFactory;
+    private $clientWithResponseEvent;
 
     /**
      * @var DiactorosFactory
@@ -61,16 +60,16 @@ class KernelListener
      * KernelListener constructor.
      *
      * @param ManagerInterface      $manager
-     * @param HttpFoundationFactory $httpFactory
+     * @param ClientWithResponseEventInterface $clientWithResponseEvent
      * @param DiactorosFactory      $diactorosFactory
      */
     public function __construct(
         ManagerInterface $manager,
-        HttpFoundationFactory $httpFactory,
+        ClientWithResponseEventInterface $clientWithResponseEvent,
         DiactorosFactory $diactorosFactory
     ) {
         $this->manager = $manager;
-        $this->httpFoundationFactory = $httpFactory;
+        $this->clientWithResponseEvent = $clientWithResponseEvent;
         $this->diactorosFactory = $diactorosFactory;
     }
 
@@ -81,9 +80,9 @@ class KernelListener
      */
     public function onKernelRequest(GetResponseEvent $event): KernelListener
     {
-        $client = new Client($event, $this->httpFoundationFactory);
+        $this->clientWithResponseEvent->setGetResponseEvent($event);
         $this->manager->receiveRequestFromClient(
-            $client,
+            $this->clientWithResponseEvent,
             $this->diactorosFactory->createRequest(
                 $event->getRequest()
             )

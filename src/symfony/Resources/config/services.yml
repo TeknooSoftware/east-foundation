@@ -1,34 +1,43 @@
 parameters:
-  east.processor.class: 'Teknoo\East\Foundation\Processor\Processor'
-  east.router.class: 'Teknoo\East\Foundation\Router\Router'
-  east.manager.class: 'Teknoo\East\Foundation\Manager\Manager'
-  east.controller.class: 'Teknoo\East\Foundation\Controller\Controller'
-  east.listener.kernel.class: 'Teknoo\East\Foundation\Listener\KernelListener'
+  teknoo.east.processor.class: 'Teknoo\East\Foundation\Processor'
+  teknoo.east.manager.class: 'Teknoo\East\Foundation\Manager'
+  teknoo.east.symfony.prototype.client.class: 'Teknoo\East\FoundationBundle\Http\Client'
+  teknoo.east.symfony.router.class: 'Teknoo\East\FoundationBundle\Router\Router'
+  teknoo.east.symfony.listener.kernel.class: 'Teknoo\East\FoundationBundle\Listener\KernelListener'
 
 services:
-  east.processor:
-    class: '%east.processor.class%'
+  #Standard East Processor
+  teknoo.east.processor:
+    class: '%teknoo.east.processor.class%'
     arguments:
-      - '@service_container'
       - '@logger'
 
-  east.router:
-    class: '%east.router.class%'
+  #Standard East manager
+  teknoo.east.manager:
+    class: '%teknoo.east.manager.class%'
+    calls:
+      - ['registerRouter', ['@teknoo.east.symfony.router']]
+
+  #Symfony Client
+  teknoo.east.symfony.prototype.client:
+    class: '%teknoo.east.symfony.prototype.client.class%'
+    argument:
+      - '@sensio_framework_extra.psr7.http_foundation_factory'
+    shared: false
+
+  #Symfony router
+  teknoo.east.symfony.router:
+    class: '%teknoo.east.symfony.router.class%'
     arguments:
       - '@router'
-      - '@east.processor'
+      - '@teknoo.east.processor'
 
-  east.manager:
-    class: '%east.manager.class%'
-    calls:
-      - ['registerRouter', ['@east.router']]
-
-  #events
-  east.listener.kernel:
-    class: '%east.listener.kernel.class%'
+  #Symfony kernel event listener
+  teknoo.east.symfony.listener.kernel:
+    class: '%teknoo.east.symfony.listener.kernel.class%'
     arguments:
-      - '@east.manager'
-      - '@sensio_framework_extra.psr7.http_foundation_factory'
+      - '@teknoo.east.manager'
+      - '@teknoo.east.symfony.prototype.client'
       - '@sensio_framework_extra.psr7.http_message_factory'
     tags:
       - { name: 'kernel.event_listener', event: 'kernel.request', method: 'onKernelRequest' }

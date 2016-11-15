@@ -26,9 +26,10 @@ use Psr\Http\Message\ServerRequestInterface;
 use Teknoo\East\Foundation\Router\ResultInterface;
 
 /**
- * Interface ProcessorInterface is a contract to create processor to instantiate controller action and pass the request.
+ * Interface ProcessorInterface is a contract to create processor to call each controller callable returned by the
+ * router the PSR11 Server Request, the ClientInterface instance and other callable's argument founded in the request.
  *
- * All public method of the manager must only return the self client or a clone instance.
+ * If some arguments are missing in the request. The processor must throws exceptions.
  *
  * @copyright   Copyright (c) 2009-2016 Richard Déloge (richarddeloge@gmail.com)
  *

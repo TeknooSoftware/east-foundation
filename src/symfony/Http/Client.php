@@ -27,7 +27,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Teknoo\East\Foundation\Http\ClientInterface;
 
-class Client implements ClientInterface
+class Client implements ClientWithResponseEventInterface
 {
     /**
      * @var GetResponseEvent
@@ -42,13 +42,25 @@ class Client implements ClientInterface
     /**
      * Client constructor.
      *
-     * @param GetResponseEvent      $getResponseEvent
      * @param HttpFoundationFactory $httpFoundationFactory
+     * @param GetResponseEvent|null $getResponseEvent
      */
-    public function __construct(GetResponseEvent $getResponseEvent, HttpFoundationFactory $httpFoundationFactory)
+    public function __construct(HttpFoundationFactory $httpFoundationFactory, GetResponseEvent $getResponseEvent=null)
+    {
+        $this->httpFoundationFactory = $httpFoundationFactory;
+        if ($getResponseEvent instanceof GetResponseEvent) {
+            $this->setGetResponseEvent($getResponseEvent);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setGetResponseEvent(GetResponseEvent $getResponseEvent): ClientWithResponseEventInterface
     {
         $this->getResponseEvent = $getResponseEvent;
-        $this->httpFoundationFactory = $httpFoundationFactory;
+
+        return $this;
     }
 
     /**
@@ -56,6 +68,10 @@ class Client implements ClientInterface
      */
     public function responseFromController(ResponseInterface $response): ClientInterface
     {
+        if (!$this->getResponseEvent instanceof GetResponseEvent) {
+            throw new \RuntimeException('Error, the getResponseEvent has not been set into the client');
+        }
+
         $this->getResponseEvent->setResponse(
             $this->httpFoundationFactory->createResponse($response)
         );
@@ -68,6 +84,10 @@ class Client implements ClientInterface
      */
     public function errorInRequest(\Throwable $throwable): ClientInterface
     {
+        if (!$this->getResponseEvent instanceof GetResponseEvent) {
+            throw new \RuntimeException('Error, the getResponseEvent has not been set into the client');
+        }
+
         $this->getResponseEvent->setResponse(
             new Response(
                 $throwable->getMessage(),
