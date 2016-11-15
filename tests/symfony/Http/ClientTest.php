@@ -121,6 +121,23 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @expectedException \RuntimeException
+     */
+    public function testResponseFromControllerWithoutGetResponseEvent()
+    {
+        /**
+         * @var ResponseInterface
+         */
+        $response = $this->createMock(ResponseInterface::class);
+
+        $client = new Client($this->getHttpFoundationFactoryMock());
+        self::assertInstanceOf(
+            $this->getClientClass(),
+            $client->responseFromController($response)
+        );
+    }
+
+    /**
      * @expectedException \TypeError
      */
     public function testResponseFromControllerError()
@@ -139,6 +156,18 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             ->willReturnSelf();
 
         $client = $this->buildClient();
+        self::assertInstanceOf(
+            $this->getClientClass(),
+            $client->errorInRequest(new \Exception('fooBar'))
+        );
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testErrorInRequestWithoutGetResponseEvent()
+    {
+        $client = new Client($this->getHttpFoundationFactoryMock());
         self::assertInstanceOf(
             $this->getClientClass(),
             $client->errorInRequest(new \Exception('fooBar'))
