@@ -10,7 +10,7 @@
 To install the project and run the tests, you need to clone it first:
 
 ```sh
-$ git clone git://github.com/TeknooSoftware/east-framework
+$ git clone git://github.com/TeknooSoftware/east-foundation
 ```
 
 You will then need to run a composer installation:

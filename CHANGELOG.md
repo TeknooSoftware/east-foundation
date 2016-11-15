@@ -1,4 +1,17 @@
-#Teknoo Software - East Framework - Change Log
+#Teknoo Software - East Foundation - Change Log
+
+##[0.0.4] - 2016-11-19
+###Updated
+- Rename the project "East Framework" to "East Foundation"
+- Transform the bundle to universal package, usable with any PSR11 Framework, a Symfony Bundle is already provided.
+- Behavior of Router : Must return a ResultInterface instance (a value object) with the callable to use as controller
+- Behavior of Processor : Independent of Symfony, to use only Router's result.
+
+###Added
+- Support PSR-11 to be independent with Symfony
+ 
+###Removed
+- Base Symfony Controller
 
 ##[0.0.3] - 2016-08-04
 ###Fixed
