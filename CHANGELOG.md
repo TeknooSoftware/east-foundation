@@ -1,6 +1,6 @@
 #Teknoo Software - East Foundation - Change Log
 
-##[0.0.4] - 2016-11-19
+##[0.0.4-alpha1] - 2016-11-19
 ###Updated
 - Rename the project "East Framework" to "East Foundation"
 - Transform the bundle to universal package, usable with any PSR11 Framework, a Symfony Bundle is already provided.
