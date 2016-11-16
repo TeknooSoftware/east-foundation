@@ -1,6 +1,6 @@
 #Teknoo Software - East Foundation - Change Log
 
-##[0.0.4-alpha1] - 2016-11-19
+##[0.0.4-alpha4] - 2016-11-19
 ###Updated
 - Rename the project "East Framework" to "East Foundation"
 - Transform the bundle to universal package, usable with any PSR11 Framework, a Symfony Bundle is already provided.
@@ -12,6 +12,19 @@
  
 ###Removed
 - Base Symfony Controller
+
+##[0.0.4-alpha3] - 2016-10-11
+###Fix
+- Remove dead code, useless with States 3.0
+- Fix bad namespace in manager
+
+##[0.0.4-alpha2] - 2016-10-11
+###Fix
+- Travis configuration
+
+##[0.0.4-alpha1] - 2016-10-11
+###Updated
+- Migrate to States 3.0
 
 ##[0.0.3] - 2016-08-04
 ###Fixed
