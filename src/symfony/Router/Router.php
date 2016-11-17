@@ -67,9 +67,10 @@ class Router implements RouterInterface
 
     /**
      * Router constructor.
+     *
      * @param UrlMatcherInterface $urlMatcher
-     * @param ContainerInterface $container
-     * @param ProcessorInterface $processor
+     * @param ContainerInterface  $container
+     * @param ProcessorInterface  $processor
      */
     public function __construct(
         UrlMatcherInterface $urlMatcher,

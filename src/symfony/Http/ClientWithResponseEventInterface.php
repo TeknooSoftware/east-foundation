@@ -27,8 +27,6 @@ use Teknoo\East\Foundation\Http\ClientInterface;
 /**
  * Interface NeedResponseEventInterface to complete Teknoo\East\Foundation\Http\ClientInterface to define a method
  * to register the GetResponseEvent instance into the client via the KernelListener.
- *
- * @package Teknoo\East\FoundationBundle\Http
  */
 interface ClientWithResponseEventInterface extends ClientInterface
 {
@@ -36,6 +34,7 @@ interface ClientWithResponseEventInterface extends ClientInterface
      * To register the GetResponseEvent instance into the client via the KernelListener.
      *
      * @param GetResponseEvent $getResponseEvent
+     *
      * @return self
      */
     public function setGetResponseEvent(GetResponseEvent $getResponseEvent): ClientWithResponseEventInterface;

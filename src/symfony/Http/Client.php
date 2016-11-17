@@ -45,7 +45,7 @@ class Client implements ClientWithResponseEventInterface
      * @param HttpFoundationFactory $httpFoundationFactory
      * @param GetResponseEvent|null $getResponseEvent
      */
-    public function __construct(HttpFoundationFactory $httpFoundationFactory, GetResponseEvent $getResponseEvent=null)
+    public function __construct(HttpFoundationFactory $httpFoundationFactory, GetResponseEvent $getResponseEvent = null)
     {
         $this->httpFoundationFactory = $httpFoundationFactory;
         if ($getResponseEvent instanceof GetResponseEvent) {

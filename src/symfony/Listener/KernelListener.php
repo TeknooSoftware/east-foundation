@@ -59,9 +59,9 @@ class KernelListener
     /**
      * KernelListener constructor.
      *
-     * @param ManagerInterface      $manager
+     * @param ManagerInterface                 $manager
      * @param ClientWithResponseEventInterface $clientWithResponseEvent
-     * @param DiactorosFactory      $diactorosFactory
+     * @param DiactorosFactory                 $diactorosFactory
      */
     public function __construct(
         ManagerInterface $manager,
