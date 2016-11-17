@@ -35,7 +35,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  * @author      Richard Déloge <richarddeloge@gmail.com>
  * @covers \Teknoo\East\FoundationBundle\EastFoundationBundle
  */
-class EastFrameworkBundleTest extends \PHPUnit_Framework_TestCase
+class EastFoundationBundleTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @return EastFoundationBundle
