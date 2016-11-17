@@ -1,6 +1,6 @@
 parameters:
-  teknoo.east.processor.class: 'Teknoo\East\Foundation\Processor'
-  teknoo.east.manager.class: 'Teknoo\East\Foundation\Manager'
+  teknoo.east.processor.class: 'Teknoo\East\Foundation\Processor\Processor'
+  teknoo.east.manager.class: 'Teknoo\East\Foundation\Manager\Manager'
   teknoo.east.symfony.prototype.client.class: 'Teknoo\East\FoundationBundle\Http\Client'
   teknoo.east.symfony.router.class: 'Teknoo\East\FoundationBundle\Router\Router'
   teknoo.east.symfony.listener.kernel.class: 'Teknoo\East\FoundationBundle\Listener\KernelListener'
@@ -21,7 +21,7 @@ services:
   #Symfony Client
   teknoo.east.symfony.prototype.client:
     class: '%teknoo.east.symfony.prototype.client.class%'
-    argument:
+    arguments:
       - '@sensio_framework_extra.psr7.http_foundation_factory'
     shared: false
 
@@ -30,6 +30,7 @@ services:
     class: '%teknoo.east.symfony.router.class%'
     arguments:
       - '@router'
+      - '@service_container'
       - '@teknoo.east.processor'
 
   #Symfony kernel event listener
