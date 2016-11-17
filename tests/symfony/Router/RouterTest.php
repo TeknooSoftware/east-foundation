@@ -22,6 +22,7 @@
 namespace Teknoo\Tests\East\FoundationBundle\Router;
 
 use Psr\Http\Message\ServerRequestInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
@@ -49,6 +50,11 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     private $matcher;
 
     /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    /**
      * @var ProcessorInterface
      */
     private $processor;
@@ -63,6 +69,18 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         }
 
         return $this->matcher;
+    }
+
+    /**
+     * @return ContainerInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private function getContainerMock(): ContainerInterface
+    {
+        if (!$this->container instanceof ContainerInterface) {
+            $this->container = $this->createMock(ContainerInterface::class);
+        }
+
+        return $this->container;
     }
 
     /**
@@ -82,7 +100,11 @@ class RouterTest extends \PHPUnit_Framework_TestCase
      */
     private function buildRouter(): Router
     {
-        return new Router($this->getUrlMatcherMock(), $this->getProcessorMock());
+        return new Router(
+            $this->getUrlMatcherMock(),
+            $this->getContainerMock(),
+            $this->getProcessorMock()
+        );
     }
 
     /**
@@ -233,6 +255,38 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testReceiveRequestFromServerWithControllerInContainerNotCallable()
+    {
+        /**
+         * @var \PHPUnit_Framework_MockObject_MockObject|ClientInterface
+         */
+        $client = $this->createMock(ClientInterface::class);
+        /**
+         * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject $request
+         */
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->expects(self::any())->method('getUri')->willReturn(new class() extends Uri {
+        });
+        /**
+         * @var ManagerInterface|\PHPUnit_Framework_MockObject_MockObject $manager
+         */
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects(self::never())->method('stopPropagation')->willReturnSelf();
+
+        $this->getUrlMatcherMock()->expects(self::any())->method('match')->willReturn(['_controller' => 'fooBar']);
+
+        $this->getContainerMock()->expects(self::any())->method('has')->with('fooBar')->willReturn(true);
+        $this->getContainerMock()->expects(self::any())->method('get')->with('fooBar')->willReturn('foo::bar');
+
+
+        $this->getProcessorMock()->expects(self::never())->method('executeRequest')->willReturnSelf();
+
+        self::assertInstanceOf(
+            $this->getRouterClass(),
+            $this->buildRouter()->receiveRequestFromServer($client, $request, $manager)
+        );
+    }
+
     public function testReceiveRequestFromServerWithController()
     {
         /**
@@ -253,6 +307,38 @@ class RouterTest extends \PHPUnit_Framework_TestCase
 
         $this->getUrlMatcherMock()->expects(self::any())->method('match')->willReturn(['_controller' => function () {
         }]);
+
+        $this->getProcessorMock()->expects(self::once())->method('executeRequest')->willReturnSelf();
+
+        self::assertInstanceOf(
+            $this->getRouterClass(),
+            $this->buildRouter()->receiveRequestFromServer($client, $request, $manager)
+        );
+    }
+
+    public function testReceiveRequestFromServerWithControllerInCOntainer()
+    {
+        /**
+         * @var \PHPUnit_Framework_MockObject_MockObject|ClientInterface
+         */
+        $client = $this->createMock(ClientInterface::class);
+        /**
+         * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject $request
+         */
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->expects(self::any())->method('getUri')->willReturn(new class() extends Uri {
+        });
+        /**
+         * @var ManagerInterface|\PHPUnit_Framework_MockObject_MockObject $manager
+         */
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects(self::once())->method('stopPropagation')->willReturnSelf();
+
+        $this->getUrlMatcherMock()->expects(self::any())->method('match')->willReturn(['_controller' => 'fooBar']);
+
+        $this->getContainerMock()->expects(self::any())->method('has')->with('fooBar')->willReturn(true);
+        $this->getContainerMock()->expects(self::any())->method('get')->with('fooBar')->willReturn(function () {
+        });
 
         $this->getProcessorMock()->expects(self::once())->method('executeRequest')->willReturnSelf();
 

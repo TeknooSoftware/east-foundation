@@ -21,6 +21,7 @@
 
 namespace Teknoo\East\FoundationBundle\Router;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
@@ -55,6 +56,11 @@ class Router implements RouterInterface
     private $matcher;
 
     /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    /**
      * @var ProcessorInterface
      */
     private $processor;
@@ -62,13 +68,16 @@ class Router implements RouterInterface
     /**
      * Router constructor.
      * @param UrlMatcherInterface $urlMatcher
+     * @param ContainerInterface $container
      * @param ProcessorInterface $processor
      */
     public function __construct(
         UrlMatcherInterface $urlMatcher,
+        ContainerInterface $container,
         ProcessorInterface $processor
     ) {
         $this->matcher = $urlMatcher;
+        $this->container = $container;
         $this->processor = $processor;
     }
 
@@ -91,8 +100,21 @@ class Router implements RouterInterface
                 )
             );
 
-            if (isset($parameters['_controller']) && \is_callable($parameters['_controller'])) {
-                return $parameters['_controller'];
+            if (!empty($parameters['_controller'])) {
+                if (\is_callable($parameters['_controller'])) {
+                    return $parameters['_controller'];
+                }
+
+                if ($this->container->has($parameters['_controller'])) {
+                    /**
+                     * @var callable $entry
+                     */
+                    $entry = $this->container->get($parameters['_controller']);
+
+                    if (\is_callable($entry)) {
+                        return $entry;
+                    }
+                }
             }
         } catch (ResourceNotFoundException $e) {
             /* Do nothing, keep the framework to manage it */
