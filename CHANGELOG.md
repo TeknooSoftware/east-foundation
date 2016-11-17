@@ -1,6 +1,17 @@
 #Teknoo Software - East Foundation - Change Log
 
-##[0.0.4-alpha4] - 2016-11-19
+##[0.0.4-alpha5] - 2016-11-18
+###Fixed
+- Fix issue in namespace defined in composer file
+- Fix CompilerPass in Symfony Bundle to support new Controller behavior
+- Fix several mistakes
+- fix errors in symfony bundle services.yml and add service container into router
+
+###Updated
+- Update router to find controller callable from DI container
+- Complete tests on Processor in universal package
+
+##[0.0.4-alpha4] - 2016-11-16
 ###Updated
 - Rename the project "East Framework" to "East Foundation"
 - Transform the bundle to universal package, usable with any PSR11 Framework, a Symfony Bundle is already provided.
