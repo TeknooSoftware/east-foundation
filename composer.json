@@ -40,8 +40,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Teknoo\\Tests\\East\\Fundation\\": "tests/universal",
-            "Teknoo\\Tests\\East\\FundationBundle\\": "tests/symfony"
+            "Teknoo\\Tests\\East\\Foundation\\": "tests/universal",
+            "Teknoo\\Tests\\East\\FoundationBundle\\": "tests/symfony"
         }
     },
     "archive": {
