@@ -74,7 +74,7 @@ class EastFrameworkCompilerPassTest extends \PHPUnit_Framework_TestCase
     public function testProcess()
     {
         $def = $this->createMock(Definition::class);
-        $def->expects($this->exactly(2))->method('addMethodCall')->willReturnSelf();
+        $def->expects($this->exactly(6))->method('addMethodCall')->willReturnSelf();
 
         $this->getContainerBuilderMock()
             ->expects(self::any())
