@@ -28,6 +28,7 @@ use Teknoo\East\Foundation\Processor\Processor;
 use Teknoo\East\Foundation\Processor\ProcessorInterface;
 use Teknoo\East\Foundation\Router\Parameter;
 use Teknoo\East\Foundation\Router\ResultInterface;
+use Teknoo\East\FoundationBundle\Http\Client;
 
 /**
  * Class ProcessorTest.
@@ -73,6 +74,51 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
+
+        /**
+         * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject
+         */
+        $requestMock = $this->createMock(ServerRequestInterface::class);
+        $requestMock->expects(self::any())->method('getAttributes')->willReturn(['bar' => 456, 'foo' => 123]);
+
+        $callableController = function (
+            ServerRequestInterface $r,
+            ClientInterface $c,
+            $foo,
+            $bar,
+            $default = 789
+        ) use ($requestMock, $clientMock) {
+            self::assertEquals($requestMock, $r);
+            self::assertEquals($clientMock, $c);
+            self::assertEquals(123, $foo);
+            self::assertEquals(456, $bar);
+            self::assertEquals(789, $default);
+        };
+
+        $routerResult = $this->createMock(ResultInterface::class);
+        $routerResult->expects(self::any())->method('getController')->willReturn($callableController);
+        $routerResult->expects(self::any())->method('getParameters')->willReturn([
+            new Parameter('r', false, null, new \ReflectionClass(ServerRequestInterface::class)),
+            new Parameter('c', false, null, new \ReflectionClass(ClientInterface::class)),
+            new Parameter('foo', false, null, null),
+            new Parameter('bar', false, null, null),
+            new Parameter('default', true, 789, null),
+        ]);
+        $routerResult->expects(self::any())->method('getNext')->willReturn(null);
+
+        self::assertInstanceOf(ProcessorInterface::class, $this->buildProcessor()->executeRequest(
+            $clientMock,
+            $requestMock,
+            $routerResult
+        ));
+    }
+
+    public function testExecuteRequestWithSymfonyClient()
+    {
+        /**
+         * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
+         */
+        $clientMock = $this->createMock(Client::class);
 
         /**
          * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject
