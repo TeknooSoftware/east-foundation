@@ -14,8 +14,7 @@ to manage routes and find controller to call.
 Demo
 ----
 
-Sorry, there are no simple example to show here, but you can watch a demo demo with 
-Symfony 3.0 available [here](https://github.com/TeknooSoftware/east-foundation-demo)
+A demo with Symfony 3.0 is available [here](https://github.com/TeknooSoftware/east-foundation-demo).
 
 Installation & Requirements
 ---------------------------
