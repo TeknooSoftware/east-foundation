@@ -1,5 +1,10 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[0.0.4-alpha7] - 2016-11-19
+###Removed
+- Remove States Life Cyclable requirement in composer
+
+
 ##[0.0.4-alpha6] - 2016-11-19
 ###Added
 - Service provider following PSR11
