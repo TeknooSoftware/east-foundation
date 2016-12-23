@@ -1,5 +1,10 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[0.0.4-alpha8] - 2016-12-23
+###Updated
+- Travis to check PHP 7.1
+- Requires States 3.x libraries in beta 
+
 ##[0.0.4-alpha7] - 2016-11-19
 ###Removed
 - Remove States Life Cyclable requirement in composer

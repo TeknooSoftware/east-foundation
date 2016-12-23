@@ -16,8 +16,8 @@
         "php": "~7.0",
         "psr/http-message": "~1.0",
         "teknoo/immutable": "~0.0.1",
-        "teknoo/states": "^3.0.0-alpha4",
-        "teknoo/states-bundle": "^3.0.0-alpha8",
+        "teknoo/states": "^3.0.0-beta1",
+        "teknoo/states-bundle": "^3.0.0-beta1",
         "container-interop/service-provider":"^0.3.0"
     },
     "require-dev": {
