@@ -42,6 +42,7 @@ class EastFoundationServiceProvider implements ServiceProvider
 
     /**
      * @param ContainerInterface $container
+     *
      * @return ProcessorInterface
      */
     public static function createProcessor(ContainerInterface $container): ProcessorInterface
