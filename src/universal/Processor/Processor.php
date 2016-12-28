@@ -129,7 +129,7 @@ class Processor implements ProcessorInterface, ImmutableInterface
         callable $controller,
         array $parameters
     ): array {
-        $attributes = $request->getAttributes();
+        $attributes = array_merge($request->getAttributes(), (array) $request->getParsedBody());
 
         $arguments = array();
         /*

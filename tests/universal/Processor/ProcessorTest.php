@@ -303,7 +303,8 @@ class ProcessorTest extends \PHPUnit_Framework_TestCase
          * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject
          */
         $requestMock = $this->createMock(ServerRequestInterface::class);
-        $requestMock->expects(self::any())->method('getAttributes')->willReturn(['bar' => 456, 'foo' => 123]);
+        $requestMock->expects(self::any())->method('getAttributes')->willReturn(['bar' => 456]);
+        $requestMock->expects(self::any())->method('getParsedBody')->willReturn(['foo' => 123]);
 
         $callableController = new class() {
             /**
