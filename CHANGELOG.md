@@ -1,5 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[0.0.4-alpha10] - 2016-12-28
+##Fixed
+- Processor can extract POST values
+
 ##[0.0.4-alpha9] - 2016-12-28
 ##Fixed
 - Update tests to check behavior on multiple request 
