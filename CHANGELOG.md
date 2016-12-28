@@ -1,5 +1,10 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[0.0.4-alpha9] - 2016-12-28
+##Fixed
+- Update tests to check behavior on multiple request 
+- Fix bug with symfony sub request looping to manage uncatched exception
+
 ##[0.0.4-alpha8] - 2016-12-23
 ###Updated
 - Travis to check PHP 7.1
