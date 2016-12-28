@@ -224,4 +224,57 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
             $manager->receiveRequestFromClient($clientMock, $serverRequestMock)
         );
     }
+
+    public function testBehaviorMultipleReceiveRequestFromClient()
+    {
+        $manager = $this->buildManager();
+
+        /**
+         * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
+         */
+        $clientMock = $this->createMock(ClientInterface::class);
+
+        /**
+         * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject
+         */
+        $serverRequestMock = $this->createMock(ServerRequestInterface::class);
+
+        /**
+         * @var RouterInterface|\PHPUnit_Framework_MockObject_MockObject
+         */
+        $router1 = $this->createMock(RouterInterface::class);
+        $router1->expects(self::exactly(2))->method('receiveRequestFromServer')->willReturnSelf();
+        /**
+         * @var RouterInterface|\PHPUnit_Framework_MockObject_MockObject
+         */
+        $router2 = $this->createMock(RouterInterface::class);
+        $router2->expects(self::exactly(2))->method('receiveRequestFromServer');
+        $router2->expects(self::exactly(2))->method('receiveRequestFromServer')->willReturnCallback(
+            function ($clientPassed, $requestPassed, $managerPassed) use ($clientMock, $serverRequestMock, $manager) {
+                self::assertEquals($clientPassed, $clientMock);
+                self::assertEquals($requestPassed, $serverRequestMock);
+                self::assertNotSame($managerPassed, $manager);
+                $managerPassed->stopPropagation();
+            }
+        );
+
+        /**
+         * @var RouterInterface|\PHPUnit_Framework_MockObject_MockObject
+         */
+        $router3 = $this->createMock(RouterInterface::class);
+        $router3->expects(self::never())->method('receiveRequestFromServer');
+
+        $manager->registerRouter($router1);
+        $manager->registerRouter($router2);
+        $manager->registerRouter($router3);
+        self::assertInstanceOf(
+            $this->getManagerClass(),
+            $manager->receiveRequestFromClient($clientMock, $serverRequestMock)
+        );
+
+        self::assertInstanceOf(
+            $this->getManagerClass(),
+            $manager->receiveRequestFromClient($clientMock, $serverRequestMock)
+        );
+    }
 }

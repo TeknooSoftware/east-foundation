@@ -137,6 +137,34 @@ class KernelListenerTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testOnKernelRequestErrorLoopFromSymfony()
+    {
+        $symfonyRequest = new Request();
+        $symfonyRequest->attributes->set('exception', new \Exception());
+        $request = $this->createMock(GetResponseEvent::class);
+        $request->expects(self::any())->method('getRequest')->willReturn($symfonyRequest);
+
+        $this->getDiactorosFactoryMock()
+            ->expects(self::any())
+            ->method('createRequest')
+            ->willReturn(new ServerRequest());
+
+        $this->getClientWithResponseEventInterfaceMock()
+            ->expects(self::never())
+            ->method('setGetResponseEvent');
+
+        $this->getManagerMock()
+            ->expects(self::never())
+            ->method('receiveRequestFromClient');
+
+        self::assertInstanceOf(
+            $this->getKernelListenerClass(),
+            $this->buildKernelListener()->onKernelRequest(
+                $request
+            )
+        );
+    }
+
     /**
      * @expectedException \TypeError
      */
