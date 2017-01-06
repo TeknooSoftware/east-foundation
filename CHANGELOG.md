@@ -1,5 +1,10 @@
 #Teknoo Software - East Foundation - Change Log
 
+
+##[0.0.4-alpha11] - 2017-01-06
+##Updated
+- Use last States library version
+
 ##[0.0.4-alpha10] - 2016-12-28
 ##Fixed
 - Processor can extract POST values
