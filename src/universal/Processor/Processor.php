@@ -115,6 +115,7 @@ class Processor implements ProcessorInterface, ImmutableInterface
      * To get the controller representation / it's string name
      *
      * @param mixed $controller
+     *
      * @return string
      */
     private function getControllerRepresentation($controller)
