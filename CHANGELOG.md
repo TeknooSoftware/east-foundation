@@ -1,5 +1,12 @@
 #Teknoo Software - East Foundation - Change Log
 
+###[0.0.4-alpha12] - 2017-02-15
+###Fix
+- Code style fix
+- License file follow Github specs
+- Add tools to checks QA, use `make qa` and `make test`, `make` to initalize the project, (or `composer update`).
+- Update Travis to use this tool
+- Fix QA Errors
 
 ##[0.0.4-alpha11] - 2017-01-06
 ##Updated
