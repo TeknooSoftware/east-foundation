@@ -184,7 +184,10 @@ trait EastControllerTrait
         }
 
         if (!$this->twig instanceof \Twig_Environment) {
-            throw new \LogicException('You can not use the "renderView" method if the Templating Component or the Twig Bundle are not available.');
+            throw new \LogicException(
+                'You can not use the "renderView" method if the Templating Component or the '
+                .'Twig Bundle are not available.'
+            );
         }
 
         return $this->twig->render($view, $parameters);

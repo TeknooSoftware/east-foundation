@@ -60,16 +60,16 @@ class KernelListener
      * KernelListener constructor.
      *
      * @param ManagerInterface                 $manager
-     * @param ClientWithResponseEventInterface $clientWithResponseEvent
+     * @param ClientWithResponseEventInterface $event
      * @param DiactorosFactory                 $diactorosFactory
      */
     public function __construct(
         ManagerInterface $manager,
-        ClientWithResponseEventInterface $clientWithResponseEvent,
+        ClientWithResponseEventInterface $event,
         DiactorosFactory $diactorosFactory
     ) {
         $this->manager = $manager;
-        $this->clientWithResponseEvent = $clientWithResponseEvent;
+        $this->clientWithResponseEvent = $event;
         $this->diactorosFactory = $diactorosFactory;
     }
 

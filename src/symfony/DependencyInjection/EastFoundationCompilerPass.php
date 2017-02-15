@@ -45,9 +45,9 @@ class EastFoundationCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container): EastFoundationCompilerPass
     {
-        $taggedControllerService = $container->findTaggedServiceIds('east.controller.service');
+        $taggedControllers = $container->findTaggedServiceIds('east.controller.service');
 
-        foreach ($taggedControllerService as $id => $tags) {
+        foreach ($taggedControllers as $id => $tags) {
             $definition = $container->getDefinition($id);
             $definition->addMethodCall('setRouter', [new Reference('router')]);
             $definition->addMethodCall('setTwig', [new Reference('twig')]);

@@ -85,9 +85,9 @@ class Result implements ResultInterface
             return new \ReflectionMethod($this->controller[0], $this->controller[1]);
         } elseif (\is_object($this->controller) && !$this->controller instanceof \Closure) {
             //Reflection the method's arguments of the callable object
-            $r = new \ReflectionObject($this->controller);
+            $controllerReflected = new \ReflectionObject($this->controller);
 
-            return $r->getMethod('__invoke');
+            return $controllerReflected->getMethod('__invoke');
         }
 
         return new \ReflectionFunction($this->controller);

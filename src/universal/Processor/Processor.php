@@ -112,6 +112,24 @@ class Processor implements ProcessorInterface, ImmutableInterface
     }
 
     /**
+     * To get the controller representation / it's string name
+     *
+     * @param mixed $controller
+     * @return string
+     */
+    private function getControllerRepresentation($controller)
+    {
+        $repr = $controller;
+        if (\is_object($controller)) {
+            $repr = \get_class($controller);
+        } elseif (\is_array($controller) && 2 >= \count($controller)) {
+            $repr = \sprintf('%s::%s()', \get_class($controller[0]), $controller[1]);
+        }
+
+        return $repr;
+    }
+
+    /**
      * Parse arguments needed by the controller method (class's method, function or closure) to inject in the good order
      * values from the request. Detect also parameters needed the client instance and the server request instance to
      * pass them, like Symfony with Request instance.
@@ -139,34 +157,32 @@ class Processor implements ProcessorInterface, ImmutableInterface
             if (\array_key_exists($param->getName(), $attributes)) {
                 //Parameter's value is available in the request
                 $arguments[] = $attributes[$param->getName()];
+                continue;
             } elseif ($param->hasClass() && $param->getClass()->isInstance($request)) {
                 //The parameter need a instance of the request, pass it
                 $arguments[] = $request;
+                continue;
             } elseif ($param->hasClass() && $param->getClass()->isInstance($client)) {
                 //The parameter need a instance of the client, pass it
                 $arguments[] = $client;
+                continue;
             } elseif ($param->hasDefaultValue()) {
                 //The parameter's value is not available in the request but has a default value, get it
                 $arguments[] = $param->getDefaultValue();
-            } else {
-                //The parameter's value is not available in the request and has not a default value.
-                //Throw an exception, all values are needed to avoid PHP error.
-                if (\is_object($controller)) {
-                    $repr = \get_class($controller);
-                } elseif (\is_array($controller) && 2 >= \count($controller)) {
-                    $repr = \sprintf('%s::%s()', \get_class($controller[0]), $controller[1]);
-                } else {
-                    $repr = $controller;
-                }
-
-                throw new \RuntimeException(
-                    \sprintf(
-                        'Controller "%s" requires that you provide a value for the "$%s" argument '
-                        .'(because there is no default value or because there is a non optional argument after this one).',
-                        $repr, $param->getName()
-                    )
-                );
+                continue;
             }
+
+            //The parameter's value is not available in the request and has not a default value.
+            //Throw an exception, all values are needed to avoid PHP error.
+            $repr = $this->getControllerRepresentation($controller);
+            throw new \RuntimeException(
+                \sprintf(
+                    'Controller "%s" requires that you provide a value for the "$%s" argument '
+                    .'(because there is no default value or because there is a non optional argument after this one).',
+                    $repr,
+                    $param->getName()
+                )
+            );
         }
 
         return $arguments;

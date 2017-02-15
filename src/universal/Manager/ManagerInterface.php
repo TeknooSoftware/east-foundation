@@ -48,7 +48,10 @@ interface ManagerInterface
      *
      * @return ManagerInterface
      */
-    public function receiveRequestFromClient(ClientInterface $client, ServerRequestInterface $request): ManagerInterface;
+    public function receiveRequestFromClient(
+        ClientInterface $client,
+        ServerRequestInterface $request
+    ): ManagerInterface;
 
     /**
      * Method to register router in the manager to process request.
