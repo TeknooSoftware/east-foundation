@@ -1,6 +1,10 @@
 #Teknoo Software - East Foundation - Change Log
 
-###[0.0.4-alpha12] - 2017-02-15
+##[0.0.4-alpha13] - 2017-02-19
+###Added
+- Add Promise immutable object to facilitate writing of East Controller
+
+##[0.0.4-alpha12] - 2017-02-15
 ###Fix
 - Code style fix
 - License file follow Github specs
@@ -9,15 +13,15 @@
 - Fix QA Errors
 
 ##[0.0.4-alpha11] - 2017-01-06
-##Updated
+###Updated
 - Use last States library version
 
 ##[0.0.4-alpha10] - 2016-12-28
-##Fixed
+###Fixed
 - Processor can extract POST values
 
 ##[0.0.4-alpha9] - 2016-12-28
-##Fixed
+###Fixed
 - Update tests to check behavior on multiple request 
 - Fix bug with symfony sub request looping to manage uncatched exception
 

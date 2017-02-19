@@ -112,7 +112,7 @@ class Processor implements ProcessorInterface, ImmutableInterface
     }
 
     /**
-     * To get the controller representation / it's string name
+     * To get the controller representation / it's string name.
      *
      * @param mixed $controller
      *
