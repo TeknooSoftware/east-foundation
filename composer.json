@@ -27,7 +27,6 @@
         "phpmd/phpmd": "~2.6",
         "sebastian/phpcpd": "~3.0",
         "phploc/phploc": "~3.0",
-        "covex-nn/phpcb": "~1.0",
         "symfony/symfony": "~3.0",
         "symfony/framework-bundle": "~3.0",
         "symfony/console": "~3.0",
