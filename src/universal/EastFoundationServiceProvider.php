@@ -31,6 +31,13 @@ use Teknoo\East\Foundation\Processor\ProcessorInterface;
 
 /**
  * Definition provider following PSR 11 Draft to build an universal bundle/package.
+ *
+ * @copyright   Copyright (c) 2009-2017 Richard Déloge (richarddeloge@gmail.com)
+ *
+ * @link        http://teknoo.software/east Project website
+ *
+ * @license     http://teknoo.software/license/mit         MIT License
+ * @author      Richard Déloge <richarddeloge@gmail.com>
  */
 class EastFoundationServiceProvider implements ServiceProvider
 {

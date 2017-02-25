@@ -26,6 +26,13 @@ use Teknoo\East\Foundation\Promise\PromiseInterface;
 
 /**
  * @covers \Teknoo\East\Foundation\Promise\Promise
+ *
+ * @copyright   Copyright (c) 2009-2017 Richard Déloge (richarddeloge@gmail.com)
+ *
+ * @link        http://teknoo.software/east Project website
+ *
+ * @license     http://teknoo.software/license/mit         MIT License
+ * @author      Richard Déloge <richarddeloge@gmail.com>
  */
 class PromiseTest extends AbstractPromiseTest
 {

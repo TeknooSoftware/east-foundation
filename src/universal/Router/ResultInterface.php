@@ -26,6 +26,13 @@ use Teknoo\Immutable\ImmutableInterface;
 /**
  * Interface ResultInterface to represent immutable object implementing a result of a router. A router can return
  * several results for a same request. Next results are available from the method 'getNext'.
+ *
+ * @copyright   Copyright (c) 2009-2017 Richard Déloge (richarddeloge@gmail.com)
+ *
+ * @link        http://teknoo.software/east Project website
+ *
+ * @license     http://teknoo.software/license/mit         MIT License
+ * @author      Richard Déloge <richarddeloge@gmail.com>
  */
 interface ResultInterface extends ImmutableInterface
 {

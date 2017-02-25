@@ -23,6 +23,16 @@ namespace Teknoo\Tests\East\Foundation\Promise;
 
 use Teknoo\East\Foundation\Promise\PromiseInterface;
 
+/**
+ * Class AbstractPromiseTest
+ *
+ * @copyright   Copyright (c) 2009-2017 Richard Déloge (richarddeloge@gmail.com)
+ *
+ * @link        http://teknoo.software/east Project website
+ *
+ * @license     http://teknoo.software/license/mit         MIT License
+ * @author      Richard Déloge <richarddeloge@gmail.com>
+ */
 abstract class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
 {
     /**

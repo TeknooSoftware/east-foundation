@@ -25,6 +25,13 @@ use Teknoo\Immutable\ImmutableTrait;
 
 /**
  * ValueObject representing a parameter for a controller.
+ *
+ * @copyright   Copyright (c) 2009-2017 Richard Déloge (richarddeloge@gmail.com)
+ *
+ * @link        http://teknoo.software/east Project website
+ *
+ * @license     http://teknoo.software/license/mit         MIT License
+ * @author      Richard Déloge <richarddeloge@gmail.com>
  */
 class Parameter implements ParameterInterface
 {

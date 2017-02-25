@@ -45,6 +45,11 @@ class Running implements StateInterface
 {
     use StateTrait;
 
+    /**
+     * Builder to build a Generator to stop the list at reception of the stop message.
+     *
+     * @return \Closure
+     */
     private function iterateRouter()
     {
         /**
@@ -67,6 +72,11 @@ class Running implements StateInterface
         };
     }
 
+    /**
+     * Builder to dispatch the request to all routers while a message was not receive to stop the propaggation.
+     *
+     * @return \Closure
+     */
     private function dispatchRequest()
     {
         /**
@@ -93,6 +103,12 @@ class Running implements StateInterface
         };
     }
 
+    /**
+     * Builder to stop propagation to other routers when a router has determined the request is handle by one of its
+     * controllers.
+     *
+     * @return \Closure
+     */
     private function doStopPropagation()
     {
         /**

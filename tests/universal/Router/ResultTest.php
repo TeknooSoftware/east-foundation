@@ -26,6 +26,13 @@ use Teknoo\East\Foundation\Router\Result;
 use Teknoo\East\Foundation\Router\ResultInterface;
 
 /**
+ * @copyright   Copyright (c) 2009-2017 Richard Déloge (richarddeloge@gmail.com)
+ *
+ * @link        http://teknoo.software/east Project website
+ *
+ * @license     http://teknoo.software/license/mit         MIT License
+ * @author      Richard Déloge <richarddeloge@gmail.com>
+ *
  * @covers \Teknoo\East\Foundation\Router\Result
  */
 class ResultTest extends AbstractResultTest

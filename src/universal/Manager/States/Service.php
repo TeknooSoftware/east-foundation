@@ -46,6 +46,11 @@ class Service implements StateInterface
 {
     use StateTrait;
 
+    /**
+     * Builder to call to process a request in East Foundation by East's controller.
+     *
+     * @return \Closure
+     */
     private function running()
     {
         /**
@@ -65,6 +70,12 @@ class Service implements StateInterface
             return $this;
         };
     }
+
+    /**
+     * Builder to register router in the manager to process request.
+     *
+     * @return \Closure
+     */
     private function doRegisterRouter()
     {
         /**
@@ -81,6 +92,11 @@ class Service implements StateInterface
         };
     }
 
+    /**
+     * Builder to unregister router in the manager to process request.
+     *
+     * @return \Closure
+     */
     private function doUnregisterRouter()
     {
         /**
