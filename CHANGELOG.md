@@ -1,5 +1,10 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[0.0.4-beta1] - 2017-02-25
+###Release
+- First beta
+- Complete docs
+
 ##[0.0.4-alpha13] - 2017-02-19
 ###Added
 - Add Promise immutable object to facilitate writing of East Controller
