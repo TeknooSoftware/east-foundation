@@ -198,4 +198,16 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     {
         $this->buildClient()->setGetResponseEvent(new \stdClass());
     }
+
+    public function testClone()
+    {
+        $client = $this->buildClient();
+        $clonedClient = clone $client;
+
+        self::assertInstanceOf(Client::class, $clonedClient);
+
+        $reflectionProperty = new \ReflectionProperty($clonedClient, 'httpFoundationFactory');
+        $reflectionProperty->setAccessible(true);
+        self::assertNotSame($this->getHttpFoundationFactoryMock(), $reflectionProperty->getValue($clonedClient));
+    }
 }
