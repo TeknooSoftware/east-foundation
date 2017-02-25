@@ -111,7 +111,7 @@ class Client implements ClientWithResponseEventInterface
     }
 
     /**
-     * To deep clone all elements of the client
+     * To deep clone all elements of the client.
      */
     public function __clone()
     {
