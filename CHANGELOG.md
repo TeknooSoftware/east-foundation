@@ -3,7 +3,12 @@
 ##[0.0.4-beta1] - 2017-02-25
 ###Release
 - First beta
-- Complete docs
+- Complete documentations
+
+###Update
+- Rename EastEndPointTrait to EastEndPointTrait.
+- Symfony Client support deep cloning.
+- KernelListener clone client before use it.
 
 ##[0.0.4-alpha13] - 2017-02-19
 ###Added

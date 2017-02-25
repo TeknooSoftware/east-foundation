@@ -27,6 +27,18 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Teknoo\East\Foundation\Http\ClientInterface;
 
+/**
+ * Default implementation of Teknoo\East\Foundation\Http\ClientInterface and
+ * Teknoo\East\FoundationBundle\Http\ClientWithResponseEventInterface to create client integrated with Symfony and able
+ * to manage GetResponseEvent instance from Symfony Kernel loop.
+ *
+ * @copyright   Copyright (c) 2009-2017 Richard Déloge (richarddeloge@gmail.com)
+ *
+ * @link        http://teknoo.software/east Project website
+ *
+ * @license     http://teknoo.software/license/mit         MIT License
+ * @author      Richard Déloge <richarddeloge@gmail.com>
+ */
 class Client implements ClientWithResponseEventInterface
 {
     /**
@@ -96,5 +108,16 @@ class Client implements ClientWithResponseEventInterface
         );
 
         return $this;
+    }
+
+    /**
+     * To deep clone all elements of the client
+     */
+    public function __clone()
+    {
+        $this->httpFoundationFactory = clone $this->httpFoundationFactory;
+        if (!empty($this->getResponseEvent)) {
+            $this->getResponseEvent = clone $this->getResponseEvent;
+        }
     }
 }

@@ -19,13 +19,13 @@
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
 
-namespace Teknoo\Tests\East\FoundationBunlde\Controller;
+namespace Teknoo\Tests\East\FoundationBunlde\EndPoint;
 
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Teknoo\East\FoundationBundle\Controller\EastControllerTrait;
+use Teknoo\East\FoundationBundle\EndPoint\EastEndPointTrait;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\RedirectResponse;
@@ -39,9 +39,9 @@ use Zend\Diactoros\Response\RedirectResponse;
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
- * @covers \Teknoo\East\FoundationBundle\Controller\EastControllerTrait
+ * @covers \Teknoo\East\FoundationBundle\EndPoint\EastEndPointTrait
  */
-class EastControllerTraitTest extends \PHPUnit_Framework_TestCase
+class EastEndPointTraitTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @expectedException \LogicException
@@ -51,7 +51,7 @@ class EastControllerTraitTest extends \PHPUnit_Framework_TestCase
         self::assertEquals(
             '/foo/bar',
             (new class() {
-                use EastControllerTrait;
+                use EastEndPointTrait;
 
                 public function getUrl()
                 {
@@ -72,7 +72,7 @@ class EastControllerTraitTest extends \PHPUnit_Framework_TestCase
         self::assertEquals(
             '/foo/bar',
             (new class() {
-                use EastControllerTrait;
+                use EastEndPointTrait;
 
                 public function getUrl()
                 {
@@ -93,7 +93,7 @@ class EastControllerTraitTest extends \PHPUnit_Framework_TestCase
             ->willReturnSelf();
 
         $controller = (new class() {
-            use EastControllerTrait;
+            use EastEndPointTrait;
             public function getRedirect(ClientInterface $client)
             {
                 return $this->redirect($client, 'routeName');
@@ -123,7 +123,7 @@ class EastControllerTraitTest extends \PHPUnit_Framework_TestCase
             ->willReturnSelf();
 
         $controller = (new class() {
-            use EastControllerTrait;
+            use EastEndPointTrait;
 
             public function getRedirect(ClientInterface $client)
             {
@@ -151,7 +151,7 @@ class EastControllerTraitTest extends \PHPUnit_Framework_TestCase
         $twigEngine->expects(self::once())->method('render')->willReturn('fooBar');
 
         $controller = (new class() {
-            use EastControllerTrait;
+            use EastEndPointTrait;
 
             public function getRender(ClientInterface $client)
             {
@@ -176,7 +176,7 @@ class EastControllerTraitTest extends \PHPUnit_Framework_TestCase
             ->willReturnSelf();
 
         $controller = (new class() {
-            use EastControllerTrait;
+            use EastEndPointTrait;
 
             public function getRender(ClientInterface $client)
             {
@@ -203,7 +203,7 @@ class EastControllerTraitTest extends \PHPUnit_Framework_TestCase
             ->method('responseFromController');
 
         (new class() {
-            use EastControllerTrait;
+            use EastEndPointTrait;
 
             public function getRender(ClientInterface $client)
             {
@@ -218,7 +218,7 @@ class EastControllerTraitTest extends \PHPUnit_Framework_TestCase
     public function testCreateNotFoundException()
     {
         (new class() {
-            use EastControllerTrait;
+            use EastEndPointTrait;
 
             public function getCreateNotFoundException()
             {
@@ -233,7 +233,7 @@ class EastControllerTraitTest extends \PHPUnit_Framework_TestCase
     public function testCreateAccessDeniedException()
     {
         (new class() {
-            use EastControllerTrait;
+            use EastEndPointTrait;
 
             public function getCreateAccessDeniedException()
             {
@@ -248,7 +248,7 @@ class EastControllerTraitTest extends \PHPUnit_Framework_TestCase
     public function testGetUserNoStorage()
     {
         (new class() {
-            use EastControllerTrait;
+            use EastEndPointTrait;
 
             public function getGetUser()
             {
@@ -263,7 +263,7 @@ class EastControllerTraitTest extends \PHPUnit_Framework_TestCase
 
         self::assertEmpty(
             (new class() {
-                use EastControllerTrait;
+                use EastEndPointTrait;
 
                 public function getGetUser()
                 {
@@ -282,7 +282,7 @@ class EastControllerTraitTest extends \PHPUnit_Framework_TestCase
 
         self::assertEmpty(
             (new class() {
-                use EastControllerTrait;
+                use EastEndPointTrait;
 
                 public function getGetUser()
                 {
@@ -306,7 +306,7 @@ class EastControllerTraitTest extends \PHPUnit_Framework_TestCase
 
         self::assertEmpty(
             (new class() {
-                use EastControllerTrait;
+                use EastEndPointTrait;
 
                 public function getGetUser()
                 {
@@ -351,7 +351,7 @@ class EastControllerTraitTest extends \PHPUnit_Framework_TestCase
         self::assertInstanceOf(
             UserInterface::class,
             (new class() {
-                use EastControllerTrait;
+                use EastEndPointTrait;
 
                 public function getGetUser()
                 {

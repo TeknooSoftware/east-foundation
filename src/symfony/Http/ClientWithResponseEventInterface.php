@@ -26,7 +26,17 @@ use Teknoo\East\Foundation\Http\ClientInterface;
 
 /**
  * Interface NeedResponseEventInterface to complete Teknoo\East\Foundation\Http\ClientInterface to define a method
- * to register the GetResponseEvent instance into the client via the KernelListener.
+ * to register the GetResponseEvent instance into the client via the KernelListener and update it following the
+ * Kernel loop.
+ *
+ * @see http://symfony.com/doc/current/components/http_kernel.html
+ *
+ * @copyright   Copyright (c) 2009-2017 Richard Déloge (richarddeloge@gmail.com)
+ *
+ * @link        http://teknoo.software/east Project website
+ *
+ * @license     http://teknoo.software/license/mit         MIT License
+ * @author      Richard Déloge <richarddeloge@gmail.com>
  */
 interface ClientWithResponseEventInterface extends ClientInterface
 {

@@ -86,10 +86,11 @@ class KernelListener
             return $this;
         }
 
-        $this->clientWithResponseEvent->setGetResponseEvent($event);
+        $client = clone $this->clientWithResponseEvent;
+        $client->setGetResponseEvent($event);
 
         $this->manager->receiveRequestFromClient(
-            $this->clientWithResponseEvent,
+            $client,
             $this->diactorosFactory->createRequest(
                 $event->getRequest()
             )

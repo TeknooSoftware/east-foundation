@@ -19,7 +19,7 @@
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
 
-namespace Teknoo\East\FoundationBundle\Controller;
+namespace Teknoo\East\FoundationBundle\EndPoint;
 
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\Routing\RouterInterface;
@@ -32,7 +32,8 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Zend\Diactoros\Response;
 
 /**
- * Class Controller.
+ * Trait to help developer to write endpoint with Symfony (also called controller) and reuse Symfony component like
+ * router or twig engine?
  *
  * @copyright   Copyright (c) 2009-2017 Richard Déloge (richarddeloge@gmail.com)
  *
@@ -41,7 +42,7 @@ use Zend\Diactoros\Response;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-trait EastControllerTrait
+trait EastEndPointTrait
 {
     /**
      * @var RouterInterface
@@ -64,9 +65,11 @@ trait EastControllerTrait
     protected $tokenStorage;
 
     /**
+     * To inject the router into the trait, needed to generate url.
+     *
      * @param RouterInterface $router
      *
-     * @return EastControllerTrait
+     * @return EastEndPointTrait
      */
     public function setRouter(RouterInterface $router)
     {
@@ -76,9 +79,11 @@ trait EastControllerTrait
     }
 
     /**
+     * To inject the Twig engine to render views.
+     *
      * @param TwigEngine $templating
      *
-     * @return EastControllerTrait
+     * @return EastEndPointTrait
      */
     public function setTemplating(TwigEngine $templating)
     {
@@ -88,9 +93,11 @@ trait EastControllerTrait
     }
 
     /**
+     * To inject Twig to render views.
+     *
      * @param \Twig_Environment $twig
      *
-     * @return EastControllerTrait
+     * @return EastEndPointTrait
      */
     public function setTwig(\Twig_Environment $twig)
     {
@@ -100,9 +107,11 @@ trait EastControllerTrait
     }
 
     /**
+     * To inject the Token storage to extract users from session or token.
+     *
      * @param TokenStorageInterface $tokenStorage
      *
-     * @return EastControllerTrait
+     * @return EastEndPointTrait
      */
     public function setTokenStorage(TokenStorageInterface $tokenStorage)
     {
@@ -141,7 +150,7 @@ trait EastControllerTrait
      * @param string          $url    The URL to redirect to
      * @param int             $status The status code to use for the Response
      *
-     * @return EastControllerTrait
+     * @return EastEndPointTrait
      */
     protected function redirect(ClientInterface $client, $url, $status = 302)
     {
@@ -158,7 +167,7 @@ trait EastControllerTrait
      * @param array           $parameters An array of parameters
      * @param int             $status     The status code to use for the Response
      *
-     * @return EastControllerTrait
+     * @return EastEndPointTrait
      */
     protected function redirectToRoute(
         ClientInterface $client,
@@ -200,7 +209,7 @@ trait EastControllerTrait
      * @param string          $view       The view name
      * @param array           $parameters An array of parameters to pass to the view
      *
-     * @return EastControllerTrait
+     * @return EastEndPointTrait
      */
     protected function render(ClientInterface $client, string $view, array $parameters = array())
     {
