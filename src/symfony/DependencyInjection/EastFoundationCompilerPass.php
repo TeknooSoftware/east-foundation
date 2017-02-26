@@ -47,11 +47,24 @@ class EastFoundationCompilerPass implements CompilerPassInterface
     {
         $taggedControllers = $container->findTaggedServiceIds('east.controller.service');
 
+        $routerPresent = $container->has('router');
+        $twigPresent = $container->has('twig');
+        $tokenStoragePresent = $container->has('security.token_storage');
+
         foreach ($taggedControllers as $id => $tags) {
             $definition = $container->getDefinition($id);
-            $definition->addMethodCall('setRouter', [new Reference('router')]);
-            $definition->addMethodCall('setTwig', [new Reference('twig')]);
-            $definition->addMethodCall('setTokenStorage', [new Reference('security.token_storage')]);
+
+            if (!empty($routerPresent)) {
+                $definition->addMethodCall('setRouter', [new Reference('router')]);
+            }
+
+            if (!empty($twigPresent)) {
+                $definition->addMethodCall('setTwig', [new Reference('twig')]);
+            }
+
+            if (!empty($tokenStoragePresent)) {
+                $definition->addMethodCall('setTokenStorage', [new Reference('security.token_storage')]);
+            }
         }
 
         return $this;

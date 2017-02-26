@@ -1,5 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[0.0.4-beta2] - 2017-02-26
+###Fix
+- Errors in EastFoundationCompilerPass when a needed service (twig, router or token_storage) is not available.
+
 ##[0.0.4-beta1] - 2017-02-25
 ###Release
 - First beta

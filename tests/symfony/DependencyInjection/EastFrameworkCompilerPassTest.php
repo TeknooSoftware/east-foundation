@@ -78,6 +78,116 @@ class EastFrameworkCompilerPassTest extends \PHPUnit_Framework_TestCase
 
         $this->getContainerBuilderMock()
             ->expects(self::any())
+            ->method('has')
+            ->willReturn(true);
+
+        $this->getContainerBuilderMock()
+            ->expects(self::any())
+            ->method('findTaggedServiceIds')
+            ->with('east.controller.service')
+            ->willReturn([
+                'service1' => ['foo' => 'bar'],
+                'service2' => ['bar' => 'foo'],
+            ]);
+
+        $this->getContainerBuilderMock()
+            ->expects($this->exactly(2))
+            ->method('getDefinition')
+            ->withConsecutive(['service1'], ['service2'])
+            ->willReturn($def);
+
+        self::assertInstanceOf(
+            $this->getCompilerPassClass(),
+            $this->buildCompilerPass()->process(
+                $this->getContainerBuilderMock()
+            )
+        );
+    }
+
+    public function testProcessNoRouter()
+    {
+        $def = $this->createMock(Definition::class);
+        $def->expects($this->exactly(4))->method('addMethodCall')->willReturnSelf();
+
+        $this->getContainerBuilderMock()
+            ->expects(self::any())
+            ->method('has')
+            ->willReturnCallback(function ($value) {
+                return 'router' != $value;
+            });
+
+        $this->getContainerBuilderMock()
+            ->expects(self::any())
+            ->method('findTaggedServiceIds')
+            ->with('east.controller.service')
+            ->willReturn([
+                'service1' => ['foo' => 'bar'],
+                'service2' => ['bar' => 'foo'],
+            ]);
+
+        $this->getContainerBuilderMock()
+            ->expects($this->exactly(2))
+            ->method('getDefinition')
+            ->withConsecutive(['service1'], ['service2'])
+            ->willReturn($def);
+
+        self::assertInstanceOf(
+            $this->getCompilerPassClass(),
+            $this->buildCompilerPass()->process(
+                $this->getContainerBuilderMock()
+            )
+        );
+    }
+
+    public function testProcessNoTwig()
+    {
+        $def = $this->createMock(Definition::class);
+        $def->expects($this->exactly(4))->method('addMethodCall')->willReturnSelf();
+
+        $this->getContainerBuilderMock()
+            ->expects(self::any())
+            ->method('has')
+            ->willReturnCallback(function ($value) {
+                return 'twig' != $value;
+            });
+
+        $this->getContainerBuilderMock()
+            ->expects(self::any())
+            ->method('findTaggedServiceIds')
+            ->with('east.controller.service')
+            ->willReturn([
+                'service1' => ['foo' => 'bar'],
+                'service2' => ['bar' => 'foo'],
+            ]);
+
+        $this->getContainerBuilderMock()
+            ->expects($this->exactly(2))
+            ->method('getDefinition')
+            ->withConsecutive(['service1'], ['service2'])
+            ->willReturn($def);
+
+        self::assertInstanceOf(
+            $this->getCompilerPassClass(),
+            $this->buildCompilerPass()->process(
+                $this->getContainerBuilderMock()
+            )
+        );
+    }
+
+    public function testProcessNoStorage()
+    {
+        $def = $this->createMock(Definition::class);
+        $def->expects($this->exactly(4))->method('addMethodCall')->willReturnSelf();
+
+        $this->getContainerBuilderMock()
+            ->expects(self::any())
+            ->method('has')
+            ->willReturnCallback(function ($value) {
+                return 'security.token_storage' != $value;
+            });
+
+        $this->getContainerBuilderMock()
+            ->expects(self::any())
             ->method('findTaggedServiceIds')
             ->with('east.controller.service')
             ->willReturn([
