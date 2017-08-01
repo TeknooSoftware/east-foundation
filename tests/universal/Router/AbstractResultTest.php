@@ -33,7 +33,7 @@ use Teknoo\East\Foundation\Router\ResultInterface;
  *
  * @package Teknoo\Tests\East\Foundation\Router
  */
-abstract class AbstractResultTest extends \PHPUnit_Framework_TestCase
+abstract class AbstractResultTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @return ResultInterface

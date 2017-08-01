@@ -33,7 +33,7 @@ use Teknoo\East\Foundation\Router\ParameterInterface;
  *
  * @package Teknoo\Tests\East\Foundation\Router
  */
-abstract class AbstractParameterTest extends \PHPUnit_Framework_TestCase
+abstract class AbstractParameterTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @return ParameterInterface

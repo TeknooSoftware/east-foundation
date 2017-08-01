@@ -33,7 +33,7 @@ use Teknoo\East\Foundation\Promise\PromiseInterface;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-abstract class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
+abstract class AbstractPromiseTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @param callable|null $onSuccess

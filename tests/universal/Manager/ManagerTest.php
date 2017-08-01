@@ -41,7 +41,7 @@ use Teknoo\East\Foundation\Router\RouterInterface;
  * @covers \Teknoo\East\Foundation\Manager\States\Running
  * @covers \Teknoo\East\Foundation\Manager\States\Service
  */
-class ManagerTest extends \PHPUnit_Framework_TestCase
+class ManagerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @return Manager

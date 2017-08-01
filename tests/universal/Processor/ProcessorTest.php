@@ -41,7 +41,7 @@ use Teknoo\East\FoundationBundle\Http\Client;
  * @author      Richard Déloge <richarddeloge@gmail.com>
  * @covers \Teknoo\East\Foundation\Processor\Processor
  */
-class ProcessorTest extends \PHPUnit_Framework_TestCase
+class ProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var LoggerInterface

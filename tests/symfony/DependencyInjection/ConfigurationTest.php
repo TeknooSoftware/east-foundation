@@ -35,7 +35,7 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
  * @author      Richard Déloge <richarddeloge@gmail.com>
  * @covers \Teknoo\East\FoundationBundle\DependencyInjection\Configuration
  */
-class ConfigurationTest extends \PHPUnit_Framework_TestCase
+class ConfigurationTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @return Configuration

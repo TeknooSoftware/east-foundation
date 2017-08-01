@@ -36,7 +36,7 @@ use Symfony\Component\DependencyInjection\Definition;
  * @author      Richard Déloge <richarddeloge@gmail.com>
  * @covers \Teknoo\East\FoundationBundle\DependencyInjection\EastFoundationCompilerPass
  */
-class EastFrameworkCompilerPassTest extends \PHPUnit_Framework_TestCase
+class EastFrameworkCompilerPassTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ContainerBuilder

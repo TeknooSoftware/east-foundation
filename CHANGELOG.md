@@ -1,5 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[0.0.4] - 2017-08-01
+###Updated
+- Update dev libraries used for this project and use now PHPUnit 6.2 for tests.
+
 ##[0.0.4-beta2] - 2017-02-26
 ###Fix
 - Errors in EastFoundationCompilerPass when a needed service (twig, router or token_storage) is not available.

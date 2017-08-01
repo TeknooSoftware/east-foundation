@@ -40,7 +40,7 @@ use Zend\Diactoros\ServerRequest;
  * @author      Richard Déloge <richarddeloge@gmail.com>
  * @covers \Teknoo\East\FoundationBundle\Listener\KernelListener
  */
-class KernelListenerTest extends \PHPUnit_Framework_TestCase
+class KernelListenerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ManagerInterface

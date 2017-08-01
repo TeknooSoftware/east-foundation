@@ -38,7 +38,7 @@ use Teknoo\East\FoundationBundle\Http\Client;
  * @author      Richard Déloge <richarddeloge@gmail.com>
  * @covers \Teknoo\East\FoundationBundle\Http\Client
  */
-class ClientTest extends \PHPUnit_Framework_TestCase
+class ClientTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var GetResponseEvent

@@ -22,7 +22,6 @@
 namespace Teknoo\East\Foundation;
 
 use Interop\Container\ContainerInterface;
-use Interop\Container\ServiceProvider;
 use Psr\Log\LoggerInterface;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\East\Foundation\Manager\Manager;
@@ -39,7 +38,7 @@ use Teknoo\East\Foundation\Processor\ProcessorInterface;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-class EastFoundationServiceProvider implements ServiceProvider
+class EastFoundationServiceProvider
 {
     /**
      * Constants to define services' keys in container.

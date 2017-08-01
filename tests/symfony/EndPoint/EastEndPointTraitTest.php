@@ -41,7 +41,7 @@ use Zend\Diactoros\Response\RedirectResponse;
  * @author      Richard Déloge <richarddeloge@gmail.com>
  * @covers \Teknoo\East\FoundationBundle\EndPoint\EastEndPointTrait
  */
-class EastEndPointTraitTest extends \PHPUnit_Framework_TestCase
+class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @expectedException \LogicException

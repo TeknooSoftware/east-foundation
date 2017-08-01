@@ -39,7 +39,7 @@ use Teknoo\East\Foundation\Processor\ProcessorInterface;
  *
  * @covers \Teknoo\East\Foundation\EastFoundationServiceProvider
  */
-class EastFoundationServiceProviderTest extends \PHPUnit_Framework_TestCase
+class EastFoundationServiceProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @return EastFoundationServiceProvider

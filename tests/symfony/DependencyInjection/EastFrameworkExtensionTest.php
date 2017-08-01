@@ -35,7 +35,7 @@ use Teknoo\East\FoundationBundle\DependencyInjection\EastFoundationExtension;
  * @author      Richard Déloge <richarddeloge@gmail.com>
  * @covers \Teknoo\East\FoundationBundle\DependencyInjection\EastFoundationExtension
  */
-class EastFrameworkExtensionTest extends \PHPUnit_Framework_TestCase
+class EastFrameworkExtensionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ContainerBuilder
