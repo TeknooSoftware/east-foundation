@@ -1,5 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[0.0.5-beta1] - 2017-08-14
+###Updated
+- Switch to PSR11, with PHP-DI as container
+
 ##[0.0.4] - 2017-08-01
 ###Updated
 - Update dev libraries used for this project and use now PHPUnit 6.2 for tests.

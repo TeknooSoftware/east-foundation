@@ -21,10 +21,11 @@
 
 namespace Teknoo\Tests\East\Foundation;
 
-use Interop\Container\ContainerInterface;
+use DI\Container;
 use Psr\Log\LoggerInterface;
-use Teknoo\East\Foundation\EastFoundationServiceProvider;
+use Teknoo\East\Foundation\Manager\Manager;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
+use Teknoo\East\Foundation\Processor\Processor;
 use Teknoo\East\Foundation\Processor\ProcessorInterface;
 
 /**
@@ -36,47 +37,54 @@ use Teknoo\East\Foundation\Processor\ProcessorInterface;
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
- *
- * @covers \Teknoo\East\Foundation\EastFoundationServiceProvider
  */
-class EastFoundationServiceProviderTest extends \PHPUnit\Framework\TestCase
+class ContainerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @return EastFoundationServiceProvider
+     * @return Container
      */
-    public function buildProvider(): EastFoundationServiceProvider
+    protected function buildContainer() : Container
     {
-        return new EastFoundationServiceProvider();
+        return include(__DIR__.'/../../src/universal/generator.php');
     }
 
-    public function testGetDefinitions()
-    {
-        $definitions = $this->buildProvider()->getServices();
-        self::assertTrue(isset($definitions[ProcessorInterface::class]));
-        self::assertTrue(isset($definitions['teknoo.east.processor']));
-        self::assertTrue(isset($definitions[ManagerInterface::class]));
-        self::assertTrue(isset($definitions['teknoo.east.manager']));
-    }
 
     public function testCreateManager()
     {
+        $container = $this->buildContainer();
+        $manager1 = $container->get(Manager::class);
+        $manager2 = $container->get(ManagerInterface::class);
+
         self::assertInstanceOf(
-            ManagerInterface::class,
-            EastFoundationServiceProvider::createManager()
+            Manager::class,
+            $manager1
         );
+
+        self::assertInstanceOf(
+            Manager::class,
+            $manager2
+        );
+
+        self::assertSame($manager1, $manager2);
     }
 
     public function testCreateProcessor()
     {
-        $container = $this->createMock(ContainerInterface::class);
-        $container->expects(self::any())
-            ->method('get')
-            ->withConsecutive([LoggerInterface::class])
-            ->willReturnOnConsecutiveCalls($this->createMock(LoggerInterface::class));
+        $container = $this->buildContainer();
+        $container->set(LoggerInterface::class, $this->createMock(LoggerInterface::class));
+        $processor1 = $container->get(ProcessorInterface::class);
+        $processor2 = $container->get(Processor::class);
 
         self::assertInstanceOf(
-            ProcessorInterface::class,
-            EastFoundationServiceProvider::createProcessor($container)
+            Processor::class,
+            $processor1
         );
+
+        self::assertInstanceOf(
+            Processor::class,
+            $processor2
+        );
+
+        self::assertSame($processor1, $processor2);
     }
 }

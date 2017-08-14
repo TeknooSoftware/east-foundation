@@ -108,7 +108,7 @@ class Router implements RouterInterface
 
                 if ($this->container->has($parameters['_controller'])) {
                     /**
-                     * @var callable $entry
+                     * @var callable
                      */
                     $entry = $this->container->get($parameters['_controller']);
 
