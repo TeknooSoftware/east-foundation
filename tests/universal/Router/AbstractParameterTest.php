@@ -30,8 +30,6 @@ use Teknoo\East\Foundation\Router\ParameterInterface;
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
- *
- * @package Teknoo\Tests\East\Foundation\Router
  */
 abstract class AbstractParameterTest extends \PHPUnit\Framework\TestCase
 {

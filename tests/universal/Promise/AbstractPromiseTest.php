@@ -24,7 +24,7 @@ namespace Teknoo\Tests\East\Foundation\Promise;
 use Teknoo\East\Foundation\Promise\PromiseInterface;
 
 /**
- * Class AbstractPromiseTest
+ * Class AbstractPromiseTest.
  *
  * @copyright   Copyright (c) 2009-2017 Richard Déloge (richarddeloge@gmail.com)
  *
@@ -38,6 +38,7 @@ abstract class AbstractPromiseTest extends \PHPUnit\Framework\TestCase
     /**
      * @param callable|null $onSuccess
      * @param callable|null $onFail
+     *
      * @return PromiseInterface
      */
     abstract public function buildPromise($onSuccess, $onFail): PromiseInterface;
@@ -47,7 +48,8 @@ abstract class AbstractPromiseTest extends \PHPUnit\Framework\TestCase
      */
     public function testConstructorBadSuccessCallable()
     {
-        $this->buildPromise('fooBar', function() {});
+        $this->buildPromise('fooBar', function () {
+        });
     }
 
     /**
@@ -55,14 +57,17 @@ abstract class AbstractPromiseTest extends \PHPUnit\Framework\TestCase
      */
     public function testConstructorBadFailCallable()
     {
-        $this->buildPromise(function() {}, 'fooBar');
+        $this->buildPromise(function () {
+        }, 'fooBar');
     }
 
     public function testConstructor()
     {
         self::assertInstanceOf(
             PromiseInterface::class,
-            $this->buildPromise(function() {}, function() {})
+            $this->buildPromise(function () {
+            }, function () {
+            })
         );
     }
 
@@ -79,7 +84,11 @@ abstract class AbstractPromiseTest extends \PHPUnit\Framework\TestCase
      */
     public function testConstructorImmutable()
     {
-        $this->buildPromise(function() {}, function() {})->__construct(function() {}, function() {});
+        $this->buildPromise(function () {
+        }, function () {
+        })->__construct(function () {
+        }, function () {
+        });
     }
 
     /**
@@ -87,12 +96,16 @@ abstract class AbstractPromiseTest extends \PHPUnit\Framework\TestCase
      */
     public function testNextSetNotCallable()
     {
-        $this->buildPromise(function(){}, function(){})->next('fooBar');
+        $this->buildPromise(function () {
+        }, function () {
+        })->next('fooBar');
     }
 
     public function testNextSetNull()
     {
-        $promise = $this->buildPromise(function() {}, function() {});
+        $promise = $this->buildPromise(function () {
+        }, function () {
+        });
         $nextPromise = $promise->next(null);
 
         self::assertInstanceOf(PromiseInterface::class, $nextPromise);
@@ -101,7 +114,9 @@ abstract class AbstractPromiseTest extends \PHPUnit\Framework\TestCase
 
     public function testNextSetCallable()
     {
-        $promise = $this->buildPromise(function() {}, function() {});
+        $promise = $this->buildPromise(function () {
+        }, function () {
+        });
         $nextPromise = $promise->next($this->createMock(PromiseInterface::class));
 
         self::assertInstanceOf(PromiseInterface::class, $nextPromise);
@@ -110,14 +125,14 @@ abstract class AbstractPromiseTest extends \PHPUnit\Framework\TestCase
 
     public function testSuccess()
     {
-        $called=false;
+        $called = false;
         $promiseWithSuccessCallback = $this->buildPromise(
-            function($result, $next) use (&$called) {
-                $called=true;
+            function ($result, $next) use (&$called) {
+                $called = true;
                 self::assertEquals('foo', $result);
                 self::assertNull($next);
             },
-            function() {
+            function () {
                 self::fail('Error, fail callback must not be called');
             }
         );
@@ -131,7 +146,7 @@ abstract class AbstractPromiseTest extends \PHPUnit\Framework\TestCase
 
         $promiseWithoutSuccessCallback = $this->buildPromise(
             null,
-            function() {
+            function () {
                 self::fail('Error, fail callback must not be called');
             }
         );
@@ -144,13 +159,13 @@ abstract class AbstractPromiseTest extends \PHPUnit\Framework\TestCase
 
     public function testFail()
     {
-        $called=false;
+        $called = false;
         $promiseWithSuccessCallback = $this->buildPromise(
-            function() {
+            function () {
                 self::fail('Error, success callback must not be called');
             },
-            function($result, $next) use (&$called) {
-                $called=true;
+            function ($result, $next) use (&$called) {
+                $called = true;
                 self::assertEquals(new \Exception('fooBar'), $result);
                 self::assertNull($next);
             }
@@ -164,7 +179,7 @@ abstract class AbstractPromiseTest extends \PHPUnit\Framework\TestCase
         self::assertTrue($called, 'Error the success callback must be called');
 
         $promiseWithoutSuccessCallback = $this->buildPromise(
-            function() {
+            function () {
                 self::fail('Error, success callback must not be called');
             },
             null
@@ -180,14 +195,14 @@ abstract class AbstractPromiseTest extends \PHPUnit\Framework\TestCase
     {
         $refNext = $this->createMock(PromiseInterface::class);
 
-        $called=false;
+        $called = false;
         $promiseWithSuccessCallback = $this->buildPromise(
-            function($result, $next) use (&$called, $refNext) {
-                $called=true;
+            function ($result, $next) use (&$called, $refNext) {
+                $called = true;
                 self::assertEquals('foo', $result);
                 self::assertEquals($refNext, $next);
             },
-            function() {
+            function () {
                 self::fail('Error, fail callback must not be called');
             }
         );
@@ -201,7 +216,7 @@ abstract class AbstractPromiseTest extends \PHPUnit\Framework\TestCase
 
         $promiseWithoutSuccessCallback = $this->buildPromise(
             null,
-            function() {
+            function () {
                 self::fail('Error, fail callback must not be called');
             }
         );
@@ -216,13 +231,13 @@ abstract class AbstractPromiseTest extends \PHPUnit\Framework\TestCase
     {
         $refNext = $this->createMock(PromiseInterface::class);
 
-        $called=false;
+        $called = false;
         $promiseWithSuccessCallback = $this->buildPromise(
-            function() {
+            function () {
                 self::fail('Error, success callback must not be called');
             },
-            function($result, $next) use (&$called, $refNext) {
-                $called=true;
+            function ($result, $next) use (&$called, $refNext) {
+                $called = true;
                 self::assertEquals(new \Exception('fooBar'), $result);
                 self::assertEquals($refNext, $next);
             }
@@ -236,7 +251,7 @@ abstract class AbstractPromiseTest extends \PHPUnit\Framework\TestCase
         self::assertTrue($called, 'Error the success callback must be called');
 
         $promiseWithoutSuccessCallback = $this->buildPromise(
-            function() {
+            function () {
                 self::fail('Error, success callback must not be called');
             },
             null

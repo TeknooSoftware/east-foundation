@@ -29,7 +29,7 @@ use Teknoo\East\Foundation\Processor\Processor;
 use Teknoo\East\Foundation\Processor\ProcessorInterface;
 
 /**
- * Class DefinitionProviderTest
+ * Class DefinitionProviderTest.
  *
  * @copyright   Copyright (c) 2009-2017 Richard Déloge (richarddeloge@gmail.com)
  *
@@ -45,9 +45,8 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
      */
     protected function buildContainer() : Container
     {
-        return include(__DIR__.'/../../src/universal/generator.php');
+        return include __DIR__.'/../../src/universal/generator.php';
     }
-
 
     public function testCreateManager()
     {
