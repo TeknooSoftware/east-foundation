@@ -22,13 +22,15 @@
 namespace Teknoo\East\FoundationBundle\EndPoint;
 
 use Symfony\Bundle\TwigBundle\TwigEngine;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Teknoo\East\Foundation\EndPoint\EndPointInterface;
 use Teknoo\East\Foundation\Http\ClientInterface;
-use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Zend\Diactoros\CallbackStream;
 use Zend\Diactoros\Response;
 
 /**
@@ -41,6 +43,8 @@ use Zend\Diactoros\Response;
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
+ *
+ * @mixin EndPointInterface
  */
 trait EastEndPointTrait
 {
@@ -150,9 +154,9 @@ trait EastEndPointTrait
      * @param string          $url    The URL to redirect to
      * @param int             $status The status code to use for the Response
      *
-     * @return EastEndPointTrait
+     * @return EndPointInterface
      */
-    protected function redirect(ClientInterface $client, $url, $status = 302)
+    public function redirect(ClientInterface $client, string $url, int $status = 302): EndPointInterface
     {
         $client->responseFromController(new Response\RedirectResponse($url, $status));
 
@@ -167,7 +171,7 @@ trait EastEndPointTrait
      * @param array           $parameters An array of parameters
      * @param int             $status     The status code to use for the Response
      *
-     * @return EastEndPointTrait
+     * @return EndPointInterface
      */
     protected function redirectToRoute(
         ClientInterface $client,
@@ -209,13 +213,17 @@ trait EastEndPointTrait
      * @param string          $view       The view name
      * @param array           $parameters An array of parameters to pass to the view
      *
-     * @return EastEndPointTrait
+     * @return EndPointInterface
      */
-    protected function render(ClientInterface $client, string $view, array $parameters = array())
+    public function render(ClientInterface $client, string $view, array $parameters = array()): EndPointInterface
     {
-        $htmlBody = $this->renderView($view, $parameters);
-
-        $client->responseFromController(new Response\HtmlResponse($htmlBody));
+        $client->responseFromController(
+            new Response\HtmlResponse(
+                new CallbackStream(function () use ($view, $parameters) {
+                    return $this->renderView($view, $parameters);
+                })
+            )
+        );
 
         return $this;
     }
@@ -249,13 +257,13 @@ trait EastEndPointTrait
      * @param string          $message  A message
      * @param \Exception|null $previous The previous exception
      *
-     * @return AccessDeniedException
+     * @return AccessDeniedHttpException
      */
     protected function createAccessDeniedException(
         string $message = 'Access Denied.',
         \Exception $previous = null
-    ): AccessDeniedException {
-        return new AccessDeniedException($message, $previous);
+    ): AccessDeniedHttpException {
+        return new AccessDeniedHttpException($message, $previous);
     }
 
     /**

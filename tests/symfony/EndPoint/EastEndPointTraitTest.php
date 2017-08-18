@@ -25,6 +25,7 @@ use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Teknoo\East\Foundation\EndPoint\EndPointInterface;
 use Teknoo\East\FoundationBundle\EndPoint\EastEndPointTrait;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Zend\Diactoros\Response\HtmlResponse;
@@ -50,7 +51,7 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
     {
         self::assertEquals(
             '/foo/bar',
-            (new class() {
+            (new class() implements EndPointInterface {
                 use EastEndPointTrait;
 
                 public function getUrl()
@@ -92,7 +93,7 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
             }))
             ->willReturnSelf();
 
-        $controller = (new class() {
+        $controller = (new class() implements EndPointInterface{
             use EastEndPointTrait;
             public function getRedirect(ClientInterface $client)
             {
@@ -122,7 +123,7 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
             }))
             ->willReturnSelf();
 
-        $controller = (new class() {
+        $controller = (new class() implements EndPointInterface {
             use EastEndPointTrait;
 
             public function getRedirect(ClientInterface $client)
@@ -143,14 +144,14 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
         $client->expects(self::once())
             ->method('responseFromController')
             ->with($this->callback(function ($instance) {
-                return $instance instanceof HtmlResponse;
+                return $instance instanceof HtmlResponse && $instance->getBody()->getContents();
             }))
             ->willReturnSelf();
 
         $twigEngine = $this->createMock(TwigEngine::class);
         $twigEngine->expects(self::once())->method('render')->willReturn('fooBar');
 
-        $controller = (new class() {
+        $controller = (new class() implements EndPointInterface {
             use EastEndPointTrait;
 
             public function getRender(ClientInterface $client)
@@ -171,11 +172,11 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
         $client->expects(self::once())
             ->method('responseFromController')
             ->with($this->callback(function ($instance) {
-                return $instance instanceof HtmlResponse;
+                return $instance instanceof HtmlResponse && $instance->getBody()->getContents();
             }))
             ->willReturnSelf();
 
-        $controller = (new class() {
+        $controller = (new class() implements EndPointInterface {
             use EastEndPointTrait;
 
             public function getRender(ClientInterface $client)
@@ -199,10 +200,15 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
     public function testRenderNoRendering()
     {
         $client = $this->createMock(ClientInterface::class);
-        $client->expects($this->never())
-            ->method('responseFromController');
+        $client->expects(self::once())
+            ->method('responseFromController')
+            ->willReturnCallback(function ($instance) use ($client) {
+                $instance instanceof HtmlResponse && $instance->getBody()->getContents();
 
-        (new class() {
+                return $client;
+            });
+
+        (new class() implements EndPointInterface {
             use EastEndPointTrait;
 
             public function getRender(ClientInterface $client)
@@ -217,7 +223,7 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateNotFoundException()
     {
-        (new class() {
+        (new class() implements EndPointInterface {
             use EastEndPointTrait;
 
             public function getCreateNotFoundException()
@@ -228,11 +234,11 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException \Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException
+     * @expectedException \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
      */
     public function testCreateAccessDeniedException()
     {
-        (new class() {
+        (new class() implements EndPointInterface {
             use EastEndPointTrait;
 
             public function getCreateAccessDeniedException()
@@ -247,7 +253,7 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetUserNoStorage()
     {
-        (new class() {
+        (new class() implements EndPointInterface{
             use EastEndPointTrait;
 
             public function getGetUser()
@@ -262,7 +268,7 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
         $storage = $this->createMock(TokenStorageInterface::class, [], [], '', false);
 
         self::assertEmpty(
-            (new class() {
+            (new class() implements EndPointInterface {
                 use EastEndPointTrait;
 
                 public function getGetUser()
@@ -281,7 +287,7 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
             ->willReturn('fooBar');
 
         self::assertEmpty(
-            (new class() {
+            (new class() implements EndPointInterface {
                 use EastEndPointTrait;
 
                 public function getGetUser()
@@ -297,7 +303,9 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
         $storage = $this->createMock(TokenStorageInterface::class, [], [], '', false);
         $storage->expects(self::any())
             ->method('getToken')
-            ->willReturn(new class() {
+            ->willReturn(new class() implements EndPointInterface {
+                use EastEndPointTrait;
+
                 public function getUser()
                 {
                     return null;
@@ -305,7 +313,7 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
             });
 
         self::assertEmpty(
-            (new class() {
+            (new class() implements EndPointInterface {
                 use EastEndPointTrait;
 
                 public function getGetUser()
@@ -321,7 +329,9 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
         $storage = $this->createMock(TokenStorageInterface::class, [], [], '', false);
         $storage->expects(self::any())
             ->method('getToken')
-            ->willReturn(new class() {
+            ->willReturn(new class() implements EndPointInterface {
+                use EastEndPointTrait;
+
                 public function getUser()
                 {
                     return new class() implements UserInterface {
@@ -350,7 +360,7 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
 
         self::assertInstanceOf(
             UserInterface::class,
-            (new class() {
+            (new class() implements EndPointInterface {
                 use EastEndPointTrait;
 
                 public function getGetUser()
