@@ -43,8 +43,6 @@ use Zend\Diactoros\Response;
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
- *
- * @mixin EndPointInterface
  */
 trait EastEndPointTrait
 {
