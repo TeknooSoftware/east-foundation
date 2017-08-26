@@ -1,6 +1,6 @@
 #Teknoo Software - East Foundation - Change Log
 
-##[0.0.5-beta2] - 2017-08-
+##[0.0.5-beta2] - 2017-08-26
 ###Updated
 - EastEndPointTrait use now StreamCallback to render a view and not call
 directly the view renderer
