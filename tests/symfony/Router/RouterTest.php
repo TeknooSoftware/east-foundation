@@ -316,6 +316,41 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    public function testReceiveRequestFromServerWithControllerStatic()
+    {
+        /**
+         * @var \PHPUnit_Framework_MockObject_MockObject|ClientInterface
+         */
+        $client = $this->createMock(ClientInterface::class);
+        /**
+         * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject $request
+         */
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->expects(self::any())->method('getUri')->willReturn(new class() extends Uri {
+        });
+        /**
+         * @var ManagerInterface|\PHPUnit_Framework_MockObject_MockObject $manager
+         */
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects(self::once())->method('stopPropagation')->willReturnSelf();
+
+        $class = new class {
+            public static function action()
+            {
+
+            }
+        };
+
+        $this->getUrlMatcherMock()->expects(self::any())->method('match')->willReturn(['_controller' => \get_class($class).'::action']);
+
+        $this->getProcessorMock()->expects(self::once())->method('executeRequest')->willReturnSelf();
+
+        self::assertInstanceOf(
+            $this->getRouterClass(),
+            $this->buildRouter()->receiveRequestFromServer($client, $request, $manager)
+        );
+    }
+
     public function testReceiveRequestFromServerWithControllerInCOntainer()
     {
         /**

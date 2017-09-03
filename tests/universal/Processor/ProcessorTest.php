@@ -509,6 +509,114 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    public function testExecuteRequestClassStaticController()
+    {
+        /**
+         * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
+         */
+        $clientMock = $this->createMock(ClientInterface::class);
+
+        /**
+         * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject
+         */
+        $requestMock = $this->createMock(ServerRequestInterface::class);
+        $requestMock->expects(self::any())->method('getAttributes')->willReturn(['bar' => 456, 'foo' => 123]);
+
+        $callableController = new class() {
+            /**
+             * @var ClientInterface
+             */
+            private static $client;
+
+            /**
+             * @var ServerRequestInterface
+             */
+            private static $request;
+
+            /**
+             * @var ProcessorTest
+             */
+            private static $testCase;
+
+            public static function setValue(ClientInterface $client, ServerRequestInterface $request, ProcessorTest $testCase)
+            {
+                self::$client = $client;
+                self::$request = $request;
+                self::$testCase = $testCase;
+
+            }
+
+            public static function testAction(ServerRequestInterface $request, ClientInterface $client, $foo, $bar, $default = 789)
+            {
+                self::$testCase->assertEquals(self::$request, $request);
+                self::$testCase->assertEquals(self::$client, $client);
+                self::$testCase->assertEquals(123, $foo);
+                self::$testCase->assertEquals(456, $bar);
+                self::$testCase->assertEquals(789, $default);
+            }
+        };
+
+        $setValueCallBack = [\get_class($callableController), 'setValue'];
+        $setValueCallBack($clientMock, $requestMock, $this);
+
+        $routerResult = $this->createMock(ResultInterface::class);
+        $routerResult->expects(self::any())->method('getController')->willReturn([\get_class($callableController), 'testAction']);
+        $routerResult->expects(self::any())->method('getParameters')->willReturn([
+            new Parameter('r', false, null, new \ReflectionClass(ServerRequestInterface::class)),
+            new Parameter('c', false, null, new \ReflectionClass(ClientInterface::class)),
+            new Parameter('foo', false, null, null),
+            new Parameter('bar', false, null, null),
+            new Parameter('default', true, 789, null),
+        ]);
+        $routerResult->expects(self::any())->method('getNext')->willReturn(null);
+
+        self::assertInstanceOf(ProcessorInterface::class, $this->buildProcessor()->executeRequest(
+            $clientMock,
+            $requestMock,
+            $routerResult
+        ));
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testExecuteRequestClassStaticControllerMissingArgument()
+    {
+        /**
+         * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
+         */
+        $clientMock = $this->createMock(ClientInterface::class);
+
+        /**
+         * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject
+         */
+        $requestMock = $this->createMock(ServerRequestInterface::class);
+        $requestMock->expects(self::any())->method('getAttributes')->willReturn(['bar' => 456]);
+
+        $callableController = new class() {
+            public static function testAction(ServerRequestInterface $request, ClientInterface $client, $foo, $bar, $default = 789)
+            {
+            }
+        };
+
+        $routerResult = $this->createMock(ResultInterface::class);
+        $routerResult->expects(self::any())->method('getController')->willReturn([\get_class($callableController), 'testAction']);
+        $routerResult->expects(self::any())->method('getParameters')->willReturn([
+            new Parameter('r', false, null, new \ReflectionClass(ServerRequestInterface::class)),
+            new Parameter('c', false, null, new \ReflectionClass(ClientInterface::class)),
+            new Parameter('foo', false, null, null),
+            new Parameter('bar', false, null, null),
+            new Parameter('default', true, 789, null),
+        ]);
+        $routerResult->expects(self::any())->method('getNext')->willReturn(null);
+
+        $this->buildProcessor()->executeRequest(
+            $clientMock,
+            $requestMock,
+            $routerResult
+        );
+    }
+
     public function testExecuteRequestControllerHasFunction()
     {
         /**

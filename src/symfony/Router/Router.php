@@ -100,25 +100,34 @@ class Router implements RouterInterface
                     $request->getUri()->getPath()
                 )
             );
-
-            if (!empty($parameters['_controller'])) {
-                if (\is_callable($parameters['_controller'])) {
-                    return $parameters['_controller'];
-                }
-
-                if ($this->container->has($parameters['_controller'])) {
-                    /**
-                     * @var callable
-                     */
-                    $entry = $this->container->get($parameters['_controller']);
-
-                    if (\is_callable($entry)) {
-                        return $entry;
-                    }
-                }
-            }
         } catch (ResourceNotFoundException $e) {
             /* Do nothing, keep the framework to manage it */
+        }
+
+        if (empty($parameters['_controller'])) {
+            return null;
+        }
+
+        if (\is_callable($parameters['_controller'])) {
+            if (\is_string($parameters['_controller'])
+                && false !== \strpos($parameters['_controller'], '::')) {
+                return \explode('::', $parameters['_controller']);
+            }
+
+            return $parameters['_controller'];
+        }
+
+        if (!$this->container->has($parameters['_controller'])) {
+            return null;
+        }
+
+        /**
+         * @var callable
+         */
+        $entry = $this->container->get($parameters['_controller']);
+
+        if (\is_callable($entry)) {
+            return $entry;
         }
 
         return null;

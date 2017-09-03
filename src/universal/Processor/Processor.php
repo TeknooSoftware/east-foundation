@@ -124,7 +124,11 @@ class Processor implements ProcessorInterface, ImmutableInterface
         if (\is_object($controller)) {
             $repr = \get_class($controller);
         } elseif (\is_array($controller) && 2 >= \count($controller)) {
-            $repr = \sprintf('%s::%s()', \get_class($controller[0]), $controller[1]);
+            if (\is_object($controller[0])) {
+                $repr = \sprintf('%s::%s()' , \get_class($controller[0]) , $controller[1]);
+            } else {
+                $repr = \sprintf('%s::%s()' , $controller[0], $controller[1]);
+            }
         }
 
         return $repr;
