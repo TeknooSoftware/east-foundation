@@ -96,18 +96,7 @@ class Client implements ClientWithResponseEventInterface
      */
     public function errorInRequest(\Throwable $throwable): ClientInterface
     {
-        if (!$this->getResponseEvent instanceof GetResponseEvent) {
-            throw new \RuntimeException('Error, the getResponseEvent has not been set into the client');
-        }
-
-        $this->getResponseEvent->setResponse(
-            new Response(
-                $throwable->getMessage(),
-                500
-            )
-        );
-
-        return $this;
+        throw $throwable;
     }
 
     /**

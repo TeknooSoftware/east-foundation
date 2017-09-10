@@ -98,16 +98,17 @@ abstract class AbstractParameterTest extends \PHPUnit\Framework\TestCase
         self::assertTrue($this->buildParameterWithClass()->hasClass());
     }
 
-    /**
-     * @expectedException \TypeError
-     */
-    public function testGetClassWIthNoClass()
-    {
-        $this->buildParameter()->getClass();
-    }
 
     public function testGetClass()
     {
         self::assertInstanceOf(\ReflectionClass::class, $this->buildParameterWithClass()->getClass());
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testGetClassNotDefined()
+    {
+        self::assertInstanceOf(\ReflectionClass::class, $this->buildParameter()->getClass());
     }
 }

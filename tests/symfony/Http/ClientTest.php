@@ -145,6 +145,9 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $this->buildClient()->responseFromController(new \stdClass());
     }
 
+    /**
+     * @expectedException \Exception
+     */
     public function testErrorInRequest()
     {
         $this->getGetResponseEventMock()
@@ -163,7 +166,7 @@ class ClientTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException \Exception
      */
     public function testErrorInRequestWithoutGetResponseEvent()
     {

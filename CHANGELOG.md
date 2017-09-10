@@ -2,7 +2,14 @@
 
 ##[0.0.5-beta3] - 2017-09-
 ###Fixed
-- Issue when the controller is a static method, defined in string representation.
+- Issue when the controller is a static method, defined in string representation.t
+- Symfony Client implementation, error are now throwed to be managed by the Symfony stack directly and
+  use Symfony error layout
+- Symfony KernelListener inject the Symfony request as argument into the PSR request to allow the processor
+  to inject him when the endpoint need it
+- Update the Processor to forbid overload of ServerRequest instance and Client instance by the request argument.
+- Update the Processor to check if the parameter injected is of required type of the processed argument if this type is an object
+
 
 ##[0.0.5-beta2] - 2017-08-26
 ###Updated

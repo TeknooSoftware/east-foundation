@@ -673,4 +673,34 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
             $routerResult
         );
     }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testExecuteRequestControllerHasFunctionBadArgumentType()
+    {
+        /**
+         * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
+         */
+        $clientMock = $this->createMock(ClientInterface::class);
+
+        /**
+         * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject
+         */
+        $requestMock = $this->createMock(ServerRequestInterface::class);
+        $requestMock->expects(self::any())->method('getAttributes')->willReturn([new \stdClass()]);
+
+        $routerResult = $this->createMock(ResultInterface::class);
+        $routerResult->expects(self::any())->method('getController')->willReturn('microtime');
+        $routerResult->expects(self::any())->method('getParameters')->willReturn([
+            new Parameter('get_as_float', false, false, new \ReflectionClass(\DateTime::class)),
+        ]);
+        $routerResult->expects(self::any())->method('getNext')->willReturn(null);
+
+        $this->buildProcessor()->executeRequest(
+            $clientMock,
+            $requestMock,
+            $routerResult
+        );
+    }
 }

@@ -145,6 +145,8 @@ class Processor implements ProcessorInterface, ImmutableInterface
      * @param ParameterInterface[]   $parameters
      *
      * @return array
+     *
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     private function getControllerParams(
         ClientInterface $client,
@@ -159,17 +161,19 @@ class Processor implements ProcessorInterface, ImmutableInterface
          * @var ParameterInterface
          */
         foreach ($parameters as $param) {
-            if (\array_key_exists($param->getName(), $attributes)) {
-                //Parameter's value is available in the request
-                $arguments[] = $attributes[$param->getName()];
-                continue;
-            } elseif ($param->hasClass() && $param->getClass()->isInstance($request)) {
+            $paramName = $param->getName();
+            if ($param->hasClass() && $param->getClass()->isInstance($request)) {
                 //The parameter need a instance of the request, pass it
                 $arguments[] = $request;
                 continue;
             } elseif ($param->hasClass() && $param->getClass()->isInstance($client)) {
                 //The parameter need a instance of the client, pass it
                 $arguments[] = $client;
+                continue;
+            } elseif (\array_key_exists($paramName, $attributes)
+                && (!$param->hasClass() || $param->getClass()->isInstance($attributes[$paramName]))) {
+                //Parameter's value is available in the request
+                $arguments[] = $attributes[$paramName];
                 continue;
             } elseif ($param->hasDefaultValue()) {
                 //The parameter's value is not available in the request but has a default value, get it

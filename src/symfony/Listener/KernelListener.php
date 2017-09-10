@@ -21,7 +21,9 @@
 
 namespace Teknoo\East\FoundationBundle\Listener;
 
+use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\East\FoundationBundle\Http\ClientWithResponseEventInterface;
@@ -74,6 +76,22 @@ class KernelListener
     }
 
     /**
+     * To transform a symfony request as a psr request and inject the symfony request as attribute if the endpoint need
+     * the symfony request.
+     *
+     * @param Request $symfonyRequest
+     * @return ServerRequestInterface
+     */
+    private function getPsrRequest(Request $symfonyRequest): ServerRequestInterface
+    {
+        $psrRequest = $this->diactorosFactory->createRequest($symfonyRequest);
+        $psrRequest = $psrRequest->withAttribute('request', $symfonyRequest);
+
+        return $psrRequest;
+    }
+
+
+    /**
      * @param GetResponseEvent $event
      *
      * @return KernelListener
@@ -89,7 +107,7 @@ class KernelListener
         $client = clone $this->clientWithResponseEvent;
         $client->setGetResponseEvent($event);
 
-        $psrRequest = $this->diactorosFactory->createRequest($event->getRequest());
+        $psrRequest = $this->getPsrRequest($event->getRequest());
         $this->manager->receiveRequestFromClient($client, $psrRequest);
 
         return $this;
