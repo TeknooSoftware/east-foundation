@@ -75,7 +75,7 @@ class Manager implements
     public function __construct()
     {
         //Use ArrayObject instead of array type
-        $this->routersList = new \ArrayObject();
+        $this->routersList = [];
         //Call the method of the trait to initialize local attributes of the proxy
         $this->initializeProxy();
         //Behavior for Immutable
@@ -108,9 +108,9 @@ class Manager implements
     /**
      * {@inheritdoc}
      */
-    public function registerRouter(RouterInterface $router): ManagerInterface
+    public function registerRouter(RouterInterface $router, int $priority=10): ManagerInterface
     {
-        return $this->doRegisterRouter($router);
+        return $this->doRegisterRouter($router, $priority);
     }
 
     /**

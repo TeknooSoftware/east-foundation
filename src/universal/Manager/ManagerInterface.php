@@ -57,10 +57,11 @@ interface ManagerInterface
      * Method to register router in the manager to process request.
      *
      * @param RouterInterface $router
+     * @param int $priority
      *
      * @return ManagerInterface
      */
-    public function registerRouter(RouterInterface $router): ManagerInterface;
+    public function registerRouter(RouterInterface $router, int $priority=10): ManagerInterface;
 
     /**
      * Method to unregister router in the manager to process request.

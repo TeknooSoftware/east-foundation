@@ -58,15 +58,19 @@ class Running implements StateInterface
          * @return \Generator
          */
         return function () {
-            foreach ($this->routersList as $router) {
-                //Fetch each router
-                yield $router;
+            $routersListPrioritized = $this->routersList;
+            ksort($routersListPrioritized);
+            foreach ($routersListPrioritized as &$routersList) {
+                foreach ($routersList as $router) {
+                    //Fetch each router
+                    yield $router;
 
-                //Stop propagation logic is written here to avoid complex instructions in dispatchRequest.
-                //The loop in dispatchRequest is agnostic.
-                //Stop to fetch a router if the current router has sent a signal to this manager.
-                if (false === $this->doRequestPropagation) {
-                    break;
+                    //Stop propagation logic is written here to avoid complex instructions in dispatchRequest.
+                    //The loop in dispatchRequest is agnostic.
+                    //Stop to fetch a router if the current router has sent a signal to this manager.
+                    if (false === $this->doRequestPropagation) {
+                        break;
+                    }
                 }
             }
         };

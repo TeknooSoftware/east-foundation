@@ -85,8 +85,8 @@ class Service implements StateInterface
          *
          * @return ManagerInterface
          */
-        return function (RouterInterface $router): ManagerInterface {
-            $this->routersList[\spl_object_hash($router)] = $router;
+        return function (RouterInterface $router, int $priority=10): ManagerInterface {
+            $this->routersList[$priority][\spl_object_hash($router)] = $router;
 
             return $this;
         };
@@ -109,8 +109,10 @@ class Service implements StateInterface
 
         return function (RouterInterface $router): ManagerInterface {
             $routerHash = spl_object_hash($router);
-            if (isset($this->routersList[$routerHash])) {
-                unset($this->routersList[$routerHash]);
+            foreach ($this->routersList as &$routersList) {
+                if (isset($routersList[$routerHash])) {
+                    unset($routersList[$routerHash]);
+                }
             }
 
             return $this;
