@@ -24,6 +24,7 @@ namespace Teknoo\East\Foundation\Middleware;
 use Psr\Http\Message\ServerRequestInterface;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
+use Teknoo\East\Foundation\Manager\Queue\QueueInterface;
 
 interface MiddlewareInterface
 {
@@ -36,7 +37,7 @@ interface MiddlewareInterface
      *
      * @return MiddlewareInterface
      */
-    public function receiveRequestFromServer(
+    public function executeRequestFromManager(
         ClientInterface $client,
         ServerRequestInterface $request,
         ManagerInterface $manager

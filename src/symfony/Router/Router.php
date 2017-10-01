@@ -137,7 +137,7 @@ class Router implements RouterInterface
     /**
      * {@inheritdoc}
      */
-    public function receiveRequestFromServer(
+    public function executeRequestFromManager(
         ClientInterface $client,
         ServerRequestInterface $request,
         ManagerInterface $manager

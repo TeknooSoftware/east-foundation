@@ -22,6 +22,8 @@
 namespace Teknoo\East\Foundation\Manager;
 
 use Teknoo\East\Foundation\Http\ClientInterface;
+use Teknoo\East\Foundation\Manager\Queue\Queue;
+use Teknoo\East\Foundation\Manager\Queue\QueueInterface;
 use Teknoo\East\Foundation\Manager\States\HadRun;
 use Teknoo\East\Foundation\Manager\States\Running;
 use Teknoo\East\Foundation\Manager\States\Service;
@@ -47,7 +49,6 @@ use Teknoo\States\Proxy\ProxyTrait;
  *
  * @method ManagerInterface running(ClientInterface $client, ServerRequestInterface $request)
  * @method ManagerInterface doRegisterMiddleware(MiddlewareInterface $middleware)
- * @method ManagerInterface doUnregisterMiddleware(MiddlewareInterface $middleware)
  * @method ManagerInterface doStopPropagation()
  */
 class Manager implements
@@ -59,14 +60,9 @@ class Manager implements
         ProxyTrait;
 
     /**
-     * @var MiddlewareInterface[]
+     * @var QueueInterface
      */
-    private $middlewaresList;
-
-    /**
-     * @var bool
-     */
-    private $doRequestPropagation = false;
+    private $queue;
 
     /**
      * Manager constructor.
@@ -74,8 +70,8 @@ class Manager implements
      */
     public function __construct()
     {
-        //Use ArrayObject instead of array type
-        $this->middlewaresList = [];
+        $this->queue = new Queue();
+
         //Call the method of the trait to initialize local attributes of the proxy
         $this->initializeProxy();
         //Behavior for Immutable
@@ -87,10 +83,18 @@ class Manager implements
     /**
      * {@inheritdoc}
      */
+    public function __clone()
+    {
+        $this->queue = clone $this->queue;
+        $this->cloneProxy();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public static function statesListDeclaration(): array
     {
         return [
-            HadRun::class,
             Running::class,
             Service::class,
         ];
@@ -99,8 +103,10 @@ class Manager implements
     /**
      * {@inheritdoc}
      */
-    public function receiveRequestFromClient(ClientInterface $client, ServerRequestInterface $request): ManagerInterface
-    {
+    public function receiveRequestFromClient(
+        ClientInterface $client,
+        ServerRequestInterface $request
+    ): ManagerInterface {
         //Run this request
         return $this->running($client, $request);
     }
@@ -108,17 +114,20 @@ class Manager implements
     /**
      * {@inheritdoc}
      */
-    public function registerMiddleware(MiddlewareInterface $middleware, int $priority = 10): ManagerInterface
-    {
-        return $this->doRegisterMiddleware($middleware, $priority);
+    public function continueExecution(
+        ClientInterface $client,
+        ServerRequestInterface $request
+    ): ManagerInterface {
+        return $this->dispatchRequest($client, $request);
     }
-
     /**
      * {@inheritdoc}
      */
-    public function unregisterMiddleware(MiddlewareInterface $middleware): ManagerInterface
-    {
-        return $this->doUnregisterMiddleware($middleware);
+    public function registerMiddleware(
+        MiddlewareInterface $middleware,
+        int $priority = 10
+    ): ManagerInterface {
+        return $this->doRegisterMiddleware($middleware, $priority);
     }
 
     /**

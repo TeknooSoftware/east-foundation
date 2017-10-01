@@ -25,6 +25,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Teknoo\East\Foundation\Manager\Manager;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
+use Teknoo\East\Foundation\Manager\Queue\QueueInterface;
 use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
 use Teknoo\States\State\StateInterface;
 use Teknoo\States\State\StateTrait;
@@ -36,9 +37,8 @@ use Teknoo\States\State\StateTrait;
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
- * @mixin Manager
  *
- * @property  MiddlewareInterface[] $middlewaresList
+ * @property  QueueInterface $queue
  *
  * @method ManagerInterface dispatchRequest(ClientInterface $client, ServerRequestInterface $request)
  */
@@ -64,6 +64,7 @@ class Service implements StateInterface
         return function (ClientInterface $client, ServerRequestInterface $request): ManagerInterface {
             //Clone this manager, it is immutable and switch it's state
             $manager = clone $this;
+            $manager->queue->build();
             $manager->switchState(Running::class);
             $manager->dispatchRequest($client, $request);
 
@@ -87,34 +88,7 @@ class Service implements StateInterface
          * @return ManagerInterface
          */
         return function (MiddlewareInterface $middleware, int $priority = 10): ManagerInterface {
-            $this->middlewaresList[$priority][\spl_object_hash($middleware)] = $middleware;
-
-            return $this;
-        };
-    }
-
-    /**
-     * Builder to unregister middleware in the manager to process request.
-     *
-     * @return \Closure
-     */
-    private function doUnregisterMiddleware()
-    {
-        /**
-         * Method to unregister middleware in the manager to process request.
-         *
-         * @param MiddlewareInterface $middleware
-         *
-         * @return ManagerInterface
-         */
-
-        return function (MiddlewareInterface $middleware): ManagerInterface {
-            $middlewareHash = spl_object_hash($middleware);
-            foreach ($this->middlewaresList as &$middlewaresList) {
-                if (isset($middlewaresList[$middlewareHash])) {
-                    unset($middlewaresList[$middlewareHash]);
-                }
-            }
+            $this->queue->add($middleware, $priority);
 
             return $this;
         };

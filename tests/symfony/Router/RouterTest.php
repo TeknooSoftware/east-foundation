@@ -115,7 +115,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         return Router::class;
     }
 
-    public function testReceiveRequestFromServerNotFound()
+    public function testExecuteRequestFromManagerNotFound()
     {
         /**
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
@@ -139,11 +139,11 @@ class RouterTest extends \PHPUnit\Framework\TestCase
 
         self::assertInstanceOf(
             $this->getRouterClass(),
-            $this->buildRouter()->receiveRequestFromServer($client, $request, $manager)
+            $this->buildRouter()->executeRequestFromManager($client, $request, $manager)
         );
     }
 
-    public function testReceiveRequestFromServerNotFoundException()
+    public function testExecuteRequestFromManagerNotFoundException()
     {
         /**
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
@@ -167,14 +167,14 @@ class RouterTest extends \PHPUnit\Framework\TestCase
 
         self::assertInstanceOf(
             $this->getRouterClass(),
-            $this->buildRouter()->receiveRequestFromServer($client, $request, $manager)
+            $this->buildRouter()->executeRequestFromManager($client, $request, $manager)
         );
     }
 
     /**
      * @expectedException \Exception
      */
-    public function testReceiveRequestFromServerOtherException()
+    public function testExecuteRequestFromManagerOtherException()
     {
         /**
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
@@ -196,10 +196,10 @@ class RouterTest extends \PHPUnit\Framework\TestCase
 
         $this->getProcessorMock()->expects(self::never())->method('executeRequest');
 
-        $this->buildRouter()->receiveRequestFromServer($client, $request, $manager);
+        $this->buildRouter()->executeRequestFromManager($client, $request, $manager);
     }
 
-    public function testReceiveRequestFromServerWithNoController()
+    public function testExecuteRequestFromManagerWithNoController()
     {
         /**
          * @var \PHPUnit_Framework_MockObject_MockObject|ClientInterface
@@ -223,11 +223,11 @@ class RouterTest extends \PHPUnit\Framework\TestCase
 
         self::assertInstanceOf(
             $this->getRouterClass(),
-            $this->buildRouter()->receiveRequestFromServer($client, $request, $manager)
+            $this->buildRouter()->executeRequestFromManager($client, $request, $manager)
         );
     }
 
-    public function testReceiveRequestFromServerWithControllerNotCallable()
+    public function testExecuteRequestFromManagerWithControllerNotCallable()
     {
         /**
          * @var \PHPUnit_Framework_MockObject_MockObject|ClientInterface
@@ -251,11 +251,11 @@ class RouterTest extends \PHPUnit\Framework\TestCase
 
         self::assertInstanceOf(
             $this->getRouterClass(),
-            $this->buildRouter()->receiveRequestFromServer($client, $request, $manager)
+            $this->buildRouter()->executeRequestFromManager($client, $request, $manager)
         );
     }
 
-    public function testReceiveRequestFromServerWithControllerInContainerNotCallable()
+    public function testExecuteRequestFromManagerWithControllerInContainerNotCallable()
     {
         /**
          * @var \PHPUnit_Framework_MockObject_MockObject|ClientInterface
@@ -283,11 +283,11 @@ class RouterTest extends \PHPUnit\Framework\TestCase
 
         self::assertInstanceOf(
             $this->getRouterClass(),
-            $this->buildRouter()->receiveRequestFromServer($client, $request, $manager)
+            $this->buildRouter()->executeRequestFromManager($client, $request, $manager)
         );
     }
 
-    public function testReceiveRequestFromServerWithController()
+    public function testExecuteRequestFromManagerWithController()
     {
         /**
          * @var \PHPUnit_Framework_MockObject_MockObject|ClientInterface
@@ -312,11 +312,11 @@ class RouterTest extends \PHPUnit\Framework\TestCase
 
         self::assertInstanceOf(
             $this->getRouterClass(),
-            $this->buildRouter()->receiveRequestFromServer($client, $request, $manager)
+            $this->buildRouter()->executeRequestFromManager($client, $request, $manager)
         );
     }
 
-    public function testReceiveRequestFromServerWithControllerStatic()
+    public function testExecuteRequestFromManagerWithControllerStatic()
     {
         /**
          * @var \PHPUnit_Framework_MockObject_MockObject|ClientInterface
@@ -347,11 +347,11 @@ class RouterTest extends \PHPUnit\Framework\TestCase
 
         self::assertInstanceOf(
             $this->getRouterClass(),
-            $this->buildRouter()->receiveRequestFromServer($client, $request, $manager)
+            $this->buildRouter()->executeRequestFromManager($client, $request, $manager)
         );
     }
 
-    public function testReceiveRequestFromServerWithControllerInCOntainer()
+    public function testExecuteRequestFromManagerWithControllerInCOntainer()
     {
         /**
          * @var \PHPUnit_Framework_MockObject_MockObject|ClientInterface
@@ -379,16 +379,16 @@ class RouterTest extends \PHPUnit\Framework\TestCase
 
         self::assertInstanceOf(
             $this->getRouterClass(),
-            $this->buildRouter()->receiveRequestFromServer($client, $request, $manager)
+            $this->buildRouter()->executeRequestFromManager($client, $request, $manager)
         );
     }
 
     /**
      * @expectedException \TypeError
      */
-    public function testReceiveRequestFromServerErrorClient()
+    public function testExecuteRequestFromManagerErrorClient()
     {
-        $this->buildRouter()->receiveRequestFromServer(
+        $this->buildRouter()->executeRequestFromManager(
             new \stdClass(),
             $this->createMock(ServerRequestInterface::class),
             $this->createMock(ManagerInterface::class)
@@ -398,9 +398,9 @@ class RouterTest extends \PHPUnit\Framework\TestCase
     /**
      * @expectedException \TypeError
      */
-    public function testReceiveRequestFromServerErrorRequest()
+    public function testExecuteRequestFromManagerErrorRequest()
     {
-        $this->buildRouter()->receiveRequestFromServer(
+        $this->buildRouter()->executeRequestFromManager(
             $this->createMock(ClientInterface::class),
             new \stdClass(),
             $this->createMock(ManagerInterface::class)
@@ -410,9 +410,9 @@ class RouterTest extends \PHPUnit\Framework\TestCase
     /**
      * @expectedException \TypeError
      */
-    public function testReceiveRequestFromServerErrorManager()
+    public function testExecuteRequestFromManagerErrorManager()
     {
-        $this->buildRouter()->receiveRequestFromServer(
+        $this->buildRouter()->executeRequestFromManager(
             $this->createMock(ClientInterface::class),
             $this->createMock(ServerRequestInterface::class),
             new \stdClass()

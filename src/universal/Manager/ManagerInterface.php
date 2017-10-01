@@ -54,6 +54,17 @@ interface ManagerInterface
     ): ManagerInterface;
 
     /**
+     * @param ClientInterface        $client
+     * @param ServerRequestInterface $request
+     *
+     * @return ManagerInterface
+     */
+    public function continueExecution(
+        ClientInterface $client,
+        ServerRequestInterface $request
+    ): ManagerInterface;
+
+    /**
      * Method to register middleware in the manager to process request.
      *
      * @param MiddlewareInterface $middleware
@@ -61,20 +72,14 @@ interface ManagerInterface
      *
      * @return ManagerInterface
      */
-    public function registerMiddleware(MiddlewareInterface $middleware, int $priority = 10): ManagerInterface;
+    public function registerMiddleware(
+        MiddlewareInterface $middleware,
+        int $priority = 10
+    ): ManagerInterface;
 
     /**
-     * Method to unregister middleware in the manager to process request.
-     *
-     * @param MiddlewareInterface $middleware
-     *
-     * @return ManagerInterface
-     */
-    public function unregisterMiddleware(MiddlewareInterface $middleware): ManagerInterface;
-
-    /**
-     * Method to stop propagation to other middlewares when a middleware has determined the request is handle by one of its
-     * controllers.
+     * Method to stop propagation to other middlewares when a middleware has determined the request
+     * is handle by one of its controllers.
      *
      * @return ManagerInterface
      */

@@ -19,22 +19,26 @@
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
 
-namespace Teknoo\East\Foundation\Manager\States;
+namespace Teknoo\East\Foundation\Manager\Queue\States;
 
-use Teknoo\East\Foundation\Manager\Manager;
+use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
 use Teknoo\States\State\StateInterface;
 use Teknoo\States\State\StateTrait;
 
 /**
- * @copyright   Copyright (c) 2009-2017 Richard Déloge (richarddeloge@gmail.com)
- *
- * @link        http://teknoo.software/east Project website
- *
- * @license     http://teknoo.software/license/mit         MIT License
- * @author      Richard Déloge <richarddeloge@gmail.com>
- * @mixin Manager
+ * @property  MiddlewareInterface[] $compiledList
+ * @property  int $position
  */
-class HadRun implements StateInterface
+class Executing implements StateInterface
 {
     use StateTrait;
+
+    public function doStop()
+    {
+        return function () {
+            $this->position = \count($this->compiledList) + 1;
+
+            return $this;
+        };
+    }
 }
