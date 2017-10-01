@@ -50,7 +50,7 @@ class Running implements StateInterface
      *
      * @return \Closure
      */
-    private function iterateMiddleware()
+    private function iterate()
     {
         /**
          * Build a Generator to stop the list at reception of the stop message.
@@ -97,7 +97,7 @@ class Running implements StateInterface
             /**
              * @var MiddlewareInterface $middleware
              */
-            foreach ($this->iterateMiddleware() as $middleware) {
+            foreach ($this->iterate() as $middleware) {
                 $middleware->receiveRequestFromServer($client, $request, $this);
             }
 
