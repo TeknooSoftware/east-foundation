@@ -21,9 +21,7 @@
 
 namespace Teknoo\East\Foundation\Router;
 
-use Teknoo\East\Foundation\Http\ClientInterface;
-use Teknoo\East\Foundation\Manager\ManagerInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
 
 /**
  * Interface RouterInterface is a contract to create router to check if a request is runnable by one of its
@@ -38,20 +36,6 @@ use Psr\Http\Message\ServerRequestInterface;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-interface RouterInterface
+interface RouterInterface extends MiddlewareInterface
 {
-    /**
-     * Method called by a manager to ask the router if it can process the request.
-     *
-     * @param ClientInterface        $client
-     * @param ServerRequestInterface $request
-     * @param ManagerInterface       $manager
-     *
-     * @return RouterInterface
-     */
-    public function receiveRequestFromServer(
-        ClientInterface $client,
-        ServerRequestInterface $request,
-        ManagerInterface $manager
-    ): RouterInterface;
 }

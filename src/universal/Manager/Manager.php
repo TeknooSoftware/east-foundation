@@ -25,7 +25,7 @@ use Teknoo\East\Foundation\Http\ClientInterface;
 use Teknoo\East\Foundation\Manager\States\HadRun;
 use Teknoo\East\Foundation\Manager\States\Running;
 use Teknoo\East\Foundation\Manager\States\Service;
-use Teknoo\East\Foundation\Router\RouterInterface;
+use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Teknoo\Immutable\ImmutableInterface;
 use Teknoo\Immutable\ImmutableTrait;
@@ -34,7 +34,7 @@ use Teknoo\States\Proxy\ProxyTrait;
 
 /**
  * Class Manager to process requests in East Foundation. The manager
- * passes the request to each router as the spread has not been stopped.
+ * passes the request to each middleware as the spread has not been stopped.
  *
  * All public method of the manager must only return the self client or a clone instance.
  *
@@ -46,8 +46,8 @@ use Teknoo\States\Proxy\ProxyTrait;
  * @author      Richard Déloge <richarddeloge@gmail.com>
  *
  * @method ManagerInterface running(ClientInterface $client, ServerRequestInterface $request)
- * @method ManagerInterface doRegisterRouter(RouterInterface $router)
- * @method ManagerInterface doUnregisterRouter(RouterInterface $router)
+ * @method ManagerInterface doRegisterMiddleware(MiddlewareInterface $middleware)
+ * @method ManagerInterface doUnregisterMiddleware(MiddlewareInterface $middleware)
  * @method ManagerInterface doStopPropagation()
  */
 class Manager implements
@@ -59,9 +59,9 @@ class Manager implements
         ProxyTrait;
 
     /**
-     * @var RouterInterface[]
+     * @var MiddlewareInterface[]
      */
-    private $routersList;
+    private $middlewaresList;
 
     /**
      * @var bool
@@ -75,7 +75,7 @@ class Manager implements
     public function __construct()
     {
         //Use ArrayObject instead of array type
-        $this->routersList = [];
+        $this->middlewaresList = [];
         //Call the method of the trait to initialize local attributes of the proxy
         $this->initializeProxy();
         //Behavior for Immutable
@@ -108,17 +108,17 @@ class Manager implements
     /**
      * {@inheritdoc}
      */
-    public function registerRouter(RouterInterface $router, int $priority = 10): ManagerInterface
+    public function registerMiddleware(MiddlewareInterface $middleware, int $priority = 10): ManagerInterface
     {
-        return $this->doRegisterRouter($router, $priority);
+        return $this->doRegisterMiddleware($middleware, $priority);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function unregisterRouter(RouterInterface $router): ManagerInterface
+    public function unregisterMiddleware(MiddlewareInterface $middleware): ManagerInterface
     {
-        return $this->doUnregisterRouter($router);
+        return $this->doUnregisterMiddleware($middleware);
     }
 
     /**

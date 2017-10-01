@@ -25,7 +25,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Teknoo\East\Foundation\Manager\Manager;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
-use Teknoo\East\Foundation\Router\RouterInterface;
+use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
 use Teknoo\States\State\StateInterface;
 use Teknoo\States\State\StateTrait;
 
@@ -38,7 +38,7 @@ use Teknoo\States\State\StateTrait;
  * @author      Richard Déloge <richarddeloge@gmail.com>
  * @mixin Manager
  *
- * @property  RouterInterface[] $routersList
+ * @property  MiddlewareInterface[] $middlewaresList
  *
  * @method ManagerInterface dispatchRequest(ClientInterface $client, ServerRequestInterface $request)
  */
@@ -72,47 +72,47 @@ class Service implements StateInterface
     }
 
     /**
-     * Builder to register router in the manager to process request.
+     * Builder to register middleware in the manager to process request.
      *
      * @return \Closure
      */
-    private function doRegisterRouter()
+    private function doRegisterMiddleware()
     {
         /**
-         * Method to register router in the manager to process request.
+         * Method to register middleware in the manager to process request.
          *
-         * @param RouterInterface $router
+         * @param MiddlewareInterface $middleware
          * @param int $priority
          *
          * @return ManagerInterface
          */
-        return function (RouterInterface $router, int $priority = 10): ManagerInterface {
-            $this->routersList[$priority][\spl_object_hash($router)] = $router;
+        return function (MiddlewareInterface $middleware, int $priority = 10): ManagerInterface {
+            $this->middlewaresList[$priority][\spl_object_hash($middleware)] = $middleware;
 
             return $this;
         };
     }
 
     /**
-     * Builder to unregister router in the manager to process request.
+     * Builder to unregister middleware in the manager to process request.
      *
      * @return \Closure
      */
-    private function doUnregisterRouter()
+    private function doUnregisterMiddleware()
     {
         /**
-         * Method to unregister router in the manager to process request.
+         * Method to unregister middleware in the manager to process request.
          *
-         * @param RouterInterface $router
+         * @param MiddlewareInterface $middleware
          *
          * @return ManagerInterface
          */
 
-        return function (RouterInterface $router): ManagerInterface {
-            $routerHash = spl_object_hash($router);
-            foreach ($this->routersList as &$routersList) {
-                if (isset($routersList[$routerHash])) {
-                    unset($routersList[$routerHash]);
+        return function (MiddlewareInterface $middleware): ManagerInterface {
+            $middlewareHash = spl_object_hash($middleware);
+            foreach ($this->middlewaresList as &$middlewaresList) {
+                if (isset($middlewaresList[$middlewareHash])) {
+                    unset($middlewaresList[$middlewareHash]);
                 }
             }
 

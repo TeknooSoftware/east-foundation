@@ -25,7 +25,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Teknoo\East\Foundation\Manager\Manager;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
-use Teknoo\East\Foundation\Router\RouterInterface;
+use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
 use Teknoo\States\State\StateInterface;
 use Teknoo\States\State\StateTrait;
 
@@ -38,7 +38,7 @@ use Teknoo\States\State\StateTrait;
  * @author      Richard Déloge <richarddeloge@gmail.com>
  * @mixin Manager
  *
- * @property  RouterInterface[] $routersList
+ * @property  MiddlewareInterface[] $middlewaresList
  * @property bool $doRequestPropagation
  */
 class Running implements StateInterface
@@ -50,7 +50,7 @@ class Running implements StateInterface
      *
      * @return \Closure
      */
-    private function iterateRouter()
+    private function iterateMiddleware()
     {
         /**
          * Build a Generator to stop the list at reception of the stop message.
@@ -58,16 +58,16 @@ class Running implements StateInterface
          * @return \Generator
          */
         return function () {
-            $listPrioritized = $this->routersList;
+            $listPrioritized = $this->middlewaresList;
             ksort($listPrioritized);
-            foreach ($listPrioritized as &$routersList) {
-                foreach ($routersList as $router) {
-                    //Fetch each router
-                    yield $router;
+            foreach ($listPrioritized as &$middlewaresList) {
+                foreach ($middlewaresList as $middleware) {
+                    //Fetch each middleware
+                    yield $middleware;
 
                     //Stop propagation logic is written here to avoid complex instructions in dispatchRequest.
                     //The loop in dispatchRequest is agnostic.
-                    //Stop to fetch a router if the current router has sent a signal to this manager.
+                    //Stop to fetch a middleware if the current middleware has sent a signal to this manager.
                     if (false === $this->doRequestPropagation) {
                         break;
                     }
@@ -77,14 +77,14 @@ class Running implements StateInterface
     }
 
     /**
-     * Builder to dispatch the request to all routers while a message was not receive to stop the propaggation.
+     * Builder to dispatch the request to all middlewares while a message was not receive to stop the propaggation.
      *
      * @return \Closure
      */
     private function dispatchRequest()
     {
         /**
-         * To dispatch the request to all routers while a message was not receive to stop the propaggation.
+         * To dispatch the request to all middlewares while a message was not receive to stop the propaggation.
          *
          * @param ClientInterface        $client
          * @param ServerRequestInterface $request
@@ -95,10 +95,10 @@ class Running implements StateInterface
             $this->doRequestPropagation = true;
 
             /**
-             * @var RouterInterface $router
+             * @var MiddlewareInterface $middleware
              */
-            foreach ($this->iterateRouter() as $router) {
-                $router->receiveRequestFromServer($client, $request, $this);
+            foreach ($this->iterateMiddleware() as $middleware) {
+                $middleware->receiveRequestFromServer($client, $request, $this);
             }
 
             $this->switchState(HadRun::class);
@@ -108,7 +108,7 @@ class Running implements StateInterface
     }
 
     /**
-     * Builder to stop propagation to other routers when a router has determined the request is handle by one of its
+     * Builder to stop propagation to other middlewares when a middleware has determined the request is handle by one of its
      * controllers.
      *
      * @return \Closure
@@ -116,7 +116,7 @@ class Running implements StateInterface
     private function doStopPropagation()
     {
         /**
-         * Method to stop propagation to other routers when a router has determined the request is handle by one of its
+         * Method to stop propagation to other middlewares when a middleware has determined the request is handle by one of its
          * controllers.
          *
          * @return ManagerInterface

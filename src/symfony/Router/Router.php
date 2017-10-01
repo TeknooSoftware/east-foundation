@@ -25,6 +25,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
+use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
 use Teknoo\East\Foundation\Processor\ProcessorInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
@@ -140,7 +141,7 @@ class Router implements RouterInterface
         ClientInterface $client,
         ServerRequestInterface $request,
         ManagerInterface $manager
-    ): RouterInterface {
+    ): MiddlewareInterface {
         $controller = $this->matchRequest($request);
 
         if (\is_callable($controller)) {

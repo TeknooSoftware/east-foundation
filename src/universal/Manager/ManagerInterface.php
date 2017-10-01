@@ -22,12 +22,12 @@
 namespace Teknoo\East\Foundation\Manager;
 
 use Teknoo\East\Foundation\Http\ClientInterface;
-use Teknoo\East\Foundation\Router\RouterInterface;
+use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Interface ManagerInterface is a contract to create manager to process requests in East Foundation. The manager
- * passes the request to each router as the spread has not been stopped.
+ * passes the request to each middleware as the spread has not been stopped.
  *
  * All public method of the manager must only return the self client or a clone instance.
  *
@@ -54,26 +54,26 @@ interface ManagerInterface
     ): ManagerInterface;
 
     /**
-     * Method to register router in the manager to process request.
+     * Method to register middleware in the manager to process request.
      *
-     * @param RouterInterface $router
+     * @param MiddlewareInterface $middleware
      * @param int $priority
      *
      * @return ManagerInterface
      */
-    public function registerRouter(RouterInterface $router, int $priority = 10): ManagerInterface;
+    public function registerMiddleware(MiddlewareInterface $middleware, int $priority = 10): ManagerInterface;
 
     /**
-     * Method to unregister router in the manager to process request.
+     * Method to unregister middleware in the manager to process request.
      *
-     * @param RouterInterface $router
+     * @param MiddlewareInterface $middleware
      *
      * @return ManagerInterface
      */
-    public function unregisterRouter(RouterInterface $router): ManagerInterface;
+    public function unregisterMiddleware(MiddlewareInterface $middleware): ManagerInterface;
 
     /**
-     * Method to stop propagation to other routers when a router has determined the request is handle by one of its
+     * Method to stop propagation to other middlewares when a middleware has determined the request is handle by one of its
      * controllers.
      *
      * @return ManagerInterface
