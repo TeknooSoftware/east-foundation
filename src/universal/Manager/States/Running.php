@@ -58,9 +58,9 @@ class Running implements StateInterface
          * @return \Generator
          */
         return function () {
-            $routersListPrioritized = $this->routersList;
-            ksort($routersListPrioritized);
-            foreach ($routersListPrioritized as &$routersList) {
+            $listPrioritized = $this->routersList;
+            ksort($listPrioritized);
+            foreach ($listPrioritized as &$routersList) {
                 foreach ($routersList as $router) {
                     //Fetch each router
                     yield $router;

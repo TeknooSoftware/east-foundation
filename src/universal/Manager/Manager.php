@@ -108,7 +108,7 @@ class Manager implements
     /**
      * {@inheritdoc}
      */
-    public function registerRouter(RouterInterface $router, int $priority=10): ManagerInterface
+    public function registerRouter(RouterInterface $router, int $priority = 10): ManagerInterface
     {
         return $this->doRegisterRouter($router, $priority);
     }

@@ -61,7 +61,7 @@ interface ManagerInterface
      *
      * @return ManagerInterface
      */
-    public function registerRouter(RouterInterface $router, int $priority=10): ManagerInterface;
+    public function registerRouter(RouterInterface $router, int $priority = 10): ManagerInterface;
 
     /**
      * Method to unregister router in the manager to process request.

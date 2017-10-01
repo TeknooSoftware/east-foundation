@@ -82,10 +82,11 @@ class Service implements StateInterface
          * Method to register router in the manager to process request.
          *
          * @param RouterInterface $router
+         * @param int $priority
          *
          * @return ManagerInterface
          */
-        return function (RouterInterface $router, int $priority=10): ManagerInterface {
+        return function (RouterInterface $router, int $priority = 10): ManagerInterface {
             $this->routersList[$priority][\spl_object_hash($router)] = $router;
 
             return $this;
