@@ -93,7 +93,7 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
             }))
             ->willReturnSelf();
 
-        $controller = (new class() implements EndPointInterface{
+        $controller = (new class() implements EndPointInterface {
             use EastEndPointTrait;
             public function getRedirect(ClientInterface $client)
             {
@@ -215,7 +215,8 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
             {
                 return $this->render($client, 'routeName');
             }
-        })->getRender($client);
+        }
+        )->getRender($client);
     }
 
     /**
@@ -230,7 +231,8 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
             {
                 throw $this->createNotFoundException();
             }
-        })->getCreateNotFoundException();
+        }
+        )->getCreateNotFoundException();
     }
 
     /**
@@ -245,7 +247,8 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
             {
                 throw $this->createAccessDeniedException();
             }
-        })->getCreateAccessDeniedException();
+        }
+        )->getCreateAccessDeniedException();
     }
 
     /**
@@ -253,14 +256,15 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetUserNoStorage()
     {
-        (new class() implements EndPointInterface{
+        (new class() implements EndPointInterface {
             use EastEndPointTrait;
 
             public function getGetUser()
             {
                 return $this->getUser();
             }
-        })->getGetUser();
+        }
+        )->getGetUser();
     }
 
     public function testGetUser()

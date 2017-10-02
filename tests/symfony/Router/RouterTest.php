@@ -337,7 +337,6 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         $class = new class {
             public static function action()
             {
-
             }
         };
 

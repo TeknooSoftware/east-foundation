@@ -543,7 +543,6 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
                 self::$client = $client;
                 self::$request = $request;
                 self::$testCase = $testCase;
-
             }
 
             public static function testAction(ServerRequestInterface $request, ClientInterface $client, $foo, $bar, $default = 789)

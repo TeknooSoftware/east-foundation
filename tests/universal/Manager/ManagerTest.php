@@ -265,9 +265,9 @@ class ManagerTest extends \PHPUnit\Framework\TestCase
         $middleware3 = $this->createMock(MiddlewareInterface::class);
         $middleware3->expects(self::never())->method('executeRequestFromManager');
 
-        $manager->registerMiddleware($middleware1,2);
-        $manager->registerMiddleware($middleware2,1);
-        $manager->registerMiddleware($middleware3,2);
+        $manager->registerMiddleware($middleware1, 2);
+        $manager->registerMiddleware($middleware2, 1);
+        $manager->registerMiddleware($middleware3, 2);
         self::assertInstanceOf(
             $this->getManagerClass(),
             $manager->receiveRequestFromClient($clientMock, $serverRequestMock)
@@ -325,9 +325,9 @@ class ManagerTest extends \PHPUnit\Framework\TestCase
         $middleware3 = $this->createMock(MiddlewareInterface::class);
         $middleware3->expects(self::never())->method('executeRequestFromManager');
 
-        $manager->registerMiddleware($middleware1,2);
-        $manager->registerMiddleware($middleware2,1);
-        $manager->registerMiddleware($middleware3,2);
+        $manager->registerMiddleware($middleware1, 2);
+        $manager->registerMiddleware($middleware2, 1);
+        $manager->registerMiddleware($middleware3, 2);
         self::assertInstanceOf(
             $this->getManagerClass(),
             $manager->receiveRequestFromClient($clientMock, $serverRequestMock)
@@ -387,9 +387,9 @@ class ManagerTest extends \PHPUnit\Framework\TestCase
         $middleware3 = $this->createMock(MiddlewareInterface::class);
         $middleware3->expects(self::never())->method('executeRequestFromManager');
 
-        $manager->registerMiddleware($middleware1,2);
-        $manager->registerMiddleware($middleware2,1);
-        $manager->registerMiddleware($middleware3,2);
+        $manager->registerMiddleware($middleware1, 2);
+        $manager->registerMiddleware($middleware2, 1);
+        $manager->registerMiddleware($middleware3, 2);
         self::assertInstanceOf(
             $this->getManagerClass(),
             $manager->receiveRequestFromClient($clientMock, $serverRequestMock)
