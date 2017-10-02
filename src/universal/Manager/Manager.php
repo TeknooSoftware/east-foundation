@@ -119,6 +119,7 @@ class Manager implements
     ): ManagerInterface {
         return $this->dispatchRequest($client, $request);
     }
+
     /**
      * {@inheritdoc}
      */

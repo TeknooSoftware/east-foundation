@@ -94,8 +94,8 @@ class Queue implements
     public function iterate()
     {
         while ($this->position < \count($this->compiledList) && $this->position >= 0) {
-            yield $this->compiledList[$this->position];
-            $this->position++;
+            $position = $this->position++;
+            yield $this->compiledList[$position];
         };
     }
 
