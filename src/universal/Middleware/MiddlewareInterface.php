@@ -24,8 +24,20 @@ namespace Teknoo\East\Foundation\Middleware;
 use Psr\Http\Message\ServerRequestInterface;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
-use Teknoo\East\Foundation\Manager\Queue\QueueInterface;
 
+/**
+ * Interface to define middleware, able to manage a request, following the #East philosophy : It's the middleware who
+ * call the manager to call the next middleware, the manager not manage any return from middleware.
+ *
+ * Router are specific middleware.
+ *
+ * @copyright   Copyright (c) 2009-2017 Richard Déloge (richarddeloge@gmail.com)
+ *
+ * @link        http://teknoo.software/east Project website
+ *
+ * @license     http://teknoo.software/license/mit         MIT License
+ * @author      Richard Déloge <richarddeloge@gmail.com>
+ */
 interface MiddlewareInterface
 {
     /**

@@ -29,6 +29,17 @@ use Teknoo\Immutable\ImmutableTrait;
 use Teknoo\States\Proxy\ProxyInterface;
 use Teknoo\States\Proxy\ProxyTrait;
 
+/**
+ * Queue managing middleware, in prioritized list of middleware to iterate when a request.
+ * Need compile the list before iterate them to avoir list modification during an execution.
+ *
+ * @copyright   Copyright (c) 2009-2017 Richard Déloge (richarddeloge@gmail.com)
+ *
+ * @link        http://teknoo.software/east Project website
+ *
+ * @license     http://teknoo.software/license/mit         MIT License
+ * @author      Richard Déloge <richarddeloge@gmail.com>
+ */
 class Queue implements
     QueueInterface,
     ImmutableInterface,
@@ -77,6 +88,9 @@ class Queue implements
         ];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function add(MiddlewareInterface $middleware, int $priority = 10): QueueInterface
     {
         $this->doRegister($middleware, $priority);
@@ -84,6 +98,9 @@ class Queue implements
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function build(): QueueInterface
     {
         $this->compile();
@@ -91,6 +108,9 @@ class Queue implements
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function iterate()
     {
         while ($this->position < \count($this->compiledList) && $this->position >= 0) {
@@ -99,6 +119,9 @@ class Queue implements
         };
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function stop(): QueueInterface
     {
         $this->doStop();

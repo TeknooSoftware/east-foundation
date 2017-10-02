@@ -54,6 +54,9 @@ interface ManagerInterface
     ): ManagerInterface;
 
     /**
+     * Method to call from a middleware to continue the propagation of the request through middlewares registered into
+     * the queue of the manager.
+     *
      * @param ClientInterface        $client
      * @param ServerRequestInterface $request
      *
