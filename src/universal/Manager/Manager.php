@@ -24,7 +24,6 @@ namespace Teknoo\East\Foundation\Manager;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Teknoo\East\Foundation\Manager\Queue\Queue;
 use Teknoo\East\Foundation\Manager\Queue\QueueInterface;
-use Teknoo\East\Foundation\Manager\States\HadRun;
 use Teknoo\East\Foundation\Manager\States\Running;
 use Teknoo\East\Foundation\Manager\States\Service;
 use Teknoo\East\Foundation\Middleware\MiddlewareInterface;

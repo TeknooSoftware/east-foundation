@@ -37,7 +37,6 @@ use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  * @covers \Teknoo\East\Foundation\Manager\Manager
- * @covers \Teknoo\East\Foundation\Manager\States\HadRun
  * @covers \Teknoo\East\Foundation\Manager\States\Running
  * @covers \Teknoo\East\Foundation\Manager\States\Service
  */
