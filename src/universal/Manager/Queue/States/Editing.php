@@ -21,6 +21,7 @@
 
 namespace Teknoo\East\Foundation\Manager\Queue\States;
 
+use Teknoo\East\Foundation\Manager\Queue\Queue;
 use Teknoo\East\Foundation\Manager\Queue\QueueInterface;
 use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
 use Teknoo\States\State\StateInterface;
@@ -50,6 +51,9 @@ class Editing implements StateInterface
     private function compile()
     {
         return function (): QueueInterface {
+            /**
+             * @var Queue $this
+             */
             //Clone this queue, it is immutable and switch it's state
             $list = [];
             $listPrioritized = $this->middlewareList;
@@ -84,6 +88,9 @@ class Editing implements StateInterface
          * @return QueueInterface
          */
         return function (MiddlewareInterface $middleware, int $priority = 10): QueueInterface {
+            /**
+             * @var Queue $this
+             */
             $this->middlewareList[$priority][\spl_object_hash($middleware)] = $middleware;
 
             return $this;

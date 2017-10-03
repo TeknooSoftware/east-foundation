@@ -68,14 +68,14 @@ class Processor implements ProcessorInterface, ImmutableInterface
     /**
      * {@inheritdoc}
      */
-    public function executeRequest(
+    public function execute(
         ClientInterface $client,
         ServerRequestInterface $request,
         array $requestParameters
     ): ProcessorInterface
     {
         $processor = clone $this;
-        $processor->doExecuteRequest($client, $request, $requestParameters);
+        $processor->doExecute($client, $request, $requestParameters);
 
         return $processor;
     }
@@ -83,7 +83,7 @@ class Processor implements ProcessorInterface, ImmutableInterface
     /**
      * {@inheritdoc}
      */
-    public function doExecuteRequest(
+    public function doExecute(
         ClientInterface $client,
         ServerRequestInterface $request,
         array $requestParameters

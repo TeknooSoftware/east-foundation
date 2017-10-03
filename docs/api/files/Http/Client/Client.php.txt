@@ -88,9 +88,9 @@ class Client implements
     /**
      * {@inheritdoc}
      */
-    public function successfulResponseFromController(ResponseInterface $response): ClientInterface
+    public function successfulSendResponse(ResponseInterface $response): ClientInterface
     {
-        return $this->doSuccessfulResponseFromController($response);
+        return $this->doSuccessfulSendResponse($response);
     }
 
     /**

@@ -84,7 +84,7 @@ class Running extends AbstractState
      *
      * @return ManagerInterface
      */
-    private function doStopPropagation(): ManagerInterface
+    private function doStop(): ManagerInterface
     {
         $this->doRequestPropagation = false;
 

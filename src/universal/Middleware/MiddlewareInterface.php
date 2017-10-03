@@ -49,7 +49,7 @@ interface MiddlewareInterface
      *
      * @return MiddlewareInterface
      */
-    public function executeRequestFromManager(
+    public function execute(
         ClientInterface $client,
         ServerRequestInterface $request,
         ManagerInterface $manager

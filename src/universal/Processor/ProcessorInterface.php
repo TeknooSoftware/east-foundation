@@ -23,6 +23,8 @@ namespace Teknoo\East\Foundation\Processor;
 
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Teknoo\East\Foundation\Manager\ManagerInterface;
+use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
 use Teknoo\East\Foundation\Router\ResultInterface;
 
 /**
@@ -38,20 +40,6 @@ use Teknoo\East\Foundation\Router\ResultInterface;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-interface ProcessorInterface
+interface ProcessorInterface extends MiddlewareInterface
 {
-    /**
-     * Called by a router to execute a request and passing a the client.
-     *
-     * @param ClientInterface        $client
-     * @param ServerRequestInterface $request
-     * @param ResultInterface        $routerResult
-     *
-     * @return ProcessorInterface
-     */
-    public function executeRequest(
-        ClientInterface $client,
-        ServerRequestInterface $request,
-        ResultInterface $routerResult
-    ): ProcessorInterface;
 }

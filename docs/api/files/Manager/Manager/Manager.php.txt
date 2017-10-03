@@ -96,7 +96,7 @@ class Manager implements
     /**
      * {@inheritdoc}
      */
-    public function receiveRequestFromClient(ClientInterface $client, ServerRequestInterface $request): ManagerInterface
+    public function receiveRequest(ClientInterface $client, ServerRequestInterface $request): ManagerInterface
     {
         //Run this request
         return $this->running($client, $request);
@@ -121,9 +121,9 @@ class Manager implements
     /**
      * {@inheritdoc}
      */
-    public function stopPropagation(): ManagerInterface
+    public function stop(): ManagerInterface
     {
-        return $this->doStopPropagation();
+        return $this->doStop();
     }
 }
 

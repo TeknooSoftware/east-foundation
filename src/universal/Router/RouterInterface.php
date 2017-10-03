@@ -27,7 +27,7 @@ use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
  * Interface RouterInterface is a contract to create router to check if a request is runnable by one of its
  * controller and pass it to the selected controller.
  *
- * The router can stop the propagation in the manager by calling stopPropagation.
+ * The router can stop the propagation in the manager by calling stop.
  *
  * @copyright   Copyright (c) 2009-2017 Richard Déloge (richarddeloge@gmail.com)
  *
@@ -38,4 +38,5 @@ use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
  */
 interface RouterInterface extends MiddlewareInterface
 {
+    const ROUTER_RESULT_KEY = '_east_route';
 }

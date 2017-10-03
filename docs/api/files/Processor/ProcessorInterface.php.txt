@@ -46,7 +46,7 @@ interface ProcessorInterface
      * @param array $requestParameters
      * @return ProcessorInterface
      */
-    public function executeRequest(
+    public function execute(
         ClientInterface $client,
         ServerRequestInterface $request,
         array $requestParameters

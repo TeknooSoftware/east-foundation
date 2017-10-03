@@ -48,7 +48,7 @@ use Teknoo\States\Proxy\ProxyTrait;
  *
  * @method ManagerInterface running(ClientInterface $client, ServerRequestInterface $request)
  * @method ManagerInterface doRegisterMiddleware(MiddlewareInterface $middleware)
- * @method ManagerInterface doStopPropagation()
+ * @method ManagerInterface doStop()
  */
 class Manager implements
     ManagerInterface,
@@ -89,6 +89,17 @@ class Manager implements
     }
 
     /**
+     * @param QueueInterface $queue
+     * @return Manager
+     */
+    public function setQueue(QueueInterface $queue): Manager
+    {
+        $this->queue = $queue;
+
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public static function statesListDeclaration(): array
@@ -102,7 +113,7 @@ class Manager implements
     /**
      * {@inheritdoc}
      */
-    public function receiveRequestFromClient(
+    public function receiveRequest(
         ClientInterface $client,
         ServerRequestInterface $request
     ): ManagerInterface {
@@ -133,8 +144,8 @@ class Manager implements
     /**
      * {@inheritdoc}
      */
-    public function stopPropagation(): ManagerInterface
+    public function stop(): ManagerInterface
     {
-        return $this->doStopPropagation();
+        return $this->doStop();
     }
 }

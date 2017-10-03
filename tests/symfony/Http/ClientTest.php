@@ -90,7 +90,7 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         return Client::class;
     }
 
-    public function testResponseFromController()
+    public function testSendResponse()
     {
         /**
          * @var ResponseInterface
@@ -116,14 +116,14 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $client = $this->buildClient();
         self::assertInstanceOf(
             $this->getClientClass(),
-            $client->responseFromController($response)
+            $client->sendResponse($response)
         );
     }
 
     /**
      * @expectedException \RuntimeException
      */
-    public function testResponseFromControllerWithoutGetResponseEvent()
+    public function testSendResponseWithoutGetResponseEvent()
     {
         /**
          * @var ResponseInterface
@@ -133,16 +133,16 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $client = new Client($this->getHttpFoundationFactoryMock());
         self::assertInstanceOf(
             $this->getClientClass(),
-            $client->responseFromController($response)
+            $client->sendResponse($response)
         );
     }
 
     /**
      * @expectedException \TypeError
      */
-    public function testResponseFromControllerError()
+    public function testSendResponseError()
     {
-        $this->buildClient()->responseFromController(new \stdClass());
+        $this->buildClient()->sendResponse(new \stdClass());
     }
 
     /**

@@ -42,6 +42,11 @@ use Teknoo\East\Foundation\Http\ClientInterface;
 class Client implements ClientWithResponseEventInterface
 {
     /**
+     * @var ResponseInterface
+     */
+    private $response;
+
+    /**
      * @var GetResponseEvent
      */
     private $getResponseEvent;
@@ -78,14 +83,36 @@ class Client implements ClientWithResponseEventInterface
     /**
      * {@inheritdoc}
      */
-    public function responseFromController(ResponseInterface $response): ClientInterface
+    public function updateResponse(callable $modifier): ClientInterface
     {
+        $modifier($this, $this->response);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function acceptResponse(ResponseInterface $response): ClientInterface
+    {
+        $this->response = $response;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function sendResponse(ResponseInterface $response): ClientInterface
+    {
+        $this->acceptResponse($response);
+
         if (!$this->getResponseEvent instanceof GetResponseEvent) {
             throw new \RuntimeException('Error, the getResponseEvent has not been set into the client');
         }
 
         $this->getResponseEvent->setResponse(
-            $this->httpFoundationFactory->createResponse($response)
+            $this->httpFoundationFactory->createResponse($this->response)
         );
 
         return $this;

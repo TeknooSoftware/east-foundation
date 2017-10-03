@@ -24,8 +24,11 @@ namespace Teknoo\East\Foundation\Processor;
 use Psr\Log\LoggerInterface;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Teknoo\East\Foundation\Manager\ManagerInterface;
+use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
 use Teknoo\East\Foundation\Router\ParameterInterface;
 use Teknoo\East\Foundation\Router\ResultInterface;
+use Teknoo\East\Foundation\Router\RouterInterface;
 use Teknoo\Immutable\ImmutableInterface;
 use Teknoo\Immutable\ImmutableTrait;
 
@@ -66,13 +69,17 @@ class Processor implements ProcessorInterface, ImmutableInterface
     /**
      * {@inheritdoc}
      */
-    public function executeRequest(
+    public function execute(
         ClientInterface $client,
         ServerRequestInterface $request,
-        ResultInterface $routerResult
-    ): ProcessorInterface {
+        ManagerInterface $manager
+    ): MiddlewareInterface {
         $processor = clone $this;
-        $processor->doExecuteRequest($client, $request, $routerResult);
+
+        $routerResult = $request->getAttribute(RouterInterface::ROUTER_RESULT_KEY);
+        if ($routerResult instanceof ResultInterface) {
+            $processor->doExecute($client, $request, $routerResult);
+        }
 
         return $processor;
     }
@@ -85,7 +92,7 @@ class Processor implements ProcessorInterface, ImmutableInterface
      * @param ServerRequestInterface $request
      * @param ResultInterface        $routerResult
      */
-    private function doExecuteRequest(
+    private function doExecute(
         ClientInterface $client,
         ServerRequestInterface $request,
         ResultInterface $routerResult
@@ -96,7 +103,7 @@ class Processor implements ProcessorInterface, ImmutableInterface
 
         $next = $routerResult->getNext();
         if ($next instanceof ResultInterface) {
-            $this->doExecuteRequest($client, $request, $next);
+            $this->doExecute($client, $request, $next);
         }
     }
 

@@ -155,7 +155,7 @@ class KernelListenerTest extends \PHPUnit\Framework\TestCase
 
         $this->getManagerMock()
             ->expects(self::never())
-            ->method('receiveRequestFromClient');
+            ->method('receiveRequest');
 
         self::assertInstanceOf(
             $this->getKernelListenerClass(),

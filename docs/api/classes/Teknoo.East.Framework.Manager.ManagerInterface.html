@@ -446,10 +446,10 @@ passes the request to each router as the spread has not been stopped.</em></p>
                         </section>
                         <section class="row-fluid public">
                             <section class="span6">
-                                                                    <a href="../classes/Teknoo.East.Framework.Manager.ManagerInterface.html#method_receiveRequestFromClient">receiveRequestFromClient()</a><br />
+                                                                    <a href="../classes/Teknoo.East.Framework.Manager.ManagerInterface.html#method_receiveRequest">receiveRequest()</a><br />
                                                                     <a href="../classes/Teknoo.East.Framework.Manager.ManagerInterface.html#method_registerRouter">registerRouter()</a><br />
                                                                     <a href="../classes/Teknoo.East.Framework.Manager.ManagerInterface.html#method_unregisterRouter">unregisterRouter()</a><br />
-                                                                    <a href="../classes/Teknoo.East.Framework.Manager.ManagerInterface.html#method_stopPropagation">stopPropagation()</a><br />
+                                                                    <a href="../classes/Teknoo.East.Framework.Manager.ManagerInterface.html#method_stop">stop()</a><br />
                                                             </section>
                             <section class="span6">
                                                                     <em>No constants found</em>
@@ -519,11 +519,11 @@ passes the request to each router as the spread has not been stopped.</em></p>
 
                                     <div class="row-fluid">
         <div class="span8 content class">
-            <a id="method_receiveRequestFromClient" name="method_receiveRequestFromClient" class="anchor"></a>
+            <a id="method_receiveRequest" name="method_receiveRequest" class="anchor"></a>
             <article class="method">
-                <h3 class="public ">receiveRequestFromClient()</h3>
+                <h3 class="public ">receiveRequest()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">receiveRequestFromClient(\Teknoo\East\Framework\Http\ClientInterface  <span class="argument">$client</span>, \Psr\Http\Message\ServerRequestInterface  <span class="argument">$request</span>) : \Teknoo\East\Framework\Manager\ManagerInterface</pre>
+                <pre class="signature" style="margin-right: 54px;">receiveRequest(\Teknoo\East\Framework\Http\ClientInterface  <span class="argument">$client</span>, \Psr\Http\Message\ServerRequestInterface  <span class="argument">$request</span>) : \Teknoo\East\Framework\Manager\ManagerInterface</pre>
                 <p><em>Method to call to process a request in East Framework by East&#039;s controller</em></p>
                 
 
@@ -632,11 +632,11 @@ passes the request to each router as the spread has not been stopped.</em></p>
 
                                     <div class="row-fluid">
         <div class="span8 content class">
-            <a id="method_stopPropagation" name="method_stopPropagation" class="anchor"></a>
+            <a id="method_stop" name="method_stop" class="anchor"></a>
             <article class="method">
-                <h3 class="public ">stopPropagation()</h3>
+                <h3 class="public ">stop()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">stopPropagation() : \Teknoo\East\Framework\Manager\ManagerInterface</pre>
+                <pre class="signature" style="margin-right: 54px;">stop() : \Teknoo\East\Framework\Manager\ManagerInterface</pre>
                 <p><em>Method to stop propagation to other routers when a router has determined the request is handle by one of its
 controllers</em></p>
                 

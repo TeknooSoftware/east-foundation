@@ -48,7 +48,7 @@ interface ManagerInterface
      *
      * @return ManagerInterface
      */
-    public function receiveRequestFromClient(
+    public function receiveRequest(
         ClientInterface $client,
         ServerRequestInterface $request
     ): ManagerInterface;
@@ -86,5 +86,5 @@ interface ManagerInterface
      *
      * @return ManagerInterface
      */
-    public function stopPropagation(): ManagerInterface;
+    public function stop(): ManagerInterface;
 }

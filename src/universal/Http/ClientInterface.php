@@ -39,13 +39,28 @@ use Psr\Http\Message\ResponseInterface;
 interface ClientInterface
 {
     /**
+     * @param callable $modifier
+     * @return ClientInterface
+     */
+    public function updateResponse(callable $modifier): ClientInterface;
+
+    /**
      * To accept a response from the controller action and send it to the HTTP client.
      *
      * @param ResponseInterface $response
      *
      * @return ClientInterface
      */
-    public function responseFromController(ResponseInterface $response): ClientInterface;
+    public function acceptResponse(ResponseInterface $response): ClientInterface;
+
+    /**
+     * To accept a response from the controller action and send it to the HTTP client.
+     *
+     * @param ResponseInterface $response
+     *
+     * @return ClientInterface
+     */
+    public function sendResponse(ResponseInterface $response): ClientInterface;
 
     /**
      * To intercept an error during a request and forward the message to the HTTP client.

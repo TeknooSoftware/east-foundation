@@ -80,7 +80,7 @@ class KernelListener
     public function onKernelRequest(GetResponseEvent $event): KernelListener
     {
         $client = new Client($event, $this->httpFoundationFactory);
-        $this->manager->receiveRequestFromClient(
+        $this->manager->receiveRequest(
             $client,
             $this->diactorosFactory->createRequest(
                 $event->getRequest()

@@ -63,7 +63,7 @@ class Running implements StateInterface
              * @var MiddlewareInterface $middleware
              */
             foreach ($this->queue->iterate() as $middleware) {
-                $middleware->executeRequestFromManager($client, $request, $this);
+                $middleware->execute($client, $request, $this);
             }
 
             return $this;
@@ -76,7 +76,7 @@ class Running implements StateInterface
      *
      * @return \Closure
      */
-    private function doStopPropagation()
+    private function doStop()
     {
         /**
          * Method to stop propagation to other middlewares when a middleware

@@ -58,11 +58,11 @@ class ManagerTest extends \PHPUnit\Framework\TestCase
         return Manager::class;
     }
 
-    public function testReceiveRequestFromClient()
+    public function testReceiveRequest()
     {
         self::assertInstanceOf(
             $this->getManagerClass(),
-            $this->buildManager()->receiveRequestFromClient(
+            $this->buildManager()->receiveRequest(
                 $this->createMock(ClientInterface::class),
                 $this->createMock(ServerRequestInterface::class)
             )
@@ -72,9 +72,9 @@ class ManagerTest extends \PHPUnit\Framework\TestCase
     /**
      * @expectedException \TypeError
      */
-    public function testReceiveRequestFromClientErrorClient()
+    public function testReceiveRequestErrorClient()
     {
-        $this->buildManager()->receiveRequestFromClient(
+        $this->buildManager()->receiveRequest(
             new \stdClass(),
             $this->createMock(ServerRequestInterface::class)
         );
@@ -83,9 +83,9 @@ class ManagerTest extends \PHPUnit\Framework\TestCase
     /**
      * @expectedException \TypeError
      */
-    public function testReceiveRequestFromClientErrorRequest()
+    public function testReceiveRequestErrorRequest()
     {
-        $this->buildManager()->receiveRequestFromClient(
+        $this->buildManager()->receiveRequest(
             $this->createMock(ClientInterface::class),
             new \stdClass()
         );
@@ -131,7 +131,7 @@ class ManagerTest extends \PHPUnit\Framework\TestCase
         $this->buildManager()->registerMiddleware(new \stdClass());
     }
 
-    public function testStopPropagation()
+    public function testStop()
     {
         $middleware = new class($this) implements MiddlewareInterface {
             /**
@@ -144,14 +144,14 @@ class ManagerTest extends \PHPUnit\Framework\TestCase
                 $this->testSuite = $that;
             }
 
-            public function executeRequestFromManager(
+            public function execute(
                 ClientInterface $client,
                 ServerRequestInterface $request,
                 ManagerInterface $manager
             ): MiddlewareInterface {
                 $this->testSuite->assertInstanceOf(
                     $this->testSuite->getManagerClass(),
-                    $manager->stopPropagation()
+                    $manager->stop()
                 );
 
                 return $this;
@@ -170,10 +170,10 @@ class ManagerTest extends \PHPUnit\Framework\TestCase
 
         $manager = $this->buildManager();
         $manager->registerMiddleware($middleware);
-        $manager->receiveRequestFromClient($clientMock, $serverRequestMock);
+        $manager->receiveRequest($clientMock, $serverRequestMock);
     }
 
-    public function testBehaviorReceiveRequestFromClient()
+    public function testBehaviorReceiveRequest()
     {
         $manager = $this->buildManager();
 
@@ -191,18 +191,18 @@ class ManagerTest extends \PHPUnit\Framework\TestCase
          * @var MiddlewareInterface|\PHPUnit_Framework_MockObject_MockObject
          */
         $middleware1 = $this->createMock(MiddlewareInterface::class);
-        $middleware1->expects(self::once())->method('executeRequestFromManager')->willReturnSelf();
+        $middleware1->expects(self::once())->method('execute')->willReturnSelf();
         /**
          * @var MiddlewareInterface|\PHPUnit_Framework_MockObject_MockObject
          */
         $middleware2 = $this->createMock(MiddlewareInterface::class);
-        $middleware2->expects(self::once())->method('executeRequestFromManager');
-        $middleware2->expects(self::once())->method('executeRequestFromManager')->willReturnCallback(
+        $middleware2->expects(self::once())->method('execute');
+        $middleware2->expects(self::once())->method('execute')->willReturnCallback(
             function ($clientPassed, $requestPassed, $managerPassed) use ($clientMock, $serverRequestMock, $manager) {
                 self::assertEquals($clientPassed, $clientMock);
                 self::assertEquals($requestPassed, $serverRequestMock);
                 self::assertNotSame($managerPassed, $manager);
-                $managerPassed->stopPropagation();
+                $managerPassed->stop();
             }
         );
 
@@ -210,18 +210,18 @@ class ManagerTest extends \PHPUnit\Framework\TestCase
          * @var MiddlewareInterface|\PHPUnit_Framework_MockObject_MockObject
          */
         $middleware3 = $this->createMock(MiddlewareInterface::class);
-        $middleware3->expects(self::never())->method('executeRequestFromManager');
+        $middleware3->expects(self::never())->method('execute');
 
         $manager->registerMiddleware($middleware1);
         $manager->registerMiddleware($middleware2);
         $manager->registerMiddleware($middleware3);
         self::assertInstanceOf(
             $this->getManagerClass(),
-            $manager->receiveRequestFromClient($clientMock, $serverRequestMock)
+            $manager->receiveRequest($clientMock, $serverRequestMock)
         );
     }
 
-    public function testBehaviorReceiveRequestFromClientWithPriorityWithStopPropagation()
+    public function testBehaviorReceiveRequestWithPriorityWithStop()
     {
         $manager = $this->buildManager();
 
@@ -240,19 +240,19 @@ class ManagerTest extends \PHPUnit\Framework\TestCase
          */
         $middleware1 = $this->createMock(MiddlewareInterface::class);
         $callList = [];
-        $middleware1->expects(self::never())->method('executeRequestFromManager');
+        $middleware1->expects(self::never())->method('execute');
 
         /**
          * @var MiddlewareInterface|\PHPUnit_Framework_MockObject_MockObject
          */
         $middleware2 = $this->createMock(MiddlewareInterface::class);
-        $middleware2->expects(self::once())->method('executeRequestFromManager');
-        $middleware2->expects(self::once())->method('executeRequestFromManager')->willReturnCallback(
+        $middleware2->expects(self::once())->method('execute');
+        $middleware2->expects(self::once())->method('execute')->willReturnCallback(
             function ($clientPassed, $requestPassed, $managerPassed) use ($clientMock, $serverRequestMock, $manager, &$callList, $middleware2) {
                 self::assertEquals($clientPassed, $clientMock);
                 self::assertEquals($requestPassed, $serverRequestMock);
                 self::assertNotSame($managerPassed, $manager);
-                $managerPassed->stopPropagation();
+                $managerPassed->stop();
                 $callList[] = 'middleware2';
 
                 return $middleware2;
@@ -263,20 +263,20 @@ class ManagerTest extends \PHPUnit\Framework\TestCase
          * @var MiddlewareInterface|\PHPUnit_Framework_MockObject_MockObject
          */
         $middleware3 = $this->createMock(MiddlewareInterface::class);
-        $middleware3->expects(self::never())->method('executeRequestFromManager');
+        $middleware3->expects(self::never())->method('execute');
 
         $manager->registerMiddleware($middleware1, 2);
         $manager->registerMiddleware($middleware2, 1);
         $manager->registerMiddleware($middleware3, 2);
         self::assertInstanceOf(
             $this->getManagerClass(),
-            $manager->receiveRequestFromClient($clientMock, $serverRequestMock)
+            $manager->receiveRequest($clientMock, $serverRequestMock)
         );
 
         self::assertEquals(['middleware2'], $callList);
     }
 
-    public function testBehaviorReceiveRequestFromClientWithPriority()
+    public function testBehaviorReceiveRequestWithPriority()
     {
         $manager = $this->buildManager();
 
@@ -295,10 +295,10 @@ class ManagerTest extends \PHPUnit\Framework\TestCase
          */
         $middleware1 = $this->createMock(MiddlewareInterface::class);
         $callList = [];
-        $middleware1->expects(self::once())->method('executeRequestFromManager')->willReturnCallback(
+        $middleware1->expects(self::once())->method('execute')->willReturnCallback(
             function ($clientPassed, $requestPassed, $managerPassed) use (&$callList, $middleware1) {
                 $callList[] = 'middleware1';
-                $managerPassed->stopPropagation();
+                $managerPassed->stop();
 
                 return $middleware1;
             }
@@ -307,8 +307,8 @@ class ManagerTest extends \PHPUnit\Framework\TestCase
          * @var MiddlewareInterface|\PHPUnit_Framework_MockObject_MockObject
          */
         $middleware2 = $this->createMock(MiddlewareInterface::class);
-        $middleware2->expects(self::once())->method('executeRequestFromManager');
-        $middleware2->expects(self::once())->method('executeRequestFromManager')->willReturnCallback(
+        $middleware2->expects(self::once())->method('execute');
+        $middleware2->expects(self::once())->method('execute')->willReturnCallback(
             function ($clientPassed, $requestPassed, $managerPassed) use ($clientMock, $serverRequestMock, $manager, &$callList, $middleware2) {
                 self::assertEquals($clientPassed, $clientMock);
                 self::assertEquals($requestPassed, $serverRequestMock);
@@ -323,20 +323,20 @@ class ManagerTest extends \PHPUnit\Framework\TestCase
          * @var MiddlewareInterface|\PHPUnit_Framework_MockObject_MockObject
          */
         $middleware3 = $this->createMock(MiddlewareInterface::class);
-        $middleware3->expects(self::never())->method('executeRequestFromManager');
+        $middleware3->expects(self::never())->method('execute');
 
         $manager->registerMiddleware($middleware1, 2);
         $manager->registerMiddleware($middleware2, 1);
         $manager->registerMiddleware($middleware3, 2);
         self::assertInstanceOf(
             $this->getManagerClass(),
-            $manager->receiveRequestFromClient($clientMock, $serverRequestMock)
+            $manager->receiveRequest($clientMock, $serverRequestMock)
         );
 
         self::assertEquals(['middleware2','middleware1'], $callList);
     }
 
-    public function testBehaviorReceiveRequestFromClientAndContinueExecution()
+    public function testBehaviorReceiveRequestAndContinueExecution()
     {
         $manager = $this->buildManager();
 
@@ -355,10 +355,10 @@ class ManagerTest extends \PHPUnit\Framework\TestCase
          */
         $middleware1 = $this->createMock(MiddlewareInterface::class);
         $callList = [];
-        $middleware1->expects(self::once())->method('executeRequestFromManager')->willReturnCallback(
+        $middleware1->expects(self::once())->method('execute')->willReturnCallback(
             function ($clientPassed, $requestPassed, $managerPassed) use (&$callList, $middleware1) {
                 $callList[] = 'middleware1';
-                $managerPassed->stopPropagation();
+                $managerPassed->stop();
 
                 return $middleware1;
             }
@@ -367,8 +367,8 @@ class ManagerTest extends \PHPUnit\Framework\TestCase
          * @var MiddlewareInterface|\PHPUnit_Framework_MockObject_MockObject
          */
         $middleware2 = $this->createMock(MiddlewareInterface::class);
-        $middleware2->expects(self::once())->method('executeRequestFromManager');
-        $middleware2->expects(self::once())->method('executeRequestFromManager')->willReturnCallback(
+        $middleware2->expects(self::once())->method('execute');
+        $middleware2->expects(self::once())->method('execute')->willReturnCallback(
             function ($clientPassed, $requestPassed, $managerPassed) use ($clientMock, $serverRequestMock, $manager, &$callList, $middleware2) {
                 self::assertEquals($clientPassed, $clientMock);
                 self::assertEquals($requestPassed, $serverRequestMock);
@@ -385,20 +385,20 @@ class ManagerTest extends \PHPUnit\Framework\TestCase
          * @var MiddlewareInterface|\PHPUnit_Framework_MockObject_MockObject
          */
         $middleware3 = $this->createMock(MiddlewareInterface::class);
-        $middleware3->expects(self::never())->method('executeRequestFromManager');
+        $middleware3->expects(self::never())->method('execute');
 
         $manager->registerMiddleware($middleware1, 2);
         $manager->registerMiddleware($middleware2, 1);
         $manager->registerMiddleware($middleware3, 2);
         self::assertInstanceOf(
             $this->getManagerClass(),
-            $manager->receiveRequestFromClient($clientMock, $serverRequestMock)
+            $manager->receiveRequest($clientMock, $serverRequestMock)
         );
 
         self::assertEquals(['middleware2','middleware1'], $callList);
     }
 
-    public function testBehaviorMultipleReceiveRequestFromClient()
+    public function testBehaviorMultipleReceiveRequest()
     {
         $manager = $this->buildManager();
 
@@ -416,18 +416,18 @@ class ManagerTest extends \PHPUnit\Framework\TestCase
          * @var MiddlewareInterface|\PHPUnit_Framework_MockObject_MockObject
          */
         $middleware1 = $this->createMock(MiddlewareInterface::class);
-        $middleware1->expects(self::exactly(2))->method('executeRequestFromManager')->willReturnSelf();
+        $middleware1->expects(self::exactly(2))->method('execute')->willReturnSelf();
         /**
          * @var MiddlewareInterface|\PHPUnit_Framework_MockObject_MockObject
          */
         $middleware2 = $this->createMock(MiddlewareInterface::class);
-        $middleware2->expects(self::exactly(2))->method('executeRequestFromManager');
-        $middleware2->expects(self::exactly(2))->method('executeRequestFromManager')->willReturnCallback(
+        $middleware2->expects(self::exactly(2))->method('execute');
+        $middleware2->expects(self::exactly(2))->method('execute')->willReturnCallback(
             function ($clientPassed, $requestPassed, $managerPassed) use ($clientMock, $serverRequestMock, $manager) {
                 self::assertEquals($clientPassed, $clientMock);
                 self::assertEquals($requestPassed, $serverRequestMock);
                 self::assertNotSame($managerPassed, $manager);
-                $managerPassed->stopPropagation();
+                $managerPassed->stop();
             }
         );
 
@@ -435,19 +435,19 @@ class ManagerTest extends \PHPUnit\Framework\TestCase
          * @var MiddlewareInterface|\PHPUnit_Framework_MockObject_MockObject
          */
         $middleware3 = $this->createMock(MiddlewareInterface::class);
-        $middleware3->expects(self::never())->method('executeRequestFromManager');
+        $middleware3->expects(self::never())->method('execute');
 
         $manager->registerMiddleware($middleware1);
         $manager->registerMiddleware($middleware2);
         $manager->registerMiddleware($middleware3);
         self::assertInstanceOf(
             $this->getManagerClass(),
-            $manager->receiveRequestFromClient($clientMock, $serverRequestMock)
+            $manager->receiveRequest($clientMock, $serverRequestMock)
         );
 
         self::assertInstanceOf(
             $this->getManagerClass(),
-            $manager->receiveRequestFromClient($clientMock, $serverRequestMock)
+            $manager->receiveRequest($clientMock, $serverRequestMock)
         );
     }
 }

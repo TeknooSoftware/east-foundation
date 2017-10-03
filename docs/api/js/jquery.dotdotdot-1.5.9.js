@@ -57,7 +57,7 @@
 				function( e, c )
 				{
 					e.preventDefault();
-					e.stopPropagation();
+					e.stop();
 
 					opts.maxHeight = ( typeof opts.height == 'number' ) 
 						? opts.height 
@@ -124,7 +124,7 @@
 				function( e, fn )
 				{
 					e.preventDefault();
-					e.stopPropagation();
+					e.stop();
 
 					if ( typeof fn == 'function' )
 					{
@@ -138,7 +138,7 @@
 				function( e, fn )
 				{
 					e.preventDefault();
-					e.stopPropagation();
+					e.stop();
 
 					if ( typeof fn == 'function' )
 					{
@@ -152,7 +152,7 @@
 				function( e )
 				{
 					e.preventDefault();
-					e.stopPropagation();
+					e.stop();
 
 					$dot.unwatch()
 						.unbind_events()

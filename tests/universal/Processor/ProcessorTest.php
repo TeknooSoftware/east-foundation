@@ -24,10 +24,12 @@ namespace Teknoo\Tests\East\Foundation\Processor;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use Teknoo\East\Foundation\Http\ClientInterface;
+use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\East\Foundation\Processor\Processor;
 use Teknoo\East\Foundation\Processor\ProcessorInterface;
 use Teknoo\East\Foundation\Router\Parameter;
 use Teknoo\East\Foundation\Router\ResultInterface;
+use Teknoo\East\Foundation\Router\RouterInterface;
 use Teknoo\East\FoundationBundle\Http\Client;
 
 /**
@@ -68,7 +70,31 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
         return new Processor($this->getLoggerMock());
     }
 
-    public function testExecuteRequest()
+    public function testExecuteNoResult()
+    {
+        /**
+         * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
+         */
+        $clientMock = $this->createMock(ClientInterface::class);
+
+        /**
+         * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject
+         */
+        $requestMock = $this->createMock(ServerRequestInterface::class);
+        $requestMock->expects(self::any())->method('getAttributes')->willReturn(['bar' => 456, 'foo' => 123]);
+
+        $requestMock->expects(self::any())->method('getAttribute')->willReturnMap(
+            [[RouterInterface::ROUTER_RESULT_KEY, null, null]]
+        );
+
+        self::assertInstanceOf(ProcessorInterface::class, $this->buildProcessor()->execute(
+            $clientMock,
+            $requestMock,
+            $this->createMock(ManagerInterface::class)
+        ));
+    }
+
+    public function testExecute()
     {
         /**
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
@@ -105,15 +131,18 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
             new Parameter('default', true, 789, null),
         ]);
         $routerResult->expects(self::any())->method('getNext')->willReturn(null);
+        $requestMock->expects(self::any())->method('getAttribute')->willReturnMap(
+            [[[RouterInterface::ROUTER_RESULT_KEY, null, $routerResult]]]
+        );
 
-        self::assertInstanceOf(ProcessorInterface::class, $this->buildProcessor()->executeRequest(
+        self::assertInstanceOf(ProcessorInterface::class, $this->buildProcessor()->execute(
             $clientMock,
             $requestMock,
-            $routerResult
+            $this->createMock(ManagerInterface::class)
         ));
     }
 
-    public function testExecuteRequestWithSymfonyClient()
+    public function testExecuteWithSymfonyClient()
     {
         /**
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
@@ -150,15 +179,18 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
             new Parameter('default', true, 789, null),
         ]);
         $routerResult->expects(self::any())->method('getNext')->willReturn(null);
+        $requestMock->expects(self::any())->method('getAttribute')->willReturnMap(
+            [[RouterInterface::ROUTER_RESULT_KEY, null, $routerResult]]
+        );
 
-        self::assertInstanceOf(ProcessorInterface::class, $this->buildProcessor()->executeRequest(
+        self::assertInstanceOf(ProcessorInterface::class, $this->buildProcessor()->execute(
             $clientMock,
             $requestMock,
-            $routerResult
+            $this->createMock(ManagerInterface::class)
         ));
     }
 
-    public function testExecuteRequestChaining()
+    public function testExecuteChaining()
     {
         /**
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
@@ -239,11 +271,14 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
             new Parameter('default', true, 789, null),
         ]);
         $routerResult1->expects(self::any())->method('getNext')->willReturn($routerResult2);
+        $requestMock->expects(self::any())->method('getAttribute')->willReturnMap(
+            [[RouterInterface::ROUTER_RESULT_KEY, null, $routerResult1]]
+        );
 
-        self::assertInstanceOf(ProcessorInterface::class, $this->buildProcessor()->executeRequest(
+        self::assertInstanceOf(ProcessorInterface::class, $this->buildProcessor()->execute(
             $clientMock,
             $requestMock,
-            $routerResult1
+            $this->createMock(ManagerInterface::class)
         ));
 
         self::assertEquals('result3', $output);
@@ -252,7 +287,7 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
     /**
      * @expectedException \RuntimeException
      */
-    public function testExecuteRequestMissingArgument()
+    public function testExecuteMissingArgument()
     {
         /**
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
@@ -284,15 +319,18 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
             new Parameter('default', true, 789, null),
         ]);
         $routerResult->expects(self::any())->method('getNext')->willReturn(null);
+        $requestMock->expects(self::any())->method('getAttribute')->willReturnMap(
+            [[RouterInterface::ROUTER_RESULT_KEY, null, $routerResult]]
+        );
 
-        $this->buildProcessor()->executeRequest(
+        $this->buildProcessor()->execute(
             $clientMock,
             $requestMock,
-            $routerResult
+            $this->createMock(ManagerInterface::class)
         );
     }
 
-    public function testExecuteRequestInvokableConstructor()
+    public function testExecuteInvokableConstructor()
     {
         /**
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
@@ -353,18 +391,21 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
             new Parameter('default', true, 789, null),
         ]);
         $routerResult->expects(self::any())->method('getNext')->willReturn(null);
+        $requestMock->expects(self::any())->method('getAttribute')->willReturnMap(
+            [[RouterInterface::ROUTER_RESULT_KEY, null, $routerResult]]
+        );
 
-        self::assertInstanceOf(ProcessorInterface::class, $this->buildProcessor()->executeRequest(
+        self::assertInstanceOf(ProcessorInterface::class, $this->buildProcessor()->execute(
             $clientMock,
             $requestMock,
-            $routerResult
+            $this->createMock(ManagerInterface::class)
         ));
     }
 
     /**
      * @expectedException \RuntimeException
      */
-    public function testExecuteRequestInvokableConstructorMissingArgument()
+    public function testExecuteInvokableConstructorMissingArgument()
     {
         /**
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
@@ -393,15 +434,18 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
             new Parameter('default', true, 789, null),
         ]);
         $routerResult->expects(self::any())->method('getNext')->willReturn(null);
+        $requestMock->expects(self::any())->method('getAttribute')->willReturnMap(
+            [[RouterInterface::ROUTER_RESULT_KEY, null, $routerResult]]
+        );
 
-        $this->buildProcessor()->executeRequest(
+        $this->buildProcessor()->execute(
             $clientMock,
             $requestMock,
-            $routerResult
+            $this->createMock(ManagerInterface::class)
         );
     }
 
-    public function testExecuteRequestClassController()
+    public function testExecuteClassController()
     {
         /**
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
@@ -461,18 +505,21 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
             new Parameter('default', true, 789, null),
         ]);
         $routerResult->expects(self::any())->method('getNext')->willReturn(null);
+        $requestMock->expects(self::any())->method('getAttribute')->willReturnMap(
+            [[RouterInterface::ROUTER_RESULT_KEY, null, $routerResult]]
+        );
 
-        self::assertInstanceOf(ProcessorInterface::class, $this->buildProcessor()->executeRequest(
+        self::assertInstanceOf(ProcessorInterface::class, $this->buildProcessor()->execute(
             $clientMock,
             $requestMock,
-            $routerResult
+            $this->createMock(ManagerInterface::class)
         ));
     }
 
     /**
      * @expectedException \RuntimeException
      */
-    public function testExecuteRequestClassControllerMissingArgument()
+    public function testExecuteClassControllerMissingArgument()
     {
         /**
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
@@ -501,15 +548,18 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
             new Parameter('default', true, 789, null),
         ]);
         $routerResult->expects(self::any())->method('getNext')->willReturn(null);
+        $requestMock->expects(self::any())->method('getAttribute')->willReturnMap(
+            [[RouterInterface::ROUTER_RESULT_KEY, null, $routerResult]]
+        );
 
-        $this->buildProcessor()->executeRequest(
+        $this->buildProcessor()->execute(
             $clientMock,
             $requestMock,
-            $routerResult
+            $this->createMock(ManagerInterface::class)
         );
     }
 
-    public function testExecuteRequestClassStaticController()
+    public function testExecuteClassStaticController()
     {
         /**
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
@@ -568,18 +618,21 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
             new Parameter('default', true, 789, null),
         ]);
         $routerResult->expects(self::any())->method('getNext')->willReturn(null);
+        $requestMock->expects(self::any())->method('getAttribute')->willReturnMap(
+            [[RouterInterface::ROUTER_RESULT_KEY, null, $routerResult]]
+        );
 
-        self::assertInstanceOf(ProcessorInterface::class, $this->buildProcessor()->executeRequest(
+        self::assertInstanceOf(ProcessorInterface::class, $this->buildProcessor()->execute(
             $clientMock,
             $requestMock,
-            $routerResult
+            $this->createMock(ManagerInterface::class)
         ));
     }
 
     /**
      * @expectedException \RuntimeException
      */
-    public function testExecuteRequestClassStaticControllerMissingArgument()
+    public function testExecuteClassStaticControllerMissingArgument()
     {
         /**
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
@@ -608,15 +661,18 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
             new Parameter('default', true, 789, null),
         ]);
         $routerResult->expects(self::any())->method('getNext')->willReturn(null);
+        $requestMock->expects(self::any())->method('getAttribute')->willReturnMap(
+            [[RouterInterface::ROUTER_RESULT_KEY, null, $routerResult]]
+        );
 
-        $this->buildProcessor()->executeRequest(
+        $this->buildProcessor()->execute(
             $clientMock,
             $requestMock,
-            $routerResult
+            $this->createMock(ManagerInterface::class)
         );
     }
 
-    public function testExecuteRequestControllerHasFunction()
+    public function testExecuteControllerHasFunction()
     {
         /**
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
@@ -635,18 +691,21 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
             new Parameter('get_as_float', true, false, null),
         ]);
         $routerResult->expects(self::any())->method('getNext')->willReturn(null);
+        $requestMock->expects(self::any())->method('getAttribute')->willReturnMap(
+            [[RouterInterface::ROUTER_RESULT_KEY, null, $routerResult]]
+        );
 
-        self::assertInstanceOf(ProcessorInterface::class, $this->buildProcessor()->executeRequest(
+        self::assertInstanceOf(ProcessorInterface::class, $this->buildProcessor()->execute(
             $clientMock,
             $requestMock,
-            $routerResult
+            $this->createMock(ManagerInterface::class)
         ));
     }
 
     /**
      * @expectedException \RuntimeException
      */
-    public function testExecuteRequestControllerHasFunctionMissingArgument()
+    public function testExecuteControllerHasFunctionMissingArgument()
     {
         /**
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
@@ -665,18 +724,21 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
             new Parameter('get_as_float', false, false, null),
         ]);
         $routerResult->expects(self::any())->method('getNext')->willReturn(null);
+        $requestMock->expects(self::any())->method('getAttribute')->willReturnMap(
+            [[RouterInterface::ROUTER_RESULT_KEY, null, $routerResult]]
+        );
 
-        $this->buildProcessor()->executeRequest(
+        $this->buildProcessor()->execute(
             $clientMock,
             $requestMock,
-            $routerResult
+            $this->createMock(ManagerInterface::class)
         );
     }
 
     /**
      * @expectedException \RuntimeException
      */
-    public function testExecuteRequestControllerHasFunctionBadArgumentType()
+    public function testExecuteControllerHasFunctionBadArgumentType()
     {
         /**
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
@@ -695,11 +757,14 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
             new Parameter('get_as_float', false, false, new \ReflectionClass(\DateTime::class)),
         ]);
         $routerResult->expects(self::any())->method('getNext')->willReturn(null);
+        $requestMock->expects(self::any())->method('getAttribute')->willReturnMap(
+            [[RouterInterface::ROUTER_RESULT_KEY, null, $routerResult]]
+        );
 
-        $this->buildProcessor()->executeRequest(
+        $this->buildProcessor()->execute(
             $clientMock,
             $requestMock,
-            $routerResult
+            $this->createMock(ManagerInterface::class)
         );
     }
 }

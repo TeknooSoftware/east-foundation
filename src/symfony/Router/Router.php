@@ -26,7 +26,6 @@ use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
-use Teknoo\East\Foundation\Processor\ProcessorInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 use Teknoo\East\Foundation\Router\Result;
@@ -38,7 +37,7 @@ use Teknoo\East\Foundation\Router\RouterInterface;
  * (The matcher returns a callable and not the controller's identifier Controller::Action). If the controller is not
  * a callable, this router ignores the route.
  *
- * The router can stop the propagation in the manager by calling stopPropagation.
+ * The router can stop the propagation in the manager by calling stop.
  *
  * All public method of the manager must only return the self client or a clone instance.
  *
@@ -62,25 +61,17 @@ class Router implements RouterInterface
     private $container;
 
     /**
-     * @var ProcessorInterface
-     */
-    private $processor;
-
-    /**
      * Router constructor.
      *
      * @param UrlMatcherInterface $urlMatcher
      * @param ContainerInterface  $container
-     * @param ProcessorInterface  $processor
      */
     public function __construct(
         UrlMatcherInterface $urlMatcher,
-        ContainerInterface $container,
-        ProcessorInterface $processor
+        ContainerInterface $container
     ) {
         $this->matcher = $urlMatcher;
         $this->container = $container;
-        $this->processor = $processor;
     }
 
     /**
@@ -137,7 +128,7 @@ class Router implements RouterInterface
     /**
      * {@inheritdoc}
      */
-    public function executeRequestFromManager(
+    public function execute(
         ClientInterface $client,
         ServerRequestInterface $request,
         ManagerInterface $manager
@@ -146,9 +137,11 @@ class Router implements RouterInterface
 
         if (\is_callable($controller)) {
             $result = new Result($controller);
-            $this->processor->executeRequest($client, $request, $result);
+            $request = $request->withAttribute(RouterInterface::ROUTER_RESULT_KEY, $result);
 
-            $manager->stopPropagation();
+            $manager->continueExecution($client, $request);
+
+            $manager->stop();
         }
 
         return $this;

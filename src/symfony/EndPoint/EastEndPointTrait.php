@@ -156,7 +156,7 @@ trait EastEndPointTrait
      */
     public function redirect(ClientInterface $client, string $url, int $status = 302): EndPointInterface
     {
-        $client->responseFromController(new Response\RedirectResponse($url, $status));
+        $client->sendResponse(new Response\RedirectResponse($url, $status));
 
         return $this;
     }
@@ -215,7 +215,7 @@ trait EastEndPointTrait
      */
     public function render(ClientInterface $client, string $view, array $parameters = array()): EndPointInterface
     {
-        $client->responseFromController(
+        $client->sendResponse(
             new Response\HtmlResponse(
                 new CallbackStream(function () use ($view, $parameters) {
                     return $this->renderView($view, $parameters);

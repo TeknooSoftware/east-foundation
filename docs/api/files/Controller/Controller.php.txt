@@ -94,7 +94,7 @@ abstract class Controller implements ContainerAwareInterface
      */
     protected function redirect(ClientInterface $client, $url, $status = 302): Controller
     {
-        $client->successfulResponseFromController(new Response\RedirectResponse($url, $status));
+        $client->successfulSendResponse(new Response\RedirectResponse($url, $status));
 
         return $this;
     }
@@ -213,7 +213,7 @@ abstract class Controller implements ContainerAwareInterface
     {
         $htmlBody = $this->renderView($view, $parameters);
 
-        $client->successfulResponseFromController(new Response\HtmlResponse($htmlBody));
+        $client->successfulSendResponse(new Response\HtmlResponse($htmlBody));
 
         return $this;
     }
