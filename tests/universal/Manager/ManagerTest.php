@@ -471,5 +471,4 @@ class ManagerTest extends \PHPUnit\Framework\TestCase
             )
         );
     }
-
 }
