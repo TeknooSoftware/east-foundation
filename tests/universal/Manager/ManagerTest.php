@@ -25,6 +25,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Teknoo\East\Foundation\Manager\Manager;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
+use Teknoo\East\Foundation\Manager\Queue\QueueInterface;
 use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
 
 /**
@@ -450,4 +451,25 @@ class ManagerTest extends \PHPUnit\Framework\TestCase
             $manager->receiveRequest($clientMock, $serverRequestMock)
         );
     }
+
+    /**
+     * @expectedException \TypeError
+     */
+    public function testSetQueueBadType()
+    {
+        $this->buildManager()->setQueue(
+            new \stdClass()
+        );
+    }
+
+    public function testSetQueue()
+    {
+        self::assertInstanceOf(
+            $this->getManagerClass(),
+            $this->buildManager()->setQueue(
+                $this->createMock(QueueInterface::class)
+            )
+        );
+    }
+
 }

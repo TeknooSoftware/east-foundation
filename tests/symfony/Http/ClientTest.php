@@ -25,6 +25,7 @@ use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Teknoo\East\Foundation\Http\ClientInterface;
 use Teknoo\East\FoundationBundle\Http\Client;
 
 /**
@@ -90,6 +91,65 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         return Client::class;
     }
 
+    /**
+     * @expectedException \TypeError
+     */
+    public function testUpdateResponseError()
+    {
+        $this->buildClient()->updateResponse(new \stdClass());
+    }
+    
+    public function testUpdateResponse()
+    {
+        $client = $this->buildClient();
+        self::assertInstanceOf(
+            $this->getClientClass(),
+            $client->updateResponse(function (ClientInterface $client, ResponseInterface $response=null) {
+                self::assertEmpty($response);
+            })
+        );
+    }
+
+    public function testUpdateResponseWithResponse()
+    {
+        /**
+         * @var ResponseInterface
+         */
+        $response = $this->createMock(ResponseInterface::class);
+
+        $client = $this->buildClient();
+        self::assertInstanceOf(
+            $this->getClientClass(),
+            $client->acceptResponse($response)->updateResponse(
+                function (ClientInterface $client, ResponseInterface $responsePassed=null) use ($response) {
+                    self::assertEquals($response, $responsePassed);
+                }
+            )
+        );
+    }
+
+    /**
+     * @expectedException \TypeError
+     */
+    public function testAcceptResponseError()
+    {
+        $this->buildClient()->acceptResponse(new \stdClass());
+    }
+    
+    public function testAcceptResponse()
+    {
+        /**
+         * @var ResponseInterface
+         */
+        $response = $this->createMock(ResponseInterface::class);
+
+        $client = $this->buildClient();
+        self::assertInstanceOf(
+            $this->getClientClass(),
+            $client->acceptResponse($response)
+        );
+    }
+    
     public function testSendResponse()
     {
         /**
@@ -117,6 +177,49 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         self::assertInstanceOf(
             $this->getClientClass(),
             $client->sendResponse($response)
+        );
+    }
+
+
+    public function testSendResponseWithAccept()
+    {
+        /**
+         * @var ResponseInterface
+         */
+        $response = $this->createMock(ResponseInterface::class);
+
+        $this->getGetResponseEventMock()
+            ->expects(self::any())
+            ->method('setResponse')
+            ->with($this->callback(function ($response) {
+                return $response instanceof Response;
+            }))
+            ->willReturnSelf();
+
+        $this->getHttpFoundationFactoryMock()
+            ->expects(self::any())
+            ->method('createResponse')
+            ->with($this->callback(function ($response) {
+                return $response instanceof ResponseInterface;
+            }))
+            ->willReturn($this->createMock(Response::class, [], [], '', false));
+
+        $client = $this->buildClient();
+        self::assertInstanceOf(
+            $this->getClientClass(),
+            $client->acceptResponse($response)->sendResponse()
+        );
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testSendResponseWithoutResponse()
+    {
+        $client = $this->buildClient();
+        self::assertInstanceOf(
+            $this->getClientClass(),
+            $client->sendResponse()
         );
     }
 
