@@ -1,6 +1,6 @@
 #Teknoo Software - East Foundation - Change Log
 
-##[0.0.5-beta3] - 2017-09-
+##[0.0.5-beta3] - 2017-10-05
 ###Fixed
 - Issue when the controller is a static method, defined in string representation.t
 - Symfony Client implementation, error are now throwed to be managed by the Symfony stack directly and
@@ -11,7 +11,10 @@
 - Update the Processor to check if the parameter injected is of required type of the processed argument if this type is an object
 
 ###Upgraded
-- Priorized routers behavior into manager
+- Prioritized routers behavior into manager
+- Middleware behavior east compliant
+- Router and Processor as middleware
+- Client able to update it's response via a modifier callable
 
 ##[0.0.5-beta2] - 2017-08-26
 ###Updated
