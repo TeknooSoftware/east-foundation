@@ -39,9 +39,7 @@ use Symfony\Component\DependencyInjection\Reference;
 class EastFoundationCompilerPass implements CompilerPassInterface
 {
     /**
-     * @param ContainerBuilder $container
-     *
-     * @return EastFoundationCompilerPass
+     * {@inheritdoc}
      */
     public function process(ContainerBuilder $container): EastFoundationCompilerPass
     {

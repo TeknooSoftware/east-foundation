@@ -103,12 +103,18 @@ class Client implements ClientWithResponseEventInterface
     /**
      * {@inheritdoc}
      */
-    public function sendResponse(ResponseInterface $response): ClientInterface
+    public function sendResponse(ResponseInterface $response=null): ClientInterface
     {
-        $this->acceptResponse($response);
+        if ($response instanceof ResponseInterface) {
+            $this->acceptResponse($response);
+        }
 
         if (!$this->getResponseEvent instanceof GetResponseEvent) {
             throw new \RuntimeException('Error, the getResponseEvent has not been set into the client');
+        }
+
+        if (!$this->response instanceof ResponseInterface) {
+            throw new \RuntimeException('Error, any response object has been pushed to the client');
         }
 
         $this->getResponseEvent->setResponse(

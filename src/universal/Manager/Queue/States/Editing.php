@@ -44,12 +44,13 @@ class Editing implements StateInterface
     use StateTrait;
 
     /**
-     * Builder to call to process a request in East Foundation by East's controller.
-     *
      * @return \Closure
      */
     private function compile()
     {
+        /**
+         * To fix the queue and generate a list easily iterable by this object and forbid any update
+         */
         return function (): QueueInterface {
             /**
              * @var Queue $this

@@ -34,7 +34,7 @@ use Teknoo\Immutable\ImmutableTrait;
 
 /**
  * Processor implementation to call each controller callable returned by the
- * router the PSR11 Server Request, the ClientInterface instance and other callable's argument founded in the request.
+ * router the PSR7 Server Request, the ClientInterface instance and other callable's argument founded in the request.
  *
  * If some arguments are missing in the request. The processor must throws exceptions.
  *

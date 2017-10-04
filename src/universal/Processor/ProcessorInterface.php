@@ -28,8 +28,7 @@ use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
 use Teknoo\East\Foundation\Router\ResultInterface;
 
 /**
- * Interface ProcessorInterface is a contract to create processor to call each controller callable returned by the
- * router the PSR11 Server Request, the ClientInterface instance and other callable's argument founded in the request.
+ * Processor is a specific middleware able to read the result in the request computed by the router.
  *
  * If some arguments are missing in the request. The processor must throws exceptions.
  *

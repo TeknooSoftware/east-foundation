@@ -23,6 +23,7 @@ namespace Teknoo\East\Foundation\Manager\States;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Teknoo\East\Foundation\Http\ClientInterface;
+use Teknoo\East\Foundation\Manager\Manager;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\East\Foundation\Manager\Queue\QueueInterface;
 use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
@@ -44,14 +45,14 @@ class Running implements StateInterface
     use StateTrait;
 
     /**
-     * Builder to dispatch the request to all middlewares while a message was not receive to stop the propaggation.
+     * Builder to dispatch the request to all middleware while a message was not receive to stop the propaggation.
      *
      * @return \Closure
      */
     private function dispatchRequest()
     {
         /**
-         * To dispatch the request to all middlewares while a message was not receive to stop the propaggation.
+         * To dispatch the request to all middleware while a message was not receive to stop the propaggation.
          *
          * @param ClientInterface        $client
          * @param ServerRequestInterface $request
@@ -59,6 +60,10 @@ class Running implements StateInterface
          * @return ManagerInterface
          */
         return function (ClientInterface $client, ServerRequestInterface $request): ManagerInterface {
+            /**
+             * @var Manager $this
+             */
+
             /**
              * @var MiddlewareInterface $middleware
              */
@@ -71,7 +76,7 @@ class Running implements StateInterface
     }
 
     /**
-     * Builder to stop propagation to other middlewares when a middleware has determined
+     * Builder to stop propagation to other middleware when a middleware has determined
      * the request is handle by one of its controllers.
      *
      * @return \Closure
@@ -79,12 +84,16 @@ class Running implements StateInterface
     private function doStop()
     {
         /**
-         * Method to stop propagation to other middlewares when a middleware
+         * Method to stop propagation to other middleware when a middleware
          * has determined the request is handle by one of its controllers.
          *
          * @return ManagerInterface
          */
         return function (): ManagerInterface {
+            /**
+             * @var Manager $this
+             */
+
             $this->queue->stop();
 
             return $this;

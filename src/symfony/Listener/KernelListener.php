@@ -92,6 +92,9 @@ class KernelListener
 
 
     /**
+     * To intercept a GetResponseEvent in the kernel loop to extract the request (if it's not an exception request) and
+     * process it into East foundation.
+     *
      * @param GetResponseEvent $event
      *
      * @return KernelListener

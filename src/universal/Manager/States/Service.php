@@ -62,6 +62,9 @@ class Service implements StateInterface
          * @return ManagerInterface
          */
         return function (ClientInterface $client, ServerRequestInterface $request): ManagerInterface {
+            /**
+             * @var Manager $this
+             */
             //Clone this manager, it is immutable and switch it's state
             $manager = clone $this;
             $manager->queue->build();
@@ -88,6 +91,10 @@ class Service implements StateInterface
          * @return ManagerInterface
          */
         return function (MiddlewareInterface $middleware, int $priority = 10): ManagerInterface {
+            /**
+             * @var Manager $this
+             */
+
             $this->queue->add($middleware, $priority);
 
             return $this;

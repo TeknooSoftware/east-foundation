@@ -23,7 +23,7 @@ directly the view renderer
 
 ##[0.0.5-beta1] - 2017-08-14
 ###Updated
-- Switch to PSR11, with PHP-DI as container
+- Switch to PSR7, with PHP-DI as container
 
 ##[0.0.4] - 2017-08-01
 ###Updated
@@ -79,7 +79,7 @@ directly the view renderer
 
 ##[0.0.4-alpha6] - 2016-11-19
 ###Added
-- Service provider following PSR11
+- Service provider following PSR7
 
 ##[0.0.4-alpha5] - 2016-11-18
 ###Fixed
@@ -95,7 +95,7 @@ directly the view renderer
 ##[0.0.4-alpha4] - 2016-11-16
 ###Updated
 - Rename the project "East Framework" to "East Foundation"
-- Transform the bundle to universal package, usable with any PSR11 Framework, a Symfony Bundle is already provided.
+- Transform the bundle to universal package, usable with any PSR7 Framework, a Symfony Bundle is already provided.
 - Behavior of Router : Must return a ResultInterface instance (a value object) with the callable to use as controller
 - Behavior of Processor : Independent of Symfony, to use only Router's result.
 

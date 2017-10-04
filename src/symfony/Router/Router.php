@@ -37,8 +37,6 @@ use Teknoo\East\Foundation\Router\RouterInterface;
  * (The matcher returns a callable and not the controller's identifier Controller::Action). If the controller is not
  * a callable, this router ignores the route.
  *
- * The router can stop the propagation in the manager by calling stop.
- *
  * All public method of the manager must only return the self client or a clone instance.
  *
  * @copyright   Copyright (c) 2009-2017 Richard Déloge (richarddeloge@gmail.com)
@@ -140,8 +138,6 @@ class Router implements RouterInterface
             $request = $request->withAttribute(RouterInterface::ROUTER_RESULT_KEY, $result);
 
             $manager->continueExecution($client, $request);
-
-            $manager->stop();
         }
 
         return $this;

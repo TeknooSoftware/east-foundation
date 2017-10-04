@@ -89,7 +89,10 @@ class Manager implements
     }
 
     /**
+     * To replace the internal queue object managing middleware
+     *
      * @param QueueInterface $queue
+     *
      * @return Manager
      */
     public function setQueue(QueueInterface $queue): Manager

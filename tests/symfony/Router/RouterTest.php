@@ -113,7 +113,6 @@ class RouterTest extends \PHPUnit\Framework\TestCase
          * @var ManagerInterface|\PHPUnit_Framework_MockObject_MockObject $manager
          */
         $manager = $this->createMock(ManagerInterface::class);
-        $manager->expects(self::never())->method('stop');
 
         $this->getUrlMatcherMock()->expects(self::any())->method('match')->willReturn([]);
 
@@ -141,7 +140,6 @@ class RouterTest extends \PHPUnit\Framework\TestCase
          * @var ManagerInterface|\PHPUnit_Framework_MockObject_MockObject $manager
          */
         $manager = $this->createMock(ManagerInterface::class);
-        $manager->expects(self::never())->method('stop');
 
         $this->getUrlMatcherMock()->expects(self::any())->method('match')->willThrowException(new ResourceNotFoundException());
 
@@ -172,7 +170,6 @@ class RouterTest extends \PHPUnit\Framework\TestCase
          * @var ManagerInterface|\PHPUnit_Framework_MockObject_MockObject $manager
          */
         $manager = $this->createMock(ManagerInterface::class);
-        $manager->expects(self::never())->method('stop');
 
         $this->getUrlMatcherMock()->expects(self::any())->method('match')->willThrowException(new \Exception());
 
@@ -197,7 +194,6 @@ class RouterTest extends \PHPUnit\Framework\TestCase
          * @var ManagerInterface|\PHPUnit_Framework_MockObject_MockObject $manager
          */
         $manager = $this->createMock(ManagerInterface::class);
-        $manager->expects(self::never())->method('stop')->willReturnSelf();
 
         $this->getUrlMatcherMock()->expects(self::any())->method('match')->willReturn(['foo', 'bar']);
 
@@ -225,7 +221,6 @@ class RouterTest extends \PHPUnit\Framework\TestCase
          * @var ManagerInterface|\PHPUnit_Framework_MockObject_MockObject $manager
          */
         $manager = $this->createMock(ManagerInterface::class);
-        $manager->expects(self::never())->method('stop')->willReturnSelf();
 
         $this->getUrlMatcherMock()->expects(self::any())->method('match')->willReturn(['_controller' => 'foo::bar']);
 
@@ -253,7 +248,6 @@ class RouterTest extends \PHPUnit\Framework\TestCase
          * @var ManagerInterface|\PHPUnit_Framework_MockObject_MockObject $manager
          */
         $manager = $this->createMock(ManagerInterface::class);
-        $manager->expects(self::never())->method('stop')->willReturnSelf();
 
         $this->getUrlMatcherMock()->expects(self::any())->method('match')->willReturn(['_controller' => 'fooBar']);
 
@@ -288,7 +282,6 @@ class RouterTest extends \PHPUnit\Framework\TestCase
          * @var ManagerInterface|\PHPUnit_Framework_MockObject_MockObject $manager
          */
         $manager = $this->createMock(ManagerInterface::class);
-        $manager->expects(self::once())->method('stop')->willReturnSelf();
 
         $this->getUrlMatcherMock()->expects(self::any())->method('match')->willReturn(['_controller' => function () {
         }]);
@@ -320,7 +313,6 @@ class RouterTest extends \PHPUnit\Framework\TestCase
          * @var ManagerInterface|\PHPUnit_Framework_MockObject_MockObject $manager
          */
         $manager = $this->createMock(ManagerInterface::class);
-        $manager->expects(self::once())->method('stop')->willReturnSelf();
 
         $class = new class {
             public static function action()
@@ -357,7 +349,6 @@ class RouterTest extends \PHPUnit\Framework\TestCase
          * @var ManagerInterface|\PHPUnit_Framework_MockObject_MockObject $manager
          */
         $manager = $this->createMock(ManagerInterface::class);
-        $manager->expects(self::once())->method('stop')->willReturnSelf();
 
         $this->getUrlMatcherMock()->expects(self::any())->method('match')->willReturn(['_controller' => 'fooBar']);
 
