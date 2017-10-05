@@ -68,11 +68,12 @@ interface ClientInterface
      * To accept a response from the controller action and send it to the HTTP client.
      *
      * @param ResponseInterface|null $response
+     * @param bool $silently=false
      *
      * @return ClientInterface
      * @throws \RuntimeException when no response was been defined via acceptResponse and $response argument is null.
      */
-    public function sendResponse(ResponseInterface $response = null): ClientInterface;
+    public function sendResponse(ResponseInterface $response = null, bool $silently=false): ClientInterface;
 
     /**
      * To intercept an error during a request and forward the message to the HTTP client.

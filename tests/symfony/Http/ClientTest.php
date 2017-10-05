@@ -180,7 +180,6 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-
     public function testSendResponseWithAccept()
     {
         /**
@@ -240,12 +239,106 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    public function testSendResponseSilently()
+    {
+        /**
+         * @var ResponseInterface
+         */
+        $response = $this->createMock(ResponseInterface::class);
+
+        $this->getGetResponseEventMock()
+            ->expects(self::any())
+            ->method('setResponse')
+            ->with($this->callback(function ($response) {
+                return $response instanceof Response;
+            }))
+            ->willReturnSelf();
+
+        $this->getHttpFoundationFactoryMock()
+            ->expects(self::any())
+            ->method('createResponse')
+            ->with($this->callback(function ($response) {
+                return $response instanceof ResponseInterface;
+            }))
+            ->willReturn($this->createMock(Response::class, [], [], '', false));
+
+        $client = $this->buildClient();
+        self::assertInstanceOf(
+            $this->getClientClass(),
+            $client->sendResponse($response, true)
+        );
+    }
+
+    public function testSendResponseWithAcceptSilently()
+    {
+        /**
+         * @var ResponseInterface
+         */
+        $response = $this->createMock(ResponseInterface::class);
+
+        $this->getGetResponseEventMock()
+            ->expects(self::any())
+            ->method('setResponse')
+            ->with($this->callback(function ($response) {
+                return $response instanceof Response;
+            }))
+            ->willReturnSelf();
+
+        $this->getHttpFoundationFactoryMock()
+            ->expects(self::any())
+            ->method('createResponse')
+            ->with($this->callback(function ($response) {
+                return $response instanceof ResponseInterface;
+            }))
+            ->willReturn($this->createMock(Response::class, [], [], '', false));
+
+        $client = $this->buildClient();
+        self::assertInstanceOf(
+            $this->getClientClass(),
+            $client->acceptResponse($response)->sendResponse(null, true)
+        );
+    }
+
+    public function testSendResponseWithoutResponseSilently()
+    {
+        $client = $this->buildClient();
+        self::assertInstanceOf(
+            $this->getClientClass(),
+            $client->sendResponse(null, true)
+        );
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testSendResponseWithoutGetResponseEventSilently()
+    {
+        /**
+         * @var ResponseInterface
+         */
+        $response = $this->createMock(ResponseInterface::class);
+
+        $client = new Client($this->getHttpFoundationFactoryMock());
+        self::assertInstanceOf(
+            $this->getClientClass(),
+            $client->sendResponse($response, true)
+        );
+    }
+
     /**
      * @expectedException \TypeError
      */
     public function testSendResponseError()
     {
         $this->buildClient()->sendResponse(new \stdClass());
+    }
+
+    /**
+     * @expectedException \TypeError
+     */
+    public function testSendResponseError2()
+    {
+        $this->buildClient()->sendResponse(null, new \stdClass());
     }
 
     /**

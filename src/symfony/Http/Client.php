@@ -103,10 +103,14 @@ class Client implements ClientWithResponseEventInterface
     /**
      * {@inheritdoc}
      */
-    public function sendResponse(ResponseInterface $response = null): ClientInterface
+    public function sendResponse(ResponseInterface $response = null, bool $silently=false): ClientInterface
     {
         if ($response instanceof ResponseInterface) {
             $this->acceptResponse($response);
+        }
+
+        if (true === $silently && !$this->response instanceof ResponseInterface) {
+            return $this;
         }
 
         if (!$this->getResponseEvent instanceof GetResponseEvent) {

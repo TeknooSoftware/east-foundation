@@ -112,6 +112,7 @@ class KernelListener
 
         $psrRequest = $this->getPsrRequest($event->getRequest());
         $this->manager->receiveRequest($client, $psrRequest);
+        $client->sendResponse(null, true);
 
         return $this;
     }
