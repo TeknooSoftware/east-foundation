@@ -25,6 +25,8 @@ use DI\Container;
 use Psr\Log\LoggerInterface;
 use Teknoo\East\Foundation\Manager\Manager;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
+use Teknoo\East\Foundation\Manager\Queue\Queue;
+use Teknoo\East\Foundation\Manager\Queue\QueueInterface;
 use Teknoo\East\Foundation\Processor\Processor;
 use Teknoo\East\Foundation\Processor\ProcessorInterface;
 
@@ -65,6 +67,25 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         );
 
         self::assertSame($manager1, $manager2);
+    }
+
+    public function testCreateQueue()
+    {
+        $container = $this->buildContainer();
+        $queue1 = $container->get(Queue::class);
+        $queue2 = $container->get(QueueInterface::class);
+
+        self::assertInstanceOf(
+            Queue::class,
+            $queue1
+        );
+
+        self::assertInstanceOf(
+            Queue::class,
+            $queue2
+        );
+
+        self::assertSame($queue1, $queue2);
     }
 
     public function testCreateProcessor()

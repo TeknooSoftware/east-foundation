@@ -1,6 +1,8 @@
 parameters:
   teknoo.east.processor.class: 'Teknoo\East\Foundation\Processor\Processor'
   teknoo.east.manager.class: 'Teknoo\East\Foundation\Manager\Manager'
+  teknoo.east.manager.queue.class: 'Teknoo\East\Foundation\Manager\Queue\Queue'
+  teknoo.east.symfony.session_middleware.class: 'Teknoo\East\FoundationBundle\Session\SessionMiddleware'
   teknoo.east.symfony.prototype.client.class: 'Teknoo\East\FoundationBundle\Http\Client'
   teknoo.east.symfony.router.class: 'Teknoo\East\FoundationBundle\Router\Router'
   teknoo.east.symfony.listener.kernel.class: 'Teknoo\East\FoundationBundle\Listener\KernelListener'
@@ -12,11 +14,29 @@ services:
     arguments:
       - '@logger'
 
+  #Symfony router
+  teknoo.east.symfony.router:
+    class: '%teknoo.east.symfony.router.class%'
+    arguments:
+      - '@router'
+      - '@service_container'
+
+  #Symfony session
+  teknoo.east.symfony.session_middleware:
+    class: '%teknoo.east.symfony.session_middleware.class%'
+
   #Standard East manager
+  teknoo.east.manager.queue:
+    class: '%teknoo.east.manager.queue.class%'
+
   teknoo.east.manager:
     class: '%teknoo.east.manager.class%'
+    arguments:
+      - '@teknoo.east.manager.queue'
     calls:
-      - ['registerRouter', ['@teknoo.east.symfony.router']]
+      - ['registerMiddleware', ['@teknoo.east.symfony.session_middleware', 5]]
+      - ['registerMiddleware', ['@teknoo.east.symfony.router', 10]]
+      - ['registerMiddleware', ['@teknoo.east.processor', 15]]
 
   #Symfony Client
   teknoo.east.symfony.prototype.client:
@@ -24,14 +44,6 @@ services:
     arguments:
       - '@sensio_framework_extra.psr7.http_foundation_factory'
     shared: false
-
-  #Symfony router
-  teknoo.east.symfony.router:
-    class: '%teknoo.east.symfony.router.class%'
-    arguments:
-      - '@router'
-      - '@service_container'
-      - '@teknoo.east.processor'
 
   #Symfony kernel event listener
   teknoo.east.symfony.listener.kernel:
