@@ -66,11 +66,12 @@ class Manager implements
     /**
      * Manager constructor.
      * Initialize States behavior and Immutable behavior.
+     *
+     * @param QueueInterface $queue
      */
-    public function __construct()
+    public function __construct(QueueInterface $queue)
     {
-        $this->queue = new Queue();
-
+        $this->setQueue($queue);
         //Call the method of the trait to initialize local attributes of the proxy
         $this->initializeProxy();
         //Behavior for Immutable

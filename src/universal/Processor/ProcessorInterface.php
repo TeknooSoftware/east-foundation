@@ -41,4 +41,5 @@ use Teknoo\East\Foundation\Router\ResultInterface;
  */
 interface ProcessorInterface extends MiddlewareInterface
 {
+    const MIDDLEWARE_PRIORITY = 15;
 }

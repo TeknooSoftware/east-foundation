@@ -25,6 +25,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Teknoo\East\Foundation\Manager\Manager;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
+use Teknoo\East\Foundation\Manager\Queue\Queue;
 use Teknoo\East\Foundation\Manager\Queue\QueueInterface;
 use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
 
@@ -48,7 +49,7 @@ class ManagerTest extends \PHPUnit\Framework\TestCase
      */
     private function buildManager(): Manager
     {
-        return new Manager();
+        return new Manager(new Queue());
     }
 
     /**

@@ -71,6 +71,8 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
     {
         $container = $this->buildContainer();
         $container->set(LoggerInterface::class, $this->createMock(LoggerInterface::class));
+        $manager = $this->createMock(ManagerInterface::class);
+        $container->set(ManagerInterface::class, $manager);
         $processor1 = $container->get(ProcessorInterface::class);
         $processor2 = $container->get(Processor::class);
 
