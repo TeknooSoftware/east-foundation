@@ -99,6 +99,5 @@ class SessionMiddlewareTest extends \PHPUnit\Framework\TestCase
             SessionMiddleware::class,
             $this->buildMiddleware()->execute($client, $request, $manager)
         );
-
     }
 }

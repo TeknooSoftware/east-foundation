@@ -152,7 +152,6 @@ class SessionTest extends \PHPUnit\Framework\TestCase
             Session::class,
             $this->buildSession()->get('foo', $promise)
         );
-
     }
 
     /**
