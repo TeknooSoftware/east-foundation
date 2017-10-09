@@ -42,7 +42,7 @@ services:
   teknoo.east.symfony.prototype.client:
     class: '%teknoo.east.symfony.prototype.client.class%'
     arguments:
-      - '@sensio_framework_extra.psr7.http_foundation_factory'
+      - '@Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory'
     shared: false
 
   #Symfony kernel event listener
@@ -51,6 +51,6 @@ services:
     arguments:
       - '@teknoo.east.manager'
       - '@teknoo.east.symfony.prototype.client'
-      - '@sensio_framework_extra.psr7.http_message_factory'
+      - '@Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory'
     tags:
       - { name: 'kernel.event_listener', event: 'kernel.request', method: 'onKernelRequest' }

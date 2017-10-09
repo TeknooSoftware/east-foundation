@@ -23,7 +23,6 @@ namespace Teknoo\East\FoundationBundle\Http;
 
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Teknoo\East\Foundation\Http\ClientInterface;
 
