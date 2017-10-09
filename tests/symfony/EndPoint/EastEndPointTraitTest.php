@@ -87,7 +87,7 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
     {
         $client = $this->createMock(ClientInterface::class);
         $client->expects(self::once())
-            ->method('sendResponse')
+            ->method('acceptResponse')
             ->with($this->callback(function ($instance) {
                 return $instance instanceof RedirectResponse;
             }))
@@ -117,7 +117,7 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
 
         $client = $this->createMock(ClientInterface::class);
         $client->expects(self::once())
-            ->method('sendResponse')
+            ->method('acceptResponse')
             ->with($this->callback(function ($instance) {
                 return $instance instanceof RedirectResponse;
             }))
@@ -142,7 +142,7 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
     {
         $client = $this->createMock(ClientInterface::class);
         $client->expects(self::once())
-            ->method('sendResponse')
+            ->method('acceptResponse')
             ->with($this->callback(function ($instance) {
                 return $instance instanceof HtmlResponse && $instance->getBody()->getContents();
             }))
@@ -170,7 +170,7 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
     {
         $client = $this->createMock(ClientInterface::class);
         $client->expects(self::once())
-            ->method('sendResponse')
+            ->method('acceptResponse')
             ->with($this->callback(function ($instance) {
                 return $instance instanceof HtmlResponse && $instance->getBody()->getContents();
             }))
@@ -201,7 +201,7 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
     {
         $client = $this->createMock(ClientInterface::class);
         $client->expects(self::once())
-            ->method('sendResponse')
+            ->method('acceptResponse')
             ->willReturnCallback(function ($instance) use ($client) {
                 $instance instanceof HtmlResponse && $instance->getBody()->getContents();
 
