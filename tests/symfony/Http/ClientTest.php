@@ -269,6 +269,36 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    public function testSendResponseCleanResponse()
+    {
+        /**
+         * @var ResponseInterface
+         */
+        $response = $this->createMock(ResponseInterface::class);
+
+        $this->getGetResponseEventMock()
+            ->expects(self::once())
+            ->method('setResponse')
+            ->with($this->callback(function ($response) {
+                return $response instanceof Response;
+            }))
+            ->willReturnSelf();
+
+        $this->getHttpFoundationFactoryMock()
+            ->expects(self::once())
+            ->method('createResponse')
+            ->with($this->callback(function ($response) {
+                return $response instanceof ResponseInterface;
+            }))
+            ->willReturn($this->createMock(Response::class, [], [], '', false));
+
+        $client = $this->buildClient();
+        self::assertInstanceOf(
+            $this->getClientClass(),
+            $client->sendResponse($response, true)->sendResponse(null, true)
+        );
+    }
+
     public function testSendResponseWithAcceptSilently()
     {
         /**

@@ -124,6 +124,8 @@ class Client implements ClientWithResponseEventInterface
             $this->httpFoundationFactory->createResponse($this->response)
         );
 
+        $this->response = null;
+
         return $this;
     }
 
