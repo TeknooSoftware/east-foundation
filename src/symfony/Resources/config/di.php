@@ -43,7 +43,10 @@ return [
     },
 
     Router::class => get(RouterInterface::class),
-    RouterInterface::class => function (UrlMatcherInterface $urlMatcher, ContainerInterface $container): RouterInterface {
+    RouterInterface::class => function (
+        UrlMatcherInterface $urlMatcher,
+        ContainerInterface $container
+    ): RouterInterface {
         return new Router($urlMatcher, $container);
     },
 
