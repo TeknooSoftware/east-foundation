@@ -31,18 +31,18 @@ use Teknoo\East\Foundation\Processor\Processor;
 use Teknoo\East\Foundation\Processor\ProcessorInterface;
 
 return [
-    QueueInterface::class => get(Queue::class),
-    Queue::class => function (): Queue {
+    Queue::class => get(QueueInterface::class),
+    QueueInterface::class => function (): QueueInterface {
         return new Queue();
     },
 
-    ManagerInterface::class => get(Manager::class),
-    Manager::class => function (QueueInterface $queue): Manager {
+    Manager::class => get(ManagerInterface::class),
+    ManagerInterface::class => function (QueueInterface $queue): ManagerInterface {
         return new Manager($queue);
     },
 
-    ProcessorInterface::class => get(Processor::class),
-    Processor::class => function (LoggerInterface $logger, ManagerInterface $manager): Processor {
+    Processor::class => get(ProcessorInterface::class),
+    ProcessorInterface::class => function (LoggerInterface $logger, ManagerInterface $manager): ProcessorInterface {
         $processor = new Processor($logger);
 
         $manager->registerMiddleware($processor, ProcessorInterface::MIDDLEWARE_PRIORITY);

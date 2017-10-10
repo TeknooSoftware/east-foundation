@@ -1,56 +1,13 @@
 parameters:
-  teknoo.east.processor.class: 'Teknoo\East\Foundation\Processor\Processor'
-  teknoo.east.manager.class: 'Teknoo\East\Foundation\Manager\Manager'
-  teknoo.east.manager.queue.class: 'Teknoo\East\Foundation\Manager\Queue\Queue'
-  teknoo.east.symfony.session_middleware.class: 'Teknoo\East\FoundationBundle\Session\SessionMiddleware'
-  teknoo.east.symfony.prototype.client.class: 'Teknoo\East\FoundationBundle\Http\Client'
-  teknoo.east.symfony.router.class: 'Teknoo\East\FoundationBundle\Router\Router'
   teknoo.east.symfony.listener.kernel.class: 'Teknoo\East\FoundationBundle\Listener\KernelListener'
 
 services:
-  #Standard East Processor
-  teknoo.east.processor:
-    class: '%teknoo.east.processor.class%'
-    arguments:
-      - '@logger'
-
-  #Symfony router
-  teknoo.east.symfony.router:
-    class: '%teknoo.east.symfony.router.class%'
-    arguments:
-      - '@router'
-      - '@service_container'
-
-  #Symfony session
-  teknoo.east.symfony.session_middleware:
-    class: '%teknoo.east.symfony.session_middleware.class%'
-
-  #Standard East manager
-  Teknoo\East\Foundation\Manager\Queue\Queue:
-    class: '%teknoo.east.manager.queue.class%'
-
-  Teknoo\East\Foundation\Manager\Manager:
-    class: '%teknoo.east.manager.class%'
-    arguments:
-      - '@Teknoo\East\Foundation\Manager\Queue\Queue'
-    calls:
-      - ['registerMiddleware', ['@teknoo.east.symfony.session_middleware', 5]]
-      - ['registerMiddleware', ['@teknoo.east.symfony.router', 10]]
-      - ['registerMiddleware', ['@teknoo.east.processor', 15]]
-
-  #Symfony Client
-  teknoo.east.symfony.prototype.client:
-    class: '%teknoo.east.symfony.prototype.client.class%'
-    arguments:
-      - '@Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory'
-    shared: false
-
   #Symfony kernel event listener
   teknoo.east.symfony.listener.kernel:
     class: '%teknoo.east.symfony.listener.kernel.class%'
     arguments:
-      - '@Teknoo\East\Foundation\Manager\Manager'
-      - '@teknoo.east.symfony.prototype.client'
+      - '@Teknoo\East\Foundation\Manager\ManagerInterface'
+      - '@Teknoo\East\Foundation\Http\ClientInterface'
       - '@Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory'
     tags:
       - { name: 'kernel.event_listener', event: 'kernel.request', method: 'onKernelRequest' }
