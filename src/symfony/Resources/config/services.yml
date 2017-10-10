@@ -1,7 +1,18 @@
 parameters:
+  teknoo.east.symfony.router.class: 'Teknoo\East\FoundationBundle\Router\Router'
   teknoo.east.symfony.listener.kernel.class: 'Teknoo\East\FoundationBundle\Listener\KernelListener'
 
 services:
+  #Symfony router
+  Teknoo\East\FoundationBundle\Router\Router:
+    alias: 'Teknoo\East\Foundation\Router\RouterInterface'
+
+  Teknoo\East\Foundation\Router\RouterInterface:
+    class: '%teknoo.east.symfony.router.class%'
+    arguments:
+      - '@router'
+      - '@service_container'
+
   #Symfony kernel event listener
   teknoo.east.symfony.listener.kernel:
     class: '%teknoo.east.symfony.listener.kernel.class%'
