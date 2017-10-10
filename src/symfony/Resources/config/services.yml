@@ -26,13 +26,13 @@ services:
     class: '%teknoo.east.symfony.session_middleware.class%'
 
   #Standard East manager
-  teknoo.east.manager.queue:
+  Teknoo\East\Foundation\Manager\Queue\Queue:
     class: '%teknoo.east.manager.queue.class%'
 
-  teknoo.east.manager:
+  Teknoo\East\Foundation\Manager\Manager:
     class: '%teknoo.east.manager.class%'
     arguments:
-      - '@teknoo.east.manager.queue'
+      - '@Teknoo\East\Foundation\Manager\Queue\Queue'
     calls:
       - ['registerMiddleware', ['@teknoo.east.symfony.session_middleware', 5]]
       - ['registerMiddleware', ['@teknoo.east.symfony.router', 10]]
@@ -49,7 +49,7 @@ services:
   teknoo.east.symfony.listener.kernel:
     class: '%teknoo.east.symfony.listener.kernel.class%'
     arguments:
-      - '@teknoo.east.manager'
+      - '@Teknoo\East\Foundation\Manager\Manager'
       - '@teknoo.east.symfony.prototype.client'
       - '@Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory'
     tags:
