@@ -19,16 +19,20 @@
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
 
-namespace Teknoo\Tests\East\Foundation;
+namespace Teknoo\Tests\East\FoundationBundle\Resources;
 
 use DI\Container;
 use Psr\Log\LoggerInterface;
+use Teknoo\East\Foundation\Http\ClientInterface;
 use Teknoo\East\Foundation\Manager\Manager;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\East\Foundation\Manager\Queue\Queue;
 use Teknoo\East\Foundation\Manager\Queue\QueueInterface;
 use Teknoo\East\Foundation\Processor\Processor;
 use Teknoo\East\Foundation\Processor\ProcessorInterface;
+use Teknoo\East\Foundation\Router\RouterInterface;
+use Teknoo\East\FoundationBundle\Http\Client;
+use Teknoo\East\FoundationBundle\Session\SessionMiddleware;
 
 /**
  * Class DefinitionProviderTest.
@@ -47,13 +51,14 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
      */
     protected function buildContainer() : Container
     {
-        return include __DIR__.'/../../src/universal/generator.php';
+        return include __DIR__.'/../../../src/symfony/generator.php';
     }
 
     public function testCreateManager()
     {
         $container = $this->buildContainer();
         $container->set(LoggerInterface::class, $this->createMock(LoggerInterface::class));
+        $container->set(RouterInterface::class, $this->createMock(RouterInterface::class));
         $manager1 = $container->get(Manager::class);
         $manager2 = $container->get(ManagerInterface::class);
 
@@ -110,5 +115,37 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         );
 
         self::assertSame($processor1, $processor2);
+    }
+
+    public function testCreateClient()
+    {
+        $container = $this->buildContainer();
+        $container->set(LoggerInterface::class, $this->createMock(LoggerInterface::class));
+        $manager = $this->createMock(ManagerInterface::class);
+        $container->set(ManagerInterface::class, $manager);
+        $client1 = $container->get(ClientInterface::class);
+        $client2 = $container->get(Client::class);
+
+        self::assertInstanceOf(
+            Client::class,
+            $client1
+        );
+
+        self::assertInstanceOf(
+            Client::class,
+            $client2
+        );
+
+        self::assertSame($client1, $client2);
+    }
+
+    public function testCreateSessionMiddleware()
+    {
+        $container = $this->buildContainer();
+
+        self::assertInstanceOf(
+            SessionMiddleware::class,
+            $container->get(SessionMiddleware::class)
+        );
     }
 }

@@ -23,31 +23,22 @@ namespace Teknoo\East\FoundationBundle\Resources\config;
 
 use function DI\get;
 use function DI\decorate;
+use function DI\object;
 use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
-use Teknoo\East\Foundation\Processor\Processor;
 use Teknoo\East\Foundation\Processor\ProcessorInterface;
 use Teknoo\East\Foundation\Router\RouterInterface;
 use Teknoo\East\FoundationBundle\Http\Client;
 use Teknoo\East\FoundationBundle\Session\SessionMiddleware;
 
 return [
-    Processor::class => get(ProcessorInterface::class),
-    ProcessorInterface::class => function (LoggerInterface $logger): ProcessorInterface {
-        return new Processor($logger);
-    },
-
-    SessionMiddleware::class => function (): SessionMiddleware {
-        return new SessionMiddleware();
-    },
+    SessionMiddleware::class => object(SessionMiddleware::class),
 
     Client::class => get(ClientInterface::class),
-    ClientInterface::class => function (HttpFoundationFactory $factory): ClientInterface {
-        return new Client($factory);
-    },
+    ClientInterface::class => object(Client::class)
+        ->constructor(get(HttpFoundationFactory::class)),
 
     ManagerInterface::class => decorate(function ($previous, ContainerInterface $container) {
         if ($previous instanceof ManagerInterface) {

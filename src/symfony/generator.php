@@ -19,11 +19,12 @@
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
 
-namespace Teknoo\East\Foundation;
+namespace Teknoo\East\FoundationBundle;
 
 use DI\ContainerBuilder;
 
 $containerDefinition = new ContainerBuilder();
-$containerDefinition->addDefinitions(__DIR__.'/di.php');
+$containerDefinition->addDefinitions(__DIR__.'/../universal/di.php');
+$containerDefinition->addDefinitions(__DIR__.'/Resources/config/di.php');
 
 return $containerDefinition->build();

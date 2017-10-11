@@ -22,6 +22,7 @@
 namespace Teknoo\East\Foundation;
 
 use function DI\get;
+use function DI\object;
 use Psr\Log\LoggerInterface;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\East\Foundation\Manager\Manager;
@@ -32,21 +33,20 @@ use Teknoo\East\Foundation\Processor\ProcessorInterface;
 
 return [
     Queue::class => get(QueueInterface::class),
-    QueueInterface::class => function (): QueueInterface {
-        return new Queue();
-    },
+    QueueInterface::class => object(Queue::class),
 
     Manager::class => get(ManagerInterface::class),
-    ManagerInterface::class => function (QueueInterface $queue): ManagerInterface {
-        return new Manager($queue);
+    ManagerInterface::class => function (
+        QueueInterface $queue,
+        ProcessorInterface $processor
+    ): ManagerInterface {
+        $manager = new Manager($queue);
+        $manager->registerMiddleware($processor, ProcessorInterface::MIDDLEWARE_PRIORITY);
+
+        return $manager;
     },
 
     Processor::class => get(ProcessorInterface::class),
-    ProcessorInterface::class => function (LoggerInterface $logger, ManagerInterface $manager): ProcessorInterface {
-        $processor = new Processor($logger);
-
-        $manager->registerMiddleware($processor, ProcessorInterface::MIDDLEWARE_PRIORITY);
-
-        return $processor;
-    },
+    ProcessorInterface::class => object(Processor::class)
+        ->constructor(get(LoggerInterface::class)),
 ];
