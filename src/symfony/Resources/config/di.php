@@ -44,7 +44,6 @@ return [
         if ($previous instanceof ManagerInterface) {
             $previous->registerMiddleware($container->get(SessionMiddleware::class, 5));
             $previous->registerMiddleware($container->get(RouterInterface::class, 10));
-            $previous->registerMiddleware($container->get(ProcessorInterface::class, 15));
         }
 
         return $previous;
