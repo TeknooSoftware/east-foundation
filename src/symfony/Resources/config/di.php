@@ -41,8 +41,14 @@ return [
 
     ManagerInterface::class => decorate(function ($previous, ContainerInterface $container) {
         if ($previous instanceof ManagerInterface) {
-            $previous->registerMiddleware($container->get(SessionMiddleware::class, 5));
-            $previous->registerMiddleware($container->get(RouterInterface::class, 10));
+            $previous->registerMiddleware(
+                $container->get(SessionMiddleware::class),
+                SessionMiddleware::MIDDLEWARE_PRIORITY
+            );
+            $previous->registerMiddleware(
+                $container->get(RouterInterface::class),
+                RouterInterface::MIDDLEWARE_PRIORITY
+            );
         }
 
         return $previous;

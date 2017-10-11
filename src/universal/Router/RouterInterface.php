@@ -39,4 +39,5 @@ use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
 interface RouterInterface extends MiddlewareInterface
 {
     const ROUTER_RESULT_KEY = '_east_route';
+    const MIDDLEWARE_PRIORITY = 10;
 }
