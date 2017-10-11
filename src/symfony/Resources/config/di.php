@@ -28,7 +28,6 @@ use Psr\Container\ContainerInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
-use Teknoo\East\Foundation\Processor\ProcessorInterface;
 use Teknoo\East\Foundation\Router\RouterInterface;
 use Teknoo\East\FoundationBundle\Http\Client;
 use Teknoo\East\FoundationBundle\Session\SessionMiddleware;
