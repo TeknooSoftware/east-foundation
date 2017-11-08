@@ -24,17 +24,9 @@ declare(strict_types=1);
 
 namespace Teknoo\East\Foundation\Manager;
 
-use Teknoo\East\Foundation\Http\ClientInterface;
-use Teknoo\East\Foundation\Manager\Queue\Queue;
-use Teknoo\East\Foundation\Manager\Queue\QueueInterface;
-use Teknoo\East\Foundation\Manager\States\Running;
-use Teknoo\East\Foundation\Manager\States\Service;
-use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Teknoo\Immutable\ImmutableInterface;
-use Teknoo\Immutable\ImmutableTrait;
-use Teknoo\States\Proxy\ProxyInterface;
-use Teknoo\States\Proxy\ProxyTrait;
+use Teknoo\East\Foundation\Http\ClientInterface;
+use Teknoo\Recipe\Chef;
 
 /**
  * Class Manager to process requests in East Foundation. The manager
@@ -48,104 +40,34 @@ use Teknoo\States\Proxy\ProxyTrait;
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
- *
- * @method ManagerInterface running(ClientInterface $client, ServerRequestInterface $request)
- * @method ManagerInterface doRegisterMiddleware(MiddlewareInterface $middleware)
- * @method ManagerInterface doStop()
  */
-class Manager implements
-    ManagerInterface,
-    ImmutableInterface,
-    ProxyInterface
+class Manager extends Chef implements ManagerInterface
 {
-    use ImmutableTrait,
-        ProxyTrait;
-
-    /**
-     * @var QueueInterface
-     */
-    private $queue;
-
-    /**
-     * Manager constructor.
-     * Initialize States behavior and Immutable behavior.
-     *
-     * @param QueueInterface $queue
-     */
-    public function __construct(QueueInterface $queue)
-    {
-        $this->setQueue($queue);
-        //Call the method of the trait to initialize local attributes of the proxy
-        $this->initializeProxy();
-        //Behavior for Immutable
-        $this->uniqueConstructorCheck();
-        //Enable the main state "Service"
-        $this->enableState(Service::class);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __clone()
-    {
-        $this->queue = clone $this->queue;
-        $this->cloneProxy();
-    }
-
-    /**
-     * To replace the internal queue object managing middleware
-     *
-     * @param QueueInterface $queue
-     *
-     * @return Manager
-     */
-    public function setQueue(QueueInterface $queue): Manager
-    {
-        $this->queue = $queue;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function statesListDeclaration(): array
-    {
-        return [
-            Running::class,
-            Service::class,
-        ];
-    }
-
     /**
      * {@inheritdoc}
      */
     public function receiveRequest(
-        ClientInterface $client,
+        ClientInterface $client ,
         ServerRequestInterface $request
-    ): ManagerInterface {
-        //Run this request
-        return $this->running($client, $request);
+    ): ManagerInterface
+    {
+        $this->process([
+            'request' => $request,
+            'client' => $client
+        ]);
+
+        return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function continueExecution(
-        ClientInterface $client,
+        ClientInterface $client ,
         ServerRequestInterface $request
-    ): ManagerInterface {
-        return $this->dispatchRequest($client, $request);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function registerMiddleware(
-        MiddlewareInterface $middleware,
-        int $priority = 10
-    ): ManagerInterface {
-        return $this->doRegisterMiddleware($middleware, $priority);
+    ): ManagerInterface
+    {
+        $this->continue([
+            'request' => $request,
+            'client' => $client
+        ]);
     }
 
     /**
@@ -153,6 +75,8 @@ class Manager implements
      */
     public function stop(): ManagerInterface
     {
-        return $this->doStop();
+        $this->finish(null);
+
+        return $this;
     }
 }

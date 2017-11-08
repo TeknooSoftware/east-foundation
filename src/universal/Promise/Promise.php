@@ -24,7 +24,8 @@ declare(strict_types=1);
 
 namespace Teknoo\East\Foundation\Promise;
 
-use Teknoo\Immutable\ImmutableTrait;
+use Teknoo\Recipe\Promise\Promise as RecipePromise;
+use Teknoo\Recipe\Promise\PromiseInterface as RecipePromiseInterface;
 
 /**
  * With #East, methods and objects communicate via callback defined in interfaces. But it's not always possible to know
@@ -39,35 +40,12 @@ use Teknoo\Immutable\ImmutableTrait;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-class Promise implements PromiseInterface
+class Promise extends RecipePromise implements PromiseInterface
 {
-    use ImmutableTrait;
-
-    /**
-     * @var callable|null
-     */
-    private $onSuccess;
-
-    /**
-     * @var callable|null
-     */
-    private $onFail;
-
     /**
      * @var PromiseInterface|null
      */
     private $nextPromise;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __construct(callable $onSuccess = null, callable $onFail = null)
-    {
-        $this->onSuccess = $onSuccess;
-        $this->onFail = $onFail;
-
-        $this->uniqueConstructorCheck();
-    }
 
     /**
      * {@inheritdoc}
@@ -83,12 +61,9 @@ class Promise implements PromiseInterface
     /**
      * {@inheritdoc}
      */
-    public function success($result = null): PromiseInterface
+    public function success($result = null): RecipePromiseInterface
     {
-        if (\is_callable($this->onSuccess)) {
-            $onSuccess = ($this->onSuccess);
-            $onSuccess($result, $this->nextPromise);
-        }
+        parent::success($result, $this->nextPromise);
 
         return $this;
     }
@@ -96,12 +71,9 @@ class Promise implements PromiseInterface
     /**
      * {@inheritdoc}
      */
-    public function fail(\Throwable $throwable): PromiseInterface
+    public function fail(\Throwable $throwable): RecipePromiseInterface
     {
-        if (\is_callable($this->onFail)) {
-            $onFail = $this->onFail;
-            $onFail($throwable, $this->nextPromise);
-        }
+        parent::fail($throwable, $this->nextPromise);
 
         return $this;
     }

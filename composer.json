@@ -5,6 +5,12 @@
     "keywords": ["east", "controller", "design"],
     "homepage": "http://teknoo.software/east-framework",
     "license": ["MIT"],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@bitbucket.org:teknoosoftware/recipe.git"
+        }
+    ],
     "authors": [
         {
             "name": "Richard Déloge",
@@ -15,8 +21,9 @@
     "require": {
         "php": "~7.1",
         "psr/http-message": "~1.0",
-        "teknoo/immutable": "~0.0.1",
+        "teknoo/immutable": "~0.0.3",
         "teknoo/states": "^3.2.0-beta2",
+        "teknoo/recipe": "dev-master",
         "psr/container-implementation": "^1.0.0",
         "php-di/php-di": "^5.4.1"
     },

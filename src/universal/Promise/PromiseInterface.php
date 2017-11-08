@@ -21,7 +21,7 @@
 
 namespace Teknoo\East\Foundation\Promise;
 
-use Teknoo\Immutable\ImmutableInterface;
+use Teknoo\Recipe\Promise\PromiseInterface as RecipePromiseInterface;
 
 /**
  * With #East, methods and objects communicate via callback defined in interfaces. But it's not always possible to know
@@ -36,16 +36,8 @@ use Teknoo\Immutable\ImmutableInterface;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-interface PromiseInterface extends ImmutableInterface
+interface PromiseInterface extends RecipePromiseInterface
 {
-    /**
-     * Initialize the promise with success and fail callback. Callback can be null, to exit silenty.
-     *
-     * @param callable|null $onSuccess
-     * @param callable|null $onFail
-     */
-    public function __construct(callable $onSuccess = null, callable $onFail = null);
-
     /**
      * To define a new promise to pass to the called callback.
      *
@@ -54,22 +46,4 @@ interface PromiseInterface extends ImmutableInterface
      * @return PromiseInterface
      */
     public function next(PromiseInterface $promise = null): PromiseInterface;
-
-    /**
-     * To call the callback defined when the actor has successfully it's operation.
-     *
-     * @param mixed|null $result
-     *
-     * @return PromiseInterface
-     */
-    public function success($result = null): PromiseInterface;
-
-    /**
-     *To call the callback defined when an error has been occurred.
-     *
-     * @param \Throwable $throwable
-     *
-     * @return PromiseInterface
-     */
-    public function fail(\Throwable $throwable): PromiseInterface;
 }

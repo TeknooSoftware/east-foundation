@@ -24,6 +24,7 @@ namespace Teknoo\East\Foundation\Manager;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Teknoo\Recipe\ChefInterface;
 
 /**
  * Interface ManagerInterface is a contract to create manager to process requests in East Foundation. The manager
@@ -38,7 +39,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-interface ManagerInterface
+interface ManagerInterface extends ChefInterface
 {
     /**
      * Method to call to process a request in East Foundation by East's controller.
@@ -65,19 +66,6 @@ interface ManagerInterface
     public function continueExecution(
         ClientInterface $client,
         ServerRequestInterface $request
-    ): ManagerInterface;
-
-    /**
-     * Method to register middleware in the manager to process request.
-     *
-     * @param MiddlewareInterface $middleware
-     * @param int $priority
-     *
-     * @return ManagerInterface
-     */
-    public function registerMiddleware(
-        MiddlewareInterface $middleware,
-        int $priority = 10
     ): ManagerInterface;
 
     /**

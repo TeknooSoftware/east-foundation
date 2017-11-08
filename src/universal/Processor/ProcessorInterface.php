@@ -21,11 +21,7 @@
 
 namespace Teknoo\East\Foundation\Processor;
 
-use Teknoo\East\Foundation\Http\ClientInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
-use Teknoo\East\Foundation\Router\ResultInterface;
 
 /**
  * Processor is a specific middleware able to read the result in the request computed by the router.
