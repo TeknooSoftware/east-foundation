@@ -36,12 +36,10 @@ class Recipe extends BaseRecipe implements RecipeInterface
         MiddlewareInterface $middleware,
         int $priority = 10
     ): RecipeInterface {
-        $this->cook(
+        return $this->cook(
             [$middleware, 'execute'],
             [],
             $priority
         );
-
-        return $this;
     }
 }
