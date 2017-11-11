@@ -5,12 +5,6 @@
     "keywords": ["east", "controller", "design"],
     "homepage": "http://teknoo.software/east-framework",
     "license": ["MIT"],
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "git@bitbucket.org:teknoosoftware/recipe.git"
-        }
-    ],
     "authors": [
         {
             "name": "Richard Déloge",
