@@ -56,10 +56,9 @@ class Manager extends Chef implements ManagerInterface
      * {@inheritdoc}
      */
     public function receiveRequest(
-        ClientInterface $client ,
+        ClientInterface $client,
         ServerRequestInterface $request
-    ): ManagerInterface
-    {
+    ): ManagerInterface {
         $this->process([
             'request' => $request,
             'client' => $client
@@ -69,10 +68,9 @@ class Manager extends Chef implements ManagerInterface
     }
 
     public function continueExecution(
-        ClientInterface $client ,
+        ClientInterface $client,
         ServerRequestInterface $request
-    ): ManagerInterface
-    {
+    ): ManagerInterface {
         $this->continue([
             'request' => $request,
             'client' => $client

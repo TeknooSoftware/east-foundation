@@ -33,10 +33,9 @@ class Recipe extends BaseRecipe implements RecipeInterface
      * @inheritDoc
      */
     public function registerMiddleware(
-        MiddlewareInterface $middleware ,
+        MiddlewareInterface $middleware,
         int $priority = 10
-    ): RecipeInterface
-    {
+    ): RecipeInterface {
         $this->cook(
             [$middleware, 'execute'],
             [],
