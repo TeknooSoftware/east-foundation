@@ -719,7 +719,7 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
         $requestMock->expects(self::any())->method('getAttributes')->willReturn([]);
 
         $routerResult = $this->createMock(ResultInterface::class);
-        $routerResult->expects(self::any())->method('getController')->willReturn('microtime');
+        $routerResult->expects(self::any())->method('getController')->willReturn('explode');
         $routerResult->expects(self::any())->method('getParameters')->willReturn([
             new Parameter('get_as_float', false, false, null),
         ]);
@@ -752,7 +752,7 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
         $requestMock->expects(self::any())->method('getAttributes')->willReturn([new \stdClass()]);
 
         $routerResult = $this->createMock(ResultInterface::class);
-        $routerResult->expects(self::any())->method('getController')->willReturn('microtime');
+        $routerResult->expects(self::any())->method('getController')->willReturn('explode');
         $routerResult->expects(self::any())->method('getParameters')->willReturn([
             new Parameter('get_as_float', false, false, new \ReflectionClass(\DateTime::class)),
         ]);

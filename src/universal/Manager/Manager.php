@@ -44,6 +44,15 @@ use Teknoo\Recipe\Chef;
 class Manager extends Chef implements ManagerInterface
 {
     /**
+     * No states defined for this daughter, use directly states defined for the Chef Stated class.
+     * @inheritDoc
+     */
+    protected static function statesListDeclaration(): array
+    {
+        return [];
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function receiveRequest(
@@ -68,6 +77,8 @@ class Manager extends Chef implements ManagerInterface
             'request' => $request,
             'client' => $client
         ]);
+
+        return $this;
     }
 
     /**

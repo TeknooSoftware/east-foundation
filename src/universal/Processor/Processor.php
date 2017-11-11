@@ -29,7 +29,6 @@ use Teknoo\East\Foundation\Http\ClientInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
-use Teknoo\East\Foundation\Router\ParameterInterface;
 use Teknoo\East\Foundation\Router\ResultInterface;
 use Teknoo\East\Foundation\Router\RouterInterface;
 use Teknoo\Immutable\ImmutableInterface;
@@ -89,6 +88,15 @@ class Processor implements ProcessorInterface, ImmutableInterface
     }
 
     /**
+     * @param ServerRequestInterface $request
+     * @return array
+     */
+    private function getParameters(ServerRequestInterface $request): array
+    {
+        return \array_merge($request->getAttributes(), (array) $request->getParsedBody());
+    }
+
+    /**
      * Method called to execute each controller retourned by the router and call the next controller defined in the
      * router's result.
      *
@@ -107,10 +115,13 @@ class Processor implements ProcessorInterface, ImmutableInterface
 
         $bowl = new Bowl($controller, []);
         $bowl->execute(
-            $manager, [
-            'client' => $client,
-            'request' => $request
-        ]);
+            $manager,
+            \array_merge(
+                $this->getParameters($request), [
+                'client' => $client,
+                'request' => $request
+            ])
+        );
 
         $next = $routerResult->getNext();
         if ($next instanceof ResultInterface) {

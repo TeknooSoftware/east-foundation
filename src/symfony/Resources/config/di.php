@@ -23,29 +23,29 @@ namespace Teknoo\East\FoundationBundle\Resources\config;
 
 use function DI\get;
 use function DI\decorate;
-use function DI\object;
+use function DI\create;
 use Psr\Container\ContainerInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Teknoo\East\Foundation\Http\ClientInterface;
-use Teknoo\East\Foundation\Manager\ManagerInterface;
+use Teknoo\East\Foundation\Recipe\RecipeInterface;
 use Teknoo\East\Foundation\Router\RouterInterface;
 use Teknoo\East\FoundationBundle\Http\Client;
 use Teknoo\East\FoundationBundle\Session\SessionMiddleware;
 
 return [
-    SessionMiddleware::class => object(SessionMiddleware::class),
+    SessionMiddleware::class => create(SessionMiddleware::class),
 
     Client::class => get(ClientInterface::class),
-    ClientInterface::class => object(Client::class)
+    ClientInterface::class => create(Client::class)
         ->constructor(get(HttpFoundationFactory::class)),
 
-    ManagerInterface::class => decorate(function ($previous, ContainerInterface $container) {
-        if ($previous instanceof ManagerInterface) {
-            $previous->registerMiddleware(
+    RecipeInterface::class => decorate(function ($previous, ContainerInterface $container) {
+        if ($previous instanceof RecipeInterface) {
+            $previous = $previous->registerMiddleware(
                 $container->get(SessionMiddleware::class),
                 SessionMiddleware::MIDDLEWARE_PRIORITY
             );
-            $previous->registerMiddleware(
+            $previous = $previous->registerMiddleware(
                 $container->get(RouterInterface::class),
                 RouterInterface::MIDDLEWARE_PRIORITY
             );

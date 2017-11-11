@@ -70,26 +70,6 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         self::assertSame($manager1, $manager2);
     }
 
-    public function testCreateQueue()
-    {
-        $container = $this->buildContainer();
-        $container->set(LoggerInterface::class, $this->createMock(LoggerInterface::class));
-        $queue1 = $container->get(Queue::class);
-        $queue2 = $container->get(QueueInterface::class);
-
-        self::assertInstanceOf(
-            Queue::class,
-            $queue1
-        );
-
-        self::assertInstanceOf(
-            Queue::class,
-            $queue2
-        );
-
-        self::assertSame($queue1, $queue2);
-    }
-
     public function testCreateProcessor()
     {
         $container = $this->buildContainer();

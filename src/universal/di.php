@@ -22,31 +22,37 @@
 namespace Teknoo\East\Foundation;
 
 use function DI\get;
-use function DI\object;
+use function DI\create;
 use Psr\Log\LoggerInterface;
-use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\East\Foundation\Manager\Manager;
-use Teknoo\East\Foundation\Manager\Queue\Queue;
-use Teknoo\East\Foundation\Manager\Queue\QueueInterface;
+use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\East\Foundation\Processor\Processor;
 use Teknoo\East\Foundation\Processor\ProcessorInterface;
+use Teknoo\East\Foundation\Recipe\Recipe;
+use Teknoo\East\Foundation\Recipe\RecipeInterface;
 
 return [
-    Queue::class => get(QueueInterface::class),
-    QueueInterface::class => object(Queue::class),
-
     Manager::class => get(ManagerInterface::class),
     ManagerInterface::class => function (
-        QueueInterface $queue,
-        ProcessorInterface $processor
+        RecipeInterface $recipe
     ): ManagerInterface {
-        $manager = new Manager($queue);
-        $manager->registerMiddleware($processor, ProcessorInterface::MIDDLEWARE_PRIORITY);
+        $manager = new Manager();
+        $manager->read($recipe);
 
         return $manager;
     },
 
+    Recipe::class => get(RecipeInterface::class),
+    RecipeInterface::class => function (
+        ProcessorInterface $processor
+    ): RecipeInterface {
+        $recipe = new Recipe();
+        $recipe = $recipe->registerMiddleware($processor, ProcessorInterface::MIDDLEWARE_PRIORITY);
+
+        return $recipe;
+    },
+
     Processor::class => get(ProcessorInterface::class),
-    ProcessorInterface::class => object(Processor::class)
+    ProcessorInterface::class => create(Processor::class)
         ->constructor(get(LoggerInterface::class)),
 ];
