@@ -34,11 +34,13 @@ interface RecipeInterface extends BaseInterface
      *
      * @param MiddlewareInterface $middleware
      * @param int $priority
+     * @param string $middlewareName=null
      *
      * @return RecipeInterface
      */
     public function registerMiddleware(
         MiddlewareInterface $middleware,
-        int $priority = 10
+        int $priority = 10,
+        string $middlewareName=null
     ): RecipeInterface;
 }

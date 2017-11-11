@@ -43,10 +43,16 @@ class Recipe extends BaseRecipe implements RecipeInterface
      */
     public function registerMiddleware(
         MiddlewareInterface $middleware,
-        int $priority = 10
+        int $priority = 10,
+        string $middlewareName=null
     ): RecipeInterface {
+        if (empty($middlewareName)) {
+            $middlewareName = \get_class($middleware);
+        }
+
         return $this->cook(
             [$middleware, 'execute'],
+            $middlewareName,
             [],
             $priority
         );
