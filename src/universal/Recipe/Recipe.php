@@ -27,6 +27,18 @@ namespace Teknoo\East\Foundation\Recipe;
 use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
 use Teknoo\Recipe\Recipe as BaseRecipe;
 
+/**
+ * Recipe implementation built on Teknoo/Recipe implementation to define middleware registration into a recipe like
+ * a step of the recipe. The class name of the middleware is used as step's name.
+ * The methode "execute" of the middleware is used as callable.
+ *
+ * @copyright   Copyright (c) 2009-2017 Richard Déloge (richarddeloge@gmail.com)
+ *
+ * @link        http://teknoo.software/east Project website
+ *
+ * @license     http://teknoo.software/license/mit         MIT License
+ * @author      Richard Déloge <richarddeloge@gmail.com>
+ */
 class Recipe extends BaseRecipe implements RecipeInterface
 {
     /**
