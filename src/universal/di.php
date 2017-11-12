@@ -22,7 +22,7 @@
 namespace Teknoo\East\Foundation;
 
 use function DI\get;
-use function DI\create;
+use function DI\object;
 use Psr\Log\LoggerInterface;
 use Teknoo\East\Foundation\Manager\Manager;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
@@ -53,6 +53,6 @@ return [
     },
 
     Processor::class => get(ProcessorInterface::class),
-    ProcessorInterface::class => create(Processor::class)
+    ProcessorInterface::class => object(Processor::class)
         ->constructor(get(LoggerInterface::class)),
 ];

@@ -114,13 +114,17 @@ class Processor implements ProcessorInterface, ImmutableInterface
         $controller = $routerResult->getController();
 
         $bowl = new Bowl($controller, []);
-        $bowl->execute(
-            $manager,
-            \array_merge(
-                $this->getParameters($request), [
+        $workPlan = \array_merge(
+            $this->getParameters($request),
+            [
                 'client' => $client,
                 'request' => $request
-            ])
+            ]
+        );
+
+        $bowl->execute(
+            $manager,
+            $workPlan
         );
 
         $next = $routerResult->getNext();

@@ -41,6 +41,6 @@ interface RecipeInterface extends BaseInterface
     public function registerMiddleware(
         MiddlewareInterface $middleware,
         int $priority = 10,
-        string $middlewareName=null
+        string $middlewareName = null
     ): RecipeInterface;
 }

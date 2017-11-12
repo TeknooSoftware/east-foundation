@@ -1,9 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
-##[0.0.5-beta3] - 2017-10-05
+##[0.0.5-beta3] - 2017-11-12
 ###Fixed
-- Issue when the controller is a static method, defined in string representation.t
-- Symfony Client implementation, error are now throwed to be managed by the Symfony stack directly and
+- Issue when the controller is a static method, defined in string representation.
+- Symfony Client implementation, error are now thrown to be managed by the Symfony stack directly and
   use Symfony error layout
 - Symfony KernelListener inject the Symfony request as argument into the PSR request to allow the processor
   to inject him when the endpoint need it
@@ -15,6 +15,18 @@
 - Middleware behavior east compliant
 - Router and Processor as middleware
 - Client able to update it's response via a modifier callable
+- Require teknoo/states 3.2 and remove deprecated teknoo/states-life-cyclable
+- Use Teknoo/recipe as base and externalise middleware managements and requests execution to this library
+  The configuration of middleware stay managed in the DI.
+- Interface ManagerInterface will be updated to inherits ChefInterface from teknoo/recipe.
+- New manager follows this new interface and inherits the Chef implementation from teknoo/recipe.
+  It manages the work plan with request and client instance. Now the manager execute only the request via the recipe,
+  not manage middleware.
+- Interface RecipeInterface will be added, inherits RecipeInterface from teknoo/recipe and add the method to register middleware
+  into the recipe and to keep the behavior with the old ManagerInterface of this library. A default implementation is provided
+- Update DI to use this new behavior and replace the last manager.
+- Processor reuse Bowl component from teknoo/recipe to maps arguments of the endpoint and call it.
+- Promise are now managed by teknoo/recipe too.
 
 ##[0.0.5-beta2] - 2017-08-26
 ###Updated

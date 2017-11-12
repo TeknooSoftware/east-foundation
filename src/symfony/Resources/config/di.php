@@ -23,7 +23,7 @@ namespace Teknoo\East\FoundationBundle\Resources\config;
 
 use function DI\get;
 use function DI\decorate;
-use function DI\create;
+use function DI\object;
 use Psr\Container\ContainerInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Teknoo\East\Foundation\Http\ClientInterface;
@@ -33,10 +33,10 @@ use Teknoo\East\FoundationBundle\Http\Client;
 use Teknoo\East\FoundationBundle\Session\SessionMiddleware;
 
 return [
-    SessionMiddleware::class => create(SessionMiddleware::class),
+    SessionMiddleware::class => object(SessionMiddleware::class),
 
     Client::class => get(ClientInterface::class),
-    ClientInterface::class => create(Client::class)
+    ClientInterface::class => object(Client::class)
         ->constructor(get(HttpFoundationFactory::class)),
 
     RecipeInterface::class => decorate(function ($previous, ContainerInterface $container) {
