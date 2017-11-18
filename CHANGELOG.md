@@ -1,5 +1,10 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[0.0.5-beta4] - 2017-11-18
+###Fixed
+- Remove useless dependency to logger in the processor (sinc Recipe)
+- Add Behat tests
+
 ##[0.0.5-beta3] - 2017-11-12
 ###Fixed
 - Issue when the controller is a static method, defined in string representation.
