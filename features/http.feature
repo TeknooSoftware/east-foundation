@@ -8,7 +8,7 @@ Feature: HTTP
     And I register the processor "Teknoo\East\Foundation\Processor\Processor"
     And I register a router
     And The router can process the request "/foo/bar" to controller "closureFoo"
-    When The client will receive the request "https://foo.com/bar/"
+    When The server will receive the request "https://foo.com/bar/"
     Then The client must not accept a response.
 
   Scenario: Execute a request mapped by the router
@@ -16,7 +16,7 @@ Feature: HTTP
     And I register the processor "Teknoo\East\Foundation\Processor\Processor"
     And I register a router
     And The router can process the request "/foo/bar" to controller "closureFoo"
-    When The client will receive the request "https://foo.com/foo/bar?test=fooBar"
+    When The server will receive the request "https://foo.com/foo/bar?test=fooBar"
     Then The client must accept a response
     And I should get "fooBar"
 
@@ -25,5 +25,5 @@ Feature: HTTP
     And I register the processor "Teknoo\East\Foundation\Processor\Processor"
     And I register a router
     And The router can process the request "/foo/bar" to controller "closureFoo"
-    When The client will receive the request "https://foo.com/foo/bar?bar=fooBar"
+    When The server will receive the request "https://foo.com/foo/bar?bar=fooBar"
     Then The client must accept an error

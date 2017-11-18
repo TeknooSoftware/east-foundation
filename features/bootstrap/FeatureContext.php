@@ -141,9 +141,9 @@ class FeatureContext implements Context
     }
 
     /**
-     * @When The client will receive the request :arg1
+     * @When The server will receive the request :arg1
      */
-    public function theClientWillReceiveTheRequest($arg1)
+    public function theServerWillReceiveTheRequest($arg1)
     {
         $manager = new Manager($this->recipe);
 
