@@ -24,7 +24,6 @@ declare(strict_types=1);
 
 namespace Teknoo\East\Foundation\Processor;
 
-use Psr\Log\LoggerInterface;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
@@ -53,21 +52,6 @@ use Teknoo\Recipe\Bowl\Bowl;
 class Processor implements ProcessorInterface, ImmutableInterface
 {
     use ImmutableTrait;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * Processor constructor.
-     *
-     * @param LoggerInterface $logger
-     */
-    public function __construct(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
 
     /**
      * {@inheritdoc}

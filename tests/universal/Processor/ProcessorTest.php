@@ -46,28 +46,11 @@ use Teknoo\East\FoundationBundle\Http\Client;
 class ProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * @return LoggerInterface|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private function getLoggerMock()
-    {
-        if (!$this->logger instanceof LoggerInterface) {
-            $this->logger = $this->createMock(LoggerInterface::class);
-        }
-
-        return $this->logger;
-    }
-
-    /**
      * @return Processor
      */
     private function buildProcessor()
     {
-        return new Processor($this->getLoggerMock());
+        return new Processor();
     }
 
     public function testExecuteNoResult()

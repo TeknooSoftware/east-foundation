@@ -53,6 +53,5 @@ return [
     },
 
     Processor::class => get(ProcessorInterface::class),
-    ProcessorInterface::class => object(Processor::class)
-        ->constructor(get(LoggerInterface::class)),
+    ProcessorInterface::class => object(Processor::class),
 ];
