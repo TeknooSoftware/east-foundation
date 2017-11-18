@@ -28,6 +28,7 @@
         "phpmd/phpmd": "~2.6",
         "sebastian/phpcpd": "~3.0",
         "phploc/phploc": "~4.0",
+        "behat/behat": "~3.4",
         "symfony/framework-bundle": "~3.4.0-beta1||~4.0-beta1",
         "symfony/routing": "~3.4.0-beta1||~4.0-beta1",
         "symfony/console": "~3.4.0-beta1||~4.0-beta1",
