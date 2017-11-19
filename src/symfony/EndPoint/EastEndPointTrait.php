@@ -24,11 +24,11 @@ declare(strict_types=1);
 
 namespace Teknoo\East\FoundationBundle\EndPoint;
 
-use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Templating\EngineInterface;
 use Teknoo\East\Foundation\EndPoint\EndPointInterface;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -55,14 +55,9 @@ trait EastEndPointTrait
     protected $router;
 
     /**
-     * @var TwigEngine
+     * @var EngineInterface
      */
     protected $templating;
-
-    /**
-     * @var \Twig_Environment
-     */
-    protected $twig;
 
     /**
      * @var TokenStorageInterface
@@ -86,27 +81,13 @@ trait EastEndPointTrait
     /**
      * To inject the Twig engine to render views.
      *
-     * @param TwigEngine $templating
+     * @param EngineInterface $templating
      *
      * @return EastEndPointTrait
      */
-    public function setTemplating(TwigEngine $templating)
+    public function setTemplating(EngineInterface $templating)
     {
         $this->templating = $templating;
-
-        return $this;
-    }
-
-    /**
-     * To inject Twig to render views.
-     *
-     * @param \Twig_Environment $twig
-     *
-     * @return EastEndPointTrait
-     */
-    public function setTwig(\Twig_Environment $twig)
-    {
-        $this->twig = $twig;
 
         return $this;
     }
@@ -193,18 +174,14 @@ trait EastEndPointTrait
      */
     protected function renderView(string $view, array $parameters = array()): string
     {
-        if ($this->templating instanceof TwigEngine) {
+        if ($this->templating instanceof EngineInterface) {
             return $this->templating->render($view, $parameters);
         }
 
-        if (!$this->twig instanceof \Twig_Environment) {
-            throw new \LogicException(
-                'You can not use the "renderView" method if the Templating Component or the '
-                .'Twig Bundle are not available.'
-            );
-        }
-
-        return $this->twig->render($view, $parameters);
+        throw new \LogicException(
+            'You can not use the "renderView" method if the Templating Component or the '
+            .'Twig Bundle are not available.'
+        );
     }
 
     /**

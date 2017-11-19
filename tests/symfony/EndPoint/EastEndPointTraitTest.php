@@ -21,10 +21,10 @@
 
 namespace Teknoo\Tests\East\FoundationBunlde\EndPoint;
 
-use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Templating\EngineInterface;
 use Teknoo\East\Foundation\EndPoint\EndPointInterface;
 use Teknoo\East\FoundationBundle\EndPoint\EastEndPointTrait;
 use Teknoo\East\Foundation\Http\ClientInterface;
@@ -148,7 +148,7 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
             }))
             ->willReturnSelf();
 
-        $twigEngine = $this->createMock(TwigEngine::class);
+        $twigEngine = $this->createMock(EngineInterface::class);
         $twigEngine->expects(self::once())->method('render')->willReturn('fooBar');
 
         $controller = (new class() implements EndPointInterface {
@@ -163,34 +163,6 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
         self::assertInstanceOf(
             get_class($controller),
             $controller->setTemplating($twigEngine)->getRender($client)
-        );
-    }
-
-    public function testRenderTwig()
-    {
-        $client = $this->createMock(ClientInterface::class);
-        $client->expects(self::once())
-            ->method('acceptResponse')
-            ->with($this->callback(function ($instance) {
-                return $instance instanceof HtmlResponse && $instance->getBody()->getContents();
-            }))
-            ->willReturnSelf();
-
-        $controller = (new class() implements EndPointInterface {
-            use EastEndPointTrait;
-
-            public function getRender(ClientInterface $client)
-            {
-                return $this->render($client, 'routeName');
-            }
-        });
-
-        $twig = $this->createMock(\Twig_Environment::class);
-        $twig->expects(self::once())->method('render')->willReturn('fooBar');
-
-        self::assertInstanceOf(
-            get_class($controller),
-            $controller->setTwig($twig)->getRender($client)
         );
     }
 
