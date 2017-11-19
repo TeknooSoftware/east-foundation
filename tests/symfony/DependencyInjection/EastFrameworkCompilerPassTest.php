@@ -148,7 +148,7 @@ class EastFrameworkCompilerPassTest extends \PHPUnit\Framework\TestCase
             ->expects(self::any())
             ->method('has')
             ->willReturnCallback(function ($value) {
-                return 'twig' != $value;
+                return 'templating.engine.twig' != $value;
             });
 
         $this->getContainerBuilderMock()

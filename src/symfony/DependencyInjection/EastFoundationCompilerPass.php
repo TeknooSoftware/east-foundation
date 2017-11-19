@@ -46,7 +46,7 @@ class EastFoundationCompilerPass implements CompilerPassInterface
         $taggedControllers = $container->findTaggedServiceIds('east.controller.service');
 
         $routerPresent = $container->has('router');
-        $twigPresent = $container->has('twig');
+        $twigPresent = $container->has('templating.engine.twig');
         $tokenStoragePresent = $container->has('security.token_storage');
 
         foreach ($taggedControllers as $id => $tags) {
@@ -57,7 +57,7 @@ class EastFoundationCompilerPass implements CompilerPassInterface
             }
 
             if (!empty($twigPresent)) {
-                $definition->addMethodCall('setTwig', [new Reference('twig')]);
+                $definition->addMethodCall('setTemplating', [new Reference('templating.engine.twig')]);
             }
 
             if (!empty($tokenStoragePresent)) {
