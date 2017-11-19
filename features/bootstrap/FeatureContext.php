@@ -95,11 +95,10 @@ class FeatureContext implements Context
              * @inheritDoc
              */
             public function execute(
-                ClientInterface $client ,
-                ServerRequestInterface $request ,
+                ClientInterface $client,
+                ServerRequestInterface $request,
                 ManagerInterface $manager
-            ): MiddlewareInterface
-            {
+            ): MiddlewareInterface {
                 $path = $request->getUri()->getPath();
 
                 if (isset($this->routes[$path])) {
@@ -111,7 +110,6 @@ class FeatureContext implements Context
 
                 return $this;
             }
-
         };
 
         $this->recipe = $this->recipe->registerMiddleware($this->router);
@@ -188,7 +186,7 @@ class FeatureContext implements Context
             /**
              * @inheritDoc
              */
-            public function sendResponse(ResponseInterface $response = null , bool $silently = false): ClientInterface
+            public function sendResponse(ResponseInterface $response = null, bool $silently = false): ClientInterface
             {
                 if (!empty($response)) {
                     $this->context->response = $response;
