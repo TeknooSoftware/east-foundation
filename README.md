@@ -24,9 +24,12 @@ To install this library with composer, run this command :
 
 This library requires :
 
-    * PHP 7+
-    * Symfony 3+
-    * Composer
+    * PHP 7.1+
+    * A PHP autoloader (Composer is recommended)
+    * Teknoo/Immutable.
+    * Teknoo/States.
+    * Teknoo/Recipe.
+    * Optional: Symfony 3.4+
 
 Credits
 -------
