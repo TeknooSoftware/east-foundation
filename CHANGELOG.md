@@ -1,5 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[0.0.5-beta6] - 2017-11-19
+###Changed
+- Symfony optional support requires now 3.4-rc1 or 4.0-rc1
+
 ##[0.0.5-beta5] - 2017-11-19
 ###Changed
 - Remove soft dependency to twig, replaced by Symfony\Component\Templating\EngineInterface, implemented by twig bundle
