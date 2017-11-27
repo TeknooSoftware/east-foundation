@@ -326,6 +326,80 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
         $requestMock = $this->createMock(ServerRequestInterface::class);
         $requestMock->expects(self::any())->method('getAttributes')->willReturn(['bar' => 456]);
         $requestMock->expects(self::any())->method('getParsedBody')->willReturn(['foo' => 123]);
+        $requestMock->expects(self::any())->method('getQueryParams')->willReturn(['bar' => 123]);
+
+        $callableController = new class() {
+            /**
+             * @var ClientInterface
+             */
+            private $client;
+
+            /**
+             * @var ServerRequestInterface
+             */
+            private $request;
+
+            /**
+             * @var ProcessorTest
+             */
+            private $testCase;
+
+            public function setValue(ClientInterface $client, ServerRequestInterface $request, ProcessorTest $testCase)
+            {
+                $this->client = $client;
+                $this->request = $request;
+                $this->testCase = $testCase;
+
+                return $this;
+            }
+
+            public function __invoke(ServerRequestInterface $request, ClientInterface $client, $foo, $bar, $default = 789)
+            {
+                $this->testCase->assertEquals($this->request, $request);
+                $this->testCase->assertEquals($this->client, $client);
+                $this->testCase->assertEquals(123, $foo);
+                $this->testCase->assertEquals(456, $bar);
+                $this->testCase->assertEquals(789, $default);
+            }
+        };
+
+        $callableController->setValue($clientMock, $requestMock, $this);
+
+        $routerResult = $this->createMock(ResultInterface::class);
+        $routerResult->expects(self::any())->method('getController')->willReturn($callableController);
+        $routerResult->expects(self::any())->method('getParameters')->willReturn([
+            new Parameter('r', false, null, new \ReflectionClass(ServerRequestInterface::class)),
+            new Parameter('c', false, null, new \ReflectionClass(ClientInterface::class)),
+            new Parameter('foo', false, null, null),
+            new Parameter('bar', false, null, null),
+            new Parameter('default', true, 789, null),
+        ]);
+        $routerResult->expects(self::any())->method('getNext')->willReturn(null);
+        $requestMock->expects(self::any())->method('getAttribute')->willReturnMap(
+            [[RouterInterface::ROUTER_RESULT_KEY, null, $routerResult]]
+        );
+
+        self::assertInstanceOf(ProcessorInterface::class, $this->buildProcessor()->execute(
+            $clientMock,
+            $requestMock,
+            $this->createMock(ManagerInterface::class)
+        ));
+    }
+
+    public function testExecuteParserBodyAndQueryParamNotOverloadAttribute()
+    {
+        /**
+         * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
+         */
+        $clientMock = $this->createMock(ClientInterface::class);
+
+        /**
+         * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject
+         */
+        $requestMock = $this->createMock(ServerRequestInterface::class);
+        $requestMock->expects(self::any())->method('getAttributes')->willReturn(['foo' => 123, 'bar' => 456]);
+        $requestMock->expects(self::any())->method('getParsedBody')->willReturn(['foo' => 999]);
+        $requestMock->expects(self::any())->method('getQueryParams')->willReturn(['bar' => 888]);
 
         $callableController = new class() {
             /**
