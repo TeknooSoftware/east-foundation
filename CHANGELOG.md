@@ -1,5 +1,10 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[0.0.5-beta7] - 2017-11-28
+###Fix
+- Processor injects query params and body parsed into the workplan
+- fix security fault to avoid query param or var from body parser overload the request attributes
+
 ##[0.0.5-beta6] - 2017-11-19
 ###Changed
 - Symfony optional support requires now 3.4-rc1 or 4.0-rc1
