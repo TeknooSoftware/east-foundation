@@ -23,7 +23,6 @@ namespace Teknoo\East\Foundation;
 
 use function DI\get;
 use function DI\object;
-use Psr\Log\LoggerInterface;
 use Teknoo\East\Foundation\Manager\Manager;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\East\Foundation\Processor\Processor;
