@@ -6,12 +6,14 @@ services:
   #Symfony router
   Teknoo\East\FoundationBundle\Router\Router:
     alias: 'Teknoo\East\Foundation\Router\RouterInterface'
+    public: true
 
   Teknoo\East\Foundation\Router\RouterInterface:
     class: '%teknoo.east.symfony.router.class%'
     arguments:
       - '@router'
       - '@service_container'
+    public: true
 
   #Symfony kernel event listener
   teknoo.east.symfony.listener.kernel:
