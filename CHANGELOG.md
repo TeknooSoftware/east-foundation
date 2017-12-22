@@ -1,5 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[0.0.5-beta8] - 2017-12-22
+###Fix
+- Deprecation with Symfony 3.4+
+
 ##[0.0.5-beta7] - 2017-11-28
 ###Fix
 - Processor injects query params and body parsed into the workplan
