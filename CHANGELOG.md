@@ -1,5 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[0.0.5-beta9] - 2017-12-27
+###Fix
+- Optimize Kernel Event Listener in Symfony bridge
+
 ##[0.0.5-beta8] - 2017-12-22
 ###Fix
 - Deprecation with Symfony 3.4+
