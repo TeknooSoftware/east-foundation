@@ -1,5 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[0.0.5] - 2018-01-01
+###Stable release
+- Build on recipe.
+
 ##[0.0.5-beta10] - 2018-01-01
 ###Fix
 - Rollback commit "Fix proprity in kernel event listener for symfony bridge" to fix bug with symfony firewall
