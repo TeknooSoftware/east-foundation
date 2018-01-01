@@ -56,8 +56,14 @@ interface EndPointInterface
      * @param ClientInterface $client
      * @param string          $view       The view name
      * @param array           $parameters An array of parameters to pass to the view
+     * @param int             $status The status code to use for the Response
      *
      * @return EndPointInterface
      */
-    public function render(ClientInterface $client, string $view, array $parameters = array()): EndPointInterface;
+    public function render(
+        ClientInterface $client,
+        string $view,
+        array $parameters = array(),
+        int $status = 200
+    ): EndPointInterface;
 }
