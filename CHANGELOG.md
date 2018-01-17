@@ -1,5 +1,8 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[0.0.6-alpha1] - 2018-01-17
+###Update composer requirement : require symfony/psr-http-message-bridge 1.0+ and zendframework/zend-diactoros 1.7+
+
 ##[0.0.5] - 2018-01-01
 ###Stable release
 - Build on recipe.

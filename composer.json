@@ -34,8 +34,8 @@
         "symfony/yaml": "~3.4||~4.0",
         "symfony/templating": "~3.4||~4.0",
         "symfony/security": "~3.4||~4.0",
-        "zendframework/zend-diactoros": "^1.6.0",
-        "symfony/psr-http-message-bridge":"~0.2"
+        "zendframework/zend-diactoros": "~1.7",
+        "symfony/psr-http-message-bridge":"~1.0"
     },
     "minimum-stability": "stable",
     "autoload": {
