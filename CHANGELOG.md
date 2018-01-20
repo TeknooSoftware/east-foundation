@@ -1,6 +1,6 @@
 #Teknoo Software - East Foundation - Change Log
 
-##[0.0.6-alpha1] - 2018-01-17
+##[0.0.6] - 2018-01-120
 ###Update composer requirement (optional, only to use with Symfony) : require symfony/psr-http-message-bridge 1.0+ and zendframework/zend-diactoros 1.7+
 
 ##[0.0.5] - 2018-01-01
@@ -13,7 +13,8 @@
 
 ##[0.0.5-beta9] - 2017-12-27
 ###Fix
-- Optimize Kernel Event Listener in Symfony bridge
+- Optimize Kern
+el Event Listener in Symfony bridge
 
 ##[0.0.5-beta8] - 2017-12-22
 ###Fix
