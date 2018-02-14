@@ -1,5 +1,12 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[0.0.7-beta2] - 2018-02-14
+###Update
+- Update recipe end point to add to workplan all values from request, and client and server request instance (not overrided)
+
+###Fix
+- fix error when request attributes returned by request object is not an array
+
 ##[0.0.7-beta1] - 2018-02-14
 ###Add
 - RecipeEndPoint to use a recipe as endpoint.
