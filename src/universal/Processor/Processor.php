@@ -80,7 +80,7 @@ class Processor implements ProcessorInterface, ImmutableInterface
         return \array_merge(
             (array) $request->getQueryParams(),
             (array) $request->getParsedBody(),
-            $request->getAttributes()
+            (array) $request->getAttributes()
         );
     }
 
