@@ -58,14 +58,38 @@ class RecipeEndPoint
     /**
      * @param ServerRequestInterface $request
      * @param ClientInterface $client
+     * @param array $workPlan
+     * @return RecipeEndPoint
+     */
+    private function generateWorkPlan(
+        ServerRequestInterface $request,
+        ClientInterface $client,
+        array &$workPlan
+    ): RecipeEndPoint {
+        $workPlan = \array_merge(
+            (array) $request->getQueryParams(),
+            (array) $request->getParsedBody(),
+            (array) $request->getAttributes(),
+            [
+                'client' => $client,
+                'request' => $request
+            ]
+        );
+
+        return $this;
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     * @param ClientInterface $client
      * @return RecipeEndPoint
      */
     public function __invoke(ServerRequestInterface $request, ClientInterface $client): RecipeEndPoint
     {
-        $this->chef->process([
-            'client' => $client,
-            'request' => $request
-        ]);
+        $workPlan = [];
+        $this->generateWorkPlan($request, $client, $workPlan);
+
+        $this->chef->process($workPlan);
 
         return $this;
     }

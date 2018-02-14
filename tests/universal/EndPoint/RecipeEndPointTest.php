@@ -85,15 +85,21 @@ class RecipeEndPointTest extends TestCase
 
     public function testInvoke()
     {
-        $request = $this->createMock(ServerRequestInterface::class);
-        $client = $this->createMock(ClientInterface::class);
+        $requestMock = $this->createMock(ServerRequestInterface::class);
+        $requestMock->expects(self::any())->method('getAttributes')->willReturn(['bar' => 456]);
+        $requestMock->expects(self::any())->method('getParsedBody')->willReturn(['foo' => 123, 'request' => 'bar']);
+        $requestMock->expects(self::any())->method('getQueryParams')->willReturn(['bar' => 123, 'client' => 'foo']);
+
+        $clientMock = $this->createMock(ClientInterface::class);
 
         $this->getChefMock()
             ->expects(self::once())
             ->method('process')
             ->with([
-                'request' => $request,
-                'client' => $client
+                'bar' => 456,
+                'foo' => 123,
+                'request' => $requestMock,
+                'client' => $clientMock,
             ])
             ->willReturnSelf();
 
@@ -101,7 +107,7 @@ class RecipeEndPointTest extends TestCase
 
         self::assertInstanceOf(
             RecipeEndPoint::class,
-            $endPoint($request, $client)
+            $endPoint($requestMock, $clientMock)
         );
     }
 }
