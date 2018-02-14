@@ -1,7 +1,12 @@
 #Teknoo Software - East Foundation - Change Log
 
-##[0.0.6] - 2018-01-120
-###Update composer requirement (optional, only to use with Symfony) : require symfony/psr-http-message-bridge 1.0+ and zendframework/zend-diactoros 1.7+
+##[0.0.7-beta1] - 2018-02-14
+###Add
+- RecipeEndPoint to use a recipe as endpoint.
+
+##[0.0.6] - 2018-01-12
+###Update
+- composer requirement (optional, only to use with Symfony) : require symfony/psr-http-message-bridge 1.0+ and zendframework/zend-diactoros 1.7+
 
 ##[0.0.5] - 2018-01-01
 ###Stable release
