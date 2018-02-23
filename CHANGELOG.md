@@ -1,5 +1,10 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[0.0.7-beta3] - 2018-02-24
+###Update
+- Add interfaces to define objects able to test if two object are equals, lower or greater
+- Use PHP-DI 6 instead of PHP-DI 5.
+
 ##[0.0.7-beta2] - 2018-02-14
 ###Update
 - Update recipe end point to add to workplan all values from request, and client and server request instance (not overrided)
