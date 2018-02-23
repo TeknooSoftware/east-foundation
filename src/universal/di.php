@@ -22,7 +22,7 @@
 namespace Teknoo\East\Foundation;
 
 use function DI\get;
-use function DI\object;
+use function DI\create;
 use Teknoo\East\Foundation\Manager\Manager;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\East\Foundation\Processor\Processor;
@@ -52,5 +52,5 @@ return [
     },
 
     Processor::class => get(ProcessorInterface::class),
-    ProcessorInterface::class => object(Processor::class),
+    ProcessorInterface::class => create(Processor::class),
 ];
