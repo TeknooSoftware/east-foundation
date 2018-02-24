@@ -43,7 +43,7 @@ interface EqualityInterface
      *
      * @param EqualityInterface|object|mixed $object
      * @param PromiseInterface $promise
-     * @return HighInterface
+     * @return EqualityInterface
      */
-    public function isEqualTo($object, PromiseInterface $promise): HighInterface;
+    public function isEqualTo($object, PromiseInterface $promise): EqualityInterface;
 }

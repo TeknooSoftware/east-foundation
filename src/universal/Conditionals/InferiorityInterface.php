@@ -43,7 +43,7 @@ interface InferiorityInterface
      *
      * @param InferiorityInterface|object|mixed $object
      * @param PromiseInterface $promise
-     * @return HighInterface
+     * @return InferiorityInterface
      */
-    public function isLessThan($object, PromiseInterface $promise): HighInterface;
+    public function isLessThan($object, PromiseInterface $promise): InferiorityInterface;
 }

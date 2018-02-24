@@ -44,7 +44,7 @@ interface LowInterface
      *
      * @param LowInterface|object|mixed $object
      * @param PromiseInterface $promise
-     * @return HighInterface
+     * @return LowInterface
      */
-    public function isLowerThan($object, PromiseInterface $promise): HighInterface;
+    public function isLowerThan($object, PromiseInterface $promise): LowInterface;
 }

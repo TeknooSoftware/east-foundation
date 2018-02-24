@@ -45,7 +45,7 @@ interface SuperiorityInterface
      *
      * @param LowInterface|object|mixed $object
      * @param PromiseInterface $promise
-     * @return HighInterface
+     * @return SuperiorityInterface
      */
-    public function isGreaterThan($object, PromiseInterface $promise): HighInterface;
+    public function isGreaterThan($object, PromiseInterface $promise): SuperiorityInterface;
 }
