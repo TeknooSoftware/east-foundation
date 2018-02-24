@@ -1,5 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[0.0.7-beta4] - 2018-02-24
+###Fix
+- Bad return type of conditional interfaces.
+
 ##[0.0.7-beta3] - 2018-02-24
 ###Update
 - Add interfaces to define objects able to test if two object are equals, lower or greater
