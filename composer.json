@@ -34,6 +34,7 @@
         "symfony/yaml": "~3.4||~4.0",
         "symfony/templating": "~3.4||~4.0",
         "symfony/security": "~3.4||~4.0",
+        "symfony/serializer": "~3.4||~4.0",
         "zendframework/zend-diactoros": "~1.7",
         "symfony/psr-http-message-bridge":"~1.0"
     },

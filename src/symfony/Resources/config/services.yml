@@ -1,6 +1,7 @@
 parameters:
   teknoo.east.symfony.router.class: 'Teknoo\East\FoundationBundle\Router\Router'
   teknoo.east.symfony.listener.kernel.class: 'Teknoo\East\FoundationBundle\Listener\KernelListener'
+  teknoo.east.symfony.normalizer.east_normalizer.class: 'Teknoo\East\FoundationBundle\Normalizer\EastNormalizer'
 
 services:
   #Symfony router
@@ -24,3 +25,9 @@ services:
       - '@Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory'
     tags:
       - { name: 'kernel.event_listener', event: 'kernel.request', method: 'onKernelRequest' }
+
+  #Symfony normalizer
+  teknoo.east.symfony.normalizer.east_normalizer:
+    class: '%teknoo.east.symfony.normalizer.east_normalizer.class%'
+    tags:
+      - { name: 'serializer.normalizer', priority: 100 }
