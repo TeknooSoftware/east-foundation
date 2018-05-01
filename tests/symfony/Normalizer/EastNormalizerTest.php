@@ -21,6 +21,7 @@
 
 namespace Teknoo\Tests\East\FoundationBundle\Normalizer;
 
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Teknoo\East\Foundation\Normalizer\Object\NormalizableInterface;
 use Teknoo\East\FoundationBundle\Normalizer\EastNormalizer;
 
@@ -96,6 +97,73 @@ class EastNormalizerTest extends \PHPUnit\Framework\TestCase
 
         self::assertEquals(
             $returnValue,
+            $normalizer->normalize($object, 'json', $context)
+        );
+    }
+
+    public function testNormalizeWithAwareNormalizerWithOnlyScalarValues()
+    {
+        $object = $this->createMock(NormalizableInterface::class);
+        $normalizer = $this->buildNormalizer();
+
+        $returnValue = ['foo' => 'bar'];
+        $context = ['context' => 'hello'];
+
+        $object->expects(self::once())
+            ->method('exportToMeData')
+            ->willReturnCallback(function ($nrmlz, $ctxt) use ($normalizer, $object, $context, $returnValue) {
+                self::assertInstanceOf(EastNormalizer::class, $nrmlz);
+                self::assertNotSame($normalizer, $nrmlz);
+                self::assertEquals($context, $ctxt);
+
+                $nrmlz->injectData($returnValue);
+
+                return $object;
+            });
+
+        $normalizer2 = $this->createMock(NormalizerInterface::class);
+        $normalizer2->expects(self::never())
+            ->method('normalize');
+
+        $normalizer->setNormalizer($normalizer2);
+
+        self::assertEquals(
+            $returnValue,
+            $normalizer->normalize($object, 'json', $context)
+        );
+    }
+
+    public function testNormalizeWithAwareNormalizer()
+    {
+        $object = $this->createMock(NormalizableInterface::class);
+        $normalizer = $this->buildNormalizer();
+
+        $returnValue = ['foo' => 'bar', 'bar' => ($date = new \DateTime('2018-05-01 02:03:04'))];
+        $returnValue2 = ['foo' => 'bar', 'bar' => '2018-05-01 02:03:04'];
+        $context = ['context' => 'hello'];
+
+        $object->expects(self::once())
+            ->method('exportToMeData')
+            ->willReturnCallback(function ($nrmlz, $ctxt) use ($normalizer, $object, $context, $returnValue) {
+                self::assertInstanceOf(EastNormalizer::class, $nrmlz);
+                self::assertNotSame($normalizer, $nrmlz);
+                self::assertEquals($context, $ctxt);
+
+                $nrmlz->injectData($returnValue);
+
+                return $object;
+            });
+
+        $normalizer2 = $this->createMock(NormalizerInterface::class);
+        $normalizer2->expects(self::once())
+            ->method('normalize')
+            ->with($date, 'json', $context)
+            ->willReturn('2018-05-01 02:03:04');
+
+        $normalizer->setNormalizer($normalizer2);
+
+        self::assertEquals(
+            $returnValue2,
             $normalizer->normalize($object, 'json', $context)
         );
     }

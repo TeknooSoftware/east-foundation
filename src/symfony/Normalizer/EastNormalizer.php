@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace Teknoo\East\FoundationBundle\Normalizer;
 
+use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Teknoo\East\Foundation\Normalizer\EastNormalizerInterface;
 use Teknoo\East\Foundation\Normalizer\Object\NormalizableInterface;
@@ -36,12 +37,27 @@ use Teknoo\East\Foundation\Normalizer\Object\NormalizableInterface;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-class EastNormalizer implements EastNormalizerInterface, NormalizerInterface
+class EastNormalizer implements EastNormalizerInterface, NormalizerInterface, NormalizerAwareInterface
 {
     /**
      * @var array
      */
     private $data = [];
+
+    /**
+     * @var NormalizerInterface
+     */
+    private $normalizer;
+
+    /**
+     * @inheritDoc
+     */
+    public function setNormalizer(NormalizerInterface $normalizer): self
+    {
+        $this->normalizer = $normalizer;
+
+        return $this;
+    }
 
     /**
      * @inheritDoc
@@ -82,6 +98,16 @@ class EastNormalizer implements EastNormalizerInterface, NormalizerInterface
         $that->cleanData();
 
         $object->exportToMeData($that, $context);
+
+        if (!$this->normalizer instanceof NormalizerInterface) {
+            return $that->data;
+        }
+
+        foreach ($that->data as &$item) {
+            if (!\is_scalar($item)) {
+                $item = $this->normalizer->normalize($item, $format, $context);
+            }
+        }
 
         return $that->data;
     }
