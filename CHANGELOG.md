@@ -1,5 +1,17 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[0.0.7] - 2018-06-02
+###Release
+Stable release of 0.0.7
+
+##[0.0.7-beta5] - 2018-05-01
+###Updated
+- update normalizer for symfony serializer for east object to manage non scalar attribute and pass them to another normalizer (aware behavior)
+
+##[0.0.7-beta5] - 2018-04-25
+###Added
+- Create normalizers interface and normalizer for symfony serializer for east object
+
 ##[0.0.7-beta4] - 2018-02-24
 ###Fix
 - Bad return type of conditional interfaces.
