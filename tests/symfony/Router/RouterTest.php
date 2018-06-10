@@ -26,6 +26,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
+use Teknoo\East\Foundation\Router\ResultInterface;
 use Teknoo\East\Foundation\Router\RouterInterface;
 use Teknoo\East\FoundationBundle\Router\Router;
 use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
@@ -287,6 +288,11 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         }]);
 
         $manager->expects(self::once())->method('continueExecution')->willReturnSelf();
+        $manager->expects(self::once())->method('updateWorkPlan')
+            ->willReturnCallback(function ($workPlan) use ($manager) {
+                self::assertInstanceOf(ResultInterface::class, $workPlan[ResultInterface::class]);
+                return $manager;
+            });
 
         self::assertInstanceOf(
             $this->getRouterClass(),
@@ -313,6 +319,11 @@ class RouterTest extends \PHPUnit\Framework\TestCase
          * @var ManagerInterface|\PHPUnit_Framework_MockObject_MockObject $manager
          */
         $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects(self::once())->method('updateWorkPlan')
+            ->willReturnCallback(function ($workPlan) use ($manager) {
+                self::assertInstanceOf(ResultInterface::class, $workPlan[ResultInterface::class]);
+                return $manager;
+            });
 
         $class = new class {
             public static function action()
@@ -349,6 +360,11 @@ class RouterTest extends \PHPUnit\Framework\TestCase
          * @var ManagerInterface|\PHPUnit_Framework_MockObject_MockObject $manager
          */
         $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects(self::once())->method('updateWorkPlan')
+            ->willReturnCallback(function ($workPlan) use ($manager) {
+                self::assertInstanceOf(ResultInterface::class, $workPlan[ResultInterface::class]);
+                return $manager;
+            });
 
         $this->getUrlMatcherMock()->expects(self::any())->method('match')->willReturn(['_controller' => 'fooBar']);
 

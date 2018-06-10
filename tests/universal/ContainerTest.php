@@ -29,6 +29,7 @@ use Teknoo\East\Foundation\Manager\Queue\Queue;
 use Teknoo\East\Foundation\Manager\Queue\QueueInterface;
 use Teknoo\East\Foundation\Processor\Processor;
 use Teknoo\East\Foundation\Processor\ProcessorInterface;
+use Teknoo\East\Foundation\Router\RouterInterface;
 
 /**
  * Class DefinitionProviderTest.
@@ -54,6 +55,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
     {
         $container = $this->buildContainer();
         $container->set(LoggerInterface::class, $this->createMock(LoggerInterface::class));
+        $container->set(RouterInterface::class, $this->createMock(RouterInterface::class));
         $manager1 = $container->get(Manager::class);
         $manager2 = $container->get(ManagerInterface::class);
 

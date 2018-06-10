@@ -4,16 +4,14 @@ Feature: HTTP
   a large panel of framework, like Symfony or Zend.
 
   Scenario: Ignore a request not mapped by the router
-    Given I have an empty recipe
-    And I register the processor "Teknoo\East\Foundation\Processor\Processor"
+    Given I have DI initialized
     And I register a router
     And The router can process the request "/foo/bar" to controller "closureFoo"
     When The server will receive the request "https://foo.com/bar/"
     Then The client must not accept a response.
 
   Scenario: Execute a request mapped by the router
-    Given I have an empty recipe
-    And I register the processor "Teknoo\East\Foundation\Processor\Processor"
+    Given I have DI initialized
     And I register a router
     And The router can process the request "/foo/bar" to controller "closureFoo"
     When The server will receive the request "https://foo.com/foo/bar?test=fooBar"
@@ -21,8 +19,7 @@ Feature: HTTP
     And I should get "fooBar"
 
   Scenario: Execute a request mapped by the router but an error will be occurring
-    Given I have an empty recipe
-    And I register the processor "Teknoo\East\Foundation\Processor\Processor"
+    Given I have DI initialized
     And I register a router
     And The router can process the request "/foo/bar" to controller "closureFoo"
     When The server will receive the request "https://foo.com/foo/bar?bar=fooBar"

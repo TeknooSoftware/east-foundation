@@ -4,13 +4,12 @@ use Behat\Behat\Context\Context;
 use PHPUnit\Framework\Assert;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Teknoo\East\Foundation\Recipe\Recipe;
 use Teknoo\East\Foundation\Recipe\RecipeInterface;
-use Teknoo\East\Foundation\Processor\ProcessorInterface;
 use Teknoo\East\Foundation\Router\RouterInterface;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\East\Foundation\Manager\Manager;
+use Teknoo\East\Foundation\Router\ResultInterface;
 use Teknoo\East\Foundation\Router\Result;
 use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
 use Zend\Diactoros\Response\TextResponse;
@@ -22,9 +21,9 @@ use Zend\Diactoros\ServerRequest;
 class FeatureContext implements Context
 {
     /**
-     * @var RecipeInterface
+     * @var \DI\Container
      */
-    private $recipe;
+    private $container;
 
     /**
      * @var RouterInterface
@@ -58,22 +57,11 @@ class FeatureContext implements Context
     }
 
     /**
-     * @Given I have an empty recipe
+     * @Given I have DI initialized
      */
-    public function iHaveAnEmptyRecipe()
+    public function iHaveDiInitialized()
     {
-        $this->recipe = new Recipe();
-    }
-
-    /**
-     * @Given I register the processor :arg1
-     */
-    public function iRegisterTheProcessor($arg1)
-    {
-        $this->recipe = $this->recipe->registerMiddleware(
-            new $arg1,
-            ProcessorInterface::MIDDLEWARE_PRIORITY
-        );
+        $this->container = include (\dirname(\dirname(__DIR__)).'/src/universal/generator.php');
     }
 
     /**
@@ -104,6 +92,7 @@ class FeatureContext implements Context
                 if (isset($this->routes[$path])) {
                     $result = new Result($this->routes[$path]);
                     $request = $request->withAttribute(RouterInterface::ROUTER_RESULT_KEY, $result);
+                    $manager->updateWorkPlan([ResultInterface::class => $result]);
 
                     $manager->continueExecution($client, $request);
                 };
@@ -112,7 +101,7 @@ class FeatureContext implements Context
             }
         };
 
-        $this->recipe = $this->recipe->registerMiddleware($this->router);
+        $this->container->set(RouterInterface::class, $this->router);
     }
 
     /**
@@ -143,7 +132,7 @@ class FeatureContext implements Context
      */
     public function theServerWillReceiveTheRequest($arg1)
     {
-        $manager = new Manager($this->recipe);
+        $manager = new Manager($this->container->get(RecipeInterface::class));
 
         $this->response = null;
         $this->error = null;

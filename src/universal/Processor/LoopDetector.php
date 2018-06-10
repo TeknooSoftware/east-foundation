@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * East Foundation.
  *
@@ -21,13 +24,11 @@
 
 namespace Teknoo\East\Foundation\Processor;
 
-use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
+use Teknoo\East\Foundation\Manager\ManagerInterface;
+use Teknoo\East\Foundation\Router\ResultInterface;
+use Teknoo\Recipe\Bowl\RecipeBowl;
 
 /**
- * Processor is a specific middleware able to read the result in the request computed by the router.
- *
- * If some arguments are missing in the request. The processor must throws exceptions.
- *
  * @copyright   Copyright (c) 2009-2017 Richard Déloge (richarddeloge@gmail.com)
  *
  * @link        http://teknoo.software/east Project website
@@ -35,9 +36,30 @@ use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-interface ProcessorInterface extends MiddlewareInterface
+class LoopDetector implements LoopDetectorInterface
 {
-    const MIDDLEWARE_PRIORITY = 15;
+    /**
+     * @param RecipeBowl $bowl
+     * @param ManagerInterface $manager
+     * @param ResultInterface|null $result
+     * @return LoopDetectorInterface
+     */
+    public function __invoke(
+        RecipeBowl $bowl,
+        ManagerInterface $manager,
+        ResultInterface $result=null
+    ): LoopDetectorInterface {
+        if ($result instanceof ResultInterface) {
+            //To manage when there are not result in the initial request
+            $result = $result->getNext();
+        }
 
-    const WORK_PLAN_CONTROLLER_KEY = 'controller';
+        if (!$result instanceof ResultInterface) {
+            $bowl->stopLooping();
+        }
+
+        $manager->updateWorkPlan([ResultInterface::class => $result]);
+
+        return $this;
+    }
 }

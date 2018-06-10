@@ -28,7 +28,6 @@ use Psr\Container\ContainerInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Teknoo\East\Foundation\Recipe\RecipeInterface;
-use Teknoo\East\Foundation\Router\RouterInterface;
 use Teknoo\East\FoundationBundle\Http\Client;
 use Teknoo\East\FoundationBundle\Session\SessionMiddleware;
 
@@ -44,10 +43,6 @@ return [
             $previous = $previous->registerMiddleware(
                 $container->get(SessionMiddleware::class),
                 SessionMiddleware::MIDDLEWARE_PRIORITY
-            );
-            $previous = $previous->registerMiddleware(
-                $container->get(RouterInterface::class),
-                RouterInterface::MIDDLEWARE_PRIORITY
             );
         }
 

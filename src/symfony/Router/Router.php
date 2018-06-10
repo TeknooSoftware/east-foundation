@@ -32,6 +32,7 @@ use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 use Teknoo\East\Foundation\Router\Result;
+use Teknoo\East\Foundation\Router\ResultInterface;
 use Teknoo\East\Foundation\Router\RouterInterface;
 
 /**
@@ -87,11 +88,7 @@ class Router implements RouterInterface
     {
         try {
             $parameters = $this->matcher->match(
-                \str_replace(
-                    ['/app.php', '/app_dev.php'],
-                    '',
-                    $request->getUri()->getPath()
-                )
+                \str_replace(['/app.php', '/app_dev.php'], '', $request->getUri()->getPath())
             );
         } catch (ResourceNotFoundException $e) {
             /* Do nothing, keep the framework to manage it */
@@ -102,8 +99,7 @@ class Router implements RouterInterface
         }
 
         if (\is_callable($parameters['_controller'])) {
-            if (\is_string($parameters['_controller'])
-                && false !== \strpos($parameters['_controller'], '::')) {
+            if (\is_string($parameters['_controller']) && false !== \strpos($parameters['_controller'], '::')) {
                 return \explode('::', $parameters['_controller']);
             }
 
@@ -140,6 +136,7 @@ class Router implements RouterInterface
             $result = new Result($controller);
             $request = $request->withAttribute(RouterInterface::ROUTER_RESULT_KEY, $result);
 
+            $manager->updateWorkPlan([ResultInterface::class => $result]);
             $manager->continueExecution($client, $request);
         }
 

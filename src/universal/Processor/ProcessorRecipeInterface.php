@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * East Foundation.
  *
@@ -21,13 +24,9 @@
 
 namespace Teknoo\East\Foundation\Processor;
 
-use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
+use Teknoo\East\Foundation\Recipe\RecipeInterface;
 
 /**
- * Processor is a specific middleware able to read the result in the request computed by the router.
- *
- * If some arguments are missing in the request. The processor must throws exceptions.
- *
  * @copyright   Copyright (c) 2009-2017 Richard Déloge (richarddeloge@gmail.com)
  *
  * @link        http://teknoo.software/east Project website
@@ -35,9 +34,7 @@ use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-interface ProcessorInterface extends MiddlewareInterface
+interface ProcessorRecipeInterface extends RecipeInterface
 {
     const MIDDLEWARE_PRIORITY = 15;
-
-    const WORK_PLAN_CONTROLLER_KEY = 'controller';
 }

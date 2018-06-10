@@ -59,16 +59,21 @@ class Processor implements ProcessorInterface, ImmutableInterface
     public function execute(
         ClientInterface $client,
         ServerRequestInterface $request,
-        ManagerInterface $manager
+        ManagerInterface $manager,
+        ResultInterface $result = null
     ): MiddlewareInterface {
-        $processor = clone $this;
-
-        $routerResult = $request->getAttribute(RouterInterface::ROUTER_RESULT_KEY);
-        if ($routerResult instanceof ResultInterface) {
-            $processor->doExecute($client, $request, $routerResult, $manager);
+        if (!$result instanceof ResultInterface) {
+            return $this;
         }
 
-        return $processor;
+        $values = \array_merge(
+            $this->getParameters($request),
+            [static::WORK_PLAN_CONTROLLER_KEY => $result->getController()]
+        );
+
+        $manager->updateWorkPlan($values);
+
+        return $this;
     }
 
     /**
@@ -82,42 +87,5 @@ class Processor implements ProcessorInterface, ImmutableInterface
             (array) $request->getParsedBody(),
             (array) $request->getAttributes()
         );
-    }
-
-    /**
-     * Method called to execute each controller retourned by the router and call the next controller defined in the
-     * router's result.
-     *
-     * @param ClientInterface        $client
-     * @param ServerRequestInterface $request
-     * @param ResultInterface        $routerResult
-     * @param ManagerInterface       $manager
-     */
-    private function doExecute(
-        ClientInterface $client,
-        ServerRequestInterface $request,
-        ResultInterface $routerResult,
-        ManagerInterface $manager
-    ) {
-        $controller = $routerResult->getController();
-
-        $bowl = new Bowl($controller, []);
-        $workPlan = \array_merge(
-            $this->getParameters($request),
-            [
-                'client' => $client,
-                'request' => $request
-            ]
-        );
-
-        $bowl->execute(
-            $manager,
-            $workPlan
-        );
-
-        $next = $routerResult->getNext();
-        if ($next instanceof ResultInterface) {
-            $this->doExecute($client, $request, $next, $manager);
-        }
     }
 }
