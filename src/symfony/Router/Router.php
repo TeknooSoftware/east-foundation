@@ -134,7 +134,6 @@ class Router implements RouterInterface
 
         if (\is_callable($controller)) {
             $result = new Result($controller);
-            $request = $request->withAttribute(RouterInterface::ROUTER_RESULT_KEY, $result);
 
             $manager->updateWorkPlan([ResultInterface::class => $result]);
             $manager->continueExecution($client, $request);

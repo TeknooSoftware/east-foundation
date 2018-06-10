@@ -276,9 +276,6 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         $request = $this->createMock(ServerRequestInterface::class);
         $request->expects(self::any())->method('getUri')->willReturn(new class() extends Uri {
         });
-        $request->expects(self::once())->method('withAttribute')
-            ->with(RouterInterface::ROUTER_RESULT_KEY)
-            ->willReturnSelf();
         /**
          * @var ManagerInterface|\PHPUnit_Framework_MockObject_MockObject $manager
          */
@@ -312,9 +309,6 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         $request = $this->createMock(ServerRequestInterface::class);
         $request->expects(self::any())->method('getUri')->willReturn(new class() extends Uri {
         });
-        $request->expects(self::once())->method('withAttribute')
-            ->with(RouterInterface::ROUTER_RESULT_KEY)
-            ->willReturnSelf();
         /**
          * @var ManagerInterface|\PHPUnit_Framework_MockObject_MockObject $manager
          */
@@ -353,9 +347,6 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         $request = $this->createMock(ServerRequestInterface::class);
         $request->expects(self::any())->method('getUri')->willReturn(new class() extends Uri {
         });
-        $request->expects(self::once())->method('withAttribute')
-            ->with(RouterInterface::ROUTER_RESULT_KEY)
-            ->willReturnSelf();
         /**
          * @var ManagerInterface|\PHPUnit_Framework_MockObject_MockObject $manager
          */
