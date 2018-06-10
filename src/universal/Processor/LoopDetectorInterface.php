@@ -38,5 +38,15 @@ use Teknoo\Recipe\Bowl\RecipeBowl;
  */
 interface LoopDetectorInterface
 {
-    public function __invoke(RecipeBowl $bowl, ManagerInterface $manager, ResultInterface $result=null): LoopDetectorInterface;
+    /**
+     * @param RecipeBowl $bowl
+     * @param ManagerInterface $manager
+     * @param ResultInterface|null $result
+     * @return LoopDetectorInterface
+     */
+    public function __invoke(
+        RecipeBowl $bowl,
+        ManagerInterface $manager,
+        ResultInterface $result = null
+    ): LoopDetectorInterface;
 }

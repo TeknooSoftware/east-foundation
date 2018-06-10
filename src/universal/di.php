@@ -52,10 +52,17 @@ return [
     ProcessorRecipeInterface::class => function (
         ProcessorInterface $processor
     ): ProcessorRecipeInterface {
-        $recipe = new class extends Recipe implements ProcessorRecipeInterface {};
+        $recipe = new class extends Recipe implements ProcessorRecipeInterface
+        {
+        };
 
         $recipe = $recipe->registerMiddleware($processor, ProcessorInterface::MIDDLEWARE_PRIORITY);
-        $recipe = $recipe->cook(new DynamicBowl(ProcessorInterface::WORK_PLAN_CONTROLLER_KEY, false), ProcessorInterface::WORK_PLAN_CONTROLLER_KEY, [], 20);
+        $recipe = $recipe->cook(
+            new DynamicBowl(ProcessorInterface::WORK_PLAN_CONTROLLER_KEY, false),
+            ProcessorInterface::WORK_PLAN_CONTROLLER_KEY,
+            [],
+            20
+        );
 
         return $recipe;
     },
