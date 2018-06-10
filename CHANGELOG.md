@@ -1,5 +1,21 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[0.0.8-beta1] - 2018-06-10
+###Updated
+- Use Teknoo/Recipe 1.1.0
+- Replace Bowl in the Processor to call the controller and selecting good parameters from the work plan by a subrecipe,
+  defined by ProcessorRecipeInterface and using a DynamicBowl to delegate this operation directly to Recipe.
+- Update the Behat test to use directly the container PHP-DI.
+
+###Add
+- ProcessorRecipeInterface to define subrecipe dedicated to extract the controller from the router result, inject it 
+  into the work plan to be executed by the DynamicBowl defined in the container.
+- LoopDetectorInterface and LoopDetector to allow looping on the processor subrecipe unitl there all results from the
+  router have not been processed.   
+
+###Remove
+- Result from the router will not been injected into the request parameter. They are only available in the work plan.
+
 ##[0.0.7] - 2018-06-02
 ###Release
 Stable release of 0.0.7
