@@ -91,7 +91,6 @@ class FeatureContext implements Context
 
                 if (isset($this->routes[$path])) {
                     $result = new Result($this->routes[$path]);
-                    $request = $request->withAttribute(RouterInterface::ROUTER_RESULT_KEY, $result);
                     $manager->updateWorkPlan([ResultInterface::class => $result]);
 
                     $manager->continueExecution($client, $request);
