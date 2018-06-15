@@ -1,5 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[0.0.8-beta2] - 2018-06-15
+###Fix
+- fix processor to prevent overwritting of client, manager or request vars
+
 ##[0.0.8-beta1] - 2018-06-10
 ###Updated
 - Use Teknoo/Recipe 1.1.0
