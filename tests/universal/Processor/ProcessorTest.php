@@ -23,6 +23,7 @@ namespace Teknoo\Tests\East\Foundation\Processor;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\East\Foundation\Processor\Processor;
@@ -79,7 +80,7 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testExecute()
+    public function testExecuteAndPreventionOfVarRequestAndClientVarOverwritting()
     {
         /**
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
@@ -90,7 +91,11 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
          * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject
          */
         $requestMock = $this->createMock(ServerRequestInterface::class);
-        $requestMock->expects(self::any())->method('getAttributes')->willReturn(['bar' => 456, 'foo' => 123]);
+        $requestMock->expects(self::any())->method('getAttributes')->willReturn([
+            'bar' => 456,
+            'foo' => 123,
+            'request' => $this->createMock(Request::class)
+        ]);
 
         $routerResult = $this->createMock(ResultInterface::class);
         $routerResult->expects(self::any())->method('getController')->willReturn($controller = function() {});
@@ -98,7 +103,14 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
         $manager = $this->createMock(ManagerInterface::class);
         $manager->expects(self::once())
             ->method('updateWorkPlan')
-            ->with(['bar' => 456, 'foo' => 123, ProcessorInterface::WORK_PLAN_CONTROLLER_KEY => $controller]);
+            ->with([
+                'bar' => 456,
+                'foo' => 123,
+                ProcessorInterface::WORK_PLAN_CONTROLLER_KEY => $controller,
+                'client' => $clientMock,
+                'request' => $requestMock,
+                'manager' => $manager,
+            ]);
 
         self::assertInstanceOf(
             ProcessorInterface::class, $this->buildProcessor()->execute(
