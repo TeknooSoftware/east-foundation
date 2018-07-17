@@ -26,7 +26,9 @@ namespace Teknoo\East\Foundation\EndPoint;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Teknoo\East\Foundation\Http\ClientInterface;
+use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\Recipe\ChefInterface;
+use Teknoo\Recipe\RecipeInterface;
 
 /**
  * EndPoint wrapper to execute a recipe as endpoint The workplan is build with the server request and the client
@@ -42,54 +44,29 @@ use Teknoo\Recipe\ChefInterface;
 class RecipeEndPoint
 {
     /**
-     * @var ChefInterface
+     * @var RecipeInterface
      */
-    private $chef;
+    private $recipe;
 
     /**
      * RecipeEndPoint constructor.
-     * @param ChefInterface $chef
+     * @param RecipeInterface $recipe
      */
-    public function __construct(ChefInterface $chef)
+    public function __construct(RecipeInterface $recipe)
     {
-        $this->chef = $chef;
+        $this->recipe = $recipe;
     }
 
     /**
-     * @param ServerRequestInterface $request
-     * @param ClientInterface $client
-     * @param array $workPlan
+     * @param ManagerInterface $manager
      * @return RecipeEndPoint
      */
-    private function generateWorkPlan(
-        ServerRequestInterface $request,
-        ClientInterface $client,
-        array &$workPlan
+    public function __invoke(
+        ManagerInterface $manager
     ): RecipeEndPoint {
-        $workPlan = \array_merge(
-            (array) $request->getQueryParams(),
-            (array) $request->getParsedBody(),
-            (array) $request->getAttributes(),
-            [
-                'client' => $client,
-                'request' => $request
-            ]
-        );
+        $manager = $manager->setAsideAndBegin($this->recipe);
 
-        return $this;
-    }
-
-    /**
-     * @param ServerRequestInterface $request
-     * @param ClientInterface $client
-     * @return RecipeEndPoint
-     */
-    public function __invoke(ServerRequestInterface $request, ClientInterface $client): RecipeEndPoint
-    {
-        $workPlan = [];
-        $this->generateWorkPlan($request, $client, $workPlan);
-
-        $this->chef->process($workPlan);
+        $manager->process([]);
 
         return $this;
     }

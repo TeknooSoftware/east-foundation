@@ -24,8 +24,8 @@ namespace Teknoo\Tests\East\Foundation\EndPoint;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Teknoo\East\Foundation\EndPoint\RecipeEndPoint;
-use Teknoo\East\Foundation\Http\ClientInterface;
-use Teknoo\Recipe\ChefInterface;
+use Teknoo\East\Foundation\Manager\ManagerInterface;
+use Teknoo\Recipe\RecipeInterface;
 
 /**
  * Class RecipeEndPointTest.
@@ -41,20 +41,20 @@ use Teknoo\Recipe\ChefInterface;
 class RecipeEndPointTest extends TestCase
 {
     /**
-     * @var ChefInterface
+     * @var RecipeInterface
      */
-    private $chef;
+    private $recipe;
 
     /**
-     * @return ChefInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @return RecipeInterface|\PHPUnit_Framework_MockObject_MockObject
      */
-    private function getChefMock(): ChefInterface
+    private function getRecipeMock(): RecipeInterface
     {
-        if (!$this->chef instanceof ChefInterface) {
-            $this->chef = $this->createMock(ChefInterface::class);
+        if (!$this->recipe instanceof RecipeInterface) {
+            $this->recipe = $this->createMock(RecipeInterface::class);
         }
 
-        return $this->chef;
+        return $this->recipe;
     }
 
     /**
@@ -62,22 +62,13 @@ class RecipeEndPointTest extends TestCase
      */
     public function buildEndPoint(): RecipeEndPoint
     {
-        return new RecipeEndPoint($this->getChefMock());
+        return new RecipeEndPoint($this->getRecipeMock());
     }
 
     /**
      * @expectedException \TypeError
      */
-    public function testInvokeBadRequest()
-    {
-        $endPoint = $this->buildEndPoint();
-        $endPoint(new \stdClass(), $this->createMock(ClientInterface::class));
-    }
-
-    /**
-     * @expectedException \TypeError
-     */
-    public function testInvokeBadClient()
+    public function testInvokeBadManager()
     {
         $endPoint = $this->buildEndPoint();
         $endPoint($this->createMock(ServerRequestInterface::class), new \stdClass());
@@ -85,29 +76,23 @@ class RecipeEndPointTest extends TestCase
 
     public function testInvoke()
     {
-        $requestMock = $this->createMock(ServerRequestInterface::class);
-        $requestMock->expects(self::any())->method('getAttributes')->willReturn(['bar' => 456]);
-        $requestMock->expects(self::any())->method('getParsedBody')->willReturn(['foo' => 123, 'request' => 'bar']);
-        $requestMock->expects(self::any())->method('getQueryParams')->willReturn(['bar' => 123, 'client' => 'foo']);
+        $managerMock = $this->createMock(ManagerInterface::class);
 
-        $clientMock = $this->createMock(ClientInterface::class);
+        $managerMock->expects(self::once())
+            ->method('setAsideAndBegin')
+            ->with($this->getRecipeMock())
+            ->willReturnSelf();
 
-        $this->getChefMock()
-            ->expects(self::once())
+        $managerMock->expects(self::once())
             ->method('process')
-            ->with([
-                'bar' => 456,
-                'foo' => 123,
-                'request' => $requestMock,
-                'client' => $clientMock,
-            ])
+            ->with([])
             ->willReturnSelf();
 
         $endPoint = $this->buildEndPoint();
 
         self::assertInstanceOf(
             RecipeEndPoint::class,
-            $endPoint($requestMock, $clientMock)
+            $endPoint($managerMock)
         );
     }
 }
