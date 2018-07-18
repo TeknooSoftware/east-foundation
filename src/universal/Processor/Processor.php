@@ -35,12 +35,8 @@ use Teknoo\Immutable\ImmutableTrait;
 use Teknoo\Recipe\Bowl\Bowl;
 
 /**
- * Processor implementation to call each controller callable returned by the
- * router the PSR7 Server Request, the ClientInterface instance and other callable's argument founded in the request.
- *
- * If some arguments are missing in the request. The processor must throws exceptions.
- *
- * The Processor is independent of Symfony.
+ * Processor implementation to inject the controller returned by the router into the dedicated place in the workplan
+ * to allow the chef to execute it via a DynamicBowl.
  *
  * @copyright   Copyright (c) 2009-2017 Richard Déloge (richarddeloge@gmail.com)
  *

@@ -64,7 +64,7 @@ class RecipeEndPoint
     public function __invoke(
         ManagerInterface $manager
     ): RecipeEndPoint {
-        $manager = $manager->setAsideAndBegin($this->recipe);
+        $manager = $manager->reserveAndBegin($this->recipe);
 
         $manager->process([]);
 

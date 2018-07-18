@@ -30,6 +30,11 @@ use Teknoo\East\Foundation\Normalizer\EastNormalizerInterface;
 use Teknoo\East\Foundation\Normalizer\Object\NormalizableInterface;
 
 /**
+ * Symfony normalizer to allow serialization of object following the East pattern, and implementing the interface
+ * `Teknoo\East\Foundation\Normalizer\Object\NormalizableInterface`.
+ * This normalizer is not able to extract directly values from normalizable object, it ask each object to pass to him
+ * exportable data.
+ *
  * @copyright   Copyright (c) 2009-2017 Richard Déloge (richarddeloge@gmail.com)
  *
  * @link        http://teknoo.software/east Project website

@@ -32,6 +32,8 @@ use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
 use Teknoo\East\Foundation\Session\SessionInterface;
 
 /**
+ * Middle to inject into request's attributes the current session instance.
+ *
  * @copyright   Copyright (c) 2009-2017 Richard Déloge (richarddeloge@gmail.com)
  *
  * @link        http://teknoo.software/east Project website

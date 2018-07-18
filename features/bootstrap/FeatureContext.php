@@ -4,7 +4,9 @@ use Behat\Behat\Context\Context;
 use PHPUnit\Framework\Assert;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Teknoo\East\Foundation\EndPoint\RecipeEndPoint;
 use Teknoo\East\Foundation\Recipe\RecipeInterface;
+use Teknoo\East\Foundation\Recipe\Recipe;
 use Teknoo\East\Foundation\Router\RouterInterface;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
@@ -121,6 +123,25 @@ class FeatureContext implements Context
                     $client->errorInRequest(new RuntimeException('Missing test parameter in the query'));
                 }
             };
+        }
+
+        $this->router->registerRoute($arg1, $controller);
+    }
+
+    /**
+     * @Given The router can process the request :arg1 to recipe :arg2
+     */
+    public function theRouterCanProcessTheRequestToRecipe($arg1, $arg2)
+    {
+        $controller = $arg2;
+        if ('barFoo' == $arg2) {
+            $recipe = new Recipe;
+            $recipe = $recipe->cook(function (ClientInterface $client, ServerRequest $request, $test) {
+                $client->acceptResponse(
+                    new TextResponse($test.$request->getUri())
+                );
+            }, 'body');
+            $controller = new RecipeEndPoint($recipe);
         }
 
         $this->router->registerRoute($arg1, $controller);

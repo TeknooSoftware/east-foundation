@@ -27,6 +27,9 @@ namespace Teknoo\East\Foundation\Normalizer\Object;
 use Teknoo\East\Foundation\Normalizer\EastNormalizerInterface;
 
 /**
+ * To define object following the East philosophy able to be normalized as an array of value to pass to the
+ * normalizer passed as argument.
+ *
  * @copyright   Copyright (c) 2009-2017 Richard Déloge (richarddeloge@gmail.com)
  *
  * @link        http://teknoo.software/east Project website

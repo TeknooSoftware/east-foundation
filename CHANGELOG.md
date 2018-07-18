@@ -1,8 +1,14 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[0.0.8] - 2018-07-18
+Stable release
+###Update
+- Update RecipeEndPoint to use the "ReserveAndBegin" behavior of Recipe's chef.
+- Documentation
+
 ##[0.0.8-beta2] - 2018-06-15
 ###Fix
-- fix processor to prevent overwritting of client, manager or request vars
+- fix processor to prevent overwriting of client, manager or request vars
 
 ##[0.0.8-beta1] - 2018-06-10
 ###Updated

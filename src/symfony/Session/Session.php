@@ -29,6 +29,8 @@ use Teknoo\East\Foundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface as SymfonySession;
 
 /**
+ * Symfony session wrapper, following the SessionInterface of this library.
+ *
  * @copyright   Copyright (c) 2009-2017 Richard Déloge (richarddeloge@gmail.com)
  *
  * @link        http://teknoo.software/east Project website

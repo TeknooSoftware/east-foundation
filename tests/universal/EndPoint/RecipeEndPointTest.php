@@ -79,7 +79,7 @@ class RecipeEndPointTest extends TestCase
         $managerMock = $this->createMock(ManagerInterface::class);
 
         $managerMock->expects(self::once())
-            ->method('setAsideAndBegin')
+            ->method('reserveAndBegin')
             ->with($this->getRecipeMock())
             ->willReturnSelf();
 

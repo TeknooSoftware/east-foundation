@@ -29,6 +29,9 @@ use Teknoo\East\Foundation\Router\ResultInterface;
 use Teknoo\Recipe\Bowl\RecipeBowl;
 
 /**
+ * Interface to define the invokable able to detect if all requests in the stack are processed or if the Processor
+ * Recipe is ended.
+ *
  * @copyright   Copyright (c) 2009-2017 Richard Déloge (richarddeloge@gmail.com)
  *
  * @link        http://teknoo.software/east Project website
