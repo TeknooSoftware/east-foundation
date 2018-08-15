@@ -1,5 +1,10 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[0.0.9] - 2018-08-15
+###Fix
+- Fix Recipe bowl, they have an extra looping because the loop counter had a bug.
+- Fix recipe compiling when several steps share the same name, firsts was lost.
+
 ##[0.0.8] - 2018-07-18
 Stable release
 ###Update
