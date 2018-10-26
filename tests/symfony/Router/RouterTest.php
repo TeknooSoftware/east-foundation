@@ -371,6 +371,123 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    public function testExecuteWithControllerRemoveAppDotPhpStart()
+    {
+        $client = $this->createMock(ClientInterface::class);
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->expects(self::any())->method('getUri')->willReturn(new class() extends Uri {
+            public function getPath() {
+                return '/app.php/foo';
+            }
+        });
+        $manager = $this->createMock(ManagerInterface::class);
+
+        $this->getUrlMatcherMock()->expects(self::once())->method('match')
+            ->with('/foo')
+            ->willReturn(['_controller' => function () {
+        }]);
+
+        $manager->expects(self::once())->method('continueExecution')->willReturnSelf();
+        $this->buildRouter()->execute($client, $request, $manager);
+    }
+
+    public function testExecuteWithControllerNotRemoveAppDotPhpStart()
+    {
+        $client = $this->createMock(ClientInterface::class);
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->expects(self::any())->method('getUri')->willReturn(new class() extends Uri {
+            public function getPath() {
+                return '/foo/app.php';
+            }
+        });
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $this->getUrlMatcherMock()->expects(self::once())->method('match')
+            ->with('/foo/app.php')
+            ->willReturn(['_controller' => function () {
+        }]);
+
+        $this->buildRouter()->execute($client, $request, $manager);
+    }
+
+    public function testExecuteWithControllerRemoveAppDevDotPhpEnd()
+    {
+        $client = $this->createMock(ClientInterface::class);
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->expects(self::any())->method('getUri')->willReturn(new class() extends Uri {
+            public function getPath() {
+                return '/app_dev.php/foo';
+            }
+        });
+        $manager = $this->createMock(ManagerInterface::class);
+
+        $this->getUrlMatcherMock()->expects(self::once())->method('match')
+            ->with('/foo')
+            ->willReturn(['_controller' => function () {
+        }]);
+
+        $manager->expects(self::once())->method('continueExecution')->willReturnSelf();
+        $this->buildRouter()->execute($client, $request, $manager);
+    }
+
+    public function testExecuteWithControllerNotRemoveAppDevDotPhpEnd()
+    {
+        $client = $this->createMock(ClientInterface::class);
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->expects(self::any())->method('getUri')->willReturn(new class() extends Uri {
+            public function getPath() {
+                return '/foo/app_dev.php';
+            }
+        });
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $this->getUrlMatcherMock()->expects(self::once())->method('match')
+            ->with('/foo/app_dev.php')
+            ->willReturn(['_controller' => function () {
+        }]);
+
+        $this->buildRouter()->execute($client, $request, $manager);
+    }
+
+    public function testExecuteWithControllerRemoveIndexDotPhpStart()
+    {
+        $client = $this->createMock(ClientInterface::class);
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->expects(self::any())->method('getUri')->willReturn(new class() extends Uri {
+            public function getPath() {
+                return '/index.php/foo';
+            }
+        });
+        $manager = $this->createMock(ManagerInterface::class);
+
+        $this->getUrlMatcherMock()->expects(self::once())->method('match')
+            ->with('/foo')
+            ->willReturn(['_controller' => function () {
+        }]);
+
+        $manager->expects(self::once())->method('continueExecution')->willReturnSelf();
+        $this->buildRouter()->execute($client, $request, $manager);
+    }
+
+    public function testExecuteWithControllerNotRemoveIndexDotPhpEnd()
+    {
+        $client = $this->createMock(ClientInterface::class);
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->expects(self::any())->method('getUri')->willReturn(new class() extends Uri {
+            public function getPath() {
+                return '/foo/index.php';
+            }
+        });
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $this->getUrlMatcherMock()->expects(self::once())->method('match')
+            ->with('/foo/index.php')
+            ->willReturn(['_controller' => function () {
+        }]);
+
+        $this->buildRouter()->execute($client, $request, $manager);
+    }
+
     /**
      * @expectedException \TypeError
      */

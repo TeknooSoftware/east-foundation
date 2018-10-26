@@ -76,6 +76,23 @@ class Router implements RouterInterface
         $this->container = $container;
     }
 
+    private function cleanSymfonyHandler(string $path): string
+    {
+        if (0 === \strpos($path, '/app.php')) {
+            return \substr($path, 8);
+        }
+
+        if (0 === \strpos($path, '/app_dev.php')) {
+            return \substr($path, 12);
+        }
+
+        if (0 === \strpos($path, '/index.php')) {
+            return \substr($path, 10);
+        }
+
+        return $path;
+    }
+
     /**
      * Method to find the controller to call for this method via the Symfony Matcher. Return only controller as service
      * (callable provided by the Symfony matcher), ignore other.
@@ -88,7 +105,7 @@ class Router implements RouterInterface
     {
         try {
             $parameters = $this->matcher->match(
-                \str_replace(['/app.php', '/app_dev.php'], '', $request->getUri()->getPath())
+                $this->cleanSymfonyHandler($request->getUri()->getPath())
             );
         } catch (ResourceNotFoundException $e) {
             /* Do nothing, keep the framework to manage it */

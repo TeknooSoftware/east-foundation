@@ -1,5 +1,10 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[0.0.10] - 2018-10-27
+###Fix
+- Fix Symfony Router bridge to remove /index.php from url path with Sf4.
+- Complete tests
+
 ##[0.0.9] - 2018-08-15
 ###Fix
 - Fix Recipe bowl, they have an extra looping because the loop counter had a bug.
