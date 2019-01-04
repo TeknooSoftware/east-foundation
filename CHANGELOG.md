@@ -1,5 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[0.0.11] - 2019-01-04
+###Fix
+- Check technical debt - Add PHP 7.3 support
+
 ##[0.0.10] - 2018-10-27
 ###Fix
 - Fix Symfony Router bridge to remove /index.php from url path with Sf4.
