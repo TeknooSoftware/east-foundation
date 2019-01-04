@@ -24,10 +24,7 @@ declare(strict_types=1);
 
 namespace Teknoo\East\Foundation\EndPoint;
 
-use Psr\Http\Message\ServerRequestInterface;
-use Teknoo\East\Foundation\Http\ClientInterface;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
-use Teknoo\Recipe\ChefInterface;
 use Teknoo\Recipe\RecipeInterface;
 
 /**

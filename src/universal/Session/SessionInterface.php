@@ -34,7 +34,7 @@ use Teknoo\East\Foundation\Promise\PromiseInterface;
  */
 interface SessionInterface
 {
-    const ATTRIBUTE_KEY = 'session';
+    public const ATTRIBUTE_KEY = 'session';
 
     /**
      * Stores a given value in the session

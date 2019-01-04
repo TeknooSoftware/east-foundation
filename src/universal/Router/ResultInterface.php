@@ -56,5 +56,5 @@ interface ResultInterface extends ImmutableInterface
      *
      * @return ResultInterface|null
      */
-    public function getNext();
+    public function getNext(): ?ResultInterface;
 }

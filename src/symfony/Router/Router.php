@@ -101,7 +101,7 @@ class Router implements RouterInterface
      *
      * @return callable
      */
-    private function matchRequest(ServerRequestInterface $request)
+    private function matchRequest(ServerRequestInterface $request): ?callable
     {
         try {
             $parameters = $this->matcher->match(

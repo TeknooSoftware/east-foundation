@@ -49,7 +49,7 @@ class Result implements ResultInterface
     /**
      * @var ParameterInterface[]
      */
-    private $parameters = null;
+    private $parameters;
 
     /**
      * @var ResultInterface|null
@@ -87,13 +87,16 @@ class Result implements ResultInterface
      * a method of an object, a invokable object, or a function.
      *
      * @return \ReflectionFunction|\ReflectionMethod
+     * @throws \ReflectionException
      */
     private function getReflectionInstance()
     {
-        if (\is_array($this->controller) && 2 == \count($this->controller)) {
+        if (\is_array($this->controller) && 2 === \count($this->controller)) {
             //Reflection the method's argument in the controller class
             return new \ReflectionMethod($this->controller[0], $this->controller[1]);
-        } elseif (\is_object($this->controller) && !$this->controller instanceof \Closure) {
+        }
+
+        if (\is_object($this->controller) && !$this->controller instanceof \Closure) {
             //Reflection the method's arguments of the callable object
             $controllerReflected = new \ReflectionObject($this->controller);
 
@@ -107,6 +110,7 @@ class Result implements ResultInterface
      * To extract controller's parameter from \Reflection Api and convert into ParameterInterface instance.
      *
      * @return array
+     * @throws \ReflectionException
      */
     private function extractArguments(): array
     {
@@ -132,6 +136,7 @@ class Result implements ResultInterface
 
     /**
      * {@inheritdoc}
+     * @throws \Exception
      */
     public function getParameters(): array
     {
@@ -145,7 +150,7 @@ class Result implements ResultInterface
     /**
      * {@inheritdoc}
      */
-    public function getNext()
+    public function getNext(): ?ResultInterface
     {
         return $this->next;
     }

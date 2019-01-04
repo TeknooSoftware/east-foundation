@@ -39,5 +39,5 @@ use Teknoo\East\Foundation\Recipe\RecipeInterface;
  */
 interface ProcessorRecipeInterface extends RecipeInterface
 {
-    const MIDDLEWARE_PRIORITY = 15;
+    public const MIDDLEWARE_PRIORITY = 15;
 }

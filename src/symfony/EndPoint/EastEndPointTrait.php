@@ -71,7 +71,7 @@ trait EastEndPointTrait
      *
      * @return EastEndPointTrait
      */
-    public function setRouter(RouterInterface $router)
+    public function setRouter(RouterInterface $router): self
     {
         $this->router = $router;
 
@@ -85,7 +85,7 @@ trait EastEndPointTrait
      *
      * @return EastEndPointTrait
      */
-    public function setTemplating(EngineInterface $templating)
+    public function setTemplating(EngineInterface $templating): self
     {
         $this->templating = $templating;
 
@@ -99,7 +99,7 @@ trait EastEndPointTrait
      *
      * @return EastEndPointTrait
      */
-    public function setTokenStorage(TokenStorageInterface $tokenStorage)
+    public function setTokenStorage(TokenStorageInterface $tokenStorage): self
     {
         $this->tokenStorage = $tokenStorage;
 
@@ -160,7 +160,7 @@ trait EastEndPointTrait
         string $route,
         array $parameters = array(),
         int $status = 302
-    ) {
+    ): self {
         return $this->redirect($client, $this->generateUrl($route, $parameters), $status);
     }
 

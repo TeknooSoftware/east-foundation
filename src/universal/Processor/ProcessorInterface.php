@@ -37,7 +37,7 @@ use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
  */
 interface ProcessorInterface extends MiddlewareInterface
 {
-    const MIDDLEWARE_PRIORITY = 15;
+    public const MIDDLEWARE_PRIORITY = 15;
 
-    const WORK_PLAN_CONTROLLER_KEY = 'controller';
+    public const WORK_PLAN_CONTROLLER_KEY = 'controller';
 }

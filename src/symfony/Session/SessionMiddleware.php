@@ -43,7 +43,7 @@ use Teknoo\East\Foundation\Session\SessionInterface;
  */
 class SessionMiddleware implements MiddlewareInterface
 {
-    const MIDDLEWARE_PRIORITY = 5;
+    public const MIDDLEWARE_PRIORITY = 5;
 
     /**
      * {@inheritdoc}

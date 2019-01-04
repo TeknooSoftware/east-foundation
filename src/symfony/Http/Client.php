@@ -134,6 +134,7 @@ class Client implements ClientWithResponseEventInterface
 
     /**
      * {@inheritdoc}
+     * @throws \Throwable
      */
     public function errorInRequest(\Throwable $throwable): ClientInterface
     {

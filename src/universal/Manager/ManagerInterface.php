@@ -22,7 +22,6 @@
 namespace Teknoo\East\Foundation\Manager;
 
 use Teknoo\East\Foundation\Http\ClientInterface;
-use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Teknoo\Recipe\ChefInterface;
 

@@ -29,10 +29,8 @@ use Psr\Http\Message\ServerRequestInterface;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
 use Teknoo\East\Foundation\Router\ResultInterface;
-use Teknoo\East\Foundation\Router\RouterInterface;
 use Teknoo\Immutable\ImmutableInterface;
 use Teknoo\Immutable\ImmutableTrait;
-use Teknoo\Recipe\Bowl\Bowl;
 
 /**
  * Processor implementation to inject the controller returned by the router into the dedicated place in the workplan
