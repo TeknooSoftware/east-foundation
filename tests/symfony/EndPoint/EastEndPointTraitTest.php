@@ -21,6 +21,8 @@
 
 namespace Teknoo\Tests\East\FoundationBunlde\EndPoint;
 
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -44,11 +46,9 @@ use Zend\Diactoros\Response\RedirectResponse;
  */
 class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @expectedException \LogicException
-     */
     public function testGenerateUrlMissingRouter()
     {
+        $this->expectException(\LogicException::class);
         self::assertEquals(
             '/foo/bar',
             (new class() implements EndPointInterface {
@@ -166,11 +166,9 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException \LogicException
-     */
     public function testRenderNoRendering()
     {
+        $this->expectException(\LogicException::class);
         $client = $this->createMock(ClientInterface::class);
         $client->expects(self::once())
             ->method('acceptResponse')
@@ -191,11 +189,9 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
         )->getRender($client);
     }
 
-    /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     */
     public function testCreateNotFoundException()
     {
+        $this->expectException(NotFoundHttpException::class);
         (new class() implements EndPointInterface {
             use EastEndPointTrait;
 
@@ -207,11 +203,9 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
         )->getCreateNotFoundException();
     }
 
-    /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
-     */
     public function testCreateAccessDeniedException()
     {
+        $this->expectException(AccessDeniedHttpException::class);
         (new class() implements EndPointInterface {
             use EastEndPointTrait;
 
@@ -223,11 +217,9 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
         )->getCreateAccessDeniedException();
     }
 
-    /**
-     * @expectedException \LogicException
-     */
     public function testGetUserNoStorage()
     {
+        $this->expectException(\LogicException::class);
         (new class() implements EndPointInterface {
             use EastEndPointTrait;
 

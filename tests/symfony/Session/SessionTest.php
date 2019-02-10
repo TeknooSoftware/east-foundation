@@ -64,11 +64,9 @@ class SessionTest extends \PHPUnit\Framework\TestCase
         return new Session($this->getSymfonySession());
     }
 
-    /**
-     * @expectedException \TypeError
-     */
     public function testSetBadArgument()
     {
+        $this->expectException(\TypeError::class);
         $this->buildSession()->set(new \stdClass(), '');
     }
     
@@ -85,20 +83,16 @@ class SessionTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException \TypeError
-     */
     public function testGetBadArgument()
     {
+        $this->expectException(\TypeError::class);
         $promise = $this->createMock(PromiseInterface::class);
         $this->buildSession()->get(new \stdClass(), $promise);
     }
 
-    /**
-     * @expectedException \TypeError
-     */
     public function testGetBadArgumentPromise()
     {
+        $this->expectException(\TypeError::class);
         $this->buildSession()->get('foo', new \stdClass());
     }
     
@@ -154,11 +148,9 @@ class SessionTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException \TypeError
-     */
     public function testRemoveBadArgument()
     {
+        $this->expectException(\TypeError::class);
         $this->buildSession()->remove(new \stdClass());
     }
 

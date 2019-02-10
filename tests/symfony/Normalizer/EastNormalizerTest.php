@@ -43,11 +43,9 @@ class EastNormalizerTest extends \PHPUnit\Framework\TestCase
         return new EastNormalizer();
     }
 
-    /**
-     * @expectedException \TypeError
-     */
     public function testInjectDataBadArray()
     {
+        $this->expectException(\TypeError::class);
         $this->buildNormalizer()->injectData(new \stdClass());
     }
 
@@ -67,11 +65,9 @@ class EastNormalizerTest extends \PHPUnit\Framework\TestCase
         ));
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testNormalizeBadObject()
     {
+        $this->expectException(\RuntimeException::class);
         $this->buildNormalizer()->normalize(new \stdClass());
     }
 

@@ -65,11 +65,9 @@ class RecipeEndPointTest extends TestCase
         return new RecipeEndPoint($this->getRecipeMock());
     }
 
-    /**
-     * @expectedException \TypeError
-     */
     public function testInvokeBadManager()
     {
+        $this->expectException(\TypeError::class);
         $endPoint = $this->buildEndPoint();
         $endPoint($this->createMock(ServerRequestInterface::class), new \stdClass());
     }

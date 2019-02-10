@@ -78,19 +78,15 @@ class EastFrameworkExtensionTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException \TypeError
-     */
     public function testLoadErrorContainer()
     {
+        $this->expectException(\TypeError::class);
         $this->buildExtension()->load([], new \stdClass());
     }
 
-    /**
-     * @expectedException \TypeError
-     */
     public function testLoadErrorConfig()
     {
+        $this->expectException(\TypeError::class);
         $this->buildExtension()->load(new \stdClass(), $this->getContainerBuilderMock());
     }
 }

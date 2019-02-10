@@ -24,6 +24,7 @@ namespace Teknoo\Tests\East\Foundation\Router;
 use Teknoo\East\Foundation\Router\ParameterInterface;
 use Teknoo\East\Foundation\Router\Result;
 use Teknoo\East\Foundation\Router\ResultInterface;
+use Teknoo\Immutable\Exception\ImmutableException;
 
 /**
  * @copyright   Copyright (c) 2009-2017 Richard Déloge (richarddeloge@gmail.com)
@@ -53,29 +54,24 @@ class ResultTest extends AbstractResultTest
         );
     }
 
-    /**
-     * @expectedException \Teknoo\Immutable\Exception\ImmutableException
-     */
     public function testValueObjectBehaviorConstructor()
     {
+        $this->expectException(ImmutableException::class);
         $this->buildResult()->__construct(function (int $a, string $b, \DateTime $d, $test = 'foo') {
         }, null);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testConstructBadNext()
     {
-        new Result(function () {
-        }, new \DateTime());
+        $this->expectException(\InvalidArgumentException::class);
+        new Result(function () {}, new \DateTime());
     }
 
     public function testGetParmetersValueFromClosure()
     {
         $parameters = $this->buildResult()->getParameters();
 
-        self::assertInternalType('array', $parameters);
+        self::assertIsArray($parameters);
         self::assertCount(4, $parameters);
 
         self::assertInstanceOf(ParameterInterface::class, $parameters['a']);
@@ -115,7 +111,7 @@ class ResultTest extends AbstractResultTest
         $result = new Result($invokable, null);
         $parameters = $result->getParameters();
 
-        self::assertInternalType('array', $parameters);
+        self::assertIsArray($parameters);
         self::assertCount(4, $parameters);
 
         self::assertInstanceOf(ParameterInterface::class, $parameters['a']);
@@ -155,7 +151,7 @@ class ResultTest extends AbstractResultTest
         $result = new Result([$object, 'test'], null);
         $parameters = $result->getParameters();
 
-        self::assertInternalType('array', $parameters);
+        self::assertIsArray($parameters);
         self::assertCount(4, $parameters);
 
         self::assertInstanceOf(ParameterInterface::class, $parameters['a']);

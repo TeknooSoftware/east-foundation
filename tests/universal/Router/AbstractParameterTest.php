@@ -22,6 +22,7 @@
 namespace Teknoo\Tests\East\Foundation\Router;
 
 use Teknoo\East\Foundation\Router\ParameterInterface;
+use Teknoo\Immutable\Exception\ImmutableException;
 
 /**
  * @copyright   Copyright (c) 2009-2017 Richard Déloge (richarddeloge@gmail.com)
@@ -48,39 +49,33 @@ abstract class AbstractParameterTest extends \PHPUnit\Framework\TestCase
      */
     abstract public function buildParameterWithClass(): ParameterInterface;
 
-    /**
-     * @expectedException \Teknoo\Immutable\Exception\ImmutableException
-     */
     public function testValueObjectBehaviorSetException()
     {
+        $this->expectException(ImmutableException::class);
         $this->buildParameter()->foo = 'bar';
     }
 
-    /**
-     * @expectedException \Teknoo\Immutable\Exception\ImmutableException
-     */
     public function testValueObjectBehaviorUnsetException()
     {
+        $this->expectException(ImmutableException::class);
         unset($this->buildParameter()->foo);
     }
 
-    /**
-     * @expectedException \Teknoo\Immutable\Exception\ImmutableException
-     */
     public function testValueObjectBehaviorConstructor()
     {
+        $this->expectException(ImmutableException::class);
         $this->buildParameter()->__construct();
     }
 
     public function testGetName()
     {
-        self::assertInternalType('string', $this->buildParameter()->getName());
+        self::assertIsString($this->buildParameter()->getName());
         self::assertEquals('foo', $this->buildParameter()->getName());
     }
 
     public function testHasDefaultValue()
     {
-        self::assertInternalType('bool', $this->buildParameter()->hasDefaultValue());
+        self::assertIsBool($this->buildParameter()->hasDefaultValue());
         self::assertFalse($this->buildParameter()->hasDefaultValue());
         self::assertTrue($this->buildParameterWithDefaultValue()->hasDefaultValue());
     }
@@ -93,7 +88,7 @@ abstract class AbstractParameterTest extends \PHPUnit\Framework\TestCase
 
     public function testHasClass()
     {
-        self::assertInternalType('bool', $this->buildParameter()->hasClass());
+        self::assertIsBool($this->buildParameter()->hasClass());
         self::assertFalse($this->buildParameter()->hasClass());
         self::assertTrue($this->buildParameterWithClass()->hasClass());
     }
@@ -104,11 +99,9 @@ abstract class AbstractParameterTest extends \PHPUnit\Framework\TestCase
         self::assertInstanceOf(\ReflectionClass::class, $this->buildParameterWithClass()->getClass());
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testGetClassNotDefined()
     {
+        $this->expectException(\RuntimeException::class);
         self::assertInstanceOf(\ReflectionClass::class, $this->buildParameter()->getClass());
     }
 }

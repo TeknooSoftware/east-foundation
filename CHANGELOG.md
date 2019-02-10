@@ -1,5 +1,12 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[1.0.0] - 2019-02-10
+###Upgrade
+- Remove support PHP 7.2
+- Remove support Symfony 4.0 and 4.1, keep 3.4 (LTS)
+- Migrate to PHPUnit 8.0
+- First stable release
+
 ##[0.0.11] - 2019-01-04
 ###Fix
 - Check technical debt - Add PHP 7.3 support

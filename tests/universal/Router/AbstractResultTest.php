@@ -22,6 +22,7 @@
 namespace Teknoo\Tests\East\Foundation\Router;
 
 use Teknoo\East\Foundation\Router\ResultInterface;
+use Teknoo\Immutable\Exception\ImmutableException;
 
 /**
  * @copyright   Copyright (c) 2009-2017 Richard Déloge (richarddeloge@gmail.com)
@@ -42,38 +43,32 @@ abstract class AbstractResultTest extends \PHPUnit\Framework\TestCase
      */
     abstract public function buildResultWithNext(): ResultInterface;
 
-    /**
-     * @expectedException \Teknoo\Immutable\Exception\ImmutableException
-     */
     public function testValueObjectBehaviorSetException()
     {
+        $this->expectException(ImmutableException::class);
         $this->buildResult()->foo = 'bar';
     }
 
-    /**
-     * @expectedException \Teknoo\Immutable\Exception\ImmutableException
-     */
     public function testValueObjectBehaviorUnsetException()
     {
+        $this->expectException(ImmutableException::class);
         unset($this->buildResult()->foo);
     }
 
-    /**
-     * @expectedException \Teknoo\Immutable\Exception\ImmutableException
-     */
     public function testValueObjectBehaviorConstructor()
     {
+        $this->expectException(ImmutableException::class);
         $this->buildResult()->__construct();
     }
 
     public function testGetController()
     {
-        self::assertInternalType('callable', $this->buildResult()->getController());
+        self::assertIsCallable($this->buildResult()->getController());
     }
 
     public function testGetParameters()
     {
-        self::assertInternalType('array', $this->buildResult()->getParameters());
+        self::assertIsArray($this->buildResult()->getParameters());
     }
 
     public function testGetNextWithNoNext()

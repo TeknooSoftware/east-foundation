@@ -91,11 +91,9 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         return Client::class;
     }
 
-    /**
-     * @expectedException \TypeError
-     */
     public function testUpdateResponseError()
     {
+        $this->expectException(\TypeError::class);
         $this->buildClient()->updateResponse(new \stdClass());
     }
     
@@ -128,11 +126,9 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException \TypeError
-     */
     public function testAcceptResponseError()
     {
+        $this->expectException(\TypeError::class);
         $this->buildClient()->acceptResponse(new \stdClass());
     }
     
@@ -210,11 +206,9 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testSendResponseWithoutResponse()
     {
+        $this->expectException(\RuntimeException::class);
         $client = $this->buildClient();
         self::assertInstanceOf(
             $this->getClientClass(),
@@ -222,11 +216,9 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testSendResponseWithoutGetResponseEvent()
     {
+        $this->expectException(\RuntimeException::class);
         /**
          * @var ResponseInterface
          */
@@ -338,11 +330,9 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testSendResponseWithoutGetResponseEventSilently()
     {
+        $this->expectException(\RuntimeException::class);
         /**
          * @var ResponseInterface
          */
@@ -355,27 +345,21 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException \TypeError
-     */
     public function testSendResponseError()
     {
+        $this->expectException(\TypeError::class);
         $this->buildClient()->sendResponse(new \stdClass());
     }
 
-    /**
-     * @expectedException \TypeError
-     */
     public function testSendResponseError2()
     {
+        $this->expectException(\TypeError::class);
         $this->buildClient()->sendResponse(null, new \stdClass());
     }
 
-    /**
-     * @expectedException \Exception
-     */
     public function testErrorInRequest()
     {
+        $this->expectException(\Exception::class);
         $this->getGetResponseEventMock()
             ->expects(self::any())
             ->method('setResponse')
@@ -391,11 +375,9 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException \Exception
-     */
     public function testErrorInRequestWithoutGetResponseEvent()
     {
+        $this->expectException(\Exception::class);
         $client = new Client($this->getHttpFoundationFactoryMock());
         self::assertInstanceOf(
             $this->getClientClass(),
@@ -403,11 +385,9 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException \TypeError
-     */
     public function testErrorInRequestError()
     {
+        $this->expectException(\TypeError::class);
         $this->buildClient()->errorInRequest(new \stdClass());
     }
 
@@ -420,11 +400,9 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException \TypeError
-     */
     public function testSetGetResponseEventError()
     {
+        $this->expectException(\TypeError::class);
         $this->buildClient()->setGetResponseEvent(new \stdClass());
     }
 

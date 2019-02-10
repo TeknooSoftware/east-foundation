@@ -152,11 +152,9 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException \Exception
-     */
     public function testExecuteOtherException()
     {
+        $this->expectException(\Exception::class);
         /**
          * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
          */
@@ -488,11 +486,9 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         $this->buildRouter()->execute($client, $request, $manager);
     }
 
-    /**
-     * @expectedException \TypeError
-     */
     public function testExecuteErrorClient()
     {
+        $this->expectException(\TypeError::class);
         $this->buildRouter()->execute(
             new \stdClass(),
             $this->createMock(ServerRequestInterface::class),
@@ -500,11 +496,9 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException \TypeError
-     */
     public function testExecuteErrorRequest()
     {
+        $this->expectException(\TypeError::class);
         $this->buildRouter()->execute(
             $this->createMock(ClientInterface::class),
             new \stdClass(),
@@ -512,11 +506,9 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException \TypeError
-     */
     public function testExecuteErrorManager()
     {
+        $this->expectException(\TypeError::class);
         $this->buildRouter()->execute(
             $this->createMock(ClientInterface::class),
             $this->createMock(ServerRequestInterface::class),

@@ -209,11 +209,9 @@ class EastFrameworkCompilerPassTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException \TypeError
-     */
     public function testProcessError()
     {
+        $this->expectException(\TypeError::class);
         $this->buildCompilerPass()->process(new \stdClass());
     }
 }

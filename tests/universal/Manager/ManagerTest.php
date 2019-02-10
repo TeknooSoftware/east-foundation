@@ -87,11 +87,9 @@ class ManagerTest extends AbstractChefTest
         );
     }
 
-    /**
-     * @expectedException \TypeError
-     */
     public function testReceiveRequestErrorClient()
     {
+        $this->expectException(\TypeError::class);
         $this->buildChef()->followSteps([$this->createMock(BowlInterface::class)])
             ->receiveRequest(
             new \stdClass(),
@@ -99,11 +97,9 @@ class ManagerTest extends AbstractChefTest
         );
     }
 
-    /**
-     * @expectedException \TypeError
-     */
     public function testReceiveRequestErrorRequest()
     {
+        $this->expectException(\TypeError::class);
         $this->buildChef()->followSteps([$this->createMock(BowlInterface::class)])
             ->receiveRequest(
             $this->createMock(ClientInterface::class),
@@ -111,11 +107,9 @@ class ManagerTest extends AbstractChefTest
         );
     }
 
-    /**
-     * @expectedException \TypeError
-     */
     public function testContinueExecutionErrorClient()
     {
+        $this->expectException(\TypeError::class);
         $this->buildChef()->followSteps([$this->createMock(BowlInterface::class)])
             ->continueExecution(
             new \stdClass(),
@@ -123,11 +117,9 @@ class ManagerTest extends AbstractChefTest
         );
     }
 
-    /**
-     * @expectedException \TypeError
-     */
     public function testContinueExecutionErrorRequest()
     {
+        $this->expectException(\TypeError::class);
         $this->buildChef()->followSteps([$this->createMock(BowlInterface::class)])
             ->continueExecution(
             $this->createMock(ClientInterface::class),

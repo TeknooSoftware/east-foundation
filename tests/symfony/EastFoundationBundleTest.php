@@ -63,11 +63,9 @@ class EastFoundationBundleTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException \TypeError
-     */
     public function testBuildErrorContainer()
     {
+        $this->expectException(\TypeError::class);
         $this->buildBundle()->build(new \stdClass());
     }
 }

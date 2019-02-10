@@ -23,6 +23,7 @@ namespace Teknoo\Tests\East\Foundation\Router;
 
 use Teknoo\East\Foundation\Router\Parameter;
 use Teknoo\East\Foundation\Router\ParameterInterface;
+use Teknoo\Immutable\Exception\ImmutableException;
 
 /**
  * @copyright   Copyright (c) 2009-2017 Richard Déloge (richarddeloge@gmail.com)
@@ -51,19 +52,15 @@ class ParameterTest extends AbstractParameterTest
         return new Parameter('foo', false, null, new \ReflectionClass(\DateTime::class));
     }
 
-    /**
-     * @expectedException \Teknoo\Immutable\Exception\ImmutableException
-     */
     public function testValueObjectBehaviorConstructor()
     {
+        $this->expectException(ImmutableException::class);
         $this->buildParameter()->__construct('foo', false, null, null);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testConstructBadClass()
     {
+        $this->expectException(\InvalidArgumentException::class);
         new Parameter('foo', false, null, new \DateTime());
     }
 }

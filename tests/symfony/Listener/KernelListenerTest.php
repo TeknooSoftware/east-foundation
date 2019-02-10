@@ -165,11 +165,9 @@ class KernelListenerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException \TypeError
-     */
     public function testOnKernelRequestError()
     {
+        $this->expectException(\TypeError::class);
         $this->buildKernelListener()->onKernelRequest(new \stdClass());
     }
 }

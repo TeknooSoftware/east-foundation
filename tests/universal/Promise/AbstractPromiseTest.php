@@ -22,6 +22,7 @@
 namespace Teknoo\Tests\East\Foundation\Promise;
 
 use Teknoo\East\Foundation\Promise\PromiseInterface;
+use Teknoo\Immutable\Exception\ImmutableException;
 
 /**
  * Class AbstractPromiseTest.
@@ -43,20 +44,16 @@ abstract class AbstractPromiseTest extends \PHPUnit\Framework\TestCase
      */
     abstract public function buildPromise($onSuccess, $onFail): PromiseInterface;
 
-    /**
-     * @expectedException \Throwable
-     */
     public function testConstructorBadSuccessCallable()
     {
+        $this->expectException(\Throwable::class);
         $this->buildPromise('fooBar', function () {
         });
     }
 
-    /**
-     * @expectedException \Throwable
-     */
     public function testConstructorBadFailCallable()
     {
+        $this->expectException(\Throwable::class);
         $this->buildPromise(function () {
         }, 'fooBar');
     }
@@ -79,26 +76,19 @@ abstract class AbstractPromiseTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException \Teknoo\Immutable\Exception\ImmutableException
-     */
     public function testConstructorImmutable()
     {
-        $this->buildPromise(function () {
-        }, function () {
-        })->__construct(function () {
-        }, function () {
-        });
+        $this->expectException(ImmutableException::class);
+        $this->buildPromise(
+            function () {},
+            function () {}
+        )->__construct(function () {}, function () {});
     }
 
-    /**
-     * @expectedException \Throwable
-     */
     public function testNextSetNotCallable()
     {
-        $this->buildPromise(function () {
-        }, function () {
-        })->next('fooBar');
+        $this->expectException(\Throwable::class);
+        $this->buildPromise(function () {}, function () {})->next('fooBar');
     }
 
     public function testNextSetNull()
