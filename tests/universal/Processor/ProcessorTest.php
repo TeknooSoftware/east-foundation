@@ -57,12 +57,12 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
     public function testExecuteNoResult()
     {
         /**
-         * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
+         * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
 
         /**
-         * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject
+         * @var ServerRequestInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $requestMock = $this->createMock(ServerRequestInterface::class);
         $requestMock->expects(self::any())->method('getAttributes')->willReturn(['bar' => 456, 'foo' => 123]);
@@ -83,12 +83,12 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
     public function testExecuteAndPreventionOfVarRequestAndClientVarOverwritting()
     {
         /**
-         * @var ClientInterface|\PHPUnit_Framework_MockObject_MockObject
+         * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
 
         /**
-         * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject
+         * @var ServerRequestInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $requestMock = $this->createMock(ServerRequestInterface::class);
         $requestMock->expects(self::any())->method('getAttributes')->willReturn([

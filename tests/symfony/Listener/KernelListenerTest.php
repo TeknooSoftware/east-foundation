@@ -58,7 +58,7 @@ class KernelListenerTest extends \PHPUnit\Framework\TestCase
     private $diactorosFactory;
 
     /**
-     * @return ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @return ManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private function getManagerMock()
     {
@@ -70,7 +70,7 @@ class KernelListenerTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @return ClientWithResponseEventInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @return ClientWithResponseEventInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private function getClientWithResponseEventInterfaceMock()
     {
@@ -82,7 +82,7 @@ class KernelListenerTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @return DiactorosFactory|\PHPUnit_Framework_MockObject_MockObject
+     * @return DiactorosFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private function getDiactorosFactoryMock()
     {

@@ -45,7 +45,7 @@ class SessionTest extends \PHPUnit\Framework\TestCase
     private $symfonySession;
 
     /**
-     * @return SymfonySession|\PHPUnit_Framework_MockObject_MockObject
+     * @return SymfonySession|\PHPUnit\Framework\MockObject\MockObject
      */
     public function getSymfonySession(): SymfonySession
     {

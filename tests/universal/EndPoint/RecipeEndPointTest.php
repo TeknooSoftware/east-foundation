@@ -46,7 +46,7 @@ class RecipeEndPointTest extends TestCase
     private $recipe;
 
     /**
-     * @return RecipeInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @return RecipeInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private function getRecipeMock(): RecipeInterface
     {

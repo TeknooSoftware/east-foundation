@@ -52,7 +52,7 @@ class ClientTest extends \PHPUnit\Framework\TestCase
     private $httpFoundationFactory;
 
     /**
-     * @return GetResponseEvent|\PHPUnit_Framework_MockObject_MockObject
+     * @return GetResponseEvent|\PHPUnit\Framework\MockObject\MockObject
      */
     private function getGetResponseEventMock(): GetResponseEvent
     {
@@ -64,7 +64,7 @@ class ClientTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @return HttpFoundationFactory|\PHPUnit_Framework_MockObject_MockObject
+     * @return HttpFoundationFactory|\PHPUnit\Framework\MockObject\MockObject
      */
     private function getHttpFoundationFactoryMock(): HttpFoundationFactory
     {

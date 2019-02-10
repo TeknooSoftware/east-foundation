@@ -44,7 +44,7 @@ class EastFrameworkCompilerPassTest extends \PHPUnit\Framework\TestCase
     private $container;
 
     /**
-     * @return ContainerBuilder|\PHPUnit_Framework_MockObject_MockObject
+     * @return ContainerBuilder|\PHPUnit\Framework\MockObject\MockObject
      */
     private function getContainerBuilderMock()
     {
