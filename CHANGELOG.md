@@ -1,5 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[1.0.1] - 2019-06-09
+###Release
+- Maintenance release, upgrade composer dev requirement and libs
+
 ##[1.0.0] - 2019-02-10
 ###Upgrade
 - Remove support PHP 7.2

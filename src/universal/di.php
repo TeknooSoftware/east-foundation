@@ -52,8 +52,7 @@ return [
     ProcessorRecipeInterface::class => function (
         ProcessorInterface $processor
     ): ProcessorRecipeInterface {
-        $recipe = new class extends Recipe implements ProcessorRecipeInterface
-        {
+        $recipe = new class extends Recipe implements ProcessorRecipeInterface {
         };
 
         $recipe = $recipe->registerMiddleware($processor, ProcessorInterface::MIDDLEWARE_PRIORITY);
