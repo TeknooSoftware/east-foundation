@@ -14,7 +14,7 @@ declare(strict_types=1);
  * to richarddeloge@gmail.com so we can send you a copy immediately.
  *
  *
- * @copyright   Copyright (c) 2009-2017 Richard Déloge (richarddeloge@gmail.com)
+ * @copyright   Copyright (c) 2009-2019 Richard Déloge (richarddeloge@gmail.com)
  *
  * @link        http://teknoo.software/east Project website
  *
@@ -28,7 +28,7 @@ namespace Teknoo\East\Foundation\Normalizer;
  * Interface to define normalizer, able to normalize via a serializer, like the Symfony's serializer, object following
  * the East philosophy and implementing Teknoo\East\Foundation\Normalizer\Object\NormalizableInterface.
  *
- * @copyright   Copyright (c) 2009-2017 Richard Déloge (richarddeloge@gmail.com)
+ * @copyright   Copyright (c) 2009-2019 Richard Déloge (richarddeloge@gmail.com)
  *
  * @link        http://teknoo.software/east Project website
  *

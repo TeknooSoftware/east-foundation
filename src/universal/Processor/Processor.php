@@ -14,7 +14,7 @@ declare(strict_types=1);
  * to richarddeloge@gmail.com so we can send you a copy immediately.
  *
  *
- * @copyright   Copyright (c) 2009-2017 Richard Déloge (richarddeloge@gmail.com)
+ * @copyright   Copyright (c) 2009-2019 Richard Déloge (richarddeloge@gmail.com)
  *
  * @link        http://teknoo.software/east Project website
  *
@@ -36,7 +36,7 @@ use Teknoo\Immutable\ImmutableTrait;
  * Processor implementation to inject the controller returned by the router into the dedicated place in the workplan
  * to allow the chef to execute it via a DynamicBowl.
  *
- * @copyright   Copyright (c) 2009-2017 Richard Déloge (richarddeloge@gmail.com)
+ * @copyright   Copyright (c) 2009-2019 Richard Déloge (richarddeloge@gmail.com)
  *
  * @link        http://teknoo.software/east Project website
  *

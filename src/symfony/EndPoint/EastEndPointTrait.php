@@ -14,7 +14,7 @@ declare(strict_types=1);
  * to richarddeloge@gmail.com so we can send you a copy immediately.
  *
  *
- * @copyright   Copyright (c) 2009-2017 Richard Déloge (richarddeloge@gmail.com)
+ * @copyright   Copyright (c) 2009-2019 Richard Déloge (richarddeloge@gmail.com)
  *
  * @link        http://teknoo.software/east Project website
  *
@@ -40,7 +40,7 @@ use Zend\Diactoros\Response;
  * Trait to help developer to write endpoint with Symfony (also called controller) and reuse Symfony component like
  * router or twig engine?
  *
- * @copyright   Copyright (c) 2009-2017 Richard Déloge (richarddeloge@gmail.com)
+ * @copyright   Copyright (c) 2009-2019 Richard Déloge (richarddeloge@gmail.com)
  *
  * @link        http://teknoo.software/east Project website
  *
