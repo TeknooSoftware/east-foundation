@@ -54,7 +54,7 @@ class KernelListener
     /**
      * @var ClientWithResponseEventInterface
      */
-    private $clientWithResponseEvent;
+    private $client;
 
     /**
      * @var DiactorosFactory
@@ -74,7 +74,7 @@ class KernelListener
         DiactorosFactory $diactorosFactory
     ) {
         $this->manager = $manager;
-        $this->clientWithResponseEvent = $event;
+        $this->client = $event;
         $this->diactorosFactory = $diactorosFactory;
     }
 
@@ -110,7 +110,7 @@ class KernelListener
             return $this;
         }
 
-        $client = clone $this->clientWithResponseEvent;
+        $client = clone $this->client;
         $client->setGetResponseEvent($event);
 
         $psrRequest = $this->getPsrRequest($event->getRequest());

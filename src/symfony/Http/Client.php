@@ -56,7 +56,7 @@ class Client implements ClientWithResponseEventInterface
     /**
      * @var HttpFoundationFactory
      */
-    private $httpFoundationFactory;
+    private $factory;
 
     /**
      * Client constructor.
@@ -66,7 +66,7 @@ class Client implements ClientWithResponseEventInterface
      */
     public function __construct(HttpFoundationFactory $factory, GetResponseEvent $getResponseEvent = null)
     {
-        $this->httpFoundationFactory = $factory;
+        $this->factory = $factory;
         if ($getResponseEvent instanceof GetResponseEvent) {
             $this->setGetResponseEvent($getResponseEvent);
         }
@@ -124,7 +124,7 @@ class Client implements ClientWithResponseEventInterface
         }
 
         $this->getResponseEvent->setResponse(
-            $this->httpFoundationFactory->createResponse($this->response)
+            $this->factory->createResponse($this->response)
         );
 
         $this->response = null;
@@ -146,7 +146,7 @@ class Client implements ClientWithResponseEventInterface
      */
     public function __clone()
     {
-        $this->httpFoundationFactory = clone $this->httpFoundationFactory;
+        $this->factory = clone $this->factory;
         if (!empty($this->getResponseEvent)) {
             $this->getResponseEvent = clone $this->getResponseEvent;
         }

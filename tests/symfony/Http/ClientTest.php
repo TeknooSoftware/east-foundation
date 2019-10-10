@@ -413,7 +413,7 @@ class ClientTest extends \PHPUnit\Framework\TestCase
 
         self::assertInstanceOf(Client::class, $clonedClient);
 
-        $reflectionProperty = new \ReflectionProperty($clonedClient, 'httpFoundationFactory');
+        $reflectionProperty = new \ReflectionProperty($clonedClient, 'factory');
         $reflectionProperty->setAccessible(true);
         self::assertNotSame($this->getHttpFoundationFactoryMock(), $reflectionProperty->getValue($clonedClient));
     }
