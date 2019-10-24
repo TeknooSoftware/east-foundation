@@ -1,5 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[1.0.2] - 2019-10-24
+###Release
+- Maintenance release, QA and update dev vendors requirements
+
 ##[1.0.1] - 2019-06-09
 ###Release
 - Maintenance release, upgrade composer dev requirement and libs
