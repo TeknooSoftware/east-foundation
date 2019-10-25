@@ -1,8 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
-/**
+/*
  * East Foundation.
  *
  * LICENSE
@@ -21,6 +19,8 @@ declare(strict_types=1);
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
+
+declare(strict_types=1);
 
 namespace Teknoo\East\Foundation\Router;
 
@@ -49,20 +49,11 @@ class Result implements ResultInterface
     /**
      * @var ParameterInterface[]
      */
-    private $parameters;
+    private array $parameters;
 
-    /**
-     * @var ResultInterface|null
-     */
-    private $next;
+    private ?ResultInterface $next;
 
-    /**
-     * Result constructor.
-     *
-     * @param callable             $controller
-     * @param null|ResultInterface $next
-     */
-    public function __construct(callable $controller, $next = null)
+    public function __construct(callable $controller, ?ResultInterface $next = null)
     {
         $this->uniqueConstructorCheck();
 
@@ -89,7 +80,7 @@ class Result implements ResultInterface
      * @return \ReflectionFunction|\ReflectionMethod
      * @throws \ReflectionException
      */
-    private function getReflectionInstance()
+    private function getReflectionInstance(): \ReflectionException
     {
         if (\is_array($this->controller) && 2 === \count($this->controller)) {
             //Reflection the method's argument in the controller class

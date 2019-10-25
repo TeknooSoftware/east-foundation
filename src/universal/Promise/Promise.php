@@ -1,8 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
-/**
+/*
  * East Foundation.
  *
  * LICENSE
@@ -21,6 +19,8 @@ declare(strict_types=1);
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
+
+declare(strict_types=1);
 
 namespace Teknoo\East\Foundation\Promise;
 
@@ -42,10 +42,7 @@ use Teknoo\Recipe\Promise\PromiseInterface as RecipePromiseInterface;
  */
 class Promise extends RecipePromise implements PromiseInterface
 {
-    /**
-     * @var PromiseInterface|null
-     */
-    private $nextPromise;
+    private ?PromiseInterface $nextPromise;
 
     /**
      * {@inheritdoc}

@@ -1,8 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
-/**
+/*
  * East Foundation.
  *
  * LICENSE
@@ -22,6 +20,8 @@ declare(strict_types=1);
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
 
+declare(strict_types=1);
+
 namespace Teknoo\East\Foundation\Router;
 
 use Teknoo\Immutable\ImmutableTrait;
@@ -40,37 +40,21 @@ class Parameter implements ParameterInterface
 {
     use ImmutableTrait;
 
-    /**
-     * @var string
-     */
-    private $name;
+    private string $name;
 
-    /**
-     * @var bool
-     */
-    private $hasDefaultValue;
+    private bool $hasDefaultValue;
 
     /**
      * @var mixed
      */
     private $defaultValue;
 
-    /**
-     * @var \ReflectionClass|null
-     */
-    private $classHinted;
+    private ?\ReflectionClass $classHinted;
 
     /**
-     * Parameter constructor.
-     *
-     * @param string $name
-     * @param bool   $hasDefaultValue
-     * @param mixed  $defaultValue
-     * @param \ReflectionClass $classHinted
-     *
      * @throws \InvalidArgumentException when $classHinted is invalid (not a \ReflectionClass or null value
      */
-    public function __construct(string $name, bool $hasDefaultValue, $defaultValue, $classHinted)
+    public function __construct(string $name, bool $hasDefaultValue, $defaultValue, ?\ReflectionClass $classHinted)
     {
         $this->uniqueConstructorCheck();
 

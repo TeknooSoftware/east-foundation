@@ -1,8 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
-/**
+/*
  * East Foundation.
  *
  * LICENSE
@@ -21,6 +19,8 @@ declare(strict_types=1);
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
+
+declare(strict_types=1);
 
 namespace Teknoo\East\FoundationBundle\Router;
 
@@ -52,22 +52,10 @@ use Teknoo\East\Foundation\Router\RouterInterface;
  */
 class Router implements RouterInterface
 {
-    /**
-     * @var UrlMatcherInterface
-     */
-    private $matcher;
+    private UrlMatcherInterface $matcher;
 
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
+    private ContainerInterface $container;
 
-    /**
-     * Router constructor.
-     *
-     * @param UrlMatcherInterface $urlMatcher
-     * @param ContainerInterface  $container
-     */
     public function __construct(
         UrlMatcherInterface $urlMatcher,
         ContainerInterface $container

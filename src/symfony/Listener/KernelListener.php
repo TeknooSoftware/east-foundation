@@ -1,8 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
-/**
+/*
  * East Foundation.
  *
  * LICENSE
@@ -21,6 +19,8 @@ declare(strict_types=1);
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
+
+declare(strict_types=1);
 
 namespace Teknoo\East\FoundationBundle\Listener;
 
@@ -46,28 +46,12 @@ use Teknoo\East\FoundationBundle\Http\ClientWithResponseEventInterface;
  */
 class KernelListener
 {
-    /**
-     * @var ManagerInterface
-     */
-    private $manager;
+    private ManagerInterface $manager;
 
-    /**
-     * @var ClientWithResponseEventInterface
-     */
-    private $client;
+    private ClientWithResponseEventInterface $client;
 
-    /**
-     * @var DiactorosFactory
-     */
-    private $diactorosFactory;
+    private DiactorosFactory $diactorosFactory;
 
-    /**
-     * KernelListener constructor.
-     *
-     * @param ManagerInterface                 $manager
-     * @param ClientWithResponseEventInterface $event
-     * @param DiactorosFactory                 $diactorosFactory
-     */
     public function __construct(
         ManagerInterface $manager,
         ClientWithResponseEventInterface $event,

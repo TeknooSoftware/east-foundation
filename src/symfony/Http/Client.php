@@ -1,8 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
-/**
+/*
  * East Foundation.
  *
  * LICENSE
@@ -21,6 +19,8 @@ declare(strict_types=1);
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
+
+declare(strict_types=1);
 
 namespace Teknoo\East\FoundationBundle\Http;
 
@@ -43,27 +43,12 @@ use Teknoo\East\Foundation\Http\ClientInterface;
  */
 class Client implements ClientWithResponseEventInterface
 {
-    /**
-     * @var ResponseInterface
-     */
-    private $response;
+    private ResponseInterface $response;
 
-    /**
-     * @var GetResponseEvent
-     */
-    private $getResponseEvent;
+    private GetResponseEvent $getResponseEvent;
 
-    /**
-     * @var HttpFoundationFactory
-     */
-    private $factory;
+    private HttpFoundationFactory $factory;
 
-    /**
-     * Client constructor.
-     *
-     * @param HttpFoundationFactory $factory
-     * @param GetResponseEvent|null $getResponseEvent
-     */
     public function __construct(HttpFoundationFactory $factory, GetResponseEvent $getResponseEvent = null)
     {
         $this->factory = $factory;

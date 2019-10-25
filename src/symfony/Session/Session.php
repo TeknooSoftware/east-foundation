@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * East Foundation.
  *
@@ -22,6 +20,8 @@ declare(strict_types=1);
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
 
+declare(strict_types=1);
+
 namespace Teknoo\East\FoundationBundle\Session;
 
 use Teknoo\East\Foundation\Promise\PromiseInterface;
@@ -40,15 +40,8 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface as SymfonySession;
  */
 class Session implements SessionInterface
 {
-    /**
-     * @var SymfonySession
-     */
-    private $symfonySession;
+    private SymfonySession $symfonySession;
 
-    /**
-     * Session constructor.
-     * @param SymfonySession $symfonySession
-     */
     public function __construct(SymfonySession $symfonySession)
     {
         $this->symfonySession = $symfonySession;
