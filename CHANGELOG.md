@@ -1,5 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[2.0.0-beta2] - 2019-11-27
+###Change
+- Support zendframework/zend-diactoros 2.2
+
 ##[2.0.0-beta1] - 2019-11-27
 ###Change
 - PHP 7.4 is the minimum required

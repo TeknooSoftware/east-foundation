@@ -36,7 +36,7 @@
         "symfony/templating": "~4.4||~5.0",
         "symfony/security": "~4.4||~5.0",
         "symfony/serializer": "~4.4||~5.0",
-        "zendframework/zend-diactoros": "~1.8",
+        "zendframework/zend-diactoros": "~1.8||~2.2",
         "symfony/psr-http-message-bridge":"~1.2"
     },
     "minimum-stability": "stable",
