@@ -63,7 +63,7 @@ class ResultTest extends AbstractResultTest
 
     public function testConstructBadNext()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(\TypeError::class);
         new Result(function () {}, new \DateTime());
     }
 

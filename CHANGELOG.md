@@ -1,5 +1,13 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[2.0.0-beta1] - 2019-11-27
+###Change
+- PHP 7.4 is the minimum required
+- Switch to typed properties
+- Remove some PHP useless DockBlocks
+- Replace array_merge by "..." operators for integer indexed arrays
+- Restrict to Symfony 4.4 or 5.+ and remove some deprecated
+
 ##[1.0.2] - 2019-10-24
 ###Release
 - Maintenance release, QA and update dev vendors requirements

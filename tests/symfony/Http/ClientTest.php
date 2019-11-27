@@ -24,7 +24,7 @@ namespace Teknoo\Tests\East\FoundationBunlde\Http;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Teknoo\East\FoundationBundle\Http\Client;
 
@@ -42,9 +42,9 @@ use Teknoo\East\FoundationBundle\Http\Client;
 class ClientTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var GetResponseEvent
+     * @var RequestEvent
      */
-    private $getResponseEvent;
+    private $requestEvent;
 
     /**
      * @var HttpFoundationFactory
@@ -52,15 +52,15 @@ class ClientTest extends \PHPUnit\Framework\TestCase
     private $httpFoundationFactory;
 
     /**
-     * @return GetResponseEvent|\PHPUnit\Framework\MockObject\MockObject
+     * @return RequestEvent|\PHPUnit\Framework\MockObject\MockObject
      */
-    private function getGetResponseEventMock(): GetResponseEvent
+    private function getRequestEventMock(): RequestEvent
     {
-        if (!$this->getResponseEvent instanceof GetResponseEvent) {
-            $this->getResponseEvent = $this->createMock(GetResponseEvent::class);
+        if (!$this->requestEvent instanceof RequestEvent) {
+            $this->requestEvent = $this->createMock(RequestEvent::class);
         }
 
-        return $this->getResponseEvent;
+        return $this->requestEvent;
     }
 
     /**
@@ -80,7 +80,7 @@ class ClientTest extends \PHPUnit\Framework\TestCase
      */
     private function buildClient(): Client
     {
-        return new Client($this->getHttpFoundationFactoryMock(), $this->getGetResponseEventMock());
+        return new Client($this->getHttpFoundationFactoryMock(), $this->getRequestEventMock());
     }
 
     /**
@@ -153,7 +153,7 @@ class ClientTest extends \PHPUnit\Framework\TestCase
          */
         $response = $this->createMock(ResponseInterface::class);
 
-        $this->getGetResponseEventMock()
+        $this->getRequestEventMock()
             ->expects(self::any())
             ->method('setResponse')
             ->with($this->callback(function ($response) {
@@ -183,7 +183,7 @@ class ClientTest extends \PHPUnit\Framework\TestCase
          */
         $response = $this->createMock(ResponseInterface::class);
 
-        $this->getGetResponseEventMock()
+        $this->getRequestEventMock()
             ->expects(self::any())
             ->method('setResponse')
             ->with($this->callback(function ($response) {
@@ -216,7 +216,7 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testSendResponseWithoutGetResponseEvent()
+    public function testSendResponseWithoutRequestEvent()
     {
         $this->expectException(\RuntimeException::class);
         /**
@@ -238,7 +238,7 @@ class ClientTest extends \PHPUnit\Framework\TestCase
          */
         $response = $this->createMock(ResponseInterface::class);
 
-        $this->getGetResponseEventMock()
+        $this->getRequestEventMock()
             ->expects(self::any())
             ->method('setResponse')
             ->with($this->callback(function ($response) {
@@ -268,7 +268,7 @@ class ClientTest extends \PHPUnit\Framework\TestCase
          */
         $response = $this->createMock(ResponseInterface::class);
 
-        $this->getGetResponseEventMock()
+        $this->getRequestEventMock()
             ->expects(self::once())
             ->method('setResponse')
             ->with($this->callback(function ($response) {
@@ -298,7 +298,7 @@ class ClientTest extends \PHPUnit\Framework\TestCase
          */
         $response = $this->createMock(ResponseInterface::class);
 
-        $this->getGetResponseEventMock()
+        $this->getRequestEventMock()
             ->expects(self::any())
             ->method('setResponse')
             ->with($this->callback(function ($response) {
@@ -330,7 +330,7 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testSendResponseWithoutGetResponseEventSilently()
+    public function testSendResponseWithoutRequestEventSilently()
     {
         $this->expectException(\RuntimeException::class);
         /**
@@ -360,7 +360,7 @@ class ClientTest extends \PHPUnit\Framework\TestCase
     public function testErrorInRequest()
     {
         $this->expectException(\Exception::class);
-        $this->getGetResponseEventMock()
+        $this->getRequestEventMock()
             ->expects(self::any())
             ->method('setResponse')
             ->with($this->callback(function ($response) {
@@ -375,7 +375,7 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testErrorInRequestWithoutGetResponseEvent()
+    public function testErrorInRequestWithoutRequestEvent()
     {
         $this->expectException(\Exception::class);
         $client = new Client($this->getHttpFoundationFactoryMock());
@@ -391,19 +391,19 @@ class ClientTest extends \PHPUnit\Framework\TestCase
         $this->buildClient()->errorInRequest(new \stdClass());
     }
 
-    public function testSetGetResponseEvent()
+    public function testSetRequestEvent()
     {
         $client = $this->buildClient();
         self::assertInstanceOf(
             $this->getClientClass(),
-            $client->setGetResponseEvent($this->createMock(GetResponseEvent::class))
+            $client->setRequestEvent($this->createMock(RequestEvent::class))
         );
     }
 
-    public function testSetGetResponseEventError()
+    public function testSetRequestEventError()
     {
         $this->expectException(\TypeError::class);
-        $this->buildClient()->setGetResponseEvent(new \stdClass());
+        $this->buildClient()->setRequestEvent(new \stdClass());
     }
 
     public function testClone()

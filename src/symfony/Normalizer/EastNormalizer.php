@@ -46,7 +46,7 @@ class EastNormalizer implements EastNormalizerInterface, NormalizerInterface, No
 {
     private array $data = [];
 
-    private NormalizerInterface $normalizer;
+    private ?NormalizerInterface $normalizer = null;
 
     /**
      * @inheritDoc

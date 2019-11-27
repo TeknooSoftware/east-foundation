@@ -42,12 +42,12 @@ use Teknoo\Recipe\Promise\PromiseInterface as RecipePromiseInterface;
  */
 class Promise extends RecipePromise implements PromiseInterface
 {
-    private ?PromiseInterface $nextPromise;
+    private ?PromiseInterface $nextPromise = null;
 
     /**
      * {@inheritdoc}
      */
-    public function next(PromiseInterface $promise = null): PromiseInterface
+    public function next(?PromiseInterface $promise = null): PromiseInterface
     {
         $clone = clone $this;
         $clone->nextPromise = $promise;

@@ -49,7 +49,7 @@ class Result implements ResultInterface
     /**
      * @var ParameterInterface[]
      */
-    private array $parameters;
+    private ?array $parameters = null;
 
     private ?ResultInterface $next;
 
@@ -80,7 +80,7 @@ class Result implements ResultInterface
      * @return \ReflectionFunction|\ReflectionMethod
      * @throws \ReflectionException
      */
-    private function getReflectionInstance(): \ReflectionException
+    private function getReflectionInstance(): \ReflectionFunctionAbstract
     {
         if (\is_array($this->controller) && 2 === \count($this->controller)) {
             //Reflection the method's argument in the controller class

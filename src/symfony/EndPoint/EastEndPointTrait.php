@@ -49,11 +49,11 @@ use Zend\Diactoros\Response;
  */
 trait EastEndPointTrait
 {
-    protected RouterInterface $router;
+    protected ?RouterInterface $router = null;
 
-    protected EngineInterface $templating;
+    protected ?EngineInterface $templating = null;
 
-    protected TokenStorageInterface $tokenStorage;
+    protected ?TokenStorageInterface $tokenStorage = null;
 
     /**
      * To inject the router into the trait, needed to generate url.

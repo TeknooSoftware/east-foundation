@@ -26,13 +26,13 @@ namespace Teknoo\East\FoundationBundle\Http;
 
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Teknoo\East\Foundation\Http\ClientInterface;
 
 /**
  * Default implementation of Teknoo\East\Foundation\Http\ClientInterface and
  * Teknoo\East\FoundationBundle\Http\ClientWithResponseEventInterface to create client integrated with Symfony and able
- * to manage GetResponseEvent instance from Symfony Kernel loop.
+ * to manage RequestEvent instance from Symfony Kernel loop.
  *
  * @copyright   Copyright (c) 2009-2019 Richard Déloge (richarddeloge@gmail.com)
  *
@@ -43,26 +43,26 @@ use Teknoo\East\Foundation\Http\ClientInterface;
  */
 class Client implements ClientWithResponseEventInterface
 {
-    private ResponseInterface $response;
+    private ?ResponseInterface $response = null;
 
-    private GetResponseEvent $getResponseEvent;
+    private ?RequestEvent $requestEvent = null;
 
-    private HttpFoundationFactory $factory;
+    private ?HttpFoundationFactory $factory;
 
-    public function __construct(HttpFoundationFactory $factory, GetResponseEvent $getResponseEvent = null)
+    public function __construct(HttpFoundationFactory $factory, ?RequestEvent $requestEvent = null)
     {
         $this->factory = $factory;
-        if ($getResponseEvent instanceof GetResponseEvent) {
-            $this->setGetResponseEvent($getResponseEvent);
+        if ($requestEvent instanceof RequestEvent) {
+            $this->setRequestEvent($requestEvent);
         }
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setGetResponseEvent(GetResponseEvent $getResponseEvent): ClientWithResponseEventInterface
+    public function setRequestEvent(RequestEvent $requestEvent): ClientWithResponseEventInterface
     {
-        $this->getResponseEvent = $getResponseEvent;
+        $this->requestEvent = $requestEvent;
 
         return $this;
     }
@@ -100,15 +100,15 @@ class Client implements ClientWithResponseEventInterface
             return $this;
         }
 
-        if (!$this->getResponseEvent instanceof GetResponseEvent) {
-            throw new \RuntimeException('Error, the getResponseEvent has not been set into the client');
+        if (!$this->requestEvent instanceof RequestEvent) {
+            throw new \RuntimeException('Error, the requestEvent has not been set into the client');
         }
 
         if (!$this->response instanceof ResponseInterface) {
             throw new \RuntimeException('Error, any response object has been pushed to the client');
         }
 
-        $this->getResponseEvent->setResponse(
+        $this->requestEvent->setResponse(
             $this->factory->createResponse($this->response)
         );
 
@@ -132,8 +132,8 @@ class Client implements ClientWithResponseEventInterface
     public function __clone()
     {
         $this->factory = clone $this->factory;
-        if (!empty($this->getResponseEvent)) {
-            $this->getResponseEvent = clone $this->getResponseEvent;
+        if (!empty($this->requestEvent)) {
+            $this->requestEvent = clone $this->requestEvent;
         }
     }
 }

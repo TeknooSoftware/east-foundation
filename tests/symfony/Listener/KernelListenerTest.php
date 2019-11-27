@@ -22,7 +22,7 @@
 namespace Teknoo\Tests\East\FoundationBundle\Listener;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Teknoo\East\FoundationBundle\Http\ClientWithResponseEventInterface;
 use Teknoo\East\FoundationBundle\Listener\KernelListener;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
@@ -115,7 +115,7 @@ class KernelListenerTest extends \PHPUnit\Framework\TestCase
 
     public function testOnKernelRequest()
     {
-        $request = $this->createMock(GetResponseEvent::class);
+        $request = $this->createMock(RequestEvent::class);
         $request->expects(self::any())->method('getRequest')->willReturn(new Request());
 
         $this->getDiactorosFactoryMock()
@@ -125,7 +125,7 @@ class KernelListenerTest extends \PHPUnit\Framework\TestCase
 
         $this->getClientWithResponseEventInterfaceMock()
             ->expects(self::once())
-            ->method('setGetResponseEvent')
+            ->method('setRequestEvent')
             ->with($request)
             ->willReturnSelf();
 
@@ -141,7 +141,7 @@ class KernelListenerTest extends \PHPUnit\Framework\TestCase
     {
         $symfonyRequest = new Request();
         $symfonyRequest->attributes->set('exception', new \Exception());
-        $request = $this->createMock(GetResponseEvent::class);
+        $request = $this->createMock(RequestEvent::class);
         $request->expects(self::any())->method('getRequest')->willReturn($symfonyRequest);
 
         $this->getDiactorosFactoryMock()
@@ -151,7 +151,7 @@ class KernelListenerTest extends \PHPUnit\Framework\TestCase
 
         $this->getClientWithResponseEventInterfaceMock()
             ->expects(self::never())
-            ->method('setGetResponseEvent');
+            ->method('setRequestEvent');
 
         $this->getManagerMock()
             ->expects(self::never())
