@@ -1,5 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[2.0.0-beta5] - 2019-11-28
+###Change
+- Enable PHPStan in QA Tools
+
 ##[2.0.0-beta4] - 2019-11-28
 ###Change
 - Set `Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory` into Symfony's services definitions 
