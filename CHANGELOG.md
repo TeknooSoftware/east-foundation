@@ -1,5 +1,10 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[2.0.0-beta3] - 2019-11-27
+###Change
+- Set `Teknoo\East\Foundation\Manager\ManagerInterface` and `Teknoo\East\Foundation\Http\ClientInterface` as synthetic
+services into Symfony's services definitions to avoid compilation error with Symfony 4.4
+
 ##[2.0.0-beta2] - 2019-11-27
 ###Change
 - Support zendframework/zend-diactoros 2.2
