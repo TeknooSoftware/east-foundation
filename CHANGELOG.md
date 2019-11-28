@@ -1,6 +1,11 @@
 #Teknoo Software - East Foundation - Change Log
 
-##[2.0.0-beta3] - 2019-11-27
+##[2.0.0-beta4] - 2019-11-28
+###Change
+- Set `Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory` into Symfony's services definitions 
+to avoid compilation error with Symfony 4.4
+
+##[2.0.0-beta3] - 2019-11-28
 ###Change
 - Set `Teknoo\East\Foundation\Manager\ManagerInterface` and `Teknoo\East\Foundation\Http\ClientInterface` as synthetic
 services into Symfony's services definitions to avoid compilation error with Symfony 4.4

@@ -22,6 +22,9 @@ services:
   Teknoo\East\Foundation\Http\ClientInterface:
     synthetic: true
 
+  Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory:
+    class: 'Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory'
+
   #Symfony kernel event listener
   teknoo.east.symfony.listener.kernel:
     class: '%teknoo.east.symfony.listener.kernel.class%'
