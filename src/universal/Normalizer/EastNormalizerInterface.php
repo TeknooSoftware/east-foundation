@@ -38,7 +38,7 @@ namespace Teknoo\East\Foundation\Normalizer;
 interface EastNormalizerInterface
 {
     /**
-     * @param array $data
+     * @param array<string, mixed> $data
      * @return EastNormalizerInterface
      */
     public function injectData(array $data): EastNormalizerInterface;

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * East Foundation.
  *
@@ -42,12 +43,12 @@ interface SessionInterface
      * Stores a given value in the session
      *
      * @param string                                               $key
-     * @param int|bool|string|float|array|object|\JsonSerializable $value allows any nested combination of the previous
-     *                                                                    types as well
+     * @param int|bool|string|float|array<mixed>|object|\JsonSerializable $value allows any nested combination
+     *                                                                    of the previous types as well
      *
      * @return SessionInterface
      */
-    public function set(string $key, $value) : SessionInterface;
+    public function set(string $key, $value): SessionInterface;
 
     /**
      * Retrieves a value from the session
@@ -57,7 +58,7 @@ interface SessionInterface
      *
      * @return SessionInterface
      */
-    public function get(string $key, PromiseInterface $promise) : SessionInterface;
+    public function get(string $key, PromiseInterface $promise): SessionInterface;
 
     /**
      * Removes an item from the session
@@ -66,12 +67,12 @@ interface SessionInterface
      *
      * @return SessionInterface
      */
-    public function remove(string $key) : SessionInterface;
+    public function remove(string $key): SessionInterface;
 
     /**
      * Clears the contents of the session
      *
      * @return SessionInterface
      */
-    public function clear() : SessionInterface;
+    public function clear(): SessionInterface;
 }

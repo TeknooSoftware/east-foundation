@@ -41,7 +41,7 @@ interface NormalizableInterface
 {
     /**
      * @param EastNormalizerInterface $normalizer
-     * @param array $context
+     * @param array<string, mixed> $context
      * @return NormalizableInterface
      */
     public function exportToMeData(EastNormalizerInterface $normalizer, array $context = []): NormalizableInterface;

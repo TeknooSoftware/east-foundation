@@ -87,7 +87,7 @@ class Router implements RouterInterface
      *
      * @param ServerRequestInterface $request
      *
-     * @return callable
+     * @return callable|null
      */
     private function matchRequest(ServerRequestInterface $request): ?callable
     {

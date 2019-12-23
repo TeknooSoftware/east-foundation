@@ -53,10 +53,10 @@ interface EndPointInterface
     /**
      * Renders a view via a template engine like Twig or another system.
      *
-     * @param ClientInterface $client
-     * @param string          $view       The view name
-     * @param array           $parameters An array of parameters to pass to the view
-     * @param int             $status The status code to use for the Response
+     * @param ClientInterface      $client
+     * @param string               $view       The view name
+     * @param array<string, mixed> $parameters An array of parameters to pass to the view
+     * @param int                  $status The status code to use for the Response
      *
      * @return EndPointInterface
      */

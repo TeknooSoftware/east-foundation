@@ -1,5 +1,11 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[2.0.0-beta6] - 2019-12-23
+###Change
+- Fix Make definitions tools
+- Fix QA issues spotted by PHPStan
+- Enable PHPStan extension dedicated to support Stated classes
+
 ##[2.0.0-beta5] - 2019-11-28
 ###Change
 - Enable PHPStan in QA Tools

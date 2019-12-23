@@ -1,4 +1,5 @@
 <?php
+
 /*
  * East Foundation.
  *
@@ -23,8 +24,6 @@ declare(strict_types=1);
 
 namespace Teknoo\East\Foundation;
 
-use function DI\get;
-use function DI\create;
 use Teknoo\East\Foundation\Manager\Manager;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\East\Foundation\Processor\Processor;
@@ -36,6 +35,9 @@ use Teknoo\East\Foundation\Recipe\Recipe;
 use Teknoo\East\Foundation\Recipe\RecipeInterface;
 use Teknoo\East\Foundation\Router\RouterInterface;
 use Teknoo\Recipe\Bowl\DynamicBowl;
+
+use function DI\get;
+use function DI\create;
 
 return [
     Manager::class => get(ManagerInterface::class),

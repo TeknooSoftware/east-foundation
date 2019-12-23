@@ -42,7 +42,7 @@ class Result implements ResultInterface
     use ImmutableTrait;
 
     /**
-     * @var callable|object
+     * @var callable
      */
     private $controller;
 
@@ -56,10 +56,6 @@ class Result implements ResultInterface
     public function __construct(callable $controller, ?ResultInterface $next = null)
     {
         $this->uniqueConstructorCheck();
-
-        if (null !== $next && !$next instanceof ResultInterface) {
-            throw new \InvalidArgumentException('$next need null or ResultInterface instance');
-        }
 
         $this->controller = $controller;
         $this->next = $next;
@@ -100,7 +96,7 @@ class Result implements ResultInterface
     /**
      * To extract controller's parameter from \Reflection Api and convert into ParameterInterface instance.
      *
-     * @return array
+     * @return array<string, ParameterInterface>
      * @throws \ReflectionException
      */
     private function extractArguments(): array

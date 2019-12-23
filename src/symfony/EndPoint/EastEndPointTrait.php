@@ -171,7 +171,7 @@ trait EastEndPointTrait
 
         throw new \LogicException(
             'You can not use the "renderView" method if the Templating Component or the '
-            .'Twig Bundle are not available.'
+            . 'Twig Bundle are not available.'
         );
     }
 

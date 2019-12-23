@@ -132,7 +132,7 @@ class Client implements ClientWithResponseEventInterface
     public function __clone()
     {
         $this->factory = clone $this->factory;
-        if (!empty($this->requestEvent)) {
+        if (null !== $this->requestEvent) {
             $this->requestEvent = clone $this->requestEvent;
         }
     }

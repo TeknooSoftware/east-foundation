@@ -74,7 +74,7 @@ class Processor implements ProcessorInterface, ImmutableInterface
 
     /**
      * @param ServerRequestInterface $request
-     * @return array
+     * @return array<string, mixed>
      */
     private function getParameters(ServerRequestInterface $request): array
     {

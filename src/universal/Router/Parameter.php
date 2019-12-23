@@ -52,15 +52,12 @@ class Parameter implements ParameterInterface
     private ?\ReflectionClass $classHinted;
 
     /**
+     * @param mixed $defaultValue
      * @throws \InvalidArgumentException when $classHinted is invalid (not a \ReflectionClass or null value
      */
     public function __construct(string $name, bool $hasDefaultValue, $defaultValue, ?\ReflectionClass $classHinted)
     {
         $this->uniqueConstructorCheck();
-
-        if (null !== $classHinted && !$classHinted instanceof \ReflectionClass) {
-            throw new \InvalidArgumentException('$classHinted need null or \ReflectionClass instance');
-        }
 
         $this->name = $name;
         $this->hasDefaultValue = $hasDefaultValue;
@@ -106,7 +103,7 @@ class Parameter implements ParameterInterface
     public function getClass(): \ReflectionClass
     {
         if (!$this->classHinted instanceof \ReflectionClass) {
-            throw new \RuntimeException('Error this parameter '.$this->name.' has not class hinted');
+            throw new \RuntimeException('Error this parameter ' . $this->name . ' has not class hinted');
         }
 
         return $this->classHinted;
