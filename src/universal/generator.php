@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * East Foundation.
  *
  * LICENSE
@@ -19,11 +20,13 @@
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
 
+declare(strict_types=1);
+
 namespace Teknoo\East\Foundation;
 
 use DI\ContainerBuilder;
 
 $containerDefinition = new ContainerBuilder();
-$containerDefinition->addDefinitions(__DIR__.'/di.php');
+$containerDefinition->addDefinitions(__DIR__ . '/di.php');
 
 return $containerDefinition->build();

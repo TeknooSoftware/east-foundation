@@ -1,8 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
-/**
+/*
  * East Foundation.
  *
  * LICENSE
@@ -21,6 +19,8 @@ declare(strict_types=1);
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
+
+declare(strict_types=1);
 
 namespace Teknoo\East\Foundation\Processor;
 
@@ -74,7 +74,7 @@ class Processor implements ProcessorInterface, ImmutableInterface
 
     /**
      * @param ServerRequestInterface $request
-     * @return array
+     * @return array<string, mixed>
      */
     private function getParameters(ServerRequestInterface $request): array
     {

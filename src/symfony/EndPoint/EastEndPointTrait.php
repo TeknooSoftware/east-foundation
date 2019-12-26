@@ -1,8 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
-/**
+/*
  * East Foundation.
  *
  * LICENSE
@@ -21,6 +19,8 @@ declare(strict_types=1);
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
+
+declare(strict_types=1);
 
 namespace Teknoo\East\FoundationBundle\EndPoint;
 
@@ -49,20 +49,11 @@ use Zend\Diactoros\Response;
  */
 trait EastEndPointTrait
 {
-    /**
-     * @var RouterInterface
-     */
-    protected $router;
+    protected ?RouterInterface $router = null;
 
-    /**
-     * @var EngineInterface
-     */
-    protected $templating;
+    protected ?EngineInterface $templating = null;
 
-    /**
-     * @var TokenStorageInterface
-     */
-    protected $tokenStorage;
+    protected ?TokenStorageInterface $tokenStorage = null;
 
     /**
      * To inject the router into the trait, needed to generate url.
@@ -180,7 +171,7 @@ trait EastEndPointTrait
 
         throw new \LogicException(
             'You can not use the "renderView" method if the Templating Component or the '
-            .'Twig Bundle are not available.'
+            . 'Twig Bundle are not available.'
         );
     }
 

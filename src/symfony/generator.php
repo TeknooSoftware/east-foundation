@@ -1,8 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
-/**
+/*
  * East Foundation.
  *
  * LICENSE
@@ -22,12 +20,14 @@ declare(strict_types=1);
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
 
+declare(strict_types=1);
+
 namespace Teknoo\East\FoundationBundle;
 
 use DI\ContainerBuilder;
 
 $containerDefinition = new ContainerBuilder();
-$containerDefinition->addDefinitions(__DIR__.'/../universal/di.php');
-$containerDefinition->addDefinitions(__DIR__.'/Resources/config/di.php');
+$containerDefinition->addDefinitions(__DIR__ . '/../universal/di.php');
+$containerDefinition->addDefinitions(__DIR__ . '/Resources/config/di.php');
 
 return $containerDefinition->build();

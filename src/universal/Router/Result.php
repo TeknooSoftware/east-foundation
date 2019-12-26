@@ -1,8 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
-/**
+/*
  * East Foundation.
  *
  * LICENSE
@@ -21,6 +19,8 @@ declare(strict_types=1);
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
+
+declare(strict_types=1);
 
 namespace Teknoo\East\Foundation\Router;
 
@@ -42,33 +42,20 @@ class Result implements ResultInterface
     use ImmutableTrait;
 
     /**
-     * @var callable|object
+     * @var callable
      */
     private $controller;
 
     /**
      * @var ParameterInterface[]
      */
-    private $parameters;
+    private ?array $parameters = null;
 
-    /**
-     * @var ResultInterface|null
-     */
-    private $next;
+    private ?ResultInterface $next;
 
-    /**
-     * Result constructor.
-     *
-     * @param callable             $controller
-     * @param null|ResultInterface $next
-     */
-    public function __construct(callable $controller, $next = null)
+    public function __construct(callable $controller, ?ResultInterface $next = null)
     {
         $this->uniqueConstructorCheck();
-
-        if (null !== $next && !$next instanceof ResultInterface) {
-            throw new \InvalidArgumentException('$next need null or ResultInterface instance');
-        }
 
         $this->controller = $controller;
         $this->next = $next;
@@ -89,7 +76,7 @@ class Result implements ResultInterface
      * @return \ReflectionFunction|\ReflectionMethod
      * @throws \ReflectionException
      */
-    private function getReflectionInstance()
+    private function getReflectionInstance(): \ReflectionFunctionAbstract
     {
         if (\is_array($this->controller) && 2 === \count($this->controller)) {
             //Reflection the method's argument in the controller class
@@ -109,7 +96,7 @@ class Result implements ResultInterface
     /**
      * To extract controller's parameter from \Reflection Api and convert into ParameterInterface instance.
      *
-     * @return array
+     * @return array<string, ParameterInterface>
      * @throws \ReflectionException
      */
     private function extractArguments(): array

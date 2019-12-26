@@ -1,8 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
-/**
+/*
  * East Foundation.
  *
  * LICENSE
@@ -21,6 +19,8 @@ declare(strict_types=1);
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
+
+declare(strict_types=1);
 
 namespace Teknoo\East\Foundation\Processor;
 
@@ -41,12 +41,6 @@ use Teknoo\Recipe\Bowl\RecipeBowl;
  */
 class LoopDetector implements LoopDetectorInterface
 {
-    /**
-     * @param RecipeBowl $bowl
-     * @param ManagerInterface $manager
-     * @param ResultInterface|null $result
-     * @return LoopDetectorInterface
-     */
     public function __invoke(
         RecipeBowl $bowl,
         ManagerInterface $manager,

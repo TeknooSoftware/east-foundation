@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * East Foundation.
  *
  * LICENSE
@@ -19,14 +20,16 @@
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
 
+declare(strict_types=1);
+
 namespace Teknoo\East\FoundationBundle\Http;
 
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Teknoo\East\Foundation\Http\ClientInterface;
 
 /**
  * Interface NeedResponseEventInterface to complete Teknoo\East\Foundation\Http\ClientInterface to define a method
- * to register the GetResponseEvent instance into the client via the KernelListener and update it following the
+ * to register the RequestEvent instance into the client via the KernelListener and update it following the
  * Kernel loop to keep a client usable with Symfony.
  *
  * @see http://symfony.com/doc/current/components/http_kernel.html
@@ -41,11 +44,11 @@ use Teknoo\East\Foundation\Http\ClientInterface;
 interface ClientWithResponseEventInterface extends ClientInterface
 {
     /**
-     * To register the GetResponseEvent instance into the client via the KernelListener.
+     * To register the RequestEvent instance into the client via the KernelListener.
      *
-     * @param GetResponseEvent $getResponseEvent
+     * @param RequestEvent $requestEvent
      *
      * @return self
      */
-    public function setGetResponseEvent(GetResponseEvent $getResponseEvent): ClientWithResponseEventInterface;
+    public function setRequestEvent(RequestEvent $requestEvent): ClientWithResponseEventInterface;
 }

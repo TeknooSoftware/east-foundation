@@ -1,8 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
-/**
+/*
  * East Foundation.
  *
  * LICENSE
@@ -21,6 +19,8 @@ declare(strict_types=1);
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
+
+declare(strict_types=1);
 
 namespace Teknoo\East\Foundation\Normalizer\Object;
 
@@ -41,7 +41,7 @@ interface NormalizableInterface
 {
     /**
      * @param EastNormalizerInterface $normalizer
-     * @param array $context
+     * @param array<string, mixed> $context
      * @return NormalizableInterface
      */
     public function exportToMeData(EastNormalizerInterface $normalizer, array $context = []): NormalizableInterface;

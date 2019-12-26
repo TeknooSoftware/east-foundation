@@ -1,8 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
-/**
+/*
  * East Foundation.
  *
  * LICENSE
@@ -22,6 +20,8 @@ declare(strict_types=1);
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
 
+declare(strict_types=1);
+
 namespace Teknoo\East\Foundation\Normalizer;
 
 /**
@@ -38,7 +38,7 @@ namespace Teknoo\East\Foundation\Normalizer;
 interface EastNormalizerInterface
 {
     /**
-     * @param array $data
+     * @param array<string, mixed> $data
      * @return EastNormalizerInterface
      */
     public function injectData(array $data): EastNormalizerInterface;

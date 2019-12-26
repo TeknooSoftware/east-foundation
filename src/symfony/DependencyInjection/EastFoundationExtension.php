@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * East Foundation.
  *
  * LICENSE
@@ -18,6 +19,8 @@
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
+
+declare(strict_types=1);
 
 namespace Teknoo\East\FoundationBundle\DependencyInjection;
 
@@ -42,6 +45,7 @@ class EastFoundationExtension extends Extension
 {
     /**
      * {@inheritdoc}
+     * @param array<mixed> $configs
      * @throws \Exception
      */
     public function load(array $configs, ContainerBuilder $container): EastFoundationExtension
@@ -49,7 +53,7 @@ class EastFoundationExtension extends Extension
         $configuration = new Configuration();
         $this->processConfiguration($configuration, $configs);
 
-        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
 
         return $this;

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * East Foundation.
  *
@@ -22,6 +20,8 @@ declare(strict_types=1);
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
 
+declare(strict_types=1);
+
 namespace Teknoo\East\Foundation\EndPoint;
 
 use Teknoo\East\Foundation\Manager\ManagerInterface;
@@ -40,24 +40,13 @@ use Teknoo\Recipe\RecipeInterface;
  */
 class RecipeEndPoint
 {
-    /**
-     * @var RecipeInterface
-     */
-    private $recipe;
+    private RecipeInterface $recipe;
 
-    /**
-     * RecipeEndPoint constructor.
-     * @param RecipeInterface $recipe
-     */
     public function __construct(RecipeInterface $recipe)
     {
         $this->recipe = $recipe;
     }
 
-    /**
-     * @param ManagerInterface $manager
-     * @return RecipeEndPoint
-     */
     public function __invoke(
         ManagerInterface $manager
     ): RecipeEndPoint {

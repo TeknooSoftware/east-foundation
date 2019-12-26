@@ -60,7 +60,7 @@ class ParameterTest extends AbstractParameterTest
 
     public function testConstructBadClass()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(\TypeError::class);
         new Parameter('foo', false, null, new \DateTime());
     }
 }

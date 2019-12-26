@@ -1,5 +1,37 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[2.0.0-beta6] - 2019-12-23
+###Change
+- Fix Make definitions tools
+- Fix QA issues spotted by PHPStan
+- Enable PHPStan extension dedicated to support Stated classes
+
+##[2.0.0-beta5] - 2019-11-28
+###Change
+- Enable PHPStan in QA Tools
+
+##[2.0.0-beta4] - 2019-11-28
+###Change
+- Set `Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory` into Symfony's services definitions 
+to avoid compilation error with Symfony 4.4
+
+##[2.0.0-beta3] - 2019-11-28
+###Change
+- Set `Teknoo\East\Foundation\Manager\ManagerInterface` and `Teknoo\East\Foundation\Http\ClientInterface` as synthetic
+services into Symfony's services definitions to avoid compilation error with Symfony 4.4
+
+##[2.0.0-beta2] - 2019-11-27
+###Change
+- Support zendframework/zend-diactoros 2.2
+
+##[2.0.0-beta1] - 2019-11-27
+###Change
+- PHP 7.4 is the minimum required
+- Switch to typed properties
+- Remove some PHP useless DockBlocks
+- Replace array_merge by "..." operators for integer indexed arrays
+- Restrict to Symfony 4.4 or 5.+ and remove some deprecated
+
 ##[1.0.2] - 2019-10-24
 ###Release
 - Maintenance release, QA and update dev vendors requirements

@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * East Foundation.
  *
  * LICENSE
@@ -19,17 +20,20 @@
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
 
+declare(strict_types=1);
+
 namespace Teknoo\East\FoundationBundle\Resources\config;
 
-use function DI\get;
-use function DI\decorate;
-use function DI\create;
 use Psr\Container\ContainerInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Teknoo\East\Foundation\Recipe\RecipeInterface;
 use Teknoo\East\FoundationBundle\Http\Client;
 use Teknoo\East\FoundationBundle\Session\SessionMiddleware;
+
+use function DI\get;
+use function DI\decorate;
+use function DI\create;
 
 return [
     SessionMiddleware::class => create(SessionMiddleware::class),

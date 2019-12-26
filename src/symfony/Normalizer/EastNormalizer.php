@@ -1,8 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
-/**
+/*
  * East Foundation.
  *
  * LICENSE
@@ -21,6 +19,8 @@ declare(strict_types=1);
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
+
+declare(strict_types=1);
 
 namespace Teknoo\East\FoundationBundle\Normalizer;
 
@@ -45,14 +45,11 @@ use Teknoo\East\Foundation\Normalizer\Object\NormalizableInterface;
 class EastNormalizer implements EastNormalizerInterface, NormalizerInterface, NormalizerAwareInterface
 {
     /**
-     * @var array
+     * @var array<string, mixed>
      */
-    private $data = [];
+    private array $data = [];
 
-    /**
-     * @var NormalizerInterface
-     */
-    private $normalizer;
+    private ?NormalizerInterface $normalizer = null;
 
     /**
      * @inheritDoc
@@ -66,6 +63,7 @@ class EastNormalizer implements EastNormalizerInterface, NormalizerInterface, No
 
     /**
      * @inheritDoc
+     * @param array<string, mixed> $data
      */
     public function injectData(array $data): EastNormalizerInterface
     {
@@ -86,6 +84,9 @@ class EastNormalizer implements EastNormalizerInterface, NormalizerInterface, No
 
     /**
      * @inheritDoc
+     * @param mixed $object
+     * @param string|null $format
+     * @param array<string, mixed> $context
      */
     public function normalize($object, $format = null, array $context = array())
     {
@@ -119,6 +120,8 @@ class EastNormalizer implements EastNormalizerInterface, NormalizerInterface, No
 
     /**
      * @inheritDoc
+     * @param mixed $data
+     * @param string|null $format
      */
     public function supportsNormalization($data, $format = null)
     {
