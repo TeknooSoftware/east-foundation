@@ -165,6 +165,12 @@ Short Example
     $manager->receiveRequest($client, $request2);
     //Print: request /bar, endpoint 2, value : foo
 
+Support this project
+---------------------
+
+This project is free and will remain free, but it is developed on my personal time. 
+If you like it and help me maintain it and evolve it, don't hesitate to support me on [Patreon](https://patreon.com/teknoo_software).
+Thanks :) Richard. 
 
 Installation & Requirements
 ---------------------------
@@ -174,12 +180,30 @@ To install this library with composer, run this command :
 
 This library requires :
 
-    * PHP 7.2+
+    * PHP 7.4+
     * A PHP autoloader (Composer is recommended)
     * Teknoo/Immutable.
     * Teknoo/States.
     * Teknoo/Recipe.
-    * Optional: Symfony 3.4+
+    * Optional: Symfony 4.4+
+
+News from Teknoo East Foundation 2.0
+----------------------------
+
+This library requires PHP 7.4 or newer and it's only compatible with Symfony 4.4 or newer, Some change causes bc breaks :
+
+- PHP 7.4 is the minimum required
+- Switch to typed properties
+- Remove some PHP useless DockBlocks
+- Replace array_merge by "..." operators for integer indexed arrays
+- Support zendframework/zend-diactoros 2.2
+- Restrict to Symfony 4.4 or 5.+ and remove some deprecated
+- Set `Teknoo\East\Foundation\Manager\ManagerInterface` and `Teknoo\East\Foundation\Http\ClientInterface` as synthetic
+services into Symfony's services definitions to avoid compilation error with Symfony 4.4
+- Set `Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory` into Symfony's services definitions 
+to avoid compilation error with Symfony 4.4
+- Enable PHPStan in QA Tools and disable PHPMD
+
 
 Credits
 -------
