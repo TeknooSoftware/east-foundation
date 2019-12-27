@@ -54,6 +54,12 @@
         }
     },
     "archive": {
-        "exclude": ["demo", "vendor", ".idea"]
+        "exclude": ["docs", "features", ".idea"]
+    },
+    "extra": {
+        "thanks": {
+            "name": "teknoo/recipe",
+            "url": "https://github.com/TeknooSoftware/recipe"
+        }
     }
 }
