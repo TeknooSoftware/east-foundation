@@ -27,8 +27,9 @@ use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\East\Foundation\Router\ResultInterface;
-use Teknoo\East\Foundation\Router\RouterInterface;
 use Teknoo\East\FoundationBundle\Router\Router;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller as SymfonyController;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController as SymfonyAbstractController;
 use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 use Zend\Diactoros\Uri;
 
@@ -333,7 +334,75 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testExecuteWithControllerInCOntainer()
+    public function testExecuteWithSymfonyControllerStatic()
+    {
+        /**
+         * @var \PHPUnit\Framework\MockObject\MockObject|ClientInterface
+         */
+        $client = $this->createMock(ClientInterface::class);
+        /**
+         * @var ServerRequestInterface|\PHPUnit\Framework\MockObject\MockObject $request
+         */
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->expects(self::any())->method('getUri')->willReturn(new class() extends Uri {
+        });
+        /**
+         * @var ManagerInterface|\PHPUnit\Framework\MockObject\MockObject $manager
+         */
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects(self::never())->method('updateWorkPlan');
+
+        $class = new class extends SymfonyController {
+            public static function action()
+            {
+            }
+        };
+
+        $this->getUrlMatcherMock()->expects(self::any())->method('match')->willReturn(['_controller' => \get_class($class).'::action']);
+
+        $manager->expects(self::never())->method('continueExecution');
+
+        self::assertInstanceOf(
+            $this->getRouterClass(),
+            $this->buildRouter()->execute($client, $request, $manager)
+        );
+    }
+
+    public function testExecuteWithSymfonyAbstractControllerStatic()
+    {
+        /**
+         * @var \PHPUnit\Framework\MockObject\MockObject|ClientInterface
+         */
+        $client = $this->createMock(ClientInterface::class);
+        /**
+         * @var ServerRequestInterface|\PHPUnit\Framework\MockObject\MockObject $request
+         */
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->expects(self::any())->method('getUri')->willReturn(new class() extends Uri {
+        });
+        /**
+         * @var ManagerInterface|\PHPUnit\Framework\MockObject\MockObject $manager
+         */
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects(self::never())->method('updateWorkPlan');
+
+        $class = new class extends SymfonyAbstractController {
+            public static function action()
+            {
+            }
+        };
+
+        $this->getUrlMatcherMock()->expects(self::any())->method('match')->willReturn(['_controller' => \get_class($class).'::action']);
+
+        $manager->expects(self::never())->method('continueExecution');
+
+        self::assertInstanceOf(
+            $this->getRouterClass(),
+            $this->buildRouter()->execute($client, $request, $manager)
+        );
+    }
+
+    public function testExecuteWithControllerInContainer()
     {
         /**
          * @var \PHPUnit\Framework\MockObject\MockObject|ClientInterface
@@ -362,6 +431,72 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         });
 
         $manager->expects(self::once())->method('continueExecution')->willReturnSelf();
+
+        self::assertInstanceOf(
+            $this->getRouterClass(),
+            $this->buildRouter()->execute($client, $request, $manager)
+        );
+    }
+
+    public function testExecuteWithSymfonyControllerInContainer()
+    {
+        /**
+         * @var \PHPUnit\Framework\MockObject\MockObject|ClientInterface
+         */
+        $client = $this->createMock(ClientInterface::class);
+        /**
+         * @var ServerRequestInterface|\PHPUnit\Framework\MockObject\MockObject $request
+         */
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->expects(self::any())->method('getUri')->willReturn(new class() extends Uri {
+        });
+        /**
+         * @var ManagerInterface|\PHPUnit\Framework\MockObject\MockObject $manager
+         */
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects(self::never())->method('updateWorkPlan');
+
+        $this->getUrlMatcherMock()->expects(self::any())->method('match')->willReturn(['_controller' => 'fooBar']);
+
+        $this->getContainerMock()->expects(self::any())->method('has')->with('fooBar')->willReturn(true);
+        $this->getContainerMock()->expects(self::any())->method('get')->with('fooBar')->willReturn(
+            new class extends SymfonyController {}
+        );
+
+        $manager->expects(self::never())->method('continueExecution');
+
+        self::assertInstanceOf(
+            $this->getRouterClass(),
+            $this->buildRouter()->execute($client, $request, $manager)
+        );
+    }
+
+    public function testExecuteWithSymfonyAbstractControllerInContainer()
+    {
+        /**
+         * @var \PHPUnit\Framework\MockObject\MockObject|ClientInterface
+         */
+        $client = $this->createMock(ClientInterface::class);
+        /**
+         * @var ServerRequestInterface|\PHPUnit\Framework\MockObject\MockObject $request
+         */
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->expects(self::any())->method('getUri')->willReturn(new class() extends Uri {
+        });
+        /**
+         * @var ManagerInterface|\PHPUnit\Framework\MockObject\MockObject $manager
+         */
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects(self::never())->method('updateWorkPlan');
+
+        $this->getUrlMatcherMock()->expects(self::any())->method('match')->willReturn(['_controller' => 'fooBar']);
+
+        $this->getContainerMock()->expects(self::any())->method('has')->with('fooBar')->willReturn(true);
+        $this->getContainerMock()->expects(self::any())->method('get')->with('fooBar')->willReturn(
+            new class extends SymfonyAbstractController {}
+        );
+
+        $manager->expects(self::never())->method('continueExecution')->willReturnSelf();
 
         self::assertInstanceOf(
             $this->getRouterClass(),

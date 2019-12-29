@@ -10,9 +10,6 @@ parameters:
             message: '#Method [a-zA-Z0-9\\_]+::matchRequest\(\) should return \(callable\)|null but returns array<int, string>.#'
             path: src/symfony/Router/Router.php
         -
-            message: '#Unreachable statement - code above always terminates.#'
-            path: src/symfony/Router/Router.php
-        -
             message: '#Parameter \#1 $with of method [a-zA-Z0-9\\_]+::updateWorkPlan\(\) expects array<string, mixed>, array<int|string, mixed> given.#'
             path: src/universal/Processor/Processor.php
         -

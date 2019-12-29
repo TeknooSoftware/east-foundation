@@ -25,6 +25,7 @@ declare(strict_types=1);
 namespace Teknoo\East\FoundationBundle\Router;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as SymfonyController;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController as SymfonyAbstractController;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Teknoo\East\Foundation\Http\ClientInterface;
@@ -104,28 +105,41 @@ class Router implements RouterInterface
             return null;
         }
 
-        if (\is_callable($parameters['_controller'])) {
-            if (\is_string($parameters['_controller']) && false !== \strpos($parameters['_controller'], '::')) {
-                return \explode('::', $parameters['_controller']);
-            }
-
-            return $parameters['_controller'];
-        }
-
-        if (!$this->container->has($parameters['_controller'])) {
+        $controller = $parameters['_controller'];
+        if (!($isCallable = \is_callable($controller)) && !$this->container->has($controller)) {
             return null;
         }
 
-        /**
-         * @var callable
-         */
-        $entry = $this->container->get($parameters['_controller']);
+        if ($isCallable && \is_string($controller)) {
+            if (false !== \strpos($controller, '::')) {
+                $controller = \explode('::', $controller);
 
-        if (\is_callable($entry)) {
-            return $entry;
+                if (
+                    \is_subclass_of($controller[0], SymfonyController::class)
+                    || \is_subclass_of($controller[0], SymfonyAbstractController::class)
+                ) {
+                    return null;
+                }
+            }
+
+            return $controller;
         }
 
-        return null;
+        if ($isCallable) {
+            return $controller;
+        }
+
+        $entry = $this->container->get($parameters['_controller']);
+
+        if (
+            !\is_callable($entry)
+            || $entry instanceof SymfonyController
+            || $entry instanceof SymfonyAbstractController
+        ) {
+            return null;
+        }
+
+        return $entry;
     }
 
     /**
