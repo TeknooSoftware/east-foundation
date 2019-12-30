@@ -203,7 +203,8 @@ trait EastEndPointTrait
                 new CallbackStream(function () use ($view, $parameters) {
                     return $this->renderView($view, $parameters);
                 }),
-                $status
+                $status,
+                $headers
             )
         );
 

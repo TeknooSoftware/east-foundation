@@ -1,5 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[2.0.0-beta9] - 2019-12-30
+###Change
+- Allow developpers to pass some header into HTTP Response in EndPointInterface
+
 ##[2.0.0-beta8] - 2019-12-30
 ###Change
 - Allow developpers to pass some header into HTTP Response in EndPointInterface
