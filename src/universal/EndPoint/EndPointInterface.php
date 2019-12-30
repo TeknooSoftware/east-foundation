@@ -45,10 +45,16 @@ interface EndPointInterface
      * @param ClientInterface $client
      * @param string          $url    The URL to redirect to
      * @param int             $status The status code to use for the Response
+     * @param array<string, mixed> $headers An array of values to inject into HTTP header response
      *
      * @return EndPointInterface
      */
-    public function redirect(ClientInterface $client, string $url, int $status = 302): EndPointInterface;
+    public function redirect(
+        ClientInterface $client,
+        string $url,
+        int $status = 302,
+        array $headers = []
+    ): EndPointInterface;
 
     /**
      * Renders a view via a template engine like Twig or another system.
@@ -57,13 +63,15 @@ interface EndPointInterface
      * @param string               $view       The view name
      * @param array<string, mixed> $parameters An array of parameters to pass to the view
      * @param int                  $status The status code to use for the Response
+     * @param array<string, mixed> $headers An array of values to inject into HTTP header response
      *
      * @return EndPointInterface
      */
     public function render(
         ClientInterface $client,
         string $view,
-        array $parameters = array(),
-        int $status = 200
+        array $parameters = [],
+        int $status = 200,
+        array $headers = []
     ): EndPointInterface;
 }

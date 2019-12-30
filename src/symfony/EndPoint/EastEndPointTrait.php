@@ -126,12 +126,17 @@ trait EastEndPointTrait
      * @param ClientInterface $client
      * @param string          $url    The URL to redirect to
      * @param int             $status The status code to use for the Response
+     * @param array<string, mixed> $headers An array of values to inject into HTTP header response
      *
      * @return EndPointInterface
      */
-    public function redirect(ClientInterface $client, string $url, int $status = 302): EndPointInterface
-    {
-        $client->acceptResponse(new Response\RedirectResponse($url, $status));
+    public function redirect(
+        ClientInterface $client,
+        string $url,
+        int $status = 302,
+        array $headers = []
+    ): EndPointInterface {
+        $client->acceptResponse(new Response\RedirectResponse($url, $status, $headers));
 
         return $this;
     }
@@ -182,6 +187,7 @@ trait EastEndPointTrait
      * @param string          $view       The view name
      * @param array           $parameters An array of parameters to pass to the view
      * @param int             $status The status code to use for the Response
+     * @param array<string, mixed> $headers An array of values to inject into HTTP header response
      *
      * @return EndPointInterface
      */
@@ -189,7 +195,8 @@ trait EastEndPointTrait
         ClientInterface $client,
         string $view,
         array $parameters = array(),
-        int $status = 200
+        int $status = 200,
+        array $headers = []
     ): EndPointInterface {
         $client->acceptResponse(
             new Response\HtmlResponse(
