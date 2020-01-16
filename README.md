@@ -1,7 +1,11 @@
 Teknoo Software - East Foundation
 =================================
 
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/6d14de07-2c9e-4070-a044-c9362fe2dc08/mini.png)](https://insight.sensiolabs.com/projects/6d14de07-2c9e-4070-a044-c9362fe2dc08) [![Build Status](https://travis-ci.org/TeknooSoftware/east-foundation.svg?branch=master)](https://travis-ci.org/TeknooSoftware/east-foundation)
+[![Build Status](https://travis-ci.com/TeknooSoftware/east-foundation.svg?branch=master)](https://travis-ci.com/TeknooSoftware/east-foundation)
+[![Latest Stable Version](https://poser.pugx.org/teknoo/east-foundation/v/stable)](https://packagist.org/packages/teknoo/east-foundation)
+[![Total Downloads](https://poser.pugx.org/teknoo/east-foundation/downloads)](https://packagist.org/packages/teknoo/east-foundation)
+[![License](https://poser.pugx.org/teknoo/east-foundation/license)](https://packagist.org/packages/teknoo/east-foundation)
+[![PHPStan](https://img.shields.io/badge/PHPStan-enabled-brightgreen.svg?style=flat)](https://github.com/phpstan/phpstan)
 
 East Foundation is a universal package to implement the [#east](http://blog.est.voyage/phpTour2015/) philosophy with 
 any framework supporting PSR-11 or with Symfony 3+. :
