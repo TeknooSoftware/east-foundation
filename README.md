@@ -20,6 +20,7 @@ Short Example
 
     <?php
 
+    use Teknoo\East\Foundation\Router\ResultInterface;
     use function DI\decorate;
     use DI\ContainerBuilder;
     use Psr\Http\Message\ResponseInterface;
@@ -32,70 +33,57 @@ Short Example
     use Teknoo\East\Foundation\Router\RouterInterface;
     use Zend\Diactoros\ServerRequest;
     use Zend\Diactoros\Response\TextResponse;
-
+    
     require_once 'vendor/autoload.php';
-
-    /**
-     * Simulate client, accepts responses from controller and pass them to the "framework" or lower layer to send them
-     * to the brower.
-     */
+    
+    //Simulate client, accepts responses from controller and pass them to the "framework" or lower layer to send them to
+    //the browser.
     $client = new class implements ClientInterface {
-        /**
-         * @var ResponseInterface
-         */
-        private $response;
-
+        private ?ResponseInterface $response = null;
+    
         public function updateResponse(callable $modifier): ClientInterface
         {
             $modifier($this, $this->response);
-
+    
             return $this;
         }
-
+    
         public function acceptResponse(ResponseInterface $response): ClientInterface
         {
             $this->response = $response;
-
+    
             return $this;
         }
-
+    
         public function sendResponse(ResponseInterface $response = null , bool $silently = false): ClientInterface
         {
             if ($response instanceof ResponseInterface) {
                 $this->acceptResponse($response);
             }
-
+    
             print (string) $response->getBody().PHP_EOL;
-
+    
             return $this;
         }
-
+    
         public function errorInRequest(\Throwable $throwable): ClientInterface
         {
             print $throwable->getMessage();
-
+    
             return $this;
         }
     };
-
-    /**
-     * First controller / endpoint, dedicated for the request /foo
-     * @param ServerRequestInterface $request
-     * @param ClientInterface $client
-     */
+    
+    //First controller / endpoint, dedicated for the request /foo
     $endPoint1 = function (ServerRequestInterface $request, ClientInterface $client) {
         $client->sendResponse(new TextResponse('request /bar, endpoint 1, value : '.$request->getQueryParams()['value']));
     };
-
-    /**
-     * Second controller / endpoint, dedicated for the request /bar
-     * @param ClientInterface $client
-     * @param string $value
-     */
+    
+    //Second controller / endpoint, dedicated for the request /bar
     $endPoint2 = function (ClientInterface $client, string $value) {
         $client->sendResponse(new TextResponse('request /bar, endpoint 2, value : '.$value));
     };
-
+    
     /**
      * Simulate router
      */
@@ -104,18 +92,18 @@ Short Example
          * @var callable
          */
         private $endPoint1;
-
+    
         /**
          * @var callable
          */
         private $endPoint2;
-
+    
         public function __construct(callable $endPoint1 , callable $endPoint2)
         {
             $this->endPoint1 = $endPoint1;
             $this->endPoint2 = $endPoint2;
         }
-
+    
         public function execute(
             ClientInterface $client ,
             ServerRequestInterface $request ,
@@ -132,17 +120,19 @@ Short Example
                     $result = new Result($this->endPoint2);
                     break;
             }
-
-            $request = $request->withAttribute(RouterInterface::ROUTER_RESULT_KEY, $result);
+    
+            $manager->updateWorkPlan([ResultInterface::class => $result]);
             $manager->continueExecution($client, $request);
-
+    
             return $this;
         }
     };
-
+    
     $builder = new ContainerBuilder();
     $builder->addDefinitions('vendor/teknoo/east-foundation/src/universal/di.php');
     $builder->addDefinitions([
+        RouterInterface::class => $router,
+    
         RecipeInterface::class => decorate(function ($previous) use ($router) {
             if ($previous instanceof RecipeInterface) {
                 $previous = $previous->registerMiddleware(
@@ -150,19 +140,19 @@ Short Example
                     RouterInterface::MIDDLEWARE_PRIORITY
                 );
             }
-
+    
             return $previous;
         })
     ]);
-
+    
     $container = $builder->build();
-
+    
     //Simulate Server request reception
     $request1 = new ServerRequest([], [], '/foo', 'GET');
     $request1 = $request1->withQueryParams(['value' => 'bar']);
     $request2 = new ServerRequest([], [], '/bar', 'GET');
     $request2 = $request2->withQueryParams(['value' => 'foo']);
-
+    
     $manager = $container->get(ManagerInterface::class);
     $manager->receiveRequest($client, $request1);
     //Print: request /bar, endpoint 1, value : bar
