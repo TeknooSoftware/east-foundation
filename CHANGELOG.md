@@ -1,5 +1,11 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[2.0.1] - 2020-01-29
+###Stable Release
+- Fix QA
+- Require Teknoo State 4.0.1+
+- Update requirement for dev tools
+
 ##[2.0.0] - 2020-01-14
 ###Stable Release
 

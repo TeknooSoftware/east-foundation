@@ -4,22 +4,22 @@ parameters:
     checkGenericClassInNonGenericObjectType: false
     ignoreErrors:
         -
-            message: '#Cannot call method createResponse\(\) on [a-zA-Z0-9\\_]+|null.#'
+            message: '#Cannot call method createResponse\(\) on [a-zA-Z0-9\\_]+\|null.#'
             path: src/symfony/Http/Client.php
         -
-            message: '#Method [a-zA-Z0-9\\_]+::matchRequest\(\) should return \(callable\)|null but returns array<int, string>.#'
+            message: '#Method [a-zA-Z0-9\\_]+::matchRequest\(\) should return \(callable\)\|null but returns array<int, string>.#'
             path: src/symfony/Router/Router.php
         -
-            message: '#Parameter \#1 $with of method [a-zA-Z0-9\\_]+::updateWorkPlan\(\) expects array<string, mixed>, array<int|string, mixed> given.#'
+            message: '#Parameter \#1 \$with of method [a-zA-Z0-9\\_]+::updateWorkPlan\(\) expects array<string, mixed>, array<int\|string, mixed> given.#'
             path: src/universal/Processor/Processor.php
         -
-            message: '#Method [a-zA-Z0-9\\_]+::getParameters\(\) should return array<string, mixed> but returns array<int|string, mixed>.#'
+            message: '#Method [a-zA-Z0-9\\_]+::getParameters\(\) should return array<string, mixed> but returns array<int\|string, mixed>.#'
             path: src/universal/Processor/Processor.php
         -
             message: '#Method [a-zA-Z0-9\\_]+::registerMiddleware\(\) should return [a-zA-Z0-9\\_]+ but returns [a-zA-Z0-9\\_]+.#'
             path: src/universal/Recipe/Recipe.php
         -
-            message: '#Parameter \#1 $name of class ReflectionFunction constructor expects Closure|string, callable\(\): mixed given.#'
+            message: '#Parameter \#1 \$name of class ReflectionFunction constructor expects Closure\|string, callable\(\): mixed given.#'
             path: src/universal/Router/Result.php
         -
             message: '#Anonymous function should return [a-zA-Z0-9\\_]+ but returns Teknoo\\Recipe\\RecipeInterface.#'
