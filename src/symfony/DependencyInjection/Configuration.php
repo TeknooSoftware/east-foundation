@@ -47,9 +47,6 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder(): TreeBuilder
     {
-        $treeBuilder = new TreeBuilder();
-        $treeBuilder->root('teknoo_east_foundation');
-
-        return $treeBuilder;
+        return new TreeBuilder('teknoo_east_foundation');
     }
 }

@@ -1,5 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[2.0.2] - 2020-02-06
+###Stable Release
+- Fix in Symfony Configuration the TreeBuilder Configuration to remove deprecated defintion of root. 
+
 ##[2.0.1] - 2020-01-29
 ###Stable Release
 - Fix QA
