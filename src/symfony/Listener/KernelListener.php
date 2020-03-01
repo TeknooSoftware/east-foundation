@@ -25,7 +25,7 @@ declare(strict_types=1);
 namespace Teknoo\East\FoundationBundle\Listener;
 
 use Psr\Http\Message\ServerRequestInterface;
-use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
+use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
@@ -50,16 +50,16 @@ class KernelListener
 
     private ClientWithResponseEventInterface $client;
 
-    private DiactorosFactory $diactorosFactory;
+    private HttpMessageFactoryInterface $factory;
 
     public function __construct(
         ManagerInterface $manager,
         ClientWithResponseEventInterface $event,
-        DiactorosFactory $diactorosFactory
+        HttpMessageFactoryInterface $factory
     ) {
         $this->manager = $manager;
         $this->client = $event;
-        $this->diactorosFactory = $diactorosFactory;
+        $this->factory = $factory;
     }
 
     /**
@@ -71,7 +71,7 @@ class KernelListener
      */
     private function getPsrRequest(Request $symfonyRequest): ServerRequestInterface
     {
-        $psrRequest = $this->diactorosFactory->createRequest($symfonyRequest);
+        $psrRequest = $this->factory->createRequest($symfonyRequest);
         $psrRequest = $psrRequest->withAttribute('request', $symfonyRequest);
 
         return $psrRequest;

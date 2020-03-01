@@ -26,7 +26,7 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Teknoo\East\FoundationBundle\Http\ClientWithResponseEventInterface;
 use Teknoo\East\FoundationBundle\Listener\KernelListener;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
-use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
+use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Zend\Diactoros\ServerRequest;
 
 /**
@@ -53,9 +53,9 @@ class KernelListenerTest extends \PHPUnit\Framework\TestCase
     private $clientWithResponseEventInterface;
 
     /**
-     * @var DiactorosFactory
+     * @var HttpMessageFactoryInterface
      */
-    private $diactorosFactory;
+    private $factory;
 
     /**
      * @return ManagerInterface|\PHPUnit\Framework\MockObject\MockObject
@@ -82,15 +82,15 @@ class KernelListenerTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @return DiactorosFactory|\PHPUnit\Framework\MockObject\MockObject
+     * @return HttpMessageFactoryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
-    private function getDiactorosFactoryMock()
+    private function getFactoryMock()
     {
-        if (!$this->diactorosFactory instanceof DiactorosFactory) {
-            $this->diactorosFactory = $this->createMock(DiactorosFactory::class);
+        if (!$this->factory instanceof HttpMessageFactoryInterface) {
+            $this->factory = $this->createMock(HttpMessageFactoryInterface::class);
         }
 
-        return $this->diactorosFactory;
+        return $this->factory;
     }
 
     /**
@@ -101,7 +101,7 @@ class KernelListenerTest extends \PHPUnit\Framework\TestCase
         return new KernelListener(
             $this->getManagerMock(),
             $this->getClientWithResponseEventInterfaceMock(),
-            $this->getDiactorosFactoryMock()
+            $this->getFactoryMock()
         );
     }
 
@@ -118,7 +118,7 @@ class KernelListenerTest extends \PHPUnit\Framework\TestCase
         $request = $this->createMock(RequestEvent::class);
         $request->expects(self::any())->method('getRequest')->willReturn(new Request());
 
-        $this->getDiactorosFactoryMock()
+        $this->getFactoryMock()
             ->expects(self::any())
             ->method('createRequest')
             ->willReturn(new ServerRequest());
@@ -144,7 +144,7 @@ class KernelListenerTest extends \PHPUnit\Framework\TestCase
         $request = $this->createMock(RequestEvent::class);
         $request->expects(self::any())->method('getRequest')->willReturn($symfonyRequest);
 
-        $this->getDiactorosFactoryMock()
+        $this->getFactoryMock()
             ->expects(self::any())
             ->method('createRequest')
             ->willReturn(new ServerRequest());

@@ -22,8 +22,9 @@ services:
   Teknoo\East\Foundation\Http\ClientInterface:
     synthetic: true
 
-  Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory:
-    class: 'Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory'
+  Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface:
+    class: 'Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory'
+    autowire: true
 
   #Symfony kernel event listener
   teknoo.east.symfony.listener.kernel:
@@ -31,7 +32,7 @@ services:
     arguments:
       - '@Teknoo\East\Foundation\Manager\ManagerInterface'
       - '@Teknoo\East\Foundation\Http\ClientInterface'
-      - '@Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory'
+      - '@Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface'
     tags:
       - { name: 'kernel.event_listener', event: 'kernel.request', method: 'onKernelRequest' }
 
