@@ -1,5 +1,11 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[2.0.3-beta1] - 2020-03-01
+###Stable Release
+- Update dev tools, migrate to PHPUnit 9.0, phploc 6.0, phpcpd 5.0 
+- Support symfony/psr-http-message-bridge also 2.0
+- Migrate Symfony implementation to infrastructures
+
 ##[2.0.2] - 2020-02-06
 ###Stable Release
 - Fix in Symfony Configuration the TreeBuilder Configuration to remove deprecated defintion of root. 
