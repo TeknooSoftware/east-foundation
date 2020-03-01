@@ -5,10 +5,10 @@ parameters:
     ignoreErrors:
         -
             message: '#Cannot call method createResponse\(\) on [a-zA-Z0-9\\_]+\|null.#'
-            path: src/symfony/Http/Client.php
+            path: infrastructures/symfony/Http/Client.php
         -
             message: '#Method [a-zA-Z0-9\\_]+::matchRequest\(\) should return \(callable\)\|null but returns array<int, string>.#'
-            path: src/symfony/Router/Router.php
+            path: infrastructures/symfony/Router/Router.php
         -
             message: '#Parameter \#1 \$with of method [a-zA-Z0-9\\_]+::updateWorkPlan\(\) expects array<string, mixed>, array<int\|string, mixed> given.#'
             path: src/universal/Processor/Processor.php

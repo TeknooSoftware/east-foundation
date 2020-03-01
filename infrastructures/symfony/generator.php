@@ -22,5 +22,12 @@
 
 declare(strict_types=1);
 
-//To avoid BC Breaks
-return include \dirname(__DIR__, 2) . '/infrastructures/symfony/generator.php';
+namespace Teknoo\East\FoundationBundle;
+
+use DI\ContainerBuilder;
+
+$containerDefinition = new ContainerBuilder();
+$containerDefinition->addDefinitions(__DIR__ . '/../../src/universal/di.php');
+$containerDefinition->addDefinitions(__DIR__ . '/Resources/config/di.php');
+
+return $containerDefinition->build();

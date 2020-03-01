@@ -17,6 +17,7 @@
     <filter>
         <whitelist>
             <directory>src</directory>
+            <directory>infrastructures</directory>
             <exclude>
                 <directory>docs</directory>
                 <directory>licences</directory>

@@ -51,7 +51,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
      */
     protected function buildContainer() : Container
     {
-        return include __DIR__.'/../../../src/symfony/generator.php';
+        return include __DIR__.'/../../../../src/symfony/generator.php';
     }
 
     public function testCreateManager()
