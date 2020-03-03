@@ -21,13 +21,13 @@
 
 namespace Teknoo\Tests\East\FoundationBundle\Listener;
 
+use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Teknoo\East\FoundationBundle\Http\ClientWithResponseEventInterface;
 use Teknoo\East\FoundationBundle\Listener\KernelListener;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
-use Zend\Diactoros\ServerRequest;
 
 /**
  * Class KernelListenerTest.
@@ -118,10 +118,13 @@ class KernelListenerTest extends \PHPUnit\Framework\TestCase
         $request = $this->createMock(RequestEvent::class);
         $request->expects(self::any())->method('getRequest')->willReturn(new Request());
 
+        $psrRquest = $this->createMock(ServerRequestInterface::class);
+        $psrRquest->expects(self::any())->method('withAttribute')->willReturnSelf();
+
         $this->getFactoryMock()
             ->expects(self::any())
             ->method('createRequest')
-            ->willReturn(new ServerRequest());
+            ->willReturn($psrRquest);
 
         $this->getClientWithResponseEventInterfaceMock()
             ->expects(self::once())
@@ -147,7 +150,7 @@ class KernelListenerTest extends \PHPUnit\Framework\TestCase
         $this->getFactoryMock()
             ->expects(self::any())
             ->method('createRequest')
-            ->willReturn(new ServerRequest());
+            ->willReturn($this->createMock(ServerRequestInterface::class));
 
         $this->getClientWithResponseEventInterfaceMock()
             ->expects(self::never())

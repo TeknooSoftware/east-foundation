@@ -22,11 +22,12 @@
 
 declare(strict_types=1);
 
-namespace Teknoo\East\FoundationBundle\EndPoint;
+namespace Teknoo\East\Foundation\Http\Message;
+
+use Psr\Http\Message\StreamInterface;
 
 /**
- * Trait to help developer to write endpoint with Symfony (also called controller) and reuse Symfony component like
- * router or twig engine?
+ * Interface to define Stream able to manage asynchronous callback content generation
  *
  * @copyright   Copyright (c) 2009-2020 Richard Déloge (richarddeloge@gmail.com)
  *
@@ -35,10 +36,16 @@ namespace Teknoo\East\FoundationBundle\EndPoint;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-trait EastEndPointTrait
+interface CallbackStreamInterface extends StreamInterface
 {
-    use AuthenticationTrait;
-    use ExceptionTrait;
-    use RoutingTrait;
-    use TemplatingTrait;
+    /**
+     * Attach a new callback to the instance.
+     */
+    public function bind(callable $callback): CallbackStreamInterface;
+
+    /**
+     * Separates any underlying resources from the stream.
+     * After the stream has been detached, the stream is in an unusable state.
+     */
+    public function unbind(): CallbackStreamInterface;
 }

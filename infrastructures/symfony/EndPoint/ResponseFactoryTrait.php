@@ -24,6 +24,9 @@ declare(strict_types=1);
 
 namespace Teknoo\East\FoundationBundle\EndPoint;
 
+use Psr\Http\Message\ResponseFactoryInterface;
+use Psr\Http\Message\ResponseInterface;
+
 /**
  * Trait to help developer to write endpoint with Symfony (also called controller) and reuse Symfony component like
  * router or twig engine?
@@ -35,10 +38,23 @@ namespace Teknoo\East\FoundationBundle\EndPoint;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-trait EastEndPointTrait
+trait ResponseFactoryTrait
 {
-    use AuthenticationTrait;
-    use ExceptionTrait;
-    use RoutingTrait;
-    use TemplatingTrait;
+    protected ResponseFactoryInterface $responseFactory;
+
+    public function setResponseFactory(ResponseFactoryInterface $responseFactory): self
+    {
+        $this->responseFactory = $responseFactory;
+
+        return $this;
+    }
+
+    private function addHeadersIntoResponse(ResponseInterface $response, array &$headers): ResponseInterface
+    {
+        foreach ($headers as $name => &$value) {
+            $response = $response->withHeader($name, $value);
+        }
+
+        return $response;
+    }
 }

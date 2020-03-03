@@ -1,6 +1,5 @@
 <?php
-
-/*
+/**
  * East Foundation.
  *
  * LICENSE
@@ -20,25 +19,35 @@
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
 
-declare(strict_types=1);
+namespace Teknoo\Tests\East\Diactoros;
 
-namespace Teknoo\East\FoundationBundle\EndPoint;
+use Teknoo\East\Diactoros\CallbackStream;
 
 /**
- * Trait to help developer to write endpoint with Symfony (also called controller) and reuse Symfony component like
- * router or twig engine?
- *
  * @copyright   Copyright (c) 2009-2020 Richard Déloge (richarddeloge@gmail.com)
  *
  * @link        http://teknoo.software/east Project website
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
+ *
+ * @covers \Teknoo\East\Diactoros\CallbackStream
  */
-trait EastEndPointTrait
+class CallbackStreamTest extends \PHPUnit\Framework\TestCase
 {
-    use AuthenticationTrait;
-    use ExceptionTrait;
-    use RoutingTrait;
-    use TemplatingTrait;
+    public function testBind()
+    {
+        self::assertInstanceOf(
+            CallbackStream::class,
+            (new CallbackStream(function () {}))->bind(function () {})
+        );
+    }
+
+    public function testUnbind()
+    {
+        self::assertInstanceOf(
+            CallbackStream::class,
+            (new CallbackStream(function () {}))->unbind()
+        );
+    }
 }

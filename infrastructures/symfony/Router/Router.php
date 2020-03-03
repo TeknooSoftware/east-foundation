@@ -95,7 +95,7 @@ class Router implements RouterInterface
     {
         try {
             $parameters = $this->matcher->match(
-                $this->cleanSymfonyHandler($request->getUri()->getPath())
+                $this->cleanSymfonyHandler((string) $request->getUri()->getPath())
             );
         } catch (ResourceNotFoundException $e) {
             /* Do nothing, keep the framework to manage it */

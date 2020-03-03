@@ -21,6 +21,8 @@
 
 namespace Teknoo\Tests\East\FoundationBunlde\EndPoint;
 
+use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Http\Message\StreamInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
@@ -28,10 +30,11 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Templating\EngineInterface;
 use Teknoo\East\Foundation\EndPoint\EndPointInterface;
+use Teknoo\East\Foundation\Http\Message\CallbackStreamInterface;
 use Teknoo\East\FoundationBundle\EndPoint\EastEndPointTrait;
 use Teknoo\East\Foundation\Http\ClientInterface;
-use Zend\Diactoros\Response\HtmlResponse;
-use Zend\Diactoros\Response\RedirectResponse;
+use Psr\Http\Message\ResponseFactoryInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Class ControllerTest.
@@ -42,7 +45,11 @@ use Zend\Diactoros\Response\RedirectResponse;
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
+ * @covers \Teknoo\East\FoundationBundle\EndPoint\AuthenticationTrait
  * @covers \Teknoo\East\FoundationBundle\EndPoint\EastEndPointTrait
+ * @covers \Teknoo\East\FoundationBundle\EndPoint\ExceptionTrait
+ * @covers \Teknoo\East\FoundationBundle\EndPoint\RoutingTrait
+ * @covers \Teknoo\East\FoundationBundle\EndPoint\TemplatingTrait
  */
 class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
 {
@@ -85,11 +92,16 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
 
     public function testRedirect()
     {
+        $responseFactory = $this->createMock(ResponseFactoryInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
+        $response->expects(self::any())->method('withHeader')->willReturnSelf();
+        $responseFactory->expects(self::any())->method('createResponse')->willReturn($response);
+
         $client = $this->createMock(ClientInterface::class);
         $client->expects(self::once())
             ->method('acceptResponse')
             ->with($this->callback(function ($instance) {
-                return $instance instanceof RedirectResponse;
+                return $instance instanceof ResponseInterface;
             }))
             ->willReturnSelf();
 
@@ -103,12 +115,17 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
 
         self::assertInstanceOf(
             get_class($controller),
-            $controller->getRedirect($client)
+            $controller->setResponseFactory($responseFactory)->getRedirect($client)
         );
     }
 
     public function testRedirectToRoute()
     {
+        $responseFactory = $this->createMock(ResponseFactoryInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
+        $response->expects(self::any())->method('withHeader')->willReturnSelf();
+        $responseFactory->expects(self::any())->method('createResponse')->willReturn($response);
+
         $router = $this->createMock(RouterInterface::class);
         $router->expects(self::any())
             ->method('generate')
@@ -119,7 +136,7 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
         $client->expects(self::once())
             ->method('acceptResponse')
             ->with($this->callback(function ($instance) {
-                return $instance instanceof RedirectResponse;
+                return $instance instanceof ResponseInterface;
             }))
             ->willReturnSelf();
 
@@ -134,17 +151,50 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
 
         self::assertInstanceOf(
             get_class($controller),
-            $controller->setRouter($router)->getRedirect($client)
+            $controller->setResponseFactory($responseFactory)->setRouter($router)->getRedirect($client)
         );
     }
 
     public function testRenderTemplating()
     {
+        $responseFactory = $this->createMock(ResponseFactoryInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
+        $response->expects(self::any())->method('withHeader')->willReturnSelf();
+        $inStream = null;
+        $response->expects(self::any())->method('withBody')->willReturnCallback(
+            function ($value) use (&$inStream, $response) {
+                $inStream = $value;
+                return $response;
+            }
+        );
+        $response->expects(self::any())->method('getBody')->willReturnCallback(
+            function () use (&$inStream) {
+                return $inStream;
+            }
+        );
+        $responseFactory->expects(self::any())->method('createResponse')->willReturn($response);
+
+        $stream = $this->createMock(StreamInterface::class);
+        $body = null;
+        $stream->expects(self::any())->method('write')->willReturnCallback(
+            function ($value) use (&$body) {
+                $body = $value;
+                return \strlen($body);
+            }
+        );
+        $stream->expects(self::any())->method('getContents')->willReturnCallback(
+            function () use (&$body) {
+                return $body;
+            }
+        );
+        $streamFactory = $this->createMock(StreamFactoryInterface::class);
+        $streamFactory->expects(self::any())->method('createStream')->willReturn($stream);
+
         $client = $this->createMock(ClientInterface::class);
         $client->expects(self::once())
             ->method('acceptResponse')
             ->with($this->callback(function ($instance) {
-                return $instance instanceof HtmlResponse && $instance->getBody()->getContents();
+                return $instance instanceof ResponseInterface && $instance->getBody()->getContents();
             }))
             ->willReturnSelf();
 
@@ -162,18 +212,97 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
 
         self::assertInstanceOf(
             get_class($controller),
-            $controller->setTemplating($twigEngine)->getRender($client)
+            $controller
+                ->setStreamFactory($streamFactory)
+                ->setResponseFactory($responseFactory)
+                ->setTemplating($twigEngine)
+                ->getRender($client)
         );
     }
 
     public function testRenderNoRendering()
     {
         $this->expectException(\LogicException::class);
+
+        $stream = $this->createMock(StreamInterface::class);
+        $streamFactory = $this->createMock(StreamFactoryInterface::class);
+        $streamFactory->expects(self::any())->method('createStream')->willReturn($stream);
+
+        $responseFactory = $this->createMock(ResponseFactoryInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
+        $response->expects(self::any())->method('withHeader')->willReturnSelf();
+        $inStream = null;
+        $response->expects(self::any())->method('withBody')->willReturnCallback(
+            function ($value) use (&$inStream, $response) {
+                $inStream = $value;
+                return $response;
+            }
+        );
+        $response->expects(self::any())->method('getBody')->willReturnCallback(
+            function () use (&$inStream) {
+                return $inStream;
+            }
+        );
+        $responseFactory->expects(self::any())->method('createResponse')->willReturn($response);
+
+        $client = $this->createMock(ClientInterface::class);
+        $client->expects(self::never())
+            ->method('acceptResponse');
+
+        (new class() implements EndPointInterface {
+            use EastEndPointTrait;
+
+            public function getRender(ClientInterface $client)
+            {
+                return $this->render($client, 'routeName');
+            }
+        }
+        )->setStreamFactory($streamFactory)->setResponseFactory($responseFactory)->getRender($client);
+    }
+
+    public function testRenderNoRenderingWithCallBackStream()
+    {
+        $this->expectException(\LogicException::class);
+
+        $stream = $this->createMock(CallbackStreamInterface::class);
+        $callBack = null;
+        $stream->expects(self::any())->method('bind')->willReturnCallback(
+            function ($value) use (&$callBack, $stream) {
+                $callBack = $value;
+
+                return $stream;
+            }
+        );
+        $stream->expects(self::any())->method('getContents')->willReturnCallback(
+            function () use (&$callBack) {
+                return $callBack();
+            }
+        );
+        $streamFactory = $this->createMock(StreamFactoryInterface::class);
+        $streamFactory->expects(self::any())->method('createStream')->willReturn($stream);
+
+        $responseFactory = $this->createMock(ResponseFactoryInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
+        $response->expects(self::any())->method('withHeader')->willReturnSelf();
+        $inStream = null;
+        $response->expects(self::any())->method('withBody')->willReturnCallback(
+            function ($value) use (&$inStream, $response) {
+                $inStream = $value;
+                return $response;
+            }
+        );
+        $response->expects(self::any())->method('getBody')->willReturnCallback(
+            function () use (&$inStream) {
+                return $inStream;
+            }
+        );
+        $responseFactory->expects(self::any())->method('createResponse')->willReturn($response);
+
         $client = $this->createMock(ClientInterface::class);
         $client->expects(self::once())
             ->method('acceptResponse')
             ->willReturnCallback(function ($instance) use ($client) {
-                $instance instanceof HtmlResponse && $instance->getBody()->getContents();
+                $instance instanceof ResponseInterface && $instance->getBody()->getContents();
 
                 return $client;
             });
@@ -186,12 +315,18 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
                 return $this->render($client, 'routeName');
             }
         }
-        )->getRender($client);
+        )->setStreamFactory($streamFactory)->setResponseFactory($responseFactory)->getRender($client);
     }
 
     public function testCreateNotFoundException()
     {
         $this->expectException(NotFoundHttpException::class);
+
+        $responseFactory = $this->createMock(ResponseFactoryInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
+        $response->expects(self::any())->method('withHeader')->willReturnSelf();
+        $responseFactory->expects(self::any())->method('createResponse')->willReturn($response);
+
         (new class() implements EndPointInterface {
             use EastEndPointTrait;
 
@@ -200,11 +335,16 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
                 throw $this->createNotFoundException();
             }
         }
-        )->getCreateNotFoundException();
+        )->setResponseFactory($responseFactory)->getCreateNotFoundException();
     }
 
     public function testCreateAccessDeniedException()
     {
+        $responseFactory = $this->createMock(ResponseFactoryInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
+        $response->expects(self::any())->method('withHeader')->willReturnSelf();
+        $responseFactory->expects(self::any())->method('createResponse')->willReturn($response);
+
         $this->expectException(AccessDeniedHttpException::class);
         (new class() implements EndPointInterface {
             use EastEndPointTrait;
@@ -214,12 +354,18 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
                 throw $this->createAccessDeniedException();
             }
         }
-        )->getCreateAccessDeniedException();
+        )->setResponseFactory($responseFactory)->getCreateAccessDeniedException();
     }
 
     public function testGetUserNoStorage()
     {
         $this->expectException(\LogicException::class);
+
+        $responseFactory = $this->createMock(ResponseFactoryInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
+        $response->expects(self::any())->method('withHeader')->willReturnSelf();
+        $responseFactory->expects(self::any())->method('createResponse')->willReturn($response);
+
         (new class() implements EndPointInterface {
             use EastEndPointTrait;
 
@@ -228,7 +374,7 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
                 return $this->getUser();
             }
         }
-        )->getGetUser();
+        )->setResponseFactory($responseFactory)->getGetUser();
     }
 
     public function testGetUser()

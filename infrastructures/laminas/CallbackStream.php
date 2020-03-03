@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * East Foundation.
  *
  * LICENSE
@@ -22,11 +22,13 @@
 
 declare(strict_types=1);
 
-namespace Teknoo\East\FoundationBundle\EndPoint;
+namespace Teknoo\East\Diactoros;
+
+use Laminas\Diactoros\CallbackStream as DiactorosCallbackStream;
+use Teknoo\East\Foundation\Http\Message\CallbackStreamInterface;
 
 /**
- * Trait to help developer to write endpoint with Symfony (also called controller) and reuse Symfony component like
- * router or twig engine?
+ * Adapter of Laminas\Diactoros\CallbackStream for CallbackStreamInterface
  *
  * @copyright   Copyright (c) 2009-2020 Richard Déloge (richarddeloge@gmail.com)
  *
@@ -35,10 +37,25 @@ namespace Teknoo\East\FoundationBundle\EndPoint;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-trait EastEndPointTrait
+class CallbackStream extends DiactorosCallbackStream implements CallbackStreamInterface
 {
-    use AuthenticationTrait;
-    use ExceptionTrait;
-    use RoutingTrait;
-    use TemplatingTrait;
+    /**
+     * @inheritDoc
+     */
+    public function bind(callable $callback): CallbackStreamInterface
+    {
+        $this->attach($callback);
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function unbind(): CallbackStreamInterface
+    {
+        $this->detach();
+
+        return $this;
+    }
 }
