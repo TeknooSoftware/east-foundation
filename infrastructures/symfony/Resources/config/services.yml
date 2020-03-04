@@ -41,3 +41,7 @@ services:
     class: '%teknoo.east.symfony.normalizer.east_normalizer.class%'
     tags:
       - { name: 'serializer.normalizer', priority: 100 }
+
+  #Laminas Support
+  Teknoo\East\Diactoros\CallbackStreamFactory:
+    class: 'Teknoo\East\Diactoros\CallbackStreamFactory'

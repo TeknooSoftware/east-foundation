@@ -25,6 +25,8 @@ declare(strict_types=1);
 namespace Teknoo\East\Diactoros;
 
 use Laminas\Diactoros\CallbackStream as DiactorosCallbackStream;
+use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Http\Message\StreamInterface;
 use Teknoo\East\Foundation\Http\Message\CallbackStreamInterface;
 
 /**
@@ -37,19 +39,49 @@ use Teknoo\East\Foundation\Http\Message\CallbackStreamInterface;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-class CallbackStream extends DiactorosCallbackStream implements CallbackStreamInterface
+class CallbackStreamFactory implements StreamFactoryInterface
 {
-    public function bind(callable $callback): CallbackStreamInterface
+    /**
+     * @inheritDoc
+     */
+    public function createStream(string $content = ''): StreamInterface
     {
-        $this->attach($callback);
-
-        return $this;
+        return new CallbackStream(
+            function () use ($content) {
+                return $content;
+            }
+        );
     }
 
-    public function unbind(): CallbackStreamInterface
+    /**
+     * @inheritDoc
+     */
+    public function createStreamFromFile(string $filename, string $mode = 'r'): StreamInterface
     {
-        $this->detach();
+        return new CallbackStream(
+            function () use ($filename, $mode) {
+                $hF = @\fopen($filename, $mode);
+                if (!$hF) {
+                    throw new \RuntimeException("Can not open $filename");
+                }
 
-        return $this;
+                $content = \stream_get_contents($hF);
+                \fclose($hF);
+
+                return $content;
+            }
+        );
+    }
+
+    /**
+     * @param resource $resource
+     */
+    public function createStreamFromResource($resource): StreamInterface
+    {
+        return new CallbackStream(
+            function () use ($resource) {
+                return \stream_get_contents($resource);
+            }
+        );
     }
 }
