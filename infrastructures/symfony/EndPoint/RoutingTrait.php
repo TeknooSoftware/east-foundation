@@ -26,7 +26,7 @@ namespace Teknoo\East\FoundationBundle\EndPoint;
 
 use Psr\Http\Message\ResponseFactoryInterface;
 use Symfony\Component\Routing\RouterInterface;
-use Teknoo\East\Foundation\EndPoint\EndPointInterface;
+use Teknoo\East\Foundation\EndPoint\RedirectingInterface;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -92,14 +92,14 @@ trait RoutingTrait
      * @param int             $status The status code to use for the Response
      * @param array<string, mixed> $headers An array of values to inject into HTTP header response
      *
-     * @return EndPointInterface
+     * @return RedirectingInterface
      */
     public function redirect(
         ClientInterface $client,
         string $url,
         int $status = 302,
         array $headers = []
-    ): EndPointInterface {
+    ): RedirectingInterface {
         $response = $this->responseFactory->createResponse($status);
 
         $headers['location'] = $url;
@@ -118,14 +118,14 @@ trait RoutingTrait
      * @param array           $parameters An array of parameters
      * @param int             $status     The status code to use for the Response
      *
-     * @return EndPointInterface
+     * @return RedirectingInterface
      */
     protected function redirectToRoute(
         ClientInterface $client,
         string $route,
         array $parameters = array(),
         int $status = 302
-    ): self {
+    ): RedirectingInterface {
         return $this->redirect($client, $this->generateUrl($route, $parameters), $status);
     }
 }

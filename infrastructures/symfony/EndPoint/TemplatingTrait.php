@@ -26,7 +26,7 @@ namespace Teknoo\East\FoundationBundle\EndPoint;
 
 use Psr\Http\Message\StreamFactoryInterface;
 use Symfony\Component\Templating\EngineInterface;
-use Teknoo\East\Foundation\EndPoint\EndPointInterface;
+use Teknoo\East\Foundation\EndPoint\RenderingInterface;
 use Teknoo\East\Foundation\Http\Message\CallbackStreamInterface;
 use Teknoo\East\Foundation\Http\ClientInterface;
 
@@ -99,7 +99,7 @@ trait TemplatingTrait
      * @param int             $status The status code to use for the Response
      * @param array<string, mixed> $headers An array of values to inject into HTTP header response
      *
-     * @return EndPointInterface
+     * @return RenderingInterface
      */
     public function render(
         ClientInterface $client,
@@ -107,7 +107,7 @@ trait TemplatingTrait
         array $parameters = array(),
         int $status = 200,
         array $headers = []
-    ): EndPointInterface {
+    ): RenderingInterface {
         $response = $this->responseFactory->createResponse($status);
         $headers['content-type'] = 'text/html; charset=utf-8';
 

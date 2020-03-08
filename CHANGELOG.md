@@ -1,5 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[2.1.0-beta5] - 2020-03-08
+###Stable Release
+Split `EndPointInterface` into two dedicated interfaces `RedirectingInterface` and `RenderingInterface`
+
 ##[2.1.0-beta4] - 2020-03-08
 ###Stable Release
 Split `EndPointInterface` into two dedicated interfaces `RedirectingInterface` and `RenderingInterface`
