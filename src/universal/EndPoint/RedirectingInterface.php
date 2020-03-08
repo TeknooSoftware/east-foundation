@@ -51,5 +51,5 @@ interface RedirectingInterface
         string $url,
         int $status = 302,
         array $headers = []
-    ): EndPointInterface;
+    ): RedirectingInterface;
 }

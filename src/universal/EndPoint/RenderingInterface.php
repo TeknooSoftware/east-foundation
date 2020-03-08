@@ -53,5 +53,5 @@ interface RenderingInterface
         array $parameters = [],
         int $status = 200,
         array $headers = []
-    ): EndPointInterface;
+    ): RenderingInterface;
 }
