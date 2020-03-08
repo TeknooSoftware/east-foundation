@@ -24,10 +24,9 @@ declare(strict_types=1);
 
 namespace Teknoo\East\Foundation\EndPoint;
 
+use Teknoo\East\Foundation\Http\ClientInterface;
+
 /**
- * Non mandatory interface to define base of a endpoint service to execute a HTTP request and send to the
- * client the result of this operation.
- *
  * @copyright   Copyright (c) 2009-2020 Richard Déloge (richarddeloge@gmail.com)
  *
  * @link        http://teknoo.software/east Project website
@@ -35,6 +34,24 @@ namespace Teknoo\East\Foundation\EndPoint;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-interface EndPointInterface extends RenderingInterface, RedirectingInterface
+interface RenderingInterface
 {
+    /**
+     * Renders a view via a template engine like Twig or another system.
+     *
+     * @param ClientInterface      $client
+     * @param string               $view       The view name
+     * @param array<string, mixed> $parameters An array of parameters to pass to the view
+     * @param int                  $status The status code to use for the Response
+     * @param array<string, mixed> $headers An array of values to inject into HTTP header response
+     *
+     * @return EndPointInterface
+     */
+    public function render(
+        ClientInterface $client,
+        string $view,
+        array $parameters = [],
+        int $status = 200,
+        array $headers = []
+    ): EndPointInterface;
 }

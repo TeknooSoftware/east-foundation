@@ -1,6 +1,10 @@
 #Teknoo Software - East Foundation - Change Log
 
-##[2.1.0-beta2] - 2020-03-01
+##[2.1.0-beta3] - 2020-03-01
+###Stable Release
+Split `EndPointInterface` into two dedicated interfaces `RedirectingInterface` and `RenderingInterface`
+
+##[2.1.0-beta2] - 2020-03-04
 ###Stable Release
 - Create the interface CallbackStreamInterface to define Stream able to manage asynchronous callback content generation
 - Split EastEndPointTrait, in several traits, by method' roles (Authentication, Exception, PSR Response Factory, Routing / Redirecting and Templating)
