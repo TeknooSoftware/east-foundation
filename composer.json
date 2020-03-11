@@ -17,7 +17,7 @@
         "ext-json": "*",
         "psr/http-message": "~1.0",
         "teknoo/immutable": "^2.0.0",
-        "teknoo/states": "^4.0.4",
+        "teknoo/states": "^4.0.5",
         "teknoo/recipe": "^2.0.0",
         "psr/container-implementation": "~1.0",
         "psr/http-factory": "~1.0",

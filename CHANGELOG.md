@@ -1,19 +1,33 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[2.1.0] - 2020-03-11
+###Stahle Release
+###Changes
+- Update dev tools, migrate to PHPUnit 9.0, phploc 6.0, phpcpd 5.0 
+- Support symfony/psr-http-message-bridge also 2.0
+- Migrate Symfony implementation to infrastructures
+- Create the interface CallbackStreamInterface to define Stream able to manage asynchronous callback content generation
+- Split EastEndPointTrait, in several traits, by method' roles (Authentication, Exception, PSR Response Factory, Routing / Redirecting and Templating)
+- Rework Symfony implementation to able to use any PSR 7 and PSR 17 implementation instead of Zend Diactoros
+- Create an adapter of Diactoros CallbackStream implementing CallbackStreamInterface
+- Add Teknoo\East\Diactoros\CallbackStreamFactory to provide a StreamFactory for Teknoo\East\Diactoros\CallbackStream
+- Complete Tests
+- Split `EndPointInterface` into two dedicated interfaces `RedirectingInterface` and `RenderingInterface`
+
 ##[2.1.0-beta5] - 2020-03-08
-###Stable Release
+###Beta Release
 Split `EndPointInterface` into two dedicated interfaces `RedirectingInterface` and `RenderingInterface`
 
 ##[2.1.0-beta4] - 2020-03-08
-###Stable Release
+###Veta Release
 Split `EndPointInterface` into two dedicated interfaces `RedirectingInterface` and `RenderingInterface`
 
 ##[2.1.0-beta3] - 2020-03-08
-###Stable Release
+###Beta Release
 Split `EndPointInterface` into two dedicated interfaces `RedirectingInterface` and `RenderingInterface`
 
 ##[2.1.0-beta2] - 2020-03-04
-###Stable Release
+###Beta Release
 - Create the interface CallbackStreamInterface to define Stream able to manage asynchronous callback content generation
 - Split EastEndPointTrait, in several traits, by method' roles (Authentication, Exception, PSR Response Factory, Routing / Redirecting and Templating)
 - Rework Symfony implementation to able to use any PSR 7 and PSR 17 implementation instead of Zend Diactoros
@@ -22,7 +36,7 @@ Split `EndPointInterface` into two dedicated interfaces `RedirectingInterface` a
 - Complete Tests
 
 ##[2.1.0-beta1] - 2020-03-01
-###Stable Release
+###Beta Release
 - Update dev tools, migrate to PHPUnit 9.0, phploc 6.0, phpcpd 5.0 
 - Support symfony/psr-http-message-bridge also 2.0
 - Migrate Symfony implementation to infrastructures
