@@ -48,6 +48,7 @@ use Psr\Http\Message\ResponseInterface;
  * @covers \Teknoo\East\FoundationBundle\EndPoint\AuthenticationTrait
  * @covers \Teknoo\East\FoundationBundle\EndPoint\EastEndPointTrait
  * @covers \Teknoo\East\FoundationBundle\EndPoint\ExceptionTrait
+ * @covers \Teknoo\East\FoundationBundle\EndPoint\ResponseFactoryTrait
  * @covers \Teknoo\East\FoundationBundle\EndPoint\RoutingTrait
  * @covers \Teknoo\East\FoundationBundle\EndPoint\TemplatingTrait
  */
