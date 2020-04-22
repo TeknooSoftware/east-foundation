@@ -16,14 +16,18 @@ This bundle uses PSR7 requests and responses and do automatically the conversion
 So your controllers and services can be independent of Symfony. This bundle reuse internally Symfony's components
 to manage routes and find controller to call.
 
-Short Example
+Quick Example
 -------------
 
     <?php
 
+    declare(strict_types=1);
+    
     use Teknoo\East\Foundation\Router\ResultInterface;
     use function DI\decorate;
     use DI\ContainerBuilder;
+    use Laminas\Diactoros\ServerRequest;
+    use Laminas\Diactoros\Response\TextResponse;
     use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\ServerRequestInterface;
     use Teknoo\East\Foundation\Http\ClientInterface;
@@ -32,8 +36,6 @@ Short Example
     use Teknoo\East\Foundation\Recipe\RecipeInterface;
     use Teknoo\East\Foundation\Router\Result;
     use Teknoo\East\Foundation\Router\RouterInterface;
-    use Zend\Diactoros\ServerRequest;
-    use Zend\Diactoros\Response\TextResponse;
     
     require_once 'vendor/autoload.php';
     
@@ -130,7 +132,7 @@ Short Example
     };
     
     $builder = new ContainerBuilder();
-    $builder->addDefinitions('vendor/teknoo/east-foundation/src/universal/di.php');
+    $builder->addDefinitions('src/universal/di.php');
     $builder->addDefinitions([
         RouterInterface::class => $router,
     
