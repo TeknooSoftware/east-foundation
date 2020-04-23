@@ -34,7 +34,7 @@ services:
       - '@Teknoo\East\Foundation\Http\ClientInterface'
       - '@Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface'
     tags:
-      - { name: 'kernel.event_listener', event: 'kernel.request', method: 'onKernelRequest' }
+      - { name: 'kernel.event_listener', event: 'kernel.request', method: 'onKernelRequest', priority: 30 }
 
   #Symfony normalizer
   teknoo.east.symfony.normalizer.east_normalizer:
