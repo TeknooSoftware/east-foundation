@@ -1,7 +1,12 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[2.1.1] - 2020-04-23
+###Stable Release
+###Changes
+- Change Symfony Kernel listener priority to be called before controller name resolver 
+
 ##[2.1.0] - 2020-03-11
-###Stahle Release
+###Stable Release
 ###Changes
 - Update dev tools, migrate to PHPUnit 9.0, phploc 6.0, phpcpd 5.0 
 - Support symfony/psr-http-message-bridge also 2.0
