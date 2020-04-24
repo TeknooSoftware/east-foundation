@@ -1,5 +1,13 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[2.1.3] - 2020-04-23
+###Stable Release
+###Changes
+- Cancel change in 2.1.3 (Security issue with Symfony's Firewall)
+- Change Symfony's East Router implementation to manage also Controller definition `ClassName::MethodName` for classic
+  Symfony's controller, not implementing a Symfony's abstract but not are not a static method. 
+
+##[2.1.2] - 2020-04-23
 ##[2.1.1] - 2020-04-23
 ###Stable Release
 ###Changes

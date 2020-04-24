@@ -19,11 +19,14 @@ parameters:
             message: '#Method [a-zA-Z0-9\\_]+::registerMiddleware\(\) should return [a-zA-Z0-9\\_]+ but returns [a-zA-Z0-9\\_]+.#'
             path: src/universal/Recipe/Recipe.php
         -
-            message: '#Parameter \#1 \$name of class ReflectionFunction constructor expects Closure\|string, callable\(\): mixed given.#'
+            message: '#Parameter \#1 \$name of class ReflectionFunction constructor expects Closure\|string, callable\(\): mixed given\.#'
             path: src/universal/Router/Result.php
         -
-            message: '#Anonymous function should return [a-zA-Z0-9\\_]+ but returns Teknoo\\Recipe\\RecipeInterface.#'
+            message: '#Anonymous function should return [a-zA-Z0-9\\_]+ but returns Teknoo\\Recipe\\RecipeInterface\.#'
             path: src/universal/di.php
+        -
+            message: '#Parameter \#1 \$argument of class ReflectionClass constructor expects class-string\<T of object\>\|T of object, string given\.#'
+            path: infrastructures/symfony/Router/Router.php
 services:
 	-
 		class: Teknoo\States\PHPStan\MethodsClassExtension

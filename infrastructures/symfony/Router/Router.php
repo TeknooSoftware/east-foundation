@@ -114,10 +114,17 @@ class Router implements RouterInterface
             if (false !== \strpos($controller, '::')) {
                 $controller = \explode('::', $controller);
 
+                $reflection = new \ReflectionClass((string) $controller[0]);
                 if (
-                    \is_subclass_of($controller[0], SymfonyController::class)
-                    || \is_subclass_of($controller[0], SymfonyAbstractController::class)
+                    $reflection->isSubclassOf(SymfonyController::class)
+                    || $reflection->isSubclassOf(SymfonyAbstractController::class)
                 ) {
+                    return null;
+                }
+
+                //Method must exist because the controller is callable
+                $method = $reflection->getMethod($controller[1]);
+                if (!$method->isStatic()) {
                     return null;
                 }
             }
