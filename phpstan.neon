@@ -7,9 +7,6 @@ parameters:
             message: '#Cannot call method createResponse\(\) on [a-zA-Z0-9\\_]+\|null.#'
             path: infrastructures/symfony/Http/Client.php
         -
-            message: '#Method [a-zA-Z0-9\\_]+::matchRequest\(\) should return \(callable\)\|null but returns array<int, string>.#'
-            path: infrastructures/symfony/Router/Router.php
-        -
             message: '#Parameter \#1 \$with of method [a-zA-Z0-9\\_]+::updateWorkPlan\(\) expects array<string, mixed>, array<int\|string, mixed> given.#'
             path: src/universal/Processor/Processor.php
         -
@@ -26,6 +23,9 @@ parameters:
             path: src/universal/di.php
         -
             message: '#Parameter \#1 \$argument of class ReflectionClass constructor expects class-string\<T of object\>\|T of object, string given\.#'
+            path: infrastructures/symfony/Router/Router.php
+        -
+            message: '#Method [a-zA-Z0-9\\_]+::matchRequest\(\) should return \(callable\(\): mixed\)\|null but returns string\.#'
             path: infrastructures/symfony/Router/Router.php
 services:
 	-
