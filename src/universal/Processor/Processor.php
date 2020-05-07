@@ -62,7 +62,7 @@ class Processor implements ProcessorInterface, ImmutableInterface
 
         $values = \array_merge(
             $this->getParameters($request),
-            [static::WORK_PLAN_CONTROLLER_KEY => $result->getController()],
+            [self::WORK_PLAN_CONTROLLER_KEY => $result->getController()],
             //To prevent overloading from request.
             ['client' => $client, 'request' => $request, 'manager' => $manager]
         );
