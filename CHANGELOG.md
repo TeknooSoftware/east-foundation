@@ -1,5 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[2.1.4] - 2020-06-08
+###Update
+- Require Teknoo States 4.0.9 to support PHPStan 0.12.26
+
 ##[2.1.3] - 2020-04-23
 ###Stable Release
 ###Changes
