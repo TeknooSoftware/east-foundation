@@ -24,6 +24,9 @@ parameters:
         -
             message: '#Method [a-zA-Z0-9\\_]+::matchRequest\(\) should return \(callable\(\): mixed\)\|null but returns string\.#'
             path: infrastructures/symfony/Router/Router.php
+        -
+            message: '#Parameter \#2 \$throwable of method [a-zA-Z0-9\\_]+::fail\(\) expects Throwable, [a-zA-Z0-9\\_]+\|null given\.#'
+            path: src/universal/Promise/Promise.php
 services:
 	-
 		class: Teknoo\States\PHPStan\MethodsClassExtension
