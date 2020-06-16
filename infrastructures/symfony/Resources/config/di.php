@@ -42,7 +42,7 @@ return [
     ClientInterface::class => create(Client::class)
         ->constructor(get(HttpFoundationFactory::class)),
 
-    RecipeInterface::class => decorate(function ($previous, ContainerInterface $container) {
+    RecipeInterface::class => decorate(static function ($previous, ContainerInterface $container) {
         if ($previous instanceof RecipeInterface) {
             $previous = $previous->registerMiddleware(
                 $container->get(SessionMiddleware::class),
