@@ -98,7 +98,8 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $routerResult = $this->createMock(ResultInterface::class);
-        $routerResult->expects(self::any())->method('getController')->willReturn($controller = function() {});
+        $routerResult->expects(self::any())->method('getController')->willReturn($controller = function () {
+        });
 
         $manager = $this->createMock(ManagerInterface::class);
         $manager->expects(self::once())
@@ -113,7 +114,8 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
             ]);
 
         self::assertInstanceOf(
-            ProcessorInterface::class, $this->buildProcessor()->execute(
+            ProcessorInterface::class,
+            $this->buildProcessor()->execute(
                 $clientMock,
                 $requestMock,
                 $manager,

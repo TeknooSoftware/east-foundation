@@ -63,7 +63,7 @@ class FeatureContext implements Context
      */
     public function iHaveDiInitialized()
     {
-        $this->container = include (\dirname(\dirname(__DIR__)).'/src/universal/generator.php');
+        $this->container = include(\dirname(\dirname(__DIR__)).'/src/universal/generator.php');
     }
 
     /**

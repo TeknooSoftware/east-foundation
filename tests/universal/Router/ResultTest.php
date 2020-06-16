@@ -64,7 +64,8 @@ class ResultTest extends AbstractResultTest
     public function testConstructBadNext()
     {
         $this->expectException(\TypeError::class);
-        new Result(function () {}, new \DateTime());
+        new Result(function () {
+        }, new \DateTime());
     }
 
     public function testGetParmetersValueFromClosure()

@@ -81,9 +81,9 @@ class ManagerTest extends AbstractChefTest
             $this->buildChef()->read($this->createMock(RecipeInterface::class))
                 ->followSteps([$this->createMock(BowlInterface::class)])
                 ->receiveRequest(
-                $this->createMock(ClientInterface::class),
-                $this->createMock(ServerRequestInterface::class)
-            )
+                    $this->createMock(ClientInterface::class),
+                    $this->createMock(ServerRequestInterface::class)
+                )
         );
     }
 
@@ -92,9 +92,9 @@ class ManagerTest extends AbstractChefTest
         $this->expectException(\TypeError::class);
         $this->buildChef()->followSteps([$this->createMock(BowlInterface::class)])
             ->receiveRequest(
-            new \stdClass(),
-            $this->createMock(ServerRequestInterface::class)
-        );
+                new \stdClass(),
+                $this->createMock(ServerRequestInterface::class)
+            );
     }
 
     public function testReceiveRequestErrorRequest()
@@ -102,9 +102,9 @@ class ManagerTest extends AbstractChefTest
         $this->expectException(\TypeError::class);
         $this->buildChef()->followSteps([$this->createMock(BowlInterface::class)])
             ->receiveRequest(
-            $this->createMock(ClientInterface::class),
-            new \stdClass()
-        );
+                $this->createMock(ClientInterface::class),
+                new \stdClass()
+            );
     }
 
     public function testContinueExecutionErrorClient()
@@ -112,9 +112,9 @@ class ManagerTest extends AbstractChefTest
         $this->expectException(\TypeError::class);
         $this->buildChef()->followSteps([$this->createMock(BowlInterface::class)])
             ->continueExecution(
-            new \stdClass(),
-            $this->createMock(ServerRequestInterface::class)
-        );
+                new \stdClass(),
+                $this->createMock(ServerRequestInterface::class)
+            );
     }
 
     public function testContinueExecutionErrorRequest()
@@ -122,9 +122,9 @@ class ManagerTest extends AbstractChefTest
         $this->expectException(\TypeError::class);
         $this->buildChef()->followSteps([$this->createMock(BowlInterface::class)])
             ->continueExecution(
-            $this->createMock(ClientInterface::class),
-            new \stdClass()
-        );
+                $this->createMock(ClientInterface::class),
+                new \stdClass()
+            );
     }
 
     public function testStop()
@@ -209,10 +209,12 @@ class ManagerTest extends AbstractChefTest
         $middleware3->expects(self::never())->method('execute');
 
         $manager->read($this->createMock(RecipeInterface::class))
-            ->followSteps([
-                new Bowl([$middleware1, 'execute'], []),
-                new Bowl([$middleware2, 'execute'], []),
-                new Bowl([$middleware3, 'execute'], [])]
+            ->followSteps(
+                [
+                    new Bowl([$middleware1, 'execute'], []),
+                    new Bowl([$middleware2, 'execute'], []),
+                    new Bowl([$middleware3, 'execute'], [])
+                ]
             );
         self::assertInstanceOf(
             $this->getManagerClass(),

@@ -80,15 +80,24 @@ abstract class AbstractPromiseTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(ImmutableException::class);
         $this->buildPromise(
-            function () {},
-            function () {}
-        )->__construct(function () {}, function () {});
+            function () {
+            },
+            function () {
+            }
+        )->__construct(
+            function () {
+            },
+            function () {
+            }
+        );
     }
 
     public function testNextSetNotCallable()
     {
         $this->expectException(\Throwable::class);
-        $this->buildPromise(function () {}, function () {})->next('fooBar');
+        $this->buildPromise(function () {
+        }, function () {
+        })->next('fooBar');
     }
 
     public function testNextSetNull()

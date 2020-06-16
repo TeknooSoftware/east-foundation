@@ -542,7 +542,8 @@ class RouterTest extends \PHPUnit\Framework\TestCase
 
         $this->getContainerMock()->expects(self::any())->method('has')->with('fooBar')->willReturn(true);
         $this->getContainerMock()->expects(self::any())->method('get')->with('fooBar')->willReturn(
-            new class extends SymfonyController {}
+            new class extends SymfonyController {
+            }
         );
 
         $manager->expects(self::never())->method('continueExecution');
@@ -576,7 +577,8 @@ class RouterTest extends \PHPUnit\Framework\TestCase
 
         $this->getContainerMock()->expects(self::any())->method('has')->with('fooBar')->willReturn(true);
         $this->getContainerMock()->expects(self::any())->method('get')->with('fooBar')->willReturn(
-            new class extends SymfonyAbstractController {}
+            new class extends SymfonyAbstractController {
+            }
         );
 
         $manager->expects(self::never())->method('continueExecution')->willReturnSelf();
@@ -601,7 +603,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         $this->getUrlMatcherMock()->expects(self::once())->method('match')
             ->with('/foo')
             ->willReturn(['_controller' => function () {
-        }]);
+            }]);
 
         $manager->expects(self::once())->method('continueExecution')->willReturnSelf();
         $this->buildRouter()->execute($client, $request, $manager);
@@ -620,7 +622,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         $this->getUrlMatcherMock()->expects(self::once())->method('match')
             ->with('/foo/app.php')
             ->willReturn(['_controller' => function () {
-        }]);
+            }]);
 
         $this->buildRouter()->execute($client, $request, $manager);
     }
@@ -638,7 +640,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         $this->getUrlMatcherMock()->expects(self::once())->method('match')
             ->with('/foo')
             ->willReturn(['_controller' => function () {
-        }]);
+            }]);
 
         $manager->expects(self::once())->method('continueExecution')->willReturnSelf();
         $this->buildRouter()->execute($client, $request, $manager);
@@ -657,7 +659,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         $this->getUrlMatcherMock()->expects(self::once())->method('match')
             ->with('/foo/app_dev.php')
             ->willReturn(['_controller' => function () {
-        }]);
+            }]);
 
         $this->buildRouter()->execute($client, $request, $manager);
     }
@@ -675,7 +677,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         $this->getUrlMatcherMock()->expects(self::once())->method('match')
             ->with('/foo')
             ->willReturn(['_controller' => function () {
-        }]);
+            }]);
 
         $manager->expects(self::once())->method('continueExecution')->willReturnSelf();
         $this->buildRouter()->execute($client, $request, $manager);
@@ -694,7 +696,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         $this->getUrlMatcherMock()->expects(self::once())->method('match')
             ->with('/foo/index.php')
             ->willReturn(['_controller' => function () {
-        }]);
+            }]);
 
         $this->buildRouter()->execute($client, $request, $manager);
     }
