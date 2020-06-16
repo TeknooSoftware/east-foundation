@@ -41,7 +41,7 @@ use function DI\create;
 
 return [
     Manager::class => get(ManagerInterface::class),
-    ManagerInterface::class => function (
+    ManagerInterface::class => static function (
         RecipeInterface $recipe
     ): ManagerInterface {
         $manager = new Manager();
@@ -53,7 +53,7 @@ return [
     LoopDetector::class => get(LoopDetectorInterface::class),
     LoopDetectorInterface::class => create(LoopDetector::class),
 
-    ProcessorRecipeInterface::class => function (
+    ProcessorRecipeInterface::class => static function (
         ProcessorInterface $processor
     ): ProcessorRecipeInterface {
         $recipe = new class extends Recipe implements ProcessorRecipeInterface {
@@ -71,7 +71,7 @@ return [
     },
 
     Recipe::class => get(RecipeInterface::class),
-    RecipeInterface::class => function (
+    RecipeInterface::class => static function (
         RouterInterface $router,
         ProcessorRecipeInterface $promiseRecipe,
         LoopDetectorInterface $loopDetector
