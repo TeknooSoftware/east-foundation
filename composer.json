@@ -16,9 +16,9 @@
         "php": "~7.4",
         "ext-json": "*",
         "psr/http-message": "~1.0",
-        "teknoo/immutable": "^2.0.0",
+        "teknoo/immutable": "^2.0.1",
         "teknoo/states": "^4.0.9",
-        "teknoo/recipe": "^2.0.0",
+        "teknoo/recipe": "^2.0.5",
         "psr/container-implementation": "~1.0",
         "psr/http-factory": "~1.0",
         "php-di/php-di": "~6.0"
