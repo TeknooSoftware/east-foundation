@@ -24,8 +24,6 @@ declare(strict_types=1);
 
 namespace Teknoo\East\FoundationBundle\EndPoint;
 
-use Psr\Http\Message\ResponseFactoryInterface;
-use Symfony\Component\Routing\RouterInterface;
 use Teknoo\East\Foundation\EndPoint\RedirectingInterface;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -45,16 +43,16 @@ trait RoutingTrait
 {
     use ResponseFactoryTrait;
 
-    protected ?RouterInterface $router = null;
+    protected ?UrlGeneratorInterface $router = null;
 
     /**
      * To inject the router into the trait, needed to generate url.
      *
-     * @param RouterInterface $router
+     * @param UrlGeneratorInterface $router
      *
      * @return EastEndPointTrait
      */
-    public function setRouter(RouterInterface $router): self
+    public function setRouter(UrlGeneratorInterface $router): self
     {
         $this->router = $router;
 
@@ -77,7 +75,7 @@ trait RoutingTrait
         $parameters = array(),
         int $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH
     ): string {
-        if (!$this->router instanceof RouterInterface) {
+        if (!$this->router instanceof UrlGeneratorInterface) {
             throw new \LogicException('The router is not registered in your application.');
         }
 
