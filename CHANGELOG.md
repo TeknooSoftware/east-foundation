@@ -1,5 +1,10 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[2.1.6] - 2020-07-09
+###Update
+- Remove autowiring to Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface to avoid error in Symfony DI Build
+  with PHP DI without synthetic service. 
+
 ##[2.1.5] - 2020-06-28
 ###Update
 - Replace RouterInterface to UrlGeneratorInterface

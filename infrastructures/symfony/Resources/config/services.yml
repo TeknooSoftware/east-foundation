@@ -24,7 +24,11 @@ services:
 
   Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface:
     class: 'Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory'
-    autowire: true
+    arguments:
+      - '@Psr\Http\Message\ServerRequestFactoryInterface'
+      - '@Psr\Http\Message\StreamFactoryInterface'
+      - '@Psr\Http\Message\UploadedFileFactoryInterface'
+      - '@Psr\Http\Message\ResponseFactoryInterface'
 
   #Symfony kernel event listener
   teknoo.east.symfony.listener.kernel:
