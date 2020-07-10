@@ -199,8 +199,8 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
             }))
             ->willReturnSelf();
 
-        $twigEngine = $this->createMock(EngineInterface::class);
-        $twigEngine->expects(self::once())->method('render')->willReturn('fooBar');
+        $templateEngine = $this->createMock(EngineInterface::class);
+        $templateEngine->expects(self::once())->method('render')->willReturn('fooBar');
 
         $controller = (new class() implements EndPointInterface {
             use EastEndPointTrait;
@@ -216,7 +216,7 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
             $controller
                 ->setStreamFactory($streamFactory)
                 ->setResponseFactory($responseFactory)
-                ->setTemplating($twigEngine)
+                ->setTemplating($templateEngine)
                 ->getRender($client)
         );
     }

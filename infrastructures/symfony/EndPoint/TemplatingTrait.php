@@ -31,8 +31,7 @@ use Teknoo\East\Foundation\Http\Message\CallbackStreamInterface;
 use Teknoo\East\Foundation\Http\ClientInterface;
 
 /**
- * Trait to help developer to write endpoint with Symfony (also called controller) and reuse Symfony component like
- * router or twig engine?
+ * Trait to help developer to write endpoint with Symfony (also called controller) and reuse Symfony components
  *
  * @copyright   Copyright (c) 2009-2020 Richard Déloge (richarddeloge@gmail.com)
  *
@@ -50,7 +49,7 @@ trait TemplatingTrait
     protected StreamFactoryInterface $streamFactory;
 
     /**
-     * To inject the Twig engine to render views.
+     * To inject the template engine to render views.
      *
      * @param EngineInterface $templating
      *
@@ -85,8 +84,7 @@ trait TemplatingTrait
         }
 
         throw new \LogicException(
-            'You can not use the "renderView" method if the Templating Component or the '
-            . 'Twig Bundle are not available.'
+            'You can not use the "renderView" method if the Templating Component.'
         );
     }
 

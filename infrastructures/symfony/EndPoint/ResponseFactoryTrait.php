@@ -28,8 +28,7 @@ use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * Trait to help developer to write endpoint with Symfony (also called controller) and reuse Symfony component like
- * router or twig engine?
+ * Trait to help developer to write endpoint with Symfony (also called controller) and reuse Symfony components
  *
  * @copyright   Copyright (c) 2009-2020 Richard Déloge (richarddeloge@gmail.com)
  *
