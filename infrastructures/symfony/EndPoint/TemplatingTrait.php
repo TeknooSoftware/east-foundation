@@ -25,10 +25,12 @@ declare(strict_types=1);
 namespace Teknoo\East\FoundationBundle\EndPoint;
 
 use Psr\Http\Message\StreamFactoryInterface;
-use Symfony\Component\Templating\EngineInterface;
 use Teknoo\East\Foundation\EndPoint\RenderingInterface;
 use Teknoo\East\Foundation\Http\Message\CallbackStreamInterface;
 use Teknoo\East\Foundation\Http\ClientInterface;
+use Teknoo\East\Foundation\Promise\Promise;
+use Teknoo\East\Foundation\Template\EngineInterface;
+use Teknoo\East\Foundation\Template\ResultInterface;
 
 /**
  * Trait to help developer to write endpoint with Symfony (also called controller) and reuse Symfony components
@@ -69,24 +71,6 @@ trait TemplatingTrait
         return $this;
     }
 
-    /**
-     * Returns a rendered view.
-     *
-     * @param string $view       The view name
-     * @param array  $parameters An array of parameters to pass to the view
-     *
-     * @return string The rendered view
-     */
-    protected function renderView(string $view, array $parameters = array()): string
-    {
-        if ($this->templating instanceof EngineInterface) {
-            return $this->templating->render($view, $parameters);
-        }
-
-        throw new \LogicException(
-            'You can not use the "renderView" method if the Templating Component.'
-        );
-    }
 
     /**
      * Renders a view.
@@ -106,23 +90,38 @@ trait TemplatingTrait
         int $status = 200,
         array $headers = []
     ): RenderingInterface {
+        if (!$this->templating instanceof EngineInterface) {
+            $client->errorInRequest(new \RuntimeException('Missing template engine'));
+        }
+
         $response = $this->responseFactory->createResponse($status);
         $headers['content-type'] = 'text/html; charset=utf-8';
 
         $response = $this->addHeadersIntoResponse($response, $headers);
         $stream = $this->streamFactory->createStream();
 
-        if ($stream instanceof CallbackStreamInterface) {
-            $stream->bind(function () use ($view, $parameters) {
-                return $this->renderView($view, $parameters);
-            });
-        } else {
-            $stream->write($this->renderView($view, $parameters));
-        }
+        $this->templating->render(
+            new Promise(
+                static function (ResultInterface $result) use ($stream, $client, $response) {
+                    if ($stream instanceof CallbackStreamInterface) {
+                        $stream->bind(static function () use ($result) {
+                            return (string) $result;
+                        });
+                    } else {
+                        $stream->write((string) $result);
+                    }
 
-        $response = $response->withBody($stream);
+                    $response = $response->withBody($stream);
 
-        $client->acceptResponse($response);
+                    $client->acceptResponse($response);
+                },
+                static function (\Throwable $error) use ($client) {
+                    $client->errorInRequest($error);
+                }
+            ),
+            $view,
+            $parameters
+        );
 
         return $this;
     }

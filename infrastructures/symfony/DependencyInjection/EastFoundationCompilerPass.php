@@ -46,26 +46,18 @@ class EastFoundationCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container): EastFoundationCompilerPass
     {
-        $taggedControllers = $container->findTaggedServiceIds('east.controller.service');
+        $taggedControllers = $container->findTaggedServiceIds('east.endpoint.template');
 
-        $routerPresent = $container->has('router');
-        $twigPresent = $container->has('templating.engine.twig');
-        $tokenStoragePresent = $container->has('security.token_storage');
+        $twigPresent = $container->has('twig');
+
+        if (!empty($twigPresent)) {
+            return $this;
+        }
 
         foreach ($taggedControllers as $id => $tags) {
             $definition = $container->getDefinition($id);
 
-            if (!empty($routerPresent)) {
-                $definition->addMethodCall('setRouter', [new Reference('router')]);
-            }
-
-            if (!empty($twigPresent)) {
-                $definition->addMethodCall('setTemplating', [new Reference('templating.engine.twig')]);
-            }
-
-            if (!empty($tokenStoragePresent)) {
-                $definition->addMethodCall('setTokenStorage', [new Reference('security.token_storage')]);
-            }
+            $definition->addMethodCall('setTemplating', [new Reference('Teknoo\East\FoundationBundle\Twig\Engine')]);
         }
 
         return $this;

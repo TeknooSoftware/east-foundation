@@ -2,6 +2,7 @@ parameters:
   teknoo.east.symfony.router.class: 'Teknoo\East\FoundationBundle\Router\Router'
   teknoo.east.symfony.listener.kernel.class: 'Teknoo\East\FoundationBundle\Listener\KernelListener'
   teknoo.east.symfony.normalizer.east_normalizer.class: 'Teknoo\East\FoundationBundle\Normalizer\EastNormalizer'
+  teknoo.east.symfony.twig.engine: 'Teknoo\East\FoundationBundle\Twig\Engine'
 
 services:
   #Symfony router
@@ -32,6 +33,9 @@ services:
 
   #Symfony kernel event listener
   teknoo.east.symfony.listener.kernel:
+    alias: 'Teknoo\East\FoundationBundle\Listener\KernelListener'
+
+  Teknoo\East\FoundationBundle\Listener\KernelListener:
     class: '%teknoo.east.symfony.listener.kernel.class%'
     arguments:
       - '@Teknoo\East\Foundation\Manager\ManagerInterface'
@@ -42,6 +46,9 @@ services:
 
   #Symfony normalizer
   teknoo.east.symfony.normalizer.east_normalizer:
+    alias: 'Teknoo\East\FoundationBundle\Normalizer\EastNormalizer'
+
+  Teknoo\East\FoundationBundle\Normalizer\EastNormalizer:
     class: '%teknoo.east.symfony.normalizer.east_normalizer.class%'
     tags:
       - { name: 'serializer.normalizer', priority: 100 }
@@ -49,3 +56,9 @@ services:
   #Laminas Support
   Teknoo\East\Diactoros\CallbackStreamFactory:
     class: 'Teknoo\East\Diactoros\CallbackStreamFactory'
+
+  #Twig Engine
+  Teknoo\East\FoundationBundle\Twig\Engine:
+    class: '%teknoo.east.symfony.twig.engine%'
+    arguments:
+      - '@twig'

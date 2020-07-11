@@ -84,42 +84,7 @@ class EastFrameworkCompilerPassTest extends \PHPUnit\Framework\TestCase
         $this->getContainerBuilderMock()
             ->expects(self::any())
             ->method('findTaggedServiceIds')
-            ->with('east.controller.service')
-            ->willReturn([
-                'service1' => ['foo' => 'bar'],
-                'service2' => ['bar' => 'foo'],
-            ]);
-
-        $this->getContainerBuilderMock()
-            ->expects($this->exactly(2))
-            ->method('getDefinition')
-            ->withConsecutive(['service1'], ['service2'])
-            ->willReturn($def);
-
-        self::assertInstanceOf(
-            $this->getCompilerPassClass(),
-            $this->buildCompilerPass()->process(
-                $this->getContainerBuilderMock()
-            )
-        );
-    }
-
-    public function testProcessNoRouter()
-    {
-        $def = $this->createMock(Definition::class);
-        $def->expects($this->exactly(4))->method('addMethodCall')->willReturnSelf();
-
-        $this->getContainerBuilderMock()
-            ->expects(self::any())
-            ->method('has')
-            ->willReturnCallback(function ($value) {
-                return 'router' != $value;
-            });
-
-        $this->getContainerBuilderMock()
-            ->expects(self::any())
-            ->method('findTaggedServiceIds')
-            ->with('east.controller.service')
+            ->with('east.endpoint.template')
             ->willReturn([
                 'service1' => ['foo' => 'bar'],
                 'service2' => ['bar' => 'foo'],
@@ -154,7 +119,7 @@ class EastFrameworkCompilerPassTest extends \PHPUnit\Framework\TestCase
         $this->getContainerBuilderMock()
             ->expects(self::any())
             ->method('findTaggedServiceIds')
-            ->with('east.controller.service')
+            ->with('east.endpoint.template')
             ->willReturn([
                 'service1' => ['foo' => 'bar'],
                 'service2' => ['bar' => 'foo'],
@@ -173,42 +138,7 @@ class EastFrameworkCompilerPassTest extends \PHPUnit\Framework\TestCase
             )
         );
     }
-
-    public function testProcessNoStorage()
-    {
-        $def = $this->createMock(Definition::class);
-        $def->expects($this->exactly(4))->method('addMethodCall')->willReturnSelf();
-
-        $this->getContainerBuilderMock()
-            ->expects(self::any())
-            ->method('has')
-            ->willReturnCallback(function ($value) {
-                return 'security.token_storage' != $value;
-            });
-
-        $this->getContainerBuilderMock()
-            ->expects(self::any())
-            ->method('findTaggedServiceIds')
-            ->with('east.controller.service')
-            ->willReturn([
-                'service1' => ['foo' => 'bar'],
-                'service2' => ['bar' => 'foo'],
-            ]);
-
-        $this->getContainerBuilderMock()
-            ->expects($this->exactly(2))
-            ->method('getDefinition')
-            ->withConsecutive(['service1'], ['service2'])
-            ->willReturn($def);
-
-        self::assertInstanceOf(
-            $this->getCompilerPassClass(),
-            $this->buildCompilerPass()->process(
-                $this->getContainerBuilderMock()
-            )
-        );
-    }
-
+    
     public function testProcessError()
     {
         $this->expectException(\TypeError::class);
