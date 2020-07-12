@@ -1,5 +1,11 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[3.0.0-beta2] - 2020-07-12
+###Change
+- Fix services definitions
+- Complete tests
+- Migrate universal folder in src to src's root and remove legacy support
+
 ##[3.0.0-beta1] - 2020-07-12
 ###Change
 - Remove Symfony Template component (integration deprecated into symfony)

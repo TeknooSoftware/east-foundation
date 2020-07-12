@@ -50,27 +50,31 @@ class Engine implements EngineInterface
 
     public function render(PromiseInterface $promise, string $view, array $parameters = []): EngineInterface
     {
-        $promise->success(
-            new class ($this->twig, $view, $parameters) implements ResultInterface {
-                private Environment $twig;
+        try {
+            $promise->success(
+                new class ($this->twig, $view, $parameters) implements ResultInterface {
+                    private Environment $twig;
 
-                private string $view;
+                    private string $view;
 
-                private array $parameters;
+                    private array $parameters;
 
-                public function __construct(Environment $twig, string $view, array $parameters)
-                {
-                    $this->twig = $twig;
-                    $this->view = $view;
-                    $this->parameters = $parameters;
+                    public function __construct(Environment $twig, string $view, array $parameters)
+                    {
+                        $this->twig = $twig;
+                        $this->view = $view;
+                        $this->parameters = $parameters;
+                    }
+
+                    public function __toString(): string
+                    {
+                        return $this->twig->render($this->view, $this->parameters);
+                    }
                 }
-
-                public function __toString(): string
-                {
-                    return $this->twig->render($this->view, $this->parameters);
-                }
-            }
-        );
+            );
+        } catch (\Throwable $error) {
+            $promise->fail($error);
+        }
 
         return $this;
     }

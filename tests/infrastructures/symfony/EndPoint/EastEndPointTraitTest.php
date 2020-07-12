@@ -158,7 +158,7 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testRenderTemplating()
+    public function testRenderingWithBasicStream()
     {
         $responseFactory = $this->createMock(ResponseFactoryInterface::class);
         $response = $this->createMock(ResponseInterface::class);
@@ -208,6 +208,125 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
         $templateEngine->expects(self::once())->method('render')->willReturnCallback(
             function (PromiseInterface $promise) use ($templateEngine, $result) {
                 $promise->success($result);
+                return $templateEngine;
+            }
+        );
+
+        $controller = (new class() implements EndPointInterface {
+            use EastEndPointTrait;
+
+            public function getRender(ClientInterface $client)
+            {
+                return $this->render($client, 'routeName');
+            }
+        });
+
+        self::assertInstanceOf(
+            get_class($controller),
+            $controller
+                ->setStreamFactory($streamFactory)
+                ->setResponseFactory($responseFactory)
+                ->setTemplating($templateEngine)
+                ->getRender($client)
+        );
+    }
+
+    public function testRenderingWithCallbackStream()
+    {
+        $stream = $this->createMock(CallbackStreamInterface::class);
+        $callBack = null;
+        $stream->expects(self::any())->method('bind')->willReturnCallback(
+            function ($value) use (&$callBack, $stream) {
+                $callBack = $value;
+
+                return $stream;
+            }
+        );
+        $stream->expects(self::any())->method('getContents')->willReturnCallback(
+            function () use (&$callBack) {
+                return $callBack();
+            }
+        );
+        $streamFactory = $this->createMock(StreamFactoryInterface::class);
+        $streamFactory->expects(self::any())->method('createStream')->willReturn($stream);
+
+        $responseFactory = $this->createMock(ResponseFactoryInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
+        $response->expects(self::any())->method('withHeader')->willReturnSelf();
+        $inStream = null;
+        $response->expects(self::any())->method('withBody')->willReturnCallback(
+            function ($value) use (&$inStream, $response) {
+                $inStream = $value;
+                return $response;
+            }
+        );
+        $response->expects(self::any())->method('getBody')->willReturnCallback(
+            function () use (&$inStream) {
+                return $inStream;
+            }
+        );
+        $responseFactory->expects(self::any())->method('createResponse')->willReturn($response);
+
+        $client = $this->createMock(ClientInterface::class);
+        $client->expects(self::once())
+            ->method('acceptResponse')
+            ->with($this->callback(function ($instance) {
+                return $instance instanceof ResponseInterface && $instance->getBody()->getContents();
+            }))
+            ->willReturnSelf();
+
+        $result = $this->createMock(ResultInterface::class);
+        $result->expects(self::any())->method('__toString')->willReturn('fooBar');
+
+        $templateEngine = $this->createMock(EngineInterface::class);
+        $templateEngine->expects(self::once())->method('render')->willReturnCallback(
+            function (PromiseInterface $promise) use ($templateEngine, $result) {
+                $promise->success($result);
+                return $templateEngine;
+            }
+        );
+
+        $controller = (new class() implements EndPointInterface {
+            use EastEndPointTrait;
+
+            public function getRender(ClientInterface $client)
+            {
+                return $this->render($client, 'routeName');
+            }
+        });
+
+        self::assertInstanceOf(
+            get_class($controller),
+            $controller
+                ->setStreamFactory($streamFactory)
+                ->setResponseFactory($responseFactory)
+                ->setTemplating($templateEngine)
+                ->getRender($client)
+        );
+    }
+
+    public function testRenderingWithErrorInRendering()
+    {
+        $responseFactory = $this->createMock(ResponseFactoryInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
+        $response->expects(self::any())->method('withHeader')->willReturnSelf();
+        $responseFactory->expects(self::any())->method('createResponse')->willReturn($response);
+
+        $stream = $this->createMock(StreamInterface::class);
+        $streamFactory = $this->createMock(StreamFactoryInterface::class);
+        $streamFactory->expects(self::any())->method('createStream')->willReturn($stream);
+
+        $client = $this->createMock(ClientInterface::class);
+        $client->expects(self::once())
+            ->method('errorInRequest');
+
+        $result = $this->createMock(ResultInterface::class);
+        $result->expects(self::any())->method('__toString')->willReturn('fooBar');
+
+        $templateEngine = $this->createMock(EngineInterface::class);
+        $templateEngine->expects(self::once())->method('render')->willReturnCallback(
+            function (PromiseInterface $promise) use ($templateEngine, $result) {
+                $promise->fail(new \RuntimeException());
                 return $templateEngine;
             }
         );
