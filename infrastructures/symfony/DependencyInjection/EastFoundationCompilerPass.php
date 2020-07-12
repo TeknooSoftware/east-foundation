@@ -27,6 +27,7 @@ namespace Teknoo\East\FoundationBundle\DependencyInjection;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Reference;
+use Teknoo\East\Twig\Template\Engine;
 
 /**
  * Class EastFoundationCompilerPass
@@ -57,7 +58,10 @@ class EastFoundationCompilerPass implements CompilerPassInterface
         foreach ($taggedControllers as $id => $tags) {
             $definition = $container->getDefinition($id);
 
-            $definition->addMethodCall('setTemplating', [new Reference('Teknoo\East\FoundationBundle\Twig\Engine')]);
+            $definition->addMethodCall(
+                'setTemplating',
+                [new Reference(Engine::class)]
+            );
         }
 
         return $this;

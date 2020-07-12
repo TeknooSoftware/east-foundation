@@ -8,16 +8,16 @@ parameters:
             path: infrastructures/symfony/Http/Client.php
         -
             message: '#Method [a-zA-Z0-9\\_]+::getParameters\(\) should return array<string, mixed> but returns array<int\|string, mixed>.#'
-            path: src/universal/Processor/Processor.php
+            path: src/Processor/Processor.php
         -
             message: '#Method [a-zA-Z0-9\\_]+::registerMiddleware\(\) should return [a-zA-Z0-9\\_]+ but returns [a-zA-Z0-9\\_]+.#'
-            path: src/universal/Recipe/Recipe.php
+            path: src/Recipe/Recipe.php
         -
             message: '#Parameter \#1 \$name of class ReflectionFunction constructor expects Closure\|string, callable\(\): mixed given\.#'
-            path: src/universal/Router/Result.php
+            path: src/Router/Result.php
         -
             message: '#Anonymous function should return [a-zA-Z0-9\\_]+ but returns Teknoo\\Recipe\\RecipeInterface\.#'
-            path: src/universal/di.php
+            path: src/di.php
         -
             message: '#Parameter \#1 \$argument of class ReflectionClass constructor expects class-string\<T of object\>\|T of object, string given\.#'
             path: infrastructures/symfony/Router/Router.php

@@ -29,6 +29,16 @@ use Teknoo\East\Foundation\Template\EngineInterface;
 use Teknoo\East\Foundation\Template\ResultInterface;
 use Twig\Environment;
 
+/**
+ * Class Engine.
+ *
+ * @copyright   Copyright (c) 2009-2020 Richard Déloge (richarddeloge@gmail.com)
+ *
+ * @link        http://teknoo.software/east Project website
+ *
+ * @license     http://teknoo.software/license/mit         MIT License
+ * @author      Richard Déloge <richarddeloge@gmail.com>
+ */
 class Engine implements EngineInterface
 {
     private Environment $twig;
@@ -41,7 +51,7 @@ class Engine implements EngineInterface
     public function render(PromiseInterface $promise, string $view, array $parameters = []): EngineInterface
     {
         $promise->success(
-            new class($this->twig, $view, $parameters) implements ResultInterface {
+            new class ($this->twig, $view, $parameters) implements ResultInterface {
                 private Environment $twig;
 
                 private string $view;

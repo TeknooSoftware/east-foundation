@@ -132,7 +132,7 @@ Quick Example
     };
     
     $builder = new ContainerBuilder();
-    $builder->addDefinitions('src/universal/di.php');
+    $builder->addDefinitions('src/di.php');
     $builder->addDefinitions([
         RouterInterface::class => $router,
     

@@ -2,7 +2,7 @@ parameters:
   teknoo.east.symfony.router.class: 'Teknoo\East\FoundationBundle\Router\Router'
   teknoo.east.symfony.listener.kernel.class: 'Teknoo\East\FoundationBundle\Listener\KernelListener'
   teknoo.east.symfony.normalizer.east_normalizer.class: 'Teknoo\East\FoundationBundle\Normalizer\EastNormalizer'
-  teknoo.east.symfony.twig.engine: 'Teknoo\East\FoundationBundle\Twig\Engine'
+  teknoo.east.twig.template.engine: 'Teknoo\East\Twig\Template\Engine'
 
 services:
   #Symfony router
@@ -58,7 +58,7 @@ services:
     class: 'Teknoo\East\Diactoros\CallbackStreamFactory'
 
   #Twig Engine
-  Teknoo\East\FoundationBundle\Twig\Engine:
-    class: '%teknoo.east.symfony.twig.engine%'
+  Teknoo\East\Twig\Template\Engine:
+    class: '%teknoo.east.twig.template.engine%'
     arguments:
       - '@twig'

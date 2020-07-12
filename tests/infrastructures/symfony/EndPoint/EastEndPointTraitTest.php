@@ -30,7 +30,9 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\User\UserInterface;
 use Teknoo\East\Foundation\EndPoint\EndPointInterface;
 use Teknoo\East\Foundation\Http\Message\CallbackStreamInterface;
+use Teknoo\East\Foundation\Promise\PromiseInterface;
 use Teknoo\East\Foundation\Template\EngineInterface;
+use Teknoo\East\Foundation\Template\ResultInterface;
 use Teknoo\East\FoundationBundle\EndPoint\EastEndPointTrait;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -199,8 +201,16 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
             }))
             ->willReturnSelf();
 
+        $result = $this->createMock(ResultInterface::class);
+        $result->expects(self::any())->method('__toString')->willReturn('fooBar');
+
         $templateEngine = $this->createMock(EngineInterface::class);
-        $templateEngine->expects(self::once())->method('render')->willReturn('fooBar');
+        $templateEngine->expects(self::once())->method('render')->willReturnCallback(
+            function (PromiseInterface $promise) use ($templateEngine, $result) {
+                $promise->success($result);
+                return $templateEngine;
+            }
+        );
 
         $controller = (new class() implements EndPointInterface {
             use EastEndPointTrait;
@@ -223,8 +233,6 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
 
     public function testRenderNoRendering()
     {
-        $this->expectException(\LogicException::class);
-
         $stream = $this->createMock(StreamInterface::class);
         $streamFactory = $this->createMock(StreamFactoryInterface::class);
         $streamFactory->expects(self::any())->method('createStream')->willReturn($stream);
@@ -249,6 +257,9 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
         $client = $this->createMock(ClientInterface::class);
         $client->expects(self::never())
             ->method('acceptResponse');
+        $client->expects(self::once())
+            ->method('errorInRequest')
+            ->with(self::callback(fn($e) => $e instanceof \RuntimeException));
 
         (new class() implements EndPointInterface {
             use EastEndPointTrait;
@@ -263,8 +274,6 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
 
     public function testRenderNoRenderingWithCallBackStream()
     {
-        $this->expectException(\LogicException::class);
-
         $stream = $this->createMock(CallbackStreamInterface::class);
         $callBack = null;
         $stream->expects(self::any())->method('bind')->willReturnCallback(
@@ -300,13 +309,10 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
         $responseFactory->expects(self::any())->method('createResponse')->willReturn($response);
 
         $client = $this->createMock(ClientInterface::class);
-        $client->expects(self::once())
-            ->method('acceptResponse')
-            ->willReturnCallback(function ($instance) use ($client) {
-                $instance instanceof ResponseInterface && $instance->getBody()->getContents();
 
-                return $client;
-            });
+        $client->expects(self::once())
+            ->method('errorInRequest')
+            ->with(self::callback(fn($e) => $e instanceof \RuntimeException));
 
         (new class() implements EndPointInterface {
             use EastEndPointTrait;

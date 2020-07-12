@@ -22,5 +22,20 @@
 
 declare(strict_types=1);
 
-//To avoid BC Breaks
-return include \dirname(__DIR__, 2) . '/infrastructures/symfony/generator.php';
+namespace Teknoo\East\Foundation\Template;
+
+/**
+ * @copyright   Copyright (c) 2009-2020 Richard Déloge (richarddeloge@gmail.com)
+ *
+ * @link        http://teknoo.software/east Project website
+ *
+ * @license     http://teknoo.software/license/mit         MIT License
+ * @author      Richard Déloge <richarddeloge@gmail.com>
+ */
+interface ResultInterface
+{
+    /**
+     * To return the result of the template's rendering. Can be called async.
+     */
+    public function __toString(): string;
+}

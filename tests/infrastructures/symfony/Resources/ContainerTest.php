@@ -46,23 +46,12 @@ use Teknoo\East\FoundationBundle\Session\SessionMiddleware;
  */
 class ContainerTest extends \PHPUnit\Framework\TestCase
 {
-    public function testLegacyDIForward()
-    {
-        $di1 = include __DIR__.'/../../../../src/symfony/Resources/config/di.php';
-        $di2 = include __DIR__.'/../../../../infrastructures/symfony/Resources/config/di.php';
-
-        self::assertEquals(
-            $di1,
-            $di2
-        );
-    }
-
     /**
      * @return Container
      */
     protected function buildContainer() : Container
     {
-        return include __DIR__.'/../../../../src/symfony/generator.php';
+        return include __DIR__.'/../../../../infrastructures/symfony/generator.php';
     }
 
     public function testCreateManager()

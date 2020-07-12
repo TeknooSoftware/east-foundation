@@ -44,7 +44,7 @@
     "minimum-stability": "stable",
     "autoload": {
         "psr-4": {
-            "Teknoo\\East\\Foundation\\": "src/universal",
+            "Teknoo\\East\\Foundation\\": "src",
             "Teknoo\\East\\Diactoros\\": "infrastructures/laminas",
             "Teknoo\\East\\FoundationBundle\\": "infrastructures/symfony",
             "Teknoo\\East\\Twig\\": "infrastructures/twig"

@@ -92,6 +92,8 @@ trait TemplatingTrait
     ): RenderingInterface {
         if (!$this->templating instanceof EngineInterface) {
             $client->errorInRequest(new \RuntimeException('Missing template engine'));
+
+            return $this;
         }
 
         $response = $this->responseFactory->createResponse($status);
