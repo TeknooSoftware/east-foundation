@@ -74,7 +74,7 @@ class EastFrameworkCompilerPassTest extends \PHPUnit\Framework\TestCase
     public function testProcess()
     {
         $def = $this->createMock(Definition::class);
-        $def->expects($this->exactly(6))->method('addMethodCall')->willReturnSelf();
+        $def->expects($this->exactly(2))->method('addMethodCall')->willReturnSelf();
 
         $this->getContainerBuilderMock()
             ->expects(self::any())
@@ -107,13 +107,13 @@ class EastFrameworkCompilerPassTest extends \PHPUnit\Framework\TestCase
     public function testProcessNoTwig()
     {
         $def = $this->createMock(Definition::class);
-        $def->expects($this->exactly(4))->method('addMethodCall')->willReturnSelf();
+        $def->expects($this->exactly(0))->method('addMethodCall')->willReturnSelf();
 
         $this->getContainerBuilderMock()
             ->expects(self::any())
             ->method('has')
             ->willReturnCallback(function ($value) {
-                return 'templating.engine.twig' != $value;
+                return 'twig' != $value;
             });
 
         $this->getContainerBuilderMock()
@@ -126,7 +126,7 @@ class EastFrameworkCompilerPassTest extends \PHPUnit\Framework\TestCase
             ]);
 
         $this->getContainerBuilderMock()
-            ->expects($this->exactly(2))
+            ->expects(self::any())
             ->method('getDefinition')
             ->withConsecutive(['service1'], ['service2'])
             ->willReturn($def);

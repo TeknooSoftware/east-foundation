@@ -46,14 +46,16 @@
         "psr-4": {
             "Teknoo\\East\\Foundation\\": "src/universal",
             "Teknoo\\East\\Diactoros\\": "infrastructures/laminas",
-            "Teknoo\\East\\FoundationBundle\\": "infrastructures/symfony"
+            "Teknoo\\East\\FoundationBundle\\": "infrastructures/symfony",
+            "Teknoo\\East\\Twig\\": "infrastructures/twig"
         }
     },
     "autoload-dev": {
         "psr-4": {
             "Teknoo\\Tests\\East\\Foundation\\": "tests/universal",
             "Teknoo\\Tests\\East\\Diactoros\\": "tests/infrastructures/laminas",
-            "Teknoo\\Tests\\East\\FoundationBundle\\": "tests/infrastructures/symfony"
+            "Teknoo\\Tests\\East\\FoundationBundle\\": "tests/infrastructures/symfony",
+            "Teknoo\\Tests\\East\\Twig\\": "tests/infrastructures/twig"
         }
     },
     "archive": {

@@ -22,7 +22,7 @@
 
 declare(strict_types=1);
 
-namespace Teknoo\East\FoundationBundle\Twig;
+namespace Teknoo\East\Twig\Template;
 
 use Teknoo\East\Foundation\Promise\PromiseInterface;
 use Teknoo\East\Foundation\Template\EngineInterface;

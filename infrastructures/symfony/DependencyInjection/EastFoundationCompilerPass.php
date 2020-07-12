@@ -50,7 +50,7 @@ class EastFoundationCompilerPass implements CompilerPassInterface
 
         $twigPresent = $container->has('twig');
 
-        if (!empty($twigPresent)) {
+        if (false === $twigPresent) {
             return $this;
         }
 

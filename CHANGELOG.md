@@ -1,5 +1,14 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[3.0.0-beta1] - 2020-07-12
+###Change
+- Remove Symfony Template component (integration deprecated into symfony)
+- Create EngineInterface to allow creation of adapter to any templating Engine
+- Create ResultInterface to allow asynchrone template rendering for callback streaming
+- Create Twig Engine implementing EngineInterface and ResultInterface
+- Remove 'east.controller.service' tag (not used)
+- Add east.endpoint.template to inject Twig engine adapter
+  
 ##[2.1.6] - 2020-07-09
 ###Update
 - Remove autowiring to Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface to avoid error in Symfony DI Build
