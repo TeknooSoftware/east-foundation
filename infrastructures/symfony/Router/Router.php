@@ -24,7 +24,6 @@ declare(strict_types=1);
 
 namespace Teknoo\East\FoundationBundle\Router;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller as SymfonyController;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController as SymfonyAbstractController;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
@@ -116,8 +115,7 @@ class Router implements RouterInterface
 
                 $reflection = new \ReflectionClass((string) $explodedController[0]);
                 if (
-                    $reflection->isSubclassOf(SymfonyController::class)
-                    || $reflection->isSubclassOf(SymfonyAbstractController::class)
+                    $reflection->isSubclassOf(SymfonyAbstractController::class)
                 ) {
                     return null;
                 }
@@ -140,7 +138,6 @@ class Router implements RouterInterface
 
         if (
             !\is_callable($entry)
-            || $entry instanceof SymfonyController
             || $entry instanceof SymfonyAbstractController
         ) {
             return null;

@@ -414,6 +414,12 @@ class RouterTest extends \PHPUnit\Framework\TestCase
 
     public function testExecuteWithSymfonyControllerStatic()
     {
+        if (!\class_exists(SymfonyController::class)) {
+            self::markTestSkipped('Class not present');
+
+            return;
+        }
+
         /**
          * @var \PHPUnit\Framework\MockObject\MockObject|ClientInterface
          */
@@ -521,6 +527,12 @@ class RouterTest extends \PHPUnit\Framework\TestCase
 
     public function testExecuteWithSymfonyControllerInContainer()
     {
+        if (!\class_exists(SymfonyController::class)) {
+            self::markTestSkipped('Class not present');
+
+            return;
+        }
+
         /**
          * @var \PHPUnit\Framework\MockObject\MockObject|ClientInterface
          */
