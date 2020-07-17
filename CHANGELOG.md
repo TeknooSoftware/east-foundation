@@ -1,5 +1,12 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[3.0.1] - 2020-07-17
+###Stable Release
+###Change
+- Update libs requirements
+- Remove express support to deprecated Symfony\Bundle\FrameworkBundle\Controller\Controller and only Symfony\Bundle\FrameworkBundle\Controller\AbstractController.
+- Add travis run also with lowest dependencies.
+
 ##[3.0.0] - 2020-07-12
 ###Stable release
 - Remove Symfony Template component (integration deprecated into symfony)
