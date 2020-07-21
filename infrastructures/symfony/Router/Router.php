@@ -24,7 +24,8 @@ declare(strict_types=1);
 
 namespace Teknoo\East\FoundationBundle\Router;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController as SymfonyAbstractController;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller as SfController;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController as SfAbstractController;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Teknoo\East\Foundation\Http\ClientInterface;
@@ -114,9 +115,9 @@ class Router implements RouterInterface
                 $explodedController = \explode('::', $controller);
 
                 $reflection = new \ReflectionClass((string) $explodedController[0]);
-                if (
-                    $reflection->isSubclassOf(SymfonyAbstractController::class)
-                ) {
+                $isSymfonyLegacy = \class_exists(SfController::class) && $reflection->isSubclassOf(SfController::class);
+                $isSymfony = $reflection->isSubclassOf(SfAbstractController::class);
+                if ($isSymfonyLegacy || $isSymfony) {
                     return null;
                 }
 
@@ -136,10 +137,10 @@ class Router implements RouterInterface
 
         $entry = $this->container->get($parameters['_controller']);
 
-        if (
-            !\is_callable($entry)
-            || $entry instanceof SymfonyAbstractController
-        ) {
+        $isSymfonyLegacy = \class_exists(SfController::class) && $entry instanceof SfController;
+        $isSymfony = $entry instanceof SfAbstractController;
+
+        if (!\is_callable($entry) || $isSymfonyLegacy || $isSymfony) {
             return null;
         }
 

@@ -1,5 +1,10 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[3.0.2] - 2020-07-17
+###Stable Release
+###Change
+- Restore support to deprecated Symfony\Bundle\FrameworkBundle\Controller\Controller and only Symfony\Bundle\FrameworkBundle\Controller\AbstractController.
+
 ##[3.0.1] - 2020-07-17
 ###Stable Release
 ###Change
