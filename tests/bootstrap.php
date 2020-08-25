@@ -24,7 +24,7 @@ defined('RUN_CLI_MODE')
 defined('PHPUNIT')
     || define('PHPUNIT', true);
 
-ini_set('memory_limit', '32M');
+ini_set('memory_limit', '64M');
 
 require_once __DIR__.'/../vendor/autoload.php';
 
