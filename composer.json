@@ -1,7 +1,7 @@
 {
     "name": "teknoo/east-foundation",
     "type": "library",
-    "description": "Universal package, including a symfony bundle, to allow developer to use the #East philosophy into there project with any framework supporting PSR-11 or with Symfony 3+.",
+    "description": "East Foundation is a universal package to implement the #east philosophy ( http://blog.est.voyage/phpTour2015/ ) with any framework supporting PSR-11 or with Symfony 4+.",
     "keywords": ["east", "controller", "design"],
     "homepage": "http://teknoo.software/east-framework",
     "license": ["MIT"],
