@@ -17,12 +17,6 @@ services:
       - '@service_container'
     public: true
 
-  Teknoo\East\Foundation\Manager\ManagerInterface:
-    synthetic: true
-
-  Teknoo\East\Foundation\Http\ClientInterface:
-    synthetic: true
-
   Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface:
     class: 'Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory'
     arguments:

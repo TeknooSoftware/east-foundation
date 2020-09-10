@@ -1,5 +1,10 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[3.0.4] - 2020-09-10
+###Stable Release
+###Update
+- Remove synthetic service in Symfony DI to support last version of teknoo/bridge-phpdi-symfony
+
 ##[3.0.3] - 2020-08-25
 ###Stable Release
 ###Update
