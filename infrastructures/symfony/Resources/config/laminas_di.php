@@ -26,14 +26,8 @@ namespace Teknoo\East\FoundationBundle\Resources\config;
 
 use Laminas\Diactoros\ServerRequestFactory;
 use Laminas\Diactoros\UploadedFileFactory;
-use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\UploadedFileFactoryInterface;
-use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
-use Teknoo\East\Foundation\Http\ClientInterface;
-use Teknoo\East\Foundation\Recipe\RecipeInterface;
-use Teknoo\East\FoundationBundle\Http\Client;
-use Teknoo\East\FoundationBundle\Session\SessionMiddleware;
 
 use function DI\get;
 use function DI\create;

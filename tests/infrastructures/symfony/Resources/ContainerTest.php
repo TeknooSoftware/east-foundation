@@ -26,8 +26,6 @@ use Psr\Log\LoggerInterface;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Teknoo\East\Foundation\Manager\Manager;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
-use Teknoo\East\Foundation\Manager\Queue\Queue;
-use Teknoo\East\Foundation\Manager\Queue\QueueInterface;
 use Teknoo\East\Foundation\Processor\Processor;
 use Teknoo\East\Foundation\Processor\ProcessorInterface;
 use Teknoo\East\Foundation\Router\RouterInterface;

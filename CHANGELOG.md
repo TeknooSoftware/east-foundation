@@ -1,5 +1,11 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[3.1.0] - 2020-09-11
+###Stable Release
+###Update
+- Add Di definition dedicated to Laminas for Symfony bundle to work out of the box with the metapackage 
+  `teknoo/eat-foundation-symfony`.
+
 ##[3.0.4] - 2020-09-10
 ###Stable Release
 ###Update
