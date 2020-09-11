@@ -23,9 +23,13 @@ namespace Teknoo\Tests\East\FoundationBundle\Resources;
 
 use DI\Container;
 use DI\ContainerBuilder;
+use Laminas\Diactoros\ResponseFactory;
 use Laminas\Diactoros\ServerRequestFactory;
+use Laminas\Diactoros\StreamFactory;
 use Laminas\Diactoros\UploadedFileFactory;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UploadedFileFactoryInterface;
 
 /**
@@ -90,6 +94,46 @@ class LaminasContainerTest extends \PHPUnit\Framework\TestCase
         self::assertInstanceOf(
           UploadedFileFactoryInterface::class,
             $container->get(UploadedFileFactoryInterface::class)
+        );
+    }
+
+    public function testResponseFactory()
+    {
+        $container = $this->buildContainer();
+
+        self::assertInstanceOf(
+          ResponseFactory::class,
+            $container->get(ResponseFactory::class)
+        );
+    }
+
+    public function testResponseFactoryInterface()
+    {
+        $container = $this->buildContainer();
+
+        self::assertInstanceOf(
+          ResponseFactoryInterface::class,
+            $container->get(ResponseFactoryInterface::class)
+        );
+    }
+
+    public function testStreamFactory()
+    {
+        $container = $this->buildContainer();
+
+        self::assertInstanceOf(
+          StreamFactory::class,
+            $container->get(StreamFactory::class)
+        );
+    }
+
+    public function testStreamFactoryInterface()
+    {
+        $container = $this->buildContainer();
+
+        self::assertInstanceOf(
+          StreamFactoryInterface::class,
+            $container->get(StreamFactoryInterface::class)
         );
     }
 }

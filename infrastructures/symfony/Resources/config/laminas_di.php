@@ -24,15 +24,25 @@ declare(strict_types=1);
 
 namespace Teknoo\East\FoundationBundle\Resources\config;
 
+use Laminas\Diactoros\ResponseFactory;
 use Laminas\Diactoros\ServerRequestFactory;
+use Laminas\Diactoros\StreamFactory;
 use Laminas\Diactoros\UploadedFileFactory;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UploadedFileFactoryInterface;
 
 use function DI\get;
 use function DI\create;
 
 return [
+  ResponseFactory::class => create(),
+  ResponseFactoryInterface::class => get(ResponseFactory::class),
+
+  StreamFactory::class => create(),
+  StreamFactoryInterface::class => get(StreamFactory::class),
+
   ServerRequestFactory::class => create(),
   ServerRequestFactoryInterface::class => get(ServerRequestFactory::class),
 
