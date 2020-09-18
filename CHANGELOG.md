@@ -1,5 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[3.1.2] - 2020-09-18
+###Stable Release
+- Update QA and CI tools
+
 ##[3.1.1] - 2020-09-11
 ###Stable Release
 ###Update
