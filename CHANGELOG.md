@@ -1,5 +1,10 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[3.1.3] - 2020-09-30
+###Stable Release
+- Remove useless empty state declaration in manager and recipe in East Foundation, not required with current 
+  version of States.
+
 ##[3.1.2] - 2020-09-18
 ###Stable Release
 - Update QA and CI tools
