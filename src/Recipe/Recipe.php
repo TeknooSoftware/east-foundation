@@ -42,15 +42,6 @@ use Teknoo\Recipe\Recipe as BaseRecipe;
 class Recipe extends BaseRecipe implements RecipeInterface
 {
     /**
-     * No states defined for this daughter, use directly states defined for the Chef Stated class.
-     * @inheritDoc
-     */
-    protected static function statesListDeclaration(): array
-    {
-        return [];
-    }
-
-    /**
      * @inheritDoc
      */
     public function registerMiddleware(
