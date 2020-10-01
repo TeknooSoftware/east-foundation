@@ -18,7 +18,7 @@
         "psr/http-message": "~1.0",
         "teknoo/immutable": "^2.0.2",
         "teknoo/states": "^4.0.14",
-        "teknoo/recipe": "^2.0.7",
+        "teknoo/recipe": "^2.1.0-beta1",
         "psr/container-implementation": "~1.0",
         "psr/http-factory": "~1.0",
         "php-di/php-di": "~6.2"

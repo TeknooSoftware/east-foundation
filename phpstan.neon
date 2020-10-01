@@ -2,6 +2,7 @@ parameters:
     scopeClass: Teknoo\States\PHPStan\Analyser\Scope
     checkMissingIterableValueType: false
     checkGenericClassInNonGenericObjectType: false
+    treatPhpDocTypesAsCertain: false
     ignoreErrors:
         -
             message: '#Cannot call method createResponse\(\) on [a-zA-Z0-9\\_]+\|null.#'

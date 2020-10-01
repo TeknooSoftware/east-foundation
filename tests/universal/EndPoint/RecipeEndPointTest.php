@@ -25,6 +25,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Teknoo\East\Foundation\EndPoint\RecipeEndPoint;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
+use Teknoo\Recipe\CookbookInterface;
 use Teknoo\Recipe\RecipeInterface;
 
 /**
@@ -46,6 +47,11 @@ class RecipeEndPointTest extends TestCase
     private $recipe;
 
     /**
+     * @var CookbookInterface
+     */
+    private $cookbook;
+
+    /**
      * @return RecipeInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private function getRecipeMock(): RecipeInterface
@@ -58,21 +64,25 @@ class RecipeEndPointTest extends TestCase
     }
 
     /**
-     * @return RecipeEndPoint
+     * @return CookbookInterface|\PHPUnit\Framework\MockObject\MockObject
      */
-    public function buildEndPoint(): RecipeEndPoint
+    private function getCookbookMock(): CookbookInterface
     {
-        return new RecipeEndPoint($this->getRecipeMock());
+        if (!$this->cookbook instanceof CookbookInterface) {
+            $this->cookbook = $this->createMock(CookbookInterface::class);
+        }
+
+        return $this->cookbook;
     }
 
     public function testInvokeBadManager()
     {
         $this->expectException(\TypeError::class);
-        $endPoint = $this->buildEndPoint();
+        $endPoint = new RecipeEndPoint($this->getRecipeMock());
         $endPoint($this->createMock(ServerRequestInterface::class), new \stdClass());
     }
 
-    public function testInvoke()
+    public function testInvokeWithRecipe()
     {
         $managerMock = $this->createMock(ManagerInterface::class);
 
@@ -86,11 +96,39 @@ class RecipeEndPointTest extends TestCase
             ->with([])
             ->willReturnSelf();
 
-        $endPoint = $this->buildEndPoint();
+        $endPoint = new RecipeEndPoint($this->getRecipeMock());
 
         self::assertInstanceOf(
             RecipeEndPoint::class,
             $endPoint($managerMock)
         );
+    }
+
+    public function testInvokeWithCookBook()
+    {
+        $managerMock = $this->createMock(ManagerInterface::class);
+
+        $managerMock->expects(self::once())
+            ->method('reserveAndBegin')
+            ->with($this->getCookbookMock())
+            ->willReturnSelf();
+
+        $managerMock->expects(self::once())
+            ->method('process')
+            ->with([])
+            ->willReturnSelf();
+
+        $endPoint = new RecipeEndPoint($this->getCookbookMock());
+
+        self::assertInstanceOf(
+            RecipeEndPoint::class,
+            $endPoint($managerMock)
+        );
+    }
+
+    public function testConstructorWithBadArgument()
+    {
+        $this->expectException(\TypeError::class);
+        new RecipeEndPoint(new \stdClass());
     }
 }

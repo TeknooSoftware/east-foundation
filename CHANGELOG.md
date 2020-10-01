@@ -1,5 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[3.2.0-beta1] - 2020-10-01
+###Beta
+- Support CookbookInterface for RecipeEndpoint
+  
 ##[3.1.3] - 2020-09-30
 ###Stable Release
 - Remove useless empty state declaration in manager and recipe in East Foundation, not required with current 

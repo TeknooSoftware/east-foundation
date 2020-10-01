@@ -25,6 +25,7 @@ declare(strict_types=1);
 namespace Teknoo\East\Foundation\EndPoint;
 
 use Teknoo\East\Foundation\Manager\ManagerInterface;
+use Teknoo\Recipe\CookbookInterface;
 use Teknoo\Recipe\RecipeInterface;
 
 /**
@@ -40,10 +41,20 @@ use Teknoo\Recipe\RecipeInterface;
  */
 class RecipeEndPoint
 {
-    private RecipeInterface $recipe;
+    /**
+     * @var RecipeInterface|CookbookInterface
+     */
+    private $recipe;
 
-    public function __construct(RecipeInterface $recipe)
+    /**
+     * @param RecipeInterface|CookbookInterface $recipe
+     */
+    public function __construct($recipe)
     {
+        if (!$recipe instanceof RecipeInterface && !$recipe instanceof CookbookInterface) {
+            throw new \TypeError('$recipe must be RecipeInterface or CookbookInterface');
+        }
+
         $this->recipe = $recipe;
     }
 
