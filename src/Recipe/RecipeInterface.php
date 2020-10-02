@@ -25,6 +25,7 @@ declare(strict_types=1);
 namespace Teknoo\East\Foundation\Recipe;
 
 use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
+use Teknoo\Recipe\CookbookInterface;
 use Teknoo\Recipe\RecipeInterface as BaseInterface;
 
 /**
@@ -39,7 +40,7 @@ use Teknoo\Recipe\RecipeInterface as BaseInterface;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-interface RecipeInterface extends BaseInterface
+interface RecipeInterface extends BaseInterface, CookbookInterface
 {
     /**
      * Method to register middleware in the manager to process request.

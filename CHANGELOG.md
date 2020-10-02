@@ -1,5 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[3.2.0-beta2] - 2020-10-02
+###Beta
+- Recipe extends CookbookInterface
+
 ##[3.2.0-beta1] - 2020-10-01
 ###Beta
 - Support CookbookInterface for RecipeEndpoint
