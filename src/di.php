@@ -30,11 +30,14 @@ use Teknoo\East\Foundation\Processor\Processor;
 use Teknoo\East\Foundation\Processor\ProcessorInterface;
 use Teknoo\East\Foundation\Processor\LoopDetector;
 use Teknoo\East\Foundation\Processor\LoopDetectorInterface;
+use Teknoo\East\Foundation\Processor\ProcessorCookbook;
+use Teknoo\East\Foundation\Processor\ProcessorCookbookInterface;
 use Teknoo\East\Foundation\Processor\ProcessorRecipeInterface;
 use Teknoo\East\Foundation\Recipe\Recipe;
+use Teknoo\East\Foundation\Recipe\RecipeCookbook;
+use Teknoo\East\Foundation\Recipe\RecipeCookbookInterface;
 use Teknoo\East\Foundation\Recipe\RecipeInterface;
 use Teknoo\East\Foundation\Router\RouterInterface;
-use Teknoo\Recipe\Bowl\DynamicBowl;
 
 use function DI\get;
 use function DI\create;
@@ -53,42 +56,30 @@ return [
     LoopDetector::class => get(LoopDetectorInterface::class),
     LoopDetectorInterface::class => create(LoopDetector::class),
 
-    ProcessorRecipeInterface::class => static function (
-        ProcessorInterface $processor
-    ): ProcessorRecipeInterface {
-        $recipe = new class extends Recipe implements ProcessorRecipeInterface {
-        };
-
-        $recipe = $recipe->registerMiddleware($processor, ProcessorInterface::MIDDLEWARE_PRIORITY);
-        $recipe = $recipe->cook(
-            new DynamicBowl(ProcessorInterface::WORK_PLAN_CONTROLLER_KEY, false),
-            ProcessorInterface::WORK_PLAN_CONTROLLER_KEY,
-            [],
-            20
-        );
-
-        return $recipe;
-    },
-
-    Recipe::class => get(RecipeInterface::class),
-    RecipeInterface::class => static function (
-        RouterInterface $router,
-        ProcessorRecipeInterface $promiseRecipe,
-        LoopDetectorInterface $loopDetector
-    ): RecipeInterface {
-        $recipe = new Recipe();
-
-        $recipe = $recipe->registerMiddleware($router, RouterInterface::MIDDLEWARE_PRIORITY);
-        $recipe = $recipe->execute(
-            $promiseRecipe,
-            ProcessorRecipeInterface::class,
-            $loopDetector,
-            ProcessorRecipeInterface::MIDDLEWARE_PRIORITY
-        );
-
-        return $recipe;
-    },
-
     Processor::class => get(ProcessorInterface::class),
     ProcessorInterface::class => create(Processor::class),
+
+    ProcessorRecipeInterface::class => static function (): ProcessorRecipeInterface {
+        return new class extends Recipe implements ProcessorRecipeInterface {
+        };
+    },
+
+    ProcessorCookbookInterface::class => get(ProcessorCookbook::class),
+    ProcessorCookbook::class => create()
+        ->constructor(
+            get(ProcessorRecipeInterface::class),
+            get(ProcessorInterface::class),
+        ),
+
+    RecipeInterface::class => get(Recipe::class),
+    Recipe::class => create(),
+
+    RecipeCookbookInterface::class => get(RecipeCookbook::class),
+    RecipeCookbook::class => create()
+        ->constructor(
+            get(RecipeInterface::class),
+            get(RouterInterface::class),
+            get(ProcessorCookbookInterface::class),
+            get(LoopDetectorInterface::class)
+        ),
 ];

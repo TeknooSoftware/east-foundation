@@ -17,14 +17,17 @@ parameters:
             message: '#Parameter \#1 \$name of class ReflectionFunction constructor expects Closure\|string, callable\(\): mixed given\.#'
             path: src/Router/Result.php
         -
-            message: '#Anonymous function should return [a-zA-Z0-9\\_]+ but returns Teknoo\\Recipe\\RecipeInterface\.#'
-            path: src/di.php
-        -
             message: '#Parameter \#1 \$argument of class ReflectionClass constructor expects class-string\<T of object\>\|T of object, string given\.#'
             path: infrastructures/symfony/Router/Router.php
         -
             message: '#Method [a-zA-Z0-9\\_]+::matchRequest\(\) should return \(callable\(\): mixed\)\|null but returns string\.#'
             path: infrastructures/symfony/Router/Router.php
+        -
+            message: '#Method [a-zA-Z0-9\\_]+::populateRecipe\(\) should return [a-zA-Z0-9\\_]+ but returns [a-zA-Z0-9\\_]+.#'
+            path: src/Processor/ProcessorCookbook.php
+        -
+            message: '#Method [a-zA-Z0-9\\_]+::populateRecipe\(\) should return [a-zA-Z0-9\\_]+ but returns [a-zA-Z0-9\\_]+.#'
+            path: src/Recipe/RecipeCookbook.php
 services:
 	-
 		class: Teknoo\States\PHPStan\MethodsClassExtension

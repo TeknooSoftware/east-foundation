@@ -27,8 +27,17 @@ use Teknoo\East\Foundation\Manager\Manager;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\East\Foundation\Manager\Queue\Queue;
 use Teknoo\East\Foundation\Manager\Queue\QueueInterface;
+use Teknoo\East\Foundation\Processor\LoopDetector;
+use Teknoo\East\Foundation\Processor\LoopDetectorInterface;
 use Teknoo\East\Foundation\Processor\Processor;
+use Teknoo\East\Foundation\Processor\ProcessorCookbook;
+use Teknoo\East\Foundation\Processor\ProcessorCookbookInterface;
 use Teknoo\East\Foundation\Processor\ProcessorInterface;
+use Teknoo\East\Foundation\Processor\ProcessorRecipeInterface;
+use Teknoo\East\Foundation\Recipe\Recipe;
+use Teknoo\East\Foundation\Recipe\RecipeCookbook;
+use Teknoo\East\Foundation\Recipe\RecipeCookbookInterface;
+use Teknoo\East\Foundation\Recipe\RecipeInterface;
 use Teknoo\East\Foundation\Router\RouterInterface;
 
 /**
@@ -92,5 +101,94 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         );
 
         self::assertSame($processor1, $processor2);
+    }
+
+    public function testLoopDetector()
+    {
+        $container = $this->buildContainer();
+        $loopDetector1 = $container->get(LoopDetectorInterface::class);
+        $loopDetector2 = $container->get(LoopDetector::class);
+
+        self::assertInstanceOf(
+            LoopDetector::class,
+            $loopDetector1
+        );
+
+        self::assertInstanceOf(
+            LoopDetector::class,
+            $loopDetector2
+        );
+
+        self::assertSame($loopDetector1, $loopDetector2);
+    }
+
+    public function testProcessorRecipe()
+    {
+        $container = $this->buildContainer();
+        $recipe = $container->get(ProcessorRecipeInterface::class);
+
+        self::assertInstanceOf(
+            ProcessorRecipeInterface::class,
+            $recipe
+        );
+    }
+
+    public function testRecipe()
+    {
+        $container = $this->buildContainer();
+        $recipe1 = $container->get(Recipe::class);
+        $recipe2 = $container->get(RecipeInterface::class);
+
+        self::assertInstanceOf(
+            Recipe::class,
+            $recipe1
+        );
+
+        self::assertInstanceOf(
+            Recipe::class,
+            $recipe2
+        );
+
+        self::assertSame($recipe1, $recipe2);
+    }
+
+    public function testProcessorCookbook()
+    {
+        $container = $this->buildContainer();
+        $cookbook1 = $container->get(ProcessorCookbook::class);
+        $cookbook2 = $container->get(ProcessorCookbookInterface::class);
+
+        self::assertInstanceOf(
+            ProcessorCookbook::class,
+            $cookbook1
+        );
+
+        self::assertInstanceOf(
+            ProcessorCookbook::class,
+            $cookbook2
+        );
+
+        self::assertSame($cookbook1, $cookbook2);
+    }
+
+    public function testRecipeCookbook()
+    {
+        $container = $this->buildContainer();
+        $container->set(LoggerInterface::class, $this->createMock(LoggerInterface::class));
+        $container->set(RouterInterface::class, $this->createMock(RouterInterface::class));
+        $cookbook1 = $container->get(RecipeCookbook::class);
+        $cookbook2 = $container->get(RecipeCookbookInterface::class);
+
+        self::assertInstanceOf(
+            RecipeCookbook::class,
+            $cookbook1
+        );
+
+        self::assertInstanceOf(
+            RecipeCookbook::class,
+            $cookbook2
+        );
+
+        self::assertSame($cookbook1, $cookbook2);
     }
 }
