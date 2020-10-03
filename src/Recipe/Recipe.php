@@ -25,11 +25,7 @@ declare(strict_types=1);
 namespace Teknoo\East\Foundation\Recipe;
 
 use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
-use Teknoo\Recipe\Bowl\RecipeBowl;
-use Teknoo\Recipe\ChefInterface;
-use Teknoo\Recipe\CookbookInterface;
 use Teknoo\Recipe\Recipe as BaseRecipe;
-use Teknoo\Recipe\RecipeInterface as BaseRecipeInterface;
 
 /**
  * Recipe implementation built on Teknoo/Recipe implementation to define middleware registration into a recipe like
@@ -45,18 +41,6 @@ use Teknoo\Recipe\RecipeInterface as BaseRecipeInterface;
  */
 class Recipe extends BaseRecipe implements RecipeInterface
 {
-    private ?BaseRecipeInterface $recipe = null;
-
-    /**
-     * @inheritDoc
-     */
-    public function fill(BaseRecipeInterface $recipe): CookbookInterface
-    {
-        $this->recipe = $recipe;
-
-        return $this;
-    }
-
     /**
      * @inheritDoc
      */
@@ -75,24 +59,5 @@ class Recipe extends BaseRecipe implements RecipeInterface
             [],
             $priority
         );
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function train(ChefInterface $chef): BaseRecipeInterface
-    {
-        if (null === $this->recipe) {
-            return parent::train($chef);
-        }
-
-        $recipe = $this->recipe->cook(
-            new RecipeBowl($this, 0),
-            static::class
-        );
-
-        $recipe->train($chef);
-
-        return $this;
     }
 }

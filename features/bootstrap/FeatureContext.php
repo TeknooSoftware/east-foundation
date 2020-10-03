@@ -3,11 +3,13 @@
 declare(strict_types=1);
 
 use Behat\Behat\Context\Context;
+use Laminas\Diactoros\Response\TextResponse;
+use Laminas\Diactoros\ServerRequest;
 use PHPUnit\Framework\Assert;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Teknoo\East\Foundation\EndPoint\RecipeEndPoint;
-use Teknoo\East\Foundation\Recipe\RecipeInterface;
+use Teknoo\East\Foundation\Recipe\RecipeCookbookInterface;
 use Teknoo\East\Foundation\Recipe\Recipe;
 use Teknoo\East\Foundation\Router\RouterInterface;
 use Teknoo\East\Foundation\Http\ClientInterface;
@@ -16,8 +18,6 @@ use Teknoo\East\Foundation\Manager\Manager;
 use Teknoo\East\Foundation\Router\ResultInterface;
 use Teknoo\East\Foundation\Router\Result;
 use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
-use Zend\Diactoros\Response\TextResponse;
-use Zend\Diactoros\ServerRequest;
 
 /**
  * Defines application features from the specific context.
@@ -113,7 +113,7 @@ class FeatureContext implements Context
     public function theRouterCanProcessTheRequestToController($arg1, $arg2)
     {
         $controller = $arg2;
-        if ('closureFoo' == $arg2) {
+        if ('closureFoo' === $arg2) {
             $controller = function (ClientInterface $client, ServerRequest $request) {
                 $params = $request->getQueryParams();
 
@@ -136,7 +136,7 @@ class FeatureContext implements Context
     public function theRouterCanProcessTheRequestToRecipe($arg1, $arg2)
     {
         $controller = $arg2;
-        if ('barFoo' == $arg2) {
+        if ('barFoo' === $arg2) {
             $recipe = new Recipe;
             $recipe = $recipe->cook(function (ClientInterface $client, ServerRequest $request, $test) {
                 $client->acceptResponse(
@@ -154,7 +154,7 @@ class FeatureContext implements Context
      */
     public function theServerWillReceiveTheRequest($arg1)
     {
-        $manager = new Manager($this->container->get(RecipeInterface::class));
+        $manager = new Manager($this->container->get(RecipeCookbookInterface::class));
 
         $this->response = null;
         $this->error = null;

@@ -24,8 +24,6 @@ namespace Teknoo\Tests\East\Foundation\Recipe;
 use PHPUnit\Framework\TestCase;
 use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
 use Teknoo\East\Foundation\Recipe\Recipe;
-use Teknoo\Recipe\ChefInterface;
-use Teknoo\Recipe\RecipeInterface;
 
 /**
  * @covers \Teknoo\East\Foundation\Recipe\Recipe
@@ -39,36 +37,22 @@ use Teknoo\Recipe\RecipeInterface;
  */
 class RecipeTest extends TestCase
 {
-    public function testFillWithBadRecipe()
-    {
-        $this->expectException(\TypeError::class);
-        (new Recipe())->fill(new \stdClass());
-    }
-
-    public function testFillWithRecipe()
-    {
-        self::assertInstanceOf(
-            Recipe::class,
-            (new Recipe())->fill($this->createMock(RecipeInterface::class))
-        );
-    }
-
     public function testRegisterMiddlewareBadMiddleware()
     {
         $this->expectException(\TypeError::class);
-        (new Recipe())->fill(new \stdClass(), 10, 'foo');
+        (new Recipe())->registerMiddleware(new \stdClass(), 10, 'foo');
     }
 
     public function testRegisterMiddlewareBadName()
     {
         $this->expectException(\TypeError::class);
-        (new Recipe())->fill($this->createMock(MiddlewareInterface::class), new \stdClass(), 'foo');
+        (new Recipe())->registerMiddleware($this->createMock(MiddlewareInterface::class), new \stdClass(), 'foo');
     }
 
     public function testRegisterMiddlewareBadPriority()
     {
         $this->expectException(\TypeError::class);
-        (new Recipe())->fill($this->createMock(MiddlewareInterface::class), 10, new \stdClass());
+        (new Recipe())->registerMiddleware($this->createMock(MiddlewareInterface::class), 10, new \stdClass());
     }
 
     public function testRegisterMiddleware()
@@ -76,29 +60,6 @@ class RecipeTest extends TestCase
         self::assertInstanceOf(
             Recipe::class,
             (new Recipe())->registerMiddleware($this->createMock(MiddlewareInterface::class), 10)
-        );
-    }
-    
-    public function testTrainWithBadChef()
-    {
-        $this->expectException(\TypeError::class);
-        (new Recipe())->train(new \stdClass());
-    }
-
-    public function testTrainWithChefWithoutRecipe()
-    {
-        self::assertInstanceOf(
-            Recipe::class,
-            (new Recipe())->train($this->createMock(ChefInterface::class))
-        );
-    }
-
-    public function testTrainWithChefWithRecipe()
-    {
-        self::assertInstanceOf(
-            Recipe::class,
-            (new Recipe())->fill($this->createMock(RecipeInterface::class))
-                ->train($this->createMock(ChefInterface::class))
         );
     }
 }
