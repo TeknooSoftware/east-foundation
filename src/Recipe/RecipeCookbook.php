@@ -33,6 +33,18 @@ use Teknoo\Recipe\ChefInterface;
 use Teknoo\Recipe\CookbookInterface;
 use Teknoo\Recipe\RecipeInterface as OriginalRecipeInterface;
 
+/**
+ * Base cookbook to execute HTTP request thanks to East Foundation with your framework.
+ * The cookbook need an instance of Teknoo\East\Foundation\Recipe\RecipeInterface to be execute. By default this recipe
+ * is empty but be prefilled by the DI.
+ *
+ * @copyright   Copyright (c) 2009-2020 Richard Déloge (richarddeloge@gmail.com)
+ *
+ * @link        http://teknoo.software/east Project website
+ *
+ * @license     http://teknoo.software/license/mit         MIT License
+ * @author      Richard Déloge <richarddeloge@gmail.com>
+ */
 class RecipeCookbook implements RecipeCookbookInterface
 {
     private RecipeInterface $recipe;

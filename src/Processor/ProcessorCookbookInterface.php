@@ -27,6 +27,9 @@ namespace Teknoo\East\Foundation\Processor;
 use Teknoo\Recipe\CookbookInterface;
 
 /**
+ * Base cookbook interface to execute the endpoint found by the manager in the main recipe for the current
+ * HTTP request thanks to East Foundation with your framework.
+ *
  * @copyright   Copyright (c) 2009-2020 Richard Déloge (richarddeloge@gmail.com)
  *
  * @link        http://teknoo.software/east Project website

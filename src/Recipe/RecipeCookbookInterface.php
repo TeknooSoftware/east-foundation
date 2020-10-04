@@ -27,6 +27,9 @@ namespace Teknoo\East\Foundation\Recipe;
 use Teknoo\Recipe\CookbookInterface;
 
 /**
+ * Base cookbook interface to execute HTTP request thanks to East Foundation with your framework to allow developer
+ * to replace it.
+ *
  * @copyright   Copyright (c) 2009-2020 Richard Déloge (richarddeloge@gmail.com)
  *
  * @link        http://teknoo.software/east Project website
