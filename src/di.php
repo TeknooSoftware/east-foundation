@@ -45,10 +45,10 @@ use function DI\create;
 return [
     Manager::class => get(ManagerInterface::class),
     ManagerInterface::class => static function (
-        RecipeInterface $recipe
+        RecipeCookbookInterface $recipeCookbook
     ): ManagerInterface {
         $manager = new Manager();
-        $manager->read($recipe);
+        $manager->read($recipeCookbook);
 
         return $manager;
     },

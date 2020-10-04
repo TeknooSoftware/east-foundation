@@ -1,5 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[3.2.0-beta5] - 2020-10-04
+###Beta
+- Fix manager DI Injection
+
 ##[3.2.0-beta4] - 2020-10-04
 ###Beta
 - Create ProcessorCookbook and ProcessorCookbookInterface
