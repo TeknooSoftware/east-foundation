@@ -42,6 +42,8 @@ class ProcessorCookbook implements ProcessorCookbookInterface
 {
     private ProcessorRecipeInterface $recipe;
 
+    private bool $recipePopulated = false;
+
     private ProcessorInterface $processor;
 
     public function __construct(ProcessorRecipeInterface $recipe, ProcessorInterface $processor)
@@ -63,6 +65,18 @@ class ProcessorCookbook implements ProcessorCookbookInterface
         return $recipe;
     }
 
+    private function getRecipe(): ProcessorRecipeInterface
+    {
+        if ($this->recipePopulated) {
+            return $this->recipe;
+        }
+
+        $this->recipe = $this->populateRecipe();
+        $this->recipePopulated = true;
+
+        return $this->recipe;
+    }
+
     public function fill(OriginalRecipeInterface $recipe): CookbookInterface
     {
         if (!$recipe instanceof ProcessorRecipeInterface) {
@@ -70,15 +84,14 @@ class ProcessorCookbook implements ProcessorCookbookInterface
         }
 
         $this->recipe = $recipe;
+        $this->recipePopulated = false;
 
         return $this;
     }
 
     public function train(ChefInterface $chef): BaseRecipeInterface
     {
-        $this->recipe = $this->populateRecipe();
-
-        $chef->read($this->recipe);
+        $chef->read($this->getRecipe());
 
         return $this;
     }
@@ -88,7 +101,7 @@ class ProcessorCookbook implements ProcessorCookbookInterface
      */
     public function prepare(array &$workPlan, ChefInterface $chef): BaseRecipeInterface
     {
-        $this->recipe->prepare($workPlan, $chef);
+        $this->getRecipe()->prepare($workPlan, $chef);
 
         return $this;
     }
@@ -98,7 +111,7 @@ class ProcessorCookbook implements ProcessorCookbookInterface
      */
     public function validate($value): BaseRecipeInterface
     {
-        $this->recipe->validate($value);
+        $this->getRecipe()->validate($value);
 
         return $this;
     }

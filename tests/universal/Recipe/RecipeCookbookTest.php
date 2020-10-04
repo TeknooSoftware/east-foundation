@@ -137,12 +137,17 @@ class RecipeCookbookTest extends TestCase
 
     public function testTrain()
     {
-        $this->getRecipeMock()->expects(self::any())->method('registerMiddleware')->willReturnSelf();
-        $this->getRecipeMock()->expects(self::any())->method('execute')->willReturnSelf();
+        $this->getRecipeMock()->expects(self::once())->method('registerMiddleware')->willReturnSelf();
+        $this->getRecipeMock()->expects(self::once())->method('execute')->willReturnSelf();
 
+        $cookbook = $this->buildCookbook();
         self::assertInstanceOf(
             RecipeCookbook::class,
-            $this->buildCookbook()->train($this->createMock(ChefInterface::class))
+            $cookbook->train($this->createMock(ChefInterface::class))
+        );
+        self::assertInstanceOf(
+            RecipeCookbook::class,
+            $cookbook->train($this->createMock(ChefInterface::class))
         );
     }
 
@@ -162,6 +167,9 @@ class RecipeCookbookTest extends TestCase
 
     public function testPrepare()
     {
+        $this->getRecipeMock()->expects(self::once())->method('registerMiddleware')->willReturnSelf();
+        $this->getRecipeMock()->expects(self::once())->method('execute')->willReturnSelf();
+
         $wp = [];
         self::assertInstanceOf(
             RecipeCookbook::class,
@@ -171,6 +179,9 @@ class RecipeCookbookTest extends TestCase
 
     public function testValidate()
     {
+        $this->getRecipeMock()->expects(self::once())->method('registerMiddleware')->willReturnSelf();
+        $this->getRecipeMock()->expects(self::once())->method('execute')->willReturnSelf();
+
         self::assertInstanceOf(
             RecipeCookbook::class,
             $this->buildCookbook()->validate([])

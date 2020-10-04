@@ -1,5 +1,11 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[3.2.0-beta4] - 2020-10-04
+###Beta
+- Create ProcessorCookbook and ProcessorCookbookInterface
+- Create RecipeCookbook and RecipeCookbookInterface
+- Update DI to use cookbooks instead inject step in recipes, to allow overridding cookbook more easily
+
 ##[3.2.0-beta3] - 2020-10-02
 ###Beta
 - Recipe extends CookbookInterface

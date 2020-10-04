@@ -37,6 +37,8 @@ class RecipeCookbook implements RecipeCookbookInterface
 {
     private RecipeInterface $recipe;
 
+    private bool $recipePopulated = false;
+
     private RouterInterface $router;
 
     private ProcessorCookbookInterface $processorCookbook;
@@ -69,14 +71,25 @@ class RecipeCookbook implements RecipeCookbookInterface
         return $recipe;
     }
 
+    private function getRecipe(): RecipeInterface
+    {
+        if ($this->recipePopulated) {
+            return $this->recipe;
+        }
+
+        $this->recipe = $this->populateRecipe();
+        $this->recipePopulated = true;
+
+        return $this->recipe;
+    }
+
+
     /**
      * @inheritDoc
      */
     public function train(ChefInterface $chef): BaseRecipeInterface
     {
-        $this->recipe = $this->populateRecipe();
-
-        $chef->read($this->recipe);
+        $chef->read($this->getRecipe());
 
         return $this;
     }
@@ -86,7 +99,7 @@ class RecipeCookbook implements RecipeCookbookInterface
      */
     public function prepare(array &$workPlan, ChefInterface $chef): BaseRecipeInterface
     {
-        $this->recipe->prepare($workPlan, $chef);
+        $this->getRecipe()->prepare($workPlan, $chef);
 
         return $this;
     }
@@ -96,7 +109,7 @@ class RecipeCookbook implements RecipeCookbookInterface
      */
     public function validate($value): BaseRecipeInterface
     {
-        $this->recipe->validate($value);
+        $this->getRecipe()->validate($value);
 
         return $this;
     }
@@ -111,6 +124,7 @@ class RecipeCookbook implements RecipeCookbookInterface
         }
 
         $this->recipe = $recipe;
+        $this->recipePopulated = false;
 
         return $this;
     }
