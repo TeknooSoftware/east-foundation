@@ -47,13 +47,6 @@ interface ResultInterface extends ImmutableInterface
     public function getController(): callable;
 
     /**
-     * To list all parameters of the controllers.
-     *
-     * @return ParameterInterface[];
-     */
-    public function getParameters(): array;
-
-    /**
      * If there are several result found by the router for a same request, next router result can be fetched by this
      * method. Else this method must return null.
      *

@@ -66,11 +66,6 @@ abstract class AbstractResultTest extends \PHPUnit\Framework\TestCase
         self::assertIsCallable($this->buildResult()->getController());
     }
 
-    public function testGetParameters()
-    {
-        self::assertIsArray($this->buildResult()->getParameters());
-    }
-
     public function testGetNextWithNoNext()
     {
         self::assertNull($this->buildResult()->getNext());
