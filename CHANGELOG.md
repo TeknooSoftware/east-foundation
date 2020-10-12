@@ -1,5 +1,11 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[3.2.1] - 2020-10-12
+###Stable Release
+- Prepare library to support also PHP8.
+- Remove deprecations from PHP8.
+- Remove dead code in result (getParameter() was not used).
+
 ##[3.2.0] - 2020-10-04
 ###Beta
 - Support CookbookInterface for RecipeEndpoint
