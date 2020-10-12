@@ -14,9 +14,6 @@ parameters:
             message: '#Method [a-zA-Z0-9\\_]+::registerMiddleware\(\) should return [a-zA-Z0-9\\_]+ but returns [a-zA-Z0-9\\_]+.#'
             path: src/Recipe/Recipe.php
         -
-            message: '#Parameter \#1 \$name of class ReflectionFunction constructor expects Closure\|string, callable\(\): mixed given\.#'
-            path: src/Router/Result.php
-        -
             message: '#Parameter \#1 \$argument of class ReflectionClass constructor expects class-string\<T of object\>\|T of object, string given\.#'
             path: infrastructures/symfony/Router/Router.php
         -
