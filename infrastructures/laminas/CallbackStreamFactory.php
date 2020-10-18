@@ -24,10 +24,9 @@ declare(strict_types=1);
 
 namespace Teknoo\East\Diactoros;
 
-use Laminas\Diactoros\CallbackStream as DiactorosCallbackStream;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
-use Teknoo\East\Foundation\Http\Message\CallbackStreamInterface;
+use Teknoo\East\Foundation\Http\Message\CallbackStreamFactoryInterface;
 
 /**
  * Adapter of Laminas\Diactoros\CallbackStream for CallbackStreamInterface
@@ -39,7 +38,7 @@ use Teknoo\East\Foundation\Http\Message\CallbackStreamInterface;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-class CallbackStreamFactory implements StreamFactoryInterface
+class CallbackStreamFactory implements StreamFactoryInterface, CallbackStreamFactoryInterface
 {
     /**
      * @inheritDoc

@@ -1,5 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[3.2.2] - 2020-10-18
+###Stable Release
+- Add CallbackStreamFactoryInterface, and CallbackStreamFactory implements CallbackStreamFactoryInterface
+
 ##[3.2.1] - 2020-10-12
 ###Stable Release
 - Prepare library to support also PHP8.
