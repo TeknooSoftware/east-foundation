@@ -42,19 +42,32 @@ use Teknoo\East\Foundation\Http\ClientInterface;
  */
 class Client implements ClientInterface
 {
-    private OutputInterface $output;
+    private ?OutputInterface $output = null;
 
     private ?ResponseInterface $response = null;
 
     public int $returnCode = 0;
 
-    public function __construct(OutputInterface $output)
+    public function __construct(?OutputInterface $output = null)
+    {
+        if (null !== $output) {
+            $this->setOutput($output);
+        }
+    }
+
+    public function setOutput(?OutputInterface $output): self
     {
         $this->output = $output;
+
+        return $this;
     }
 
     private function getErrorOutput(): OutputInterface
     {
+        if (!$this->output instanceof OutputInterface) {
+            throw new \RuntimeException('Error, the output has not been set into the client');
+        }
+
         if ($this->output instanceof ConsoleOutputInterface) {
             return $this->output->getErrorOutput();
         }
@@ -84,6 +97,10 @@ class Client implements ClientInterface
 
         if (true === $silently && !$this->response instanceof ResponseInterface) {
             return $this;
+        }
+
+        if (!$this->output instanceof OutputInterface) {
+            throw new \RuntimeException('Error, the output has not been set into the client');
         }
 
         if ($this->response instanceof ResponseInterface) {

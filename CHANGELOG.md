@@ -1,5 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[3.2.4] - 2020-11-09
+###Stable Release
+- Allow Command/Client to be created without output instance.
+
 ##[3.2.3] - 2020-11-09
 ###Stable Release
 - Add Command/Client as ClientInterface implementation to use East Foundation with Symfony Command

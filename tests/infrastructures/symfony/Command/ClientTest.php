@@ -25,6 +25,7 @@ use Psr\Http\Message\ResponseInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Teknoo\East\FoundationBundle\Command\Client;
 
@@ -231,6 +232,22 @@ class ClientTest extends TestCase
         );
     }
 
+    public function testSendResponseWithoutOutput()
+    {
+        $this->expectException(\RuntimeException::class);
+
+        /**
+         * @var ResponseInterface
+         */
+        $response = $this->createMock(ResponseInterface::class);
+
+        $client = new Client();
+        self::assertInstanceOf(
+            $this->getClientClass(),
+            $client->acceptResponse($response)->sendResponse(null, true)
+        );
+    }
+
     public function testSendResponseWithoutResponseSilently()
     {
         $client = $this->buildClient();
@@ -252,7 +269,18 @@ class ClientTest extends TestCase
         $this->buildClient()->sendResponse(null, new \stdClass());
     }
 
-    public function testErrorInRequestWithoutConsoleOutput()
+    public function testErrorInRequestWithoutOutput()
+    {
+        $this->expectException(\RuntimeException::class);
+
+        $client = new Client();
+        self::assertInstanceOf(
+            $this->getClientClass(),
+            $client->errorInRequest(new \Exception('fooBar'))
+        );
+    }
+
+    public function testErrorInRequestWithStandardOutput()
     {
         $this->getOutputMock()
             ->expects(self::any())
@@ -264,7 +292,6 @@ class ClientTest extends TestCase
             $client->errorInRequest(new \Exception('fooBar'))
         );
     }
-
 
     public function testErrorInRequestWithConsoleOutput()
     {
@@ -296,5 +323,20 @@ class ClientTest extends TestCase
         $clonedClient = clone $client;
 
         self::assertInstanceOf(Client::class, $clonedClient);
+    }
+
+    public function testSetOutput()
+    {
+        $client = $this->buildClient();
+        self::assertInstanceOf(
+            $this->getClientClass(),
+            $client->setOutput($this->createMock(OutputInterface::class))
+        );
+    }
+
+    public function testSetOutputError()
+    {
+        $this->expectException(\TypeError::class);
+        $this->buildClient()->setOutput(new \stdClass());
     }
 }
