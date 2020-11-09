@@ -19,7 +19,7 @@
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
 
-namespace Teknoo\Tests\East\FoundationBunlde\Http;
+namespace Teknoo\Tests\East\FoundationBundle\Http;
 
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\Response;

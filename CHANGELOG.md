@@ -1,5 +1,10 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[3.2.3] - 2020-11-09
+###Stable Release
+- Add Command/Client as ClientInterface implementation to use East Foundation with Symfony Command
+ in CLI application.
+
 ##[3.2.2] - 2020-10-18
 ###Stable Release
 - Add CallbackStreamFactoryInterface, and CallbackStreamFactory implements CallbackStreamFactoryInterface

@@ -19,7 +19,7 @@
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
 
-namespace Teknoo\Tests\East\FoundationBunlde\EndPoint;
+namespace Teknoo\Tests\East\FoundationBundle\EndPoint;
 
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
