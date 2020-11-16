@@ -12,6 +12,16 @@
             "role":"Software architect, Lead developer"
         }
     ],
+    "support": {
+        "issues": "https://github.com/TeknooSoftware/east-foundation/issues",
+        "source": "https://github.com/TeknooSoftware/east-foundation"
+    },
+    "funding": [
+        {
+            "type": "patreon",
+            "url": "https://www.patreon.com/teknoo_software"
+        }
+    ],
     "require": {
         "php": "~7.4||~8.0",
         "ext-json": "*",
