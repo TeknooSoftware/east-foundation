@@ -190,7 +190,7 @@ This library requires :
     * Optional: Symfony 4.4+
 
 News from Teknoo East Foundation 2.0
-----------------------------
+------------------------------------
 
 This library requires PHP 7.4 or newer and it's only compatible with Symfony 4.4 or newer, Some change causes bc breaks :
 
