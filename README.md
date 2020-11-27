@@ -174,6 +174,11 @@ Installation & Requirements
 To install this library with composer, run this command :
 
     composer require teknoo/east-foundation
+    
+To install with Symfony
+
+    composer require teknoo/composer-install
+    composer require teknoo/east-foundation-symfony  
 
 This library requires :
 
