@@ -14,7 +14,7 @@ apt-get install zip libzip-dev -yqq
 docker-php-ext-install zip
 
 # Install json
-docker-php-ext-install json
+# docker-php-ext-install json
 
 # Install xdebug
 pecl install xdebug -yqq
