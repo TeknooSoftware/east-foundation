@@ -1,5 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[3.2.5] - 2020-12-03
+###Stable Release
+- Official Support of PHP8
+
 ##[3.2.4] - 2020-11-09
 ###Stable Release
 - Allow Command/Client to be created without output instance.
