@@ -25,7 +25,10 @@ declare(strict_types=1);
 
 namespace Teknoo\East\Foundation\EndPoint;
 
+use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
+use Teknoo\Recipe\BaseRecipeInterface;
 use Teknoo\Recipe\CookbookInterface;
 use Teknoo\Recipe\RecipeInterface;
 
@@ -43,29 +46,56 @@ use Teknoo\Recipe\RecipeInterface;
  */
 class RecipeEndPoint
 {
-    /**
-     * @var RecipeInterface|CookbookInterface
-     */
-    private $recipe;
+    private BaseRecipeInterface $recipe;
+
+    private ?ContainerInterface $container;
 
     /**
      * @param RecipeInterface|CookbookInterface $recipe
      */
-    public function __construct($recipe)
+    public function __construct(BaseRecipeInterface $recipe, ?ContainerInterface $container = null)
     {
-        if (!$recipe instanceof RecipeInterface && !$recipe instanceof CookbookInterface) {
-            throw new \TypeError('$recipe must be RecipeInterface or CookbookInterface');
+        $this->recipe = $recipe;
+        $this->container = $container;
+    }
+
+    private function fetchWorkplan(ServerRequestInterface $request): array
+    {
+        if (null === $this->container) {
+            return [];
         }
 
-        $this->recipe = $recipe;
+        $workplan = [];
+        foreach ($request->getAttributes() as $name => $value) {
+            if (
+                !\is_string($value)
+                || 2 > \strlen($value)
+                || '@' !== $value[0]
+                || '@' === $value[1]
+            ) {
+                //Element is already present into the workplan thanks to Processor, skip ip
+
+                continue;
+            }
+
+            $key = \substr($value, 1);
+            if (!$this->container->has($key)) {
+                throw new \DomainException("The service '$key' is not available in the container");
+            }
+
+            $workplan[$name] = $this->container->get($key);
+        }
+
+        return $workplan;
     }
 
     public function __invoke(
-        ManagerInterface $manager
+        ManagerInterface $manager,
+        ServerRequestInterface $request
     ): RecipeEndPoint {
         $manager = $manager->reserveAndBegin($this->recipe);
 
-        $manager->process([]);
+        $manager->process($this->fetchWorkplan($request));
 
         return $this;
     }

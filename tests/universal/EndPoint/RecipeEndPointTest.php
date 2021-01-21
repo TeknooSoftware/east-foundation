@@ -23,9 +23,11 @@
 namespace Teknoo\Tests\East\Foundation\EndPoint;
 
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Teknoo\East\Foundation\EndPoint\RecipeEndPoint;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
+use Teknoo\Recipe\BaseRecipeInterface;
 use Teknoo\Recipe\CookbookInterface;
 use Teknoo\Recipe\RecipeInterface;
 
@@ -77,6 +79,18 @@ class RecipeEndPointTest extends TestCase
         return $this->cookbook;
     }
 
+    public function testConstructorWithBadRecipe()
+    {
+        $this->expectException(\TypeError::class);
+        new RecipeEndPoint(new \stdClass());
+    }
+
+    public function testConstructorWithBadContainer()
+    {
+        $this->expectException(\TypeError::class);
+        new RecipeEndPoint($this->createMock(BaseRecipeInterface::class), new \stdClass());
+    }
+
     public function testInvokeBadManager()
     {
         $this->expectException(\TypeError::class);
@@ -102,7 +116,7 @@ class RecipeEndPointTest extends TestCase
 
         self::assertInstanceOf(
             RecipeEndPoint::class,
-            $endPoint($managerMock)
+            $endPoint($managerMock, $this->createMock(ServerRequestInterface::class))
         );
     }
 
@@ -124,13 +138,135 @@ class RecipeEndPointTest extends TestCase
 
         self::assertInstanceOf(
             RecipeEndPoint::class,
-            $endPoint($managerMock)
+            $endPoint($managerMock, $this->createMock(ServerRequestInterface::class))
         );
     }
 
-    public function testConstructorWithBadArgument()
+    public function testInvokeWithRecipeWithContainer()
     {
-        $this->expectException(\TypeError::class);
-        new RecipeEndPoint(new \stdClass());
+        $managerMock = $this->createMock(ManagerInterface::class);
+
+        $managerMock->expects(self::once())
+            ->method('reserveAndBegin')
+            ->with($this->getRecipeMock())
+            ->willReturnSelf();
+
+        $managerMock->expects(self::once())
+            ->method('process')
+            ->with([
+                'bar1' => new \stdClass(),
+                'foo3' => new \stdClass()
+            ])
+            ->willReturnSelf();
+
+        $container = $this->createMock(ContainerInterface::class);
+        $container->expects(self::exactly(2))->method('has')->willReturn(true);
+        $container->expects(self::exactly(2))->method('get')->willReturn(new \stdClass());
+
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->expects(self::any())->method('getAttributes')->willReturn([
+            'foo1' => 'bar',
+            'bar1' => '@foo',
+            'foo2' => new \stdClass(),
+            'bar2' => '@@bar',
+            'foo3' => '@bar',
+        ]);
+
+        $endPoint = new RecipeEndPoint($this->getRecipeMock(), $container);
+
+        self::assertInstanceOf(
+            RecipeEndPoint::class,
+            $endPoint($managerMock, $request)
+        );
+    }
+
+    public function testInvokeWithCookBookWithContainer()
+    {
+        $managerMock = $this->createMock(ManagerInterface::class);
+
+        $managerMock->expects(self::once())
+            ->method('reserveAndBegin')
+            ->with($this->getCookbookMock())
+            ->willReturnSelf();
+
+        $managerMock->expects(self::once())
+            ->method('process')
+            ->with([
+                'bar1' => new \stdClass(),
+                'foo3' => new \stdClass()
+            ])
+            ->willReturnSelf();
+
+        $container = $this->createMock(ContainerInterface::class);
+        $container->expects(self::exactly(2))->method('has')->willReturn(true);
+        $container->expects(self::exactly(2))->method('get')->willReturn(new \stdClass());
+
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->expects(self::any())->method('getAttributes')->willReturn([
+            'foo1' => 'bar',
+            'bar1' => '@foo',
+            'foo2' => new \stdClass(),
+            'bar2' => '@@bar',
+            'foo3' => '@bar',
+        ]);
+
+        $endPoint = new RecipeEndPoint($this->getCookbookMock(), $container);
+
+        self::assertInstanceOf(
+            RecipeEndPoint::class,
+            $endPoint($managerMock, $request)
+        );
+    }
+
+    public function testInvokeWithRecipeWithContainerKeyNotFound()
+    {
+        $managerMock = $this->createMock(ManagerInterface::class);
+
+        $managerMock->expects(self::once())
+            ->method('reserveAndBegin')
+            ->with($this->getRecipeMock())
+            ->willReturnSelf();
+
+        $managerMock->expects(self::never())
+            ->method('process');
+
+        $container = $this->createMock(ContainerInterface::class);
+        $container->expects(self::any())->method('has')->willReturn(false);
+
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->expects(self::any())->method('getAttributes')->willReturn([
+            'bar1' => '@foo',
+        ]);
+
+        $endPoint = new RecipeEndPoint($this->getRecipeMock(), $container);
+
+        $this->expectException(\DomainException::class);
+        $endPoint($managerMock, $request);
+    }
+
+    public function testInvokeWithCookBookWithContainerKeyNotFound()
+    {
+        $managerMock = $this->createMock(ManagerInterface::class);
+
+        $managerMock->expects(self::once())
+            ->method('reserveAndBegin')
+            ->with($this->getCookbookMock())
+            ->willReturnSelf();
+
+        $managerMock->expects(self::never())
+            ->method('process');
+
+        $container = $this->createMock(ContainerInterface::class);
+        $container->expects(self::any())->method('has')->willReturn(false);
+
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->expects(self::any())->method('getAttributes')->willReturn([
+            'bar1' => '@foo',
+        ]);
+
+        $endPoint = new RecipeEndPoint($this->getCookbookMock(), $container);
+
+        $this->expectException(\DomainException::class);
+        $endPoint($managerMock, $request);
     }
 }
