@@ -1,5 +1,10 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[3.3.0] - 2021-01-22
+###Stable Release
+- Update to last version of States and Recipe
+- Complete RecipeEndPoint to fetch services referenced into request's attribute from container to put them in workplan
+
 ##[3.2.5] - 2020-12-03
 ###Stable Release
 - Official Support of PHP8
