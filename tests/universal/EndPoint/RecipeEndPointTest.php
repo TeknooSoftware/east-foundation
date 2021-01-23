@@ -155,6 +155,7 @@ class RecipeEndPointTest extends TestCase
             ->method('process')
             ->with([
                 'bar1' => new \stdClass(),
+                'bar2' => '@bar',
                 'foo3' => new \stdClass()
             ])
             ->willReturnSelf();
@@ -193,6 +194,7 @@ class RecipeEndPointTest extends TestCase
             ->method('process')
             ->with([
                 'bar1' => new \stdClass(),
+                'bar2' => '@bar',
                 'foo3' => new \stdClass()
             ])
             ->willReturnSelf();

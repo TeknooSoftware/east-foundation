@@ -71,10 +71,15 @@ class RecipeEndPoint
                 !\is_string($value)
                 || 2 > \strlen($value)
                 || '@' !== $value[0]
-                || '@' === $value[1]
             ) {
                 //Element is already present into the workplan thanks to Processor, skip ip
+                continue;
+            }
 
+            if ('@' === $value[0] && '@' === $value[1]) {
+                //@@ escape, remove escape and add it
+
+                $workplan[$name] = \substr($value, 1);
                 continue;
             }
 

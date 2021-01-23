@@ -1,5 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[3.3.1] - 2021-01-23
+###Stable Release
+- Fix RecipeEndPoint to pass also value with escaped `@` without the second `@`
+
 ##[3.3.0] - 2021-01-22
 ###Stable Release
 - Update to last version of States and Recipe
