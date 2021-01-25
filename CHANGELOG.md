@@ -1,5 +1,12 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[3.3.2] - 2021-01-25
+###Stable Release
+- Update ClientInterface to allow errorInRequest to be called silently without throw an excepton
+- Add support of a PSR Logger in Symfony Client implementation
+- Fix symfony services definitions and twig definition
+- Migrate Client definition from PHPDI into Symfony
+
 ##[3.3.1] - 2021-01-23
 ###Stable Release
 - Fix RecipeEndPoint to pass also value with escaped `@` without the second `@`

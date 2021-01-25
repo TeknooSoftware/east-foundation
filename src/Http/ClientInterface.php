@@ -84,8 +84,9 @@ interface ClientInterface
      * To intercept an error during a request and forward the message to the HTTP client.
      *
      * @param \Throwable $throwable
+     * @param bool $silently To ask client to not throw the exception (execute throw $throwable) or not. Default false
      *
      * @return ClientInterface
      */
-    public function errorInRequest(\Throwable $throwable): ClientInterface;
+    public function errorInRequest(\Throwable $throwable, bool $silently = false): ClientInterface;
 }

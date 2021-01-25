@@ -26,7 +26,6 @@ declare(strict_types=1);
 namespace Teknoo\East\FoundationBundle\Resources\config;
 
 use Psr\Container\ContainerInterface;
-use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Teknoo\East\Foundation\Recipe\RecipeInterface;
 use Teknoo\East\FoundationBundle\Http\Client;
@@ -39,9 +38,7 @@ use function DI\create;
 return [
     SessionMiddleware::class => create(SessionMiddleware::class),
 
-    Client::class => get(ClientInterface::class),
-    ClientInterface::class => create(Client::class)
-        ->constructor(get(HttpFoundationFactory::class)),
+    ClientInterface::class => get(Client::class),
 
     RecipeInterface::class => decorate(static function ($previous, ContainerInterface $container) {
         if ($previous instanceof RecipeInterface) {

@@ -23,6 +23,7 @@
 namespace Teknoo\Tests\East\FoundationBundle\Http;
 
 use Psr\Http\Message\ResponseInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -80,9 +81,13 @@ class ClientTest extends \PHPUnit\Framework\TestCase
     /**
      * @return Client
      */
-    private function buildClient(): Client
+    private function buildClient(LoggerInterface $logger = null): Client
     {
-        return new Client($this->getHttpFoundationFactoryMock(), $this->getRequestEventMock());
+        return new Client(
+            $this->getHttpFoundationFactoryMock(),
+            $this->getRequestEventMock(),
+            $logger
+        );
     }
 
     /**
@@ -362,18 +367,46 @@ class ClientTest extends \PHPUnit\Framework\TestCase
     public function testErrorInRequest()
     {
         $this->expectException(\Exception::class);
-        $this->getRequestEventMock()
-            ->expects(self::any())
-            ->method('setResponse')
-            ->with($this->callback(function ($response) {
-                return $response instanceof Response;
-            }))
-            ->willReturnSelf();
 
         $client = $this->buildClient();
         self::assertInstanceOf(
             $this->getClientClass(),
             $client->errorInRequest(new \Exception('fooBar'))
+        );
+    }
+
+    public function testErrorInRequestSilently()
+    {
+        $client = $this->buildClient();
+        self::assertInstanceOf(
+            $this->getClientClass(),
+            $client->errorInRequest(new \Exception('fooBar'), true)
+        );
+    }
+
+    public function testErrorInRequestWithLogger()
+    {
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects(self::once())->method('error');
+
+        $this->expectException(\Exception::class);
+
+        $client = $this->buildClient($logger);
+        self::assertInstanceOf(
+            $this->getClientClass(),
+            $client->errorInRequest(new \Exception('fooBar'))
+        );
+    }
+
+    public function testErrorInRequestSilentlyWithLogger()
+    {
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects(self::once())->method('error');
+
+        $client = $this->buildClient($logger);
+        self::assertInstanceOf(
+            $this->getClientClass(),
+            $client->errorInRequest(new \Exception('fooBar'), true)
         );
     }
 

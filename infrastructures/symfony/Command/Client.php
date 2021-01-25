@@ -114,7 +114,7 @@ class Client implements ClientInterface
         return $this;
     }
 
-    public function errorInRequest(\Throwable $throwable): ClientInterface
+    public function errorInRequest(\Throwable $throwable, bool $silently = false): ClientInterface
     {
         $this->getErrorOutput()->writeln($throwable->getMessage());
 

@@ -209,7 +209,7 @@ class FeatureContext implements Context
             /**
              * @inheritDoc
              */
-            public function errorInRequest(\Throwable $throwable): ClientInterface
+            public function errorInRequest(\Throwable $throwable, bool $silently = false): ClientInterface
             {
                 $this->context->error = $throwable;
 

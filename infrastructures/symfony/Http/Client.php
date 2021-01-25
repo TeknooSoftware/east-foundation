@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace Teknoo\East\FoundationBundle\Http;
 
 use Psr\Http\Message\ResponseInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Teknoo\East\Foundation\Http\ClientInterface;
@@ -51,9 +52,16 @@ class Client implements ClientWithResponseEventInterface
 
     private ?HttpFoundationFactory $factory;
 
-    public function __construct(HttpFoundationFactory $factory, ?RequestEvent $requestEvent = null)
-    {
+    private ?LoggerInterface $logger;
+
+    public function __construct(
+        HttpFoundationFactory $factory,
+        ?RequestEvent $requestEvent = null,
+        ?LoggerInterface $logger = null
+    ) {
         $this->factory = $factory;
+        $this->logger = $logger;
+
         if ($requestEvent instanceof RequestEvent) {
             $this->setRequestEvent($requestEvent);
         }
@@ -120,12 +128,19 @@ class Client implements ClientWithResponseEventInterface
     }
 
     /**
-     * {@inheritdoc}
      * @throws \Throwable
      */
-    public function errorInRequest(\Throwable $throwable): ClientInterface
+    public function errorInRequest(\Throwable $throwable, bool $silently = false): ClientInterface
     {
-        throw $throwable;
+        if ($this->logger instanceof LoggerInterface) {
+            $this->logger->error($throwable->getMessage(), ['exception' => $throwable]);
+        }
+
+        if (false === $silently) {
+            throw $throwable;
+        }
+
+        return $this;
     }
 
     /**
