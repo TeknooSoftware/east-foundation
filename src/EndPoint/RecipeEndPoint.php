@@ -51,21 +51,31 @@ class RecipeEndPoint
     private ?ContainerInterface $container;
 
     /**
-     * @param RecipeInterface|CookbookInterface $recipe
+     * @var array<string, mixed>
      */
-    public function __construct(BaseRecipeInterface $recipe, ?ContainerInterface $container = null)
-    {
+    private array $initialWorkPlan;
+
+    /**
+     * @param RecipeInterface|CookbookInterface $recipe
+     * @param array<string, mixed> $initialWorkPlan
+     */
+    public function __construct(
+        BaseRecipeInterface $recipe,
+        ?ContainerInterface $container = null,
+        array $initialWorkPlan = []
+    ) {
         $this->recipe = $recipe;
         $this->container = $container;
+        $this->initialWorkPlan = $initialWorkPlan;
     }
 
     private function fetchWorkplan(ServerRequestInterface $request): array
     {
         if (null === $this->container) {
-            return [];
+            return $this->initialWorkPlan;
         }
 
-        $workplan = [];
+        $workplan = $this->initialWorkPlan;
         foreach ($request->getAttributes() as $name => $value) {
             if (
                 !\is_string($value)

@@ -1,5 +1,11 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[3.3.3] - 2021-02-02
+###Stable Release
+- Add argument to controller of RecipeEndPoint to allow override/complete some entry in the workplan,
+ before fetching service from container thanks to Request's attribute, to escape/secure some workplan's
+ ingredients from request's parameters (passed by the HTTP client).
+
 ##[3.3.2] - 2021-01-25
 ###Stable Release
 - Update ClientInterface to allow errorInRequest to be called silently without throw an excepton

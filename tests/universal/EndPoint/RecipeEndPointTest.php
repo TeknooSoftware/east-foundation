@@ -220,6 +220,85 @@ class RecipeEndPointTest extends TestCase
         );
     }
 
+    public function testInvokeWithCookBookWithContainerAndDuplicateKeyIntoWorkPlan()
+    {
+        $managerMock = $this->createMock(ManagerInterface::class);
+
+        $managerMock->expects(self::once())
+            ->method('reserveAndBegin')
+            ->with($this->getCookbookMock())
+            ->willReturnSelf();
+
+        $managerMock->expects(self::once())
+            ->method('process')
+            ->with([
+                'bar1' => new \stdClass(),
+                'bar2' => '@bar',
+                'foo3' => new \stdClass()
+            ])
+            ->willReturnSelf();
+
+        $container = $this->createMock(ContainerInterface::class);
+        $container->expects(self::exactly(2))->method('has')->willReturn(true);
+        $container->expects(self::exactly(2))->method('get')->willReturn(new \stdClass());
+
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->expects(self::any())->method('getAttributes')->willReturn([
+            'foo1' => 'bar',
+            'bar1' => '@foo',
+            'foo2' => new \stdClass(),
+            'bar2' => '@@bar',
+            'foo3' => '@bar',
+        ]);
+
+        $endPoint = new RecipeEndPoint($this->getCookbookMock(), $container, ['bar1' => new \stdClass()]);
+
+        self::assertInstanceOf(
+            RecipeEndPoint::class,
+            $endPoint($managerMock, $request)
+        );
+    }
+
+    public function testInvokeWithCookBookWithContainerAndInitializedWorkPlan()
+    {
+        $managerMock = $this->createMock(ManagerInterface::class);
+
+        $managerMock->expects(self::once())
+            ->method('reserveAndBegin')
+            ->with($this->getCookbookMock())
+            ->willReturnSelf();
+
+        $managerMock->expects(self::once())
+            ->method('process')
+            ->with([
+                'bar1' => new \stdClass(),
+                'bar2' => '@bar',
+                'foo3' => new \stdClass(),
+                'foo' => 'bar'
+            ])
+            ->willReturnSelf();
+
+        $container = $this->createMock(ContainerInterface::class);
+        $container->expects(self::exactly(2))->method('has')->willReturn(true);
+        $container->expects(self::exactly(2))->method('get')->willReturn(new \stdClass());
+
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->expects(self::any())->method('getAttributes')->willReturn([
+            'foo1' => 'bar',
+            'bar1' => '@foo',
+            'foo2' => new \stdClass(),
+            'bar2' => '@@bar',
+            'foo3' => '@bar',
+        ]);
+
+        $endPoint = new RecipeEndPoint($this->getCookbookMock(), $container, ['foo' => 'bar']);
+
+        self::assertInstanceOf(
+            RecipeEndPoint::class,
+            $endPoint($managerMock, $request)
+        );
+    }
+
     public function testInvokeWithRecipeWithContainerKeyNotFound()
     {
         $managerMock = $this->createMock(ManagerInterface::class);
