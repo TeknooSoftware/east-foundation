@@ -59,9 +59,11 @@ class ProcessorCookbook implements ProcessorCookbookInterface
         $this->processor = $processor;
     }
 
-    protected function populateRecipe(ProcessorRecipeInterface $recipe): OriginalRecipeInterface
+    protected function populateRecipe(OriginalRecipeInterface $recipe): OriginalRecipeInterface
     {
-        $recipe = $recipe->registerMiddleware($this->processor, ProcessorInterface::MIDDLEWARE_PRIORITY);
+        if ($recipe instanceof ProcessorRecipeInterface) {
+            $recipe = $recipe->registerMiddleware($this->processor, ProcessorInterface::MIDDLEWARE_PRIORITY);
+        }
 
         $recipe = $recipe->cook(
             new DynamicBowl(ProcessorInterface::WORK_PLAN_CONTROLLER_KEY, false),

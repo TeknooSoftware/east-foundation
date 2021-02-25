@@ -71,9 +71,11 @@ class Cookbook implements CookbookInterface
         $this->loopDetector = $loopDetector;
     }
 
-    protected function populateRecipe(RecipeInterface $recipe): OriginalRecipeInterface
+    protected function populateRecipe(OriginalRecipeInterface $recipe): OriginalRecipeInterface
     {
-        $recipe = $recipe->registerMiddleware($this->router, RouterInterface::MIDDLEWARE_PRIORITY);
+        if ($recipe instanceof RecipeInterface) {
+            $recipe = $recipe->registerMiddleware($this->router, RouterInterface::MIDDLEWARE_PRIORITY);
+        }
 
         $recipe = $recipe->execute(
             $this->processorCookbook,
