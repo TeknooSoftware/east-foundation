@@ -22,6 +22,7 @@
 
 namespace Teknoo\Tests\East\FoundationBundle\Router;
 
+use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -29,6 +30,7 @@ use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\East\Foundation\Router\ResultInterface;
+use Teknoo\East\Foundation\Router\RouterInterface;
 use Teknoo\East\FoundationBundle\Router\Router;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as SymfonyController;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController as SymfonyAbstractController;
@@ -713,6 +715,18 @@ class RouterTest extends \PHPUnit\Framework\TestCase
             }]);
 
         $this->buildRouter()->execute($client, $request, $manager);
+    }
+
+    public function testExecuteWithMessage()
+    {
+        $client = $this->createMock(ClientInterface::class);
+        $message = $this->createMock(MessageInterface::class);
+        $manager = $this->createMock(ManagerInterface::class);
+
+        self::assertInstanceOf(
+            RouterInterface::class,
+            $this->buildRouter()->execute($client, $message, $manager)
+        );
     }
 
     public function testExecuteErrorClient()

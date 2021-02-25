@@ -22,6 +22,7 @@
 
 namespace Teknoo\Tests\East\FoundationBundle\Session;
 
+use Psr\Http\Message\MessageInterface;
 use Teknoo\East\Foundation\Session\SessionInterface;
 use Teknoo\East\FoundationBundle\Session\Session;
 use Teknoo\East\FoundationBundle\Session\SessionMiddleware;
@@ -64,6 +65,21 @@ class SessionMiddlewareTest extends \PHPUnit\Framework\TestCase
         self::assertInstanceOf(
             SessionMiddleware::class,
             $this->buildMiddleware()->execute($client, $request, $manager)
+        );
+    }
+
+    public function testHasMessage()
+    {
+        $message = $this->createMock(MessageInterface::class);
+        $client = $this->createMock(ClientInterface::class);
+        $manager = $this->createMock(ManagerInterface::class);
+
+        $manager->expects(self::never())
+            ->method('continueExecution');
+
+        self::assertInstanceOf(
+            SessionMiddleware::class,
+            $this->buildMiddleware()->execute($client, $message, $manager)
         );
     }
 

@@ -35,8 +35,8 @@ use Teknoo\East\Foundation\Processor\ProcessorCookbook;
 use Teknoo\East\Foundation\Processor\ProcessorCookbookInterface;
 use Teknoo\East\Foundation\Processor\ProcessorRecipeInterface;
 use Teknoo\East\Foundation\Recipe\Recipe;
-use Teknoo\East\Foundation\Recipe\RecipeCookbook;
-use Teknoo\East\Foundation\Recipe\RecipeCookbookInterface;
+use Teknoo\East\Foundation\Recipe\Cookbook;
+use Teknoo\East\Foundation\Recipe\CookbookInterface;
 use Teknoo\East\Foundation\Recipe\RecipeInterface;
 use Teknoo\East\Foundation\Router\RouterInterface;
 
@@ -46,7 +46,7 @@ use function DI\create;
 return [
     Manager::class => get(ManagerInterface::class),
     ManagerInterface::class => static function (
-        RecipeCookbookInterface $recipeCookbook
+        CookbookInterface $recipeCookbook
     ): ManagerInterface {
         $manager = new Manager();
         $manager->read($recipeCookbook);
@@ -75,8 +75,8 @@ return [
     RecipeInterface::class => get(Recipe::class),
     Recipe::class => create(),
 
-    RecipeCookbookInterface::class => get(RecipeCookbook::class),
-    RecipeCookbook::class => create()
+    CookbookInterface::class => get(Cookbook::class),
+    Cookbook::class => create()
         ->constructor(
             get(RecipeInterface::class),
             get(RouterInterface::class),

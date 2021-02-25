@@ -1,5 +1,12 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[4.0.0] - 2021-02-25
+###Stable Release
+- Switch to States 4.1.9 and PHPStan 0.12.79
+- Prepare library to be used in non HTTP context  
+- Use MessageInterface instead of ServerRequestInterface
+- Cookbook and ProcessorCookbook use BaseCookbookTrait
+
 ##[3.3.3] - 2021-02-02
 ###Stable Release
 - Add argument to controller of RecipeEndPoint to allow override/complete some entry in the workplan,

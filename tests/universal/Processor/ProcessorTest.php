@@ -22,6 +22,7 @@
 
 namespace Teknoo\Tests\East\Foundation\Processor;
 
+use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -56,7 +57,7 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
         return new Processor();
     }
 
-    public function testExecuteNoResult()
+    public function testExecuteRequestWithNoResult()
     {
         /**
          * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
@@ -82,7 +83,7 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testExecuteAndPreventionOfVarRequestAndClientVarOverwritting()
+    public function testExecuteRequestAndPreventionOfVarRequestAndClientVarOverwritting()
     {
         /**
          * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
@@ -112,6 +113,7 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
                 ProcessorInterface::WORK_PLAN_CONTROLLER_KEY => $controller,
                 'client' => $clientMock,
                 'request' => $requestMock,
+                'message' => $requestMock,
                 'manager' => $manager,
             ]);
 
@@ -122,6 +124,31 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
                 $requestMock,
                 $manager,
                 $routerResult
+            )
+        );
+    }
+
+    public function testExecuteMessageWithNoResult()
+    {
+        /**
+         * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
+         */
+        $clientMock = $this->createMock(ClientInterface::class);
+
+        /**
+         * @var MessageInterface|\PHPUnit\Framework\MockObject\MockObject
+         */
+        $messageMock = $this->createMock(MessageInterface::class);
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects(self::never())->method('updateWorkPlan');
+
+        self::assertInstanceOf(
+            ProcessorInterface::class,
+            $this->buildProcessor()->execute(
+                $clientMock,
+                $messageMock,
+                $manager
             )
         );
     }

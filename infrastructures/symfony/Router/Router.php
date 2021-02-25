@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace Teknoo\East\FoundationBundle\Router;
 
+use Psr\Http\Message\MessageInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as SfController;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController as SfAbstractController;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -154,16 +155,20 @@ class Router implements RouterInterface
      */
     public function execute(
         ClientInterface $client,
-        ServerRequestInterface $request,
+        MessageInterface $message,
         ManagerInterface $manager
     ): MiddlewareInterface {
-        $controller = $this->matchRequest($request);
+        if (!$message instanceof ServerRequestInterface) {
+            return $this;
+        }
+
+        $controller = $this->matchRequest($message);
 
         if (\is_callable($controller)) {
             $result = new Result($controller);
 
             $manager->updateWorkPlan([ResultInterface::class => $result]);
-            $manager->continueExecution($client, $request);
+            $manager->continueExecution($client, $message);
         }
 
         return $this;

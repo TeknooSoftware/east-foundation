@@ -36,8 +36,8 @@ use Teknoo\East\Foundation\Processor\ProcessorCookbookInterface;
 use Teknoo\East\Foundation\Processor\ProcessorInterface;
 use Teknoo\East\Foundation\Processor\ProcessorRecipeInterface;
 use Teknoo\East\Foundation\Recipe\Recipe;
-use Teknoo\East\Foundation\Recipe\RecipeCookbook;
-use Teknoo\East\Foundation\Recipe\RecipeCookbookInterface;
+use Teknoo\East\Foundation\Recipe\Cookbook;
+use Teknoo\East\Foundation\Recipe\CookbookInterface;
 use Teknoo\East\Foundation\Recipe\RecipeInterface;
 use Teknoo\East\Foundation\Router\RouterInterface;
 
@@ -178,16 +178,16 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $container = $this->buildContainer();
         $container->set(LoggerInterface::class, $this->createMock(LoggerInterface::class));
         $container->set(RouterInterface::class, $this->createMock(RouterInterface::class));
-        $cookbook1 = $container->get(RecipeCookbook::class);
-        $cookbook2 = $container->get(RecipeCookbookInterface::class);
+        $cookbook1 = $container->get(Cookbook::class);
+        $cookbook2 = $container->get(CookbookInterface::class);
 
         self::assertInstanceOf(
-            RecipeCookbook::class,
+            Cookbook::class,
             $cookbook1
         );
 
         self::assertInstanceOf(
-            RecipeCookbook::class,
+            Cookbook::class,
             $cookbook2
         );
 

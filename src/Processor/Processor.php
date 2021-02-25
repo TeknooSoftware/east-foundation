@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace Teknoo\East\Foundation\Processor;
 
+use Psr\Http\Message\MessageInterface;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
@@ -54,7 +55,7 @@ class Processor implements ProcessorInterface, ImmutableInterface
      */
     public function execute(
         ClientInterface $client,
-        ServerRequestInterface $request,
+        MessageInterface $message,
         ManagerInterface $manager,
         ResultInterface $result = null
     ): MiddlewareInterface {
@@ -62,11 +63,19 @@ class Processor implements ProcessorInterface, ImmutableInterface
             return $this;
         }
 
+        $parameters = [];
+        $mandatory = ['client' => $client, 'message' => $message, 'manager' => $manager];
+
+        if ($message instanceof ServerRequestInterface) {
+            $parameters = $this->getParameters($message);
+            $mandatory['request'] = $message;
+        }
+
         $values = \array_merge(
-            $this->getParameters($request),
+            $parameters,
             [self::WORK_PLAN_CONTROLLER_KEY => $result->getController()],
             //To prevent overloading from request.
-            ['client' => $client, 'request' => $request, 'manager' => $manager]
+            $mandatory
         );
 
         $manager->updateWorkPlan($values);

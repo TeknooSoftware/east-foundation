@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace Teknoo\East\Foundation\Manager;
 
-use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\MessageInterface;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Teknoo\Recipe\Chef;
 
@@ -50,10 +50,10 @@ class Manager extends Chef implements ManagerInterface
      */
     public function receiveRequest(
         ClientInterface $client,
-        ServerRequestInterface $request
+        MessageInterface $message
     ): ManagerInterface {
         $this->process([
-            'request' => $request,
+            'request' => $message,
             'client' => $client
         ]);
 
@@ -62,10 +62,10 @@ class Manager extends Chef implements ManagerInterface
 
     public function continueExecution(
         ClientInterface $client,
-        ServerRequestInterface $request
+        MessageInterface $message
     ): ManagerInterface {
         $this->continue([
-            'request' => $request,
+            'request' => $message,
             'client' => $client
         ]);
 

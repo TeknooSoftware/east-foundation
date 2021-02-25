@@ -6,10 +6,11 @@ use Behat\Behat\Context\Context;
 use Laminas\Diactoros\Response\TextResponse;
 use Laminas\Diactoros\ServerRequest;
 use PHPUnit\Framework\Assert;
+use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Teknoo\East\Foundation\EndPoint\RecipeEndPoint;
-use Teknoo\East\Foundation\Recipe\RecipeCookbookInterface;
+use Teknoo\East\Foundation\Recipe\CookbookInterface;
 use Teknoo\East\Foundation\Recipe\Recipe;
 use Teknoo\East\Foundation\Router\RouterInterface;
 use Teknoo\East\Foundation\Http\ClientInterface;
@@ -88,16 +89,20 @@ class FeatureContext implements Context
              */
             public function execute(
                 ClientInterface $client,
-                ServerRequestInterface $request,
+                MessageInterface $message,
                 ManagerInterface $manager
             ): MiddlewareInterface {
-                $path = $request->getUri()->getPath();
+                if (!$message instanceof ServerRequestInterface) {
+                    return $this;
+                }
+
+                $path = $message->getUri()->getPath();
 
                 if (isset($this->routes[$path])) {
                     $result = new Result($this->routes[$path]);
                     $manager->updateWorkPlan([ResultInterface::class => $result]);
 
-                    $manager->continueExecution($client, $request);
+                    $manager->continueExecution($client, $message);
                 };
 
                 return $this;
@@ -154,7 +159,7 @@ class FeatureContext implements Context
      */
     public function theServerWillReceiveTheRequest($arg1)
     {
-        $manager = new Manager($this->container->get(RecipeCookbookInterface::class));
+        $manager = new Manager($this->container->get(CookbookInterface::class));
 
         $this->response = null;
         $this->error = null;

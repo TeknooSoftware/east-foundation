@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace Teknoo\East\Foundation\Middleware;
 
-use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\MessageInterface;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
 
@@ -49,14 +49,14 @@ interface MiddlewareInterface
      * Method called by a manager to ask the middleware if it can process the request.
      *
      * @param ClientInterface        $client
-     * @param ServerRequestInterface $request
+     * @param MessageInterface       $message
      * @param ManagerInterface       $manager
      *
      * @return MiddlewareInterface
      */
     public function execute(
         ClientInterface $client,
-        ServerRequestInterface $request,
+        MessageInterface $message,
         ManagerInterface $manager
     ): MiddlewareInterface;
 }

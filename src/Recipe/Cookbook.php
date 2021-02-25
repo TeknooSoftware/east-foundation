@@ -29,9 +29,8 @@ use Teknoo\East\Foundation\Processor\LoopDetectorInterface;
 use Teknoo\East\Foundation\Processor\ProcessorCookbookInterface;
 use Teknoo\East\Foundation\Processor\ProcessorRecipeInterface;
 use Teknoo\East\Foundation\Router\RouterInterface;
-use Teknoo\Recipe\BaseRecipeInterface;
-use Teknoo\Recipe\ChefInterface;
-use Teknoo\Recipe\CookbookInterface;
+use Teknoo\Recipe\Cookbook\BaseCookbookTrait;
+use Teknoo\Recipe\CookbookInterface as BaseCookbookInterface;
 use Teknoo\Recipe\RecipeInterface as OriginalRecipeInterface;
 
 /**
@@ -47,11 +46,11 @@ use Teknoo\Recipe\RecipeInterface as OriginalRecipeInterface;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-class RecipeCookbook implements RecipeCookbookInterface
+class Cookbook implements CookbookInterface
 {
-    private RecipeInterface $recipe;
-
-    private bool $recipePopulated = false;
+    use BaseCookbookTrait {
+        fill as originalFill;
+    }
 
     private RouterInterface $router;
 
@@ -72,9 +71,10 @@ class RecipeCookbook implements RecipeCookbookInterface
         $this->loopDetector = $loopDetector;
     }
 
-    private function populateRecipe(): RecipeInterface
+    protected function populateRecipe(RecipeInterface $recipe): OriginalRecipeInterface
     {
-        $recipe = $this->recipe->registerMiddleware($this->router, RouterInterface::MIDDLEWARE_PRIORITY);
+        $recipe = $recipe->registerMiddleware($this->router, RouterInterface::MIDDLEWARE_PRIORITY);
+
         $recipe = $recipe->execute(
             $this->processorCookbook,
             ProcessorRecipeInterface::class,
@@ -85,61 +85,15 @@ class RecipeCookbook implements RecipeCookbookInterface
         return $recipe;
     }
 
-    private function getRecipe(): RecipeInterface
-    {
-        if ($this->recipePopulated) {
-            return $this->recipe;
-        }
-
-        $this->recipe = $this->populateRecipe();
-        $this->recipePopulated = true;
-
-        return $this->recipe;
-    }
-
-
     /**
      * @inheritDoc
      */
-    public function train(ChefInterface $chef): BaseRecipeInterface
-    {
-        $chef->read($this->getRecipe());
-
-        return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function prepare(array &$workPlan, ChefInterface $chef): BaseRecipeInterface
-    {
-        $this->getRecipe()->prepare($workPlan, $chef);
-
-        return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function validate($value): BaseRecipeInterface
-    {
-        $this->getRecipe()->validate($value);
-
-        return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function fill(OriginalRecipeInterface $recipe): CookbookInterface
+    public function fill(OriginalRecipeInterface $recipe): BaseCookbookInterface
     {
         if (!$recipe instanceof RecipeInterface) {
             throw new \TypeError('$recipe must be an instance of ' . RecipeInterface::class);
         }
 
-        $this->recipe = $recipe;
-        $this->recipePopulated = false;
-
-        return $this;
+        return $this->originalFill($recipe);
     }
 }

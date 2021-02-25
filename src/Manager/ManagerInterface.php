@@ -25,8 +25,8 @@ declare(strict_types=1);
 
 namespace Teknoo\East\Foundation\Manager;
 
+use Psr\Http\Message\MessageInterface;
 use Teknoo\East\Foundation\Http\ClientInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Teknoo\Recipe\ChefInterface;
 
 /**
@@ -49,13 +49,13 @@ interface ManagerInterface extends ChefInterface
      * Method to call to process a request in East Foundation by East's controller.
      *
      * @param ClientInterface        $client
-     * @param ServerRequestInterface $request
+     * @param MessageInterface $message
      *
      * @return ManagerInterface
      */
     public function receiveRequest(
         ClientInterface $client,
-        ServerRequestInterface $request
+        MessageInterface $message
     ): ManagerInterface;
 
     /**
@@ -63,13 +63,13 @@ interface ManagerInterface extends ChefInterface
      * the queue of the manager.
      *
      * @param ClientInterface        $client
-     * @param ServerRequestInterface $request
+     * @param MessageInterface $message
      *
      * @return ManagerInterface
      */
     public function continueExecution(
         ClientInterface $client,
-        ServerRequestInterface $request
+        MessageInterface $message
     ): ManagerInterface;
 
     /**

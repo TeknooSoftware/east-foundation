@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace Teknoo\East\FoundationBundle\Session;
 
+use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Teknoo\East\Foundation\Http\ClientInterface;
@@ -52,12 +53,16 @@ class SessionMiddleware implements MiddlewareInterface
      */
     public function execute(
         ClientInterface $client,
-        ServerRequestInterface $request,
+        MessageInterface $message,
         ManagerInterface $manager
     ): MiddlewareInterface {
-        if (($requestSf = $request->getAttribute('request')) instanceof Request) {
+        if (!$message instanceof ServerRequestInterface) {
+            return $this;
+        }
+
+        if (($requestSf = $message->getAttribute('request')) instanceof Request) {
             $session = new Session($requestSf->getSession());
-            $request = $request->withAttribute(SessionInterface::ATTRIBUTE_KEY, $session);
+            $request = $message->withAttribute(SessionInterface::ATTRIBUTE_KEY, $session);
 
             $manager->continueExecution($client, $request);
         }

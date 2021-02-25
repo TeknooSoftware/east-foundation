@@ -16,12 +16,6 @@ parameters:
         -
             message: '#Method [a-zA-Z0-9\\_]+::matchRequest\(\) should return \(callable\(\): mixed\)\|null but returns string\.#'
             path: infrastructures/symfony/Router/Router.php
-        -
-            message: '#Method [a-zA-Z0-9\\_]+::populateRecipe\(\) should return [a-zA-Z0-9\\_]+ but returns [a-zA-Z0-9\\_]+.#'
-            path: src/Processor/ProcessorCookbook.php
-        -
-            message: '#Method [a-zA-Z0-9\\_]+::populateRecipe\(\) should return [a-zA-Z0-9\\_]+ but returns [a-zA-Z0-9\\_]+.#'
-            path: src/Recipe/RecipeCookbook.php
 services:
 	-
 		class: Teknoo\States\PHPStan\MethodsClassExtension

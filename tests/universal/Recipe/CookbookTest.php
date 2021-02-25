@@ -26,14 +26,14 @@ use PHPUnit\Framework\TestCase;
 use Teknoo\East\Foundation\Processor\LoopDetectorInterface;
 use Teknoo\East\Foundation\Processor\ProcessorCookbookInterface;
 use Teknoo\East\Foundation\Processor\ProcessorRecipeInterface;
-use Teknoo\East\Foundation\Recipe\RecipeCookbook;
+use Teknoo\East\Foundation\Recipe\Cookbook;
 use Teknoo\East\Foundation\Recipe\RecipeInterface;
 use Teknoo\East\Foundation\Router\RouterInterface;
 use Teknoo\Recipe\ChefInterface;
 use Teknoo\Recipe\RecipeInterface as OriginalRecipeInterface;
 
 /**
- * @covers \Teknoo\East\Foundation\Recipe\RecipeCookbook
+ * @covers \Teknoo\East\Foundation\Recipe\Cookbook
  *
  * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)
  * @copyright   Copyright (c) 2020-2021 SASU Teknoo Software (https://teknoo.software)
@@ -43,7 +43,7 @@ use Teknoo\Recipe\RecipeInterface as OriginalRecipeInterface;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-class RecipeCookbookTest extends TestCase
+class CookbookTest extends TestCase
 {
     private ?RouterInterface $router = null;
 
@@ -101,9 +101,9 @@ class RecipeCookbookTest extends TestCase
         return $this->recipe;
     }
 
-    public function buildCookbook(): RecipeCookbook
+    public function buildCookbook(): Cookbook
     {
-        return new RecipeCookbook(
+        return new Cookbook(
             $this->getRecipeMock(),
             $this->getRouterMock(),
             $this->getProcessorCookbookMock(),
@@ -126,7 +126,7 @@ class RecipeCookbookTest extends TestCase
     public function testFill()
     {
         self::assertInstanceOf(
-            RecipeCookbook::class,
+            Cookbook::class,
             $this->buildCookbook()->fill($this->createMock(ProcessorRecipeInterface::class))
         );
     }
@@ -144,11 +144,11 @@ class RecipeCookbookTest extends TestCase
 
         $cookbook = $this->buildCookbook();
         self::assertInstanceOf(
-            RecipeCookbook::class,
+            Cookbook::class,
             $cookbook->train($this->createMock(ChefInterface::class))
         );
         self::assertInstanceOf(
-            RecipeCookbook::class,
+            Cookbook::class,
             $cookbook->train($this->createMock(ChefInterface::class))
         );
     }
@@ -174,7 +174,7 @@ class RecipeCookbookTest extends TestCase
 
         $wp = [];
         self::assertInstanceOf(
-            RecipeCookbook::class,
+            Cookbook::class,
             $this->buildCookbook()->prepare($wp, $this->createMock(ChefInterface::class))
         );
     }
@@ -185,7 +185,7 @@ class RecipeCookbookTest extends TestCase
         $this->getRecipeMock()->expects(self::once())->method('execute')->willReturnSelf();
 
         self::assertInstanceOf(
-            RecipeCookbook::class,
+            Cookbook::class,
             $this->buildCookbook()->validate([])
         );
     }
