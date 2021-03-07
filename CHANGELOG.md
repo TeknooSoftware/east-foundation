@@ -1,5 +1,10 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[4.0.2] - 2021-03-07
+###Stable Release
+- Manager update workplan with canonicals classes names about instances of client and message instead 
+  use keyword `request` and `client`
+
 ##[4.0.1] - 2021-03-05
 ###Stable Release
 - Replace psr/container-implementation to psr/container
