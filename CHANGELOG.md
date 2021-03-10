@@ -1,5 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[4.0.3] - 2021-03-09
+###Stable Release
+- Clean symfony yaml indentations
+
 ##[4.0.2] - 2021-03-07
 ###Stable Release
 - Manager update workplan with canonicals classes names about instances of client and message instead 

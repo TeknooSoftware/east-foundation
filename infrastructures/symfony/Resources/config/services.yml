@@ -1,76 +1,76 @@
 parameters:
-  teknoo.east.symfony.router.class: 'Teknoo\East\FoundationBundle\Router\Router'
-  teknoo.east.symfony.listener.kernel.class: 'Teknoo\East\FoundationBundle\Listener\KernelListener'
-  teknoo.east.symfony.normalizer.east_normalizer.class: 'Teknoo\East\FoundationBundle\Normalizer\EastNormalizer'
-  teknoo.east.twig.template.engine: 'Teknoo\East\Twig\Template\Engine'
+    teknoo.east.symfony.router.class: 'Teknoo\East\FoundationBundle\Router\Router'
+    teknoo.east.symfony.listener.kernel.class: 'Teknoo\East\FoundationBundle\Listener\KernelListener'
+    teknoo.east.symfony.normalizer.east_normalizer.class: 'Teknoo\East\FoundationBundle\Normalizer\EastNormalizer'
+    teknoo.east.twig.template.engine: 'Teknoo\East\Twig\Template\Engine'
 
 services:
-  #Symfony router
-  Teknoo\East\FoundationBundle\Router\Router:
-    alias: 'Teknoo\East\Foundation\Router\RouterInterface'
-    public: true
+    #Symfony router
+    Teknoo\East\FoundationBundle\Router\Router:
+        alias: 'Teknoo\East\Foundation\Router\RouterInterface'
+        public: true
 
-  Teknoo\East\Foundation\Router\RouterInterface:
-    class: '%teknoo.east.symfony.router.class%'
-    arguments:
-      - '@router'
-      - '@service_container'
-    public: true
+    Teknoo\East\Foundation\Router\RouterInterface:
+        class: '%teknoo.east.symfony.router.class%'
+        arguments:
+            - '@router'
+            - '@service_container'
+        public: true
 
-  Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface:
-    class: 'Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory'
-    arguments:
-      - '@Psr\Http\Message\ServerRequestFactoryInterface'
-      - '@Psr\Http\Message\StreamFactoryInterface'
-      - '@Psr\Http\Message\UploadedFileFactoryInterface'
-      - '@Psr\Http\Message\ResponseFactoryInterface'
+    Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface:
+        class: 'Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory'
+        arguments:
+            - '@Psr\Http\Message\ServerRequestFactoryInterface'
+            - '@Psr\Http\Message\StreamFactoryInterface'
+            - '@Psr\Http\Message\UploadedFileFactoryInterface'
+            - '@Psr\Http\Message\ResponseFactoryInterface'
 
-  #Symfony kernel event listener
-  teknoo.east.symfony.listener.kernel:
-    alias: 'Teknoo\East\FoundationBundle\Listener\KernelListener'
+    #Symfony kernel event listener
+    teknoo.east.symfony.listener.kernel:
+        alias: 'Teknoo\East\FoundationBundle\Listener\KernelListener'
 
-  Teknoo\East\FoundationBundle\Listener\KernelListener:
-    class: '%teknoo.east.symfony.listener.kernel.class%'
-    arguments:
-      - '@Teknoo\East\Foundation\Manager\ManagerInterface'
-      - '@Teknoo\East\Foundation\Http\ClientInterface'
-      - '@Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface'
-    tags:
-      - { name: 'kernel.event_listener', event: 'kernel.request', method: 'onKernelRequest', priority: 0 }
+    Teknoo\East\FoundationBundle\Listener\KernelListener:
+        class: '%teknoo.east.symfony.listener.kernel.class%'
+        arguments:
+            - '@Teknoo\East\Foundation\Manager\ManagerInterface'
+            - '@Teknoo\East\Foundation\Http\ClientInterface'
+            - '@Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface'
+        tags:
+            - { name: 'kernel.event_listener', event: 'kernel.request', method: 'onKernelRequest', priority: 0 }
 
-  #Symfony normalizer
-  teknoo.east.symfony.normalizer.east_normalizer:
-    alias: 'Teknoo\East\FoundationBundle\Normalizer\EastNormalizer'
+    #Symfony normalizer
+    teknoo.east.symfony.normalizer.east_normalizer:
+        alias: 'Teknoo\East\FoundationBundle\Normalizer\EastNormalizer'
 
-  Teknoo\East\FoundationBundle\Normalizer\EastNormalizer:
-    class: '%teknoo.east.symfony.normalizer.east_normalizer.class%'
-    tags:
-      - { name: 'serializer.normalizer', priority: 100 }
+    Teknoo\East\FoundationBundle\Normalizer\EastNormalizer:
+        class: '%teknoo.east.symfony.normalizer.east_normalizer.class%'
+        tags:
+            - { name: 'serializer.normalizer', priority: 100 }
 
-  #Laminas Support
-  Teknoo\East\Diactoros\CallbackStreamFactory:
-    class: 'Teknoo\East\Diactoros\CallbackStreamFactory'
-    public: true
+    #Laminas Support
+    Teknoo\East\Diactoros\CallbackStreamFactory:
+        class: 'Teknoo\East\Diactoros\CallbackStreamFactory'
+        public: true
 
-  #Client
-  Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory:
-    class: 'Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory'
+    #Client
+    Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory:
+        class: 'Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory'
 
-  Teknoo\East\FoundationBundle\Http\Client:
-    class: 'Teknoo\East\FoundationBundle\Http\Client'
-    public: true
-    arguments:
-      - '@Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory'
-      - null
-      - '@logger'
+    Teknoo\East\FoundationBundle\Http\Client:
+        class: 'Teknoo\East\FoundationBundle\Http\Client'
+        public: true
+        arguments:
+            - '@Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory'
+            - null
+            - '@logger'
 
-  #Twig Engine
-  Teknoo\East\Foundation\Template\EngineInterface:
-    alias: 'Teknoo\East\Twig\Template\Engine'
-    public: true
+    #Twig Engine
+    Teknoo\East\Foundation\Template\EngineInterface:
+        alias: 'Teknoo\East\Twig\Template\Engine'
+        public: true
 
-  Teknoo\East\Twig\Template\Engine:
-    class: '%teknoo.east.twig.template.engine%'
-    arguments:
-      - '@twig'
-    public: true
+    Teknoo\East\Twig\Template\Engine:
+        class: '%teknoo.east.twig.template.engine%'
+        arguments:
+            - '@twig'
+        public: true
