@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace Teknoo\East\FoundationBundle\Http;
 
+use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
@@ -46,7 +47,7 @@ use Teknoo\East\Foundation\Http\ClientInterface;
  */
 class Client implements ClientWithResponseEventInterface
 {
-    private ?ResponseInterface $response = null;
+    private ?MessageInterface $response = null;
 
     private ?RequestEvent $requestEvent = null;
 
@@ -90,7 +91,7 @@ class Client implements ClientWithResponseEventInterface
     /**
      * {@inheritdoc}
      */
-    public function acceptResponse(ResponseInterface $response): ClientInterface
+    public function acceptResponse(MessageInterface $response): ClientInterface
     {
         $this->response = $response;
 
@@ -100,7 +101,7 @@ class Client implements ClientWithResponseEventInterface
     /**
      * {@inheritdoc}
      */
-    public function sendResponse(ResponseInterface $response = null, bool $silently = false): ClientInterface
+    public function sendResponse(MessageInterface $response = null, bool $silently = false): ClientInterface
     {
         if ($response instanceof ResponseInterface) {
             $this->acceptResponse($response);

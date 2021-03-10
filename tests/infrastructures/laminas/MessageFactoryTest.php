@@ -1,6 +1,5 @@
 <?php
-
-/*
+/**
  * East Foundation.
  *
  * LICENSE
@@ -21,16 +20,13 @@
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
 
-declare(strict_types=1);
+namespace Teknoo\Tests\East\Diactoros;
 
-namespace Teknoo\East\Diactoros;
-
-use Laminas\Diactoros\CallbackStream as DiactorosCallbackStream;
-use Teknoo\East\Foundation\Http\Message\CallbackStreamInterface;
+use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\MessageInterface;
+use Teknoo\East\Diactoros\MessageFactory;
 
 /**
- * Adapter of Laminas\Diactoros\CallbackStream for CallbackStreamInterface
- *
  * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)
  * @copyright   Copyright (c) 2020-2021 SASU Teknoo Software (https://teknoo.software)
  *
@@ -38,20 +34,26 @@ use Teknoo\East\Foundation\Http\Message\CallbackStreamInterface;
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
+ *
+ * @covers \Teknoo\East\Diactoros\MessageFactory
  */
-class CallbackStream extends DiactorosCallbackStream implements CallbackStreamInterface
+class MessageFactoryTest extends TestCase
 {
-    public function bind(callable $callback): CallbackStreamInterface
+    public function buildFactory(): MessageFactory
     {
-        $this->attach($callback);
-
-        return $this;
+        return new MessageFactory();
     }
 
-    public function unbind(): CallbackStreamInterface
+    public function testCreateMessage()
     {
-        $this->detach();
+        self::assertInstanceOf(
+            MessageInterface::class,
+            $stream = $this->buildFactory()->createMessage('1.1')
+        );
 
-        return $this;
+        self::assertEquals(
+            '1.1',
+            $stream->getProtocolVersion()
+        );
     }
 }

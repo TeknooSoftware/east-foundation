@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace Teknoo\East\FoundationBundle\Command;
 
+use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -46,7 +47,7 @@ class Client implements ClientInterface
 {
     private ?OutputInterface $output = null;
 
-    private ?ResponseInterface $response = null;
+    private ?MessageInterface $response = null;
 
     public int $returnCode = 0;
 
@@ -84,14 +85,14 @@ class Client implements ClientInterface
         return $this;
     }
 
-    public function acceptResponse(ResponseInterface $response): ClientInterface
+    public function acceptResponse(MessageInterface $response): ClientInterface
     {
         $this->response = $response;
 
         return $this;
     }
 
-    public function sendResponse(ResponseInterface $response = null, bool $silently = false): ClientInterface
+    public function sendResponse(MessageInterface $response = null, bool $silently = false): ClientInterface
     {
         if ($response instanceof ResponseInterface) {
             $this->acceptResponse($response);

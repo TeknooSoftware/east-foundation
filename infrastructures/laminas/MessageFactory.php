@@ -25,11 +25,11 @@ declare(strict_types=1);
 
 namespace Teknoo\East\Diactoros;
 
-use Laminas\Diactoros\CallbackStream as DiactorosCallbackStream;
-use Teknoo\East\Foundation\Http\Message\CallbackStreamInterface;
+use Psr\Http\Message\MessageInterface;
+use Teknoo\East\Foundation\Http\Message\MessageFactoryInterface;
 
 /**
- * Adapter of Laminas\Diactoros\CallbackStream for CallbackStreamInterface
+ * Factory to build Message PSR11 instance
  *
  * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)
  * @copyright   Copyright (c) 2020-2021 SASU Teknoo Software (https://teknoo.software)
@@ -39,19 +39,10 @@ use Teknoo\East\Foundation\Http\Message\CallbackStreamInterface;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-class CallbackStream extends DiactorosCallbackStream implements CallbackStreamInterface
+class MessageFactory implements MessageFactoryInterface
 {
-    public function bind(callable $callback): CallbackStreamInterface
+    public function createMessage(string $protocolVersion): MessageInterface
     {
-        $this->attach($callback);
-
-        return $this;
-    }
-
-    public function unbind(): CallbackStreamInterface
-    {
-        $this->detach();
-
-        return $this;
+        return (new Message())->withProtocolVersion($protocolVersion);
     }
 }

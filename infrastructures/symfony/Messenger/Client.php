@@ -23,14 +23,12 @@
 
 declare(strict_types=1);
 
-namespace Teknoo\East\Diactoros;
+namespace Teknoo\East\FoundationBundle\Messenger;
 
-use Laminas\Diactoros\CallbackStream as DiactorosCallbackStream;
-use Teknoo\East\Foundation\Http\Message\CallbackStreamInterface;
+use Psr\Http\Message\MessageInterface;
+use Teknoo\East\Foundation\Http\ClientInterface;
 
 /**
- * Adapter of Laminas\Diactoros\CallbackStream for CallbackStreamInterface
- *
  * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)
  * @copyright   Copyright (c) 2020-2021 SASU Teknoo Software (https://teknoo.software)
  *
@@ -39,19 +37,25 @@ use Teknoo\East\Foundation\Http\Message\CallbackStreamInterface;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-class CallbackStream extends DiactorosCallbackStream implements CallbackStreamInterface
+class Client implements ClientInterface
 {
-    public function bind(callable $callback): CallbackStreamInterface
+    public function updateResponse(callable $modifier): ClientInterface
     {
-        $this->attach($callback);
-
         return $this;
     }
 
-    public function unbind(): CallbackStreamInterface
+    public function acceptResponse(MessageInterface $response): ClientInterface
     {
-        $this->detach();
+        return $this;
+    }
 
+    public function sendResponse(MessageInterface $response = null, bool $silently = false): ClientInterface
+    {
+        return $this;
+    }
+
+    public function errorInRequest(\Throwable $throwable, bool $silently = false): ClientInterface
+    {
         return $this;
     }
 }

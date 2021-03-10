@@ -52,6 +52,10 @@ services:
         class: 'Teknoo\East\Diactoros\CallbackStreamFactory'
         public: true
 
+    Teknoo\East\Diactoros\MessageFactory:
+        class: 'Teknoo\East\Diactoros\MessageFactory'
+        public: true
+
     #Client
     Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory:
         class: 'Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory'

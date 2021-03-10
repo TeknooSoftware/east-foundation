@@ -22,6 +22,7 @@
 
 namespace Teknoo\Tests\East\FoundationBundle\Listener;
 
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -42,7 +43,7 @@ use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
  * @author      Richard Déloge <richarddeloge@gmail.com>
  * @covers \Teknoo\East\FoundationBundle\Listener\KernelListener
  */
-class KernelListenerTest extends \PHPUnit\Framework\TestCase
+class KernelListenerTest extends TestCase
 {
     /**
      * @var ManagerInterface

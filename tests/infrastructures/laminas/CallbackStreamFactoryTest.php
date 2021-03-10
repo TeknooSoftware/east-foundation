@@ -22,6 +22,7 @@
 
 namespace Teknoo\Tests\East\Diactoros;
 
+use PHPUnit\Framework\TestCase;
 use Teknoo\East\Diactoros\CallbackStream;
 use Teknoo\East\Diactoros\CallbackStreamFactory;
 
@@ -36,7 +37,7 @@ use Teknoo\East\Diactoros\CallbackStreamFactory;
  *
  * @covers \Teknoo\East\Diactoros\CallbackStreamFactory
  */
-class CallbackStreamFactoryTest extends \PHPUnit\Framework\TestCase
+class CallbackStreamFactoryTest extends TestCase
 {
     public function buildFactory(): CallbackStreamFactory
     {

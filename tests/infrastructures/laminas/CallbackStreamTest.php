@@ -22,6 +22,7 @@
 
 namespace Teknoo\Tests\East\Diactoros;
 
+use PHPUnit\Framework\TestCase;
 use Teknoo\East\Diactoros\CallbackStream;
 
 /**
@@ -35,7 +36,7 @@ use Teknoo\East\Diactoros\CallbackStream;
  *
  * @covers \Teknoo\East\Diactoros\CallbackStream
  */
-class CallbackStreamTest extends \PHPUnit\Framework\TestCase
+class CallbackStreamTest extends TestCase
 {
     public function testBind()
     {

@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace Teknoo\East\Foundation\Http;
 
-use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\MessageInterface;
 
 /**
  * ClientInterface is a contract to create object representing the client in the server side. The client must be
@@ -63,22 +63,22 @@ interface ClientInterface
     /**
      * To accept a response from the controller action without send it to the HTTP client.
      *
-     * @param ResponseInterface $response
+     * @param MessageInterface $response
      *
      * @return ClientInterface
      */
-    public function acceptResponse(ResponseInterface $response): ClientInterface;
+    public function acceptResponse(MessageInterface $response): ClientInterface;
 
     /**
      * To accept a response from the controller action and send it to the HTTP client.
      *
-     * @param ResponseInterface|null $response
+     * @param MessageInterface|null $response
      * @param bool $silently=false
      *
      * @return ClientInterface
      * @throws \RuntimeException when no response was been defined via acceptResponse and $response argument is null.
      */
-    public function sendResponse(ResponseInterface $response = null, bool $silently = false): ClientInterface;
+    public function sendResponse(MessageInterface $response = null, bool $silently = false): ClientInterface;
 
     /**
      * To intercept an error during a request and forward the message to the HTTP client.
