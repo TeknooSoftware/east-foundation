@@ -26,6 +26,9 @@ declare(strict_types=1);
 namespace Teknoo\East\FoundationBundle\Messenger;
 
 use Psr\Http\Message\MessageInterface;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Messenger\Envelope;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Teknoo\East\Foundation\Http\ClientInterface;
 
 /**
@@ -39,23 +42,65 @@ use Teknoo\East\Foundation\Http\ClientInterface;
  */
 class Client implements ClientInterface
 {
+    private MessageBusInterface $bus;
+
+    private ?LoggerInterface $logger;
+
+    private ?MessageInterface $response = null;
+
+    public function __construct(MessageBusInterface $bus, ?LoggerInterface $logger = null)
+    {
+        $this->bus = $bus;
+        $this->logger = $logger;
+    }
+
     public function updateResponse(callable $modifier): ClientInterface
     {
+        $modifier($this, $this->response);
+
         return $this;
     }
 
     public function acceptResponse(MessageInterface $response): ClientInterface
     {
+        $this->response = $response;
+
         return $this;
     }
 
     public function sendResponse(MessageInterface $response = null, bool $silently = false): ClientInterface
     {
+        if ($response instanceof MessageInterface) {
+            $this->acceptResponse($response);
+        }
+
+        if (true === $silently && !$this->response instanceof MessageInterface) {
+            return $this;
+        }
+
+        if (!$this->response instanceof MessageInterface) {
+            throw new \RuntimeException('Error, any response object has been pushed to the client');
+        }
+
+        $this->bus->dispatch(
+            new Envelope($this->response)
+        );
+
+        $this->response = null;
+
         return $this;
     }
 
     public function errorInRequest(\Throwable $throwable, bool $silently = false): ClientInterface
     {
+        if ($this->logger instanceof LoggerInterface) {
+            $this->logger->error($throwable->getMessage(), ['exception' => $throwable]);
+        }
+
+        if (false === $silently) {
+            throw $throwable;
+        }
+
         return $this;
     }
 }

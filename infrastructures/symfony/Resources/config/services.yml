@@ -56,7 +56,21 @@ services:
         class: 'Teknoo\East\Diactoros\MessageFactory'
         public: true
 
-    #Client
+    #Messenger
+    Teknoo\East\FoundationBundle\Messenger\Executor:
+        class: 'Teknoo\East\FoundationBundle\Messenger\Executor'
+        public: true
+        arguments:
+            - '@Teknoo\East\Foundation\Manager\ManagerInterface'
+
+    Teknoo\East\FoundationBundle\Messenger\Client:
+        class: 'Teknoo\East\FoundationBundle\Messenger\Client'
+        public: true
+        arguments:
+            - '@messenger.default_bus'
+            - '@?logger'
+
+    #HTTP
     Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory:
         class: 'Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory'
 
@@ -66,7 +80,7 @@ services:
         arguments:
             - '@Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory'
             - null
-            - '@logger'
+            - '@?logger'
 
     #Twig Engine
     Teknoo\East\Foundation\Template\EngineInterface:

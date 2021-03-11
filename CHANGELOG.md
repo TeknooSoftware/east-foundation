@@ -1,5 +1,13 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[4.1.0] - 2021-03-11
+###Stable Release
+- Add PSR11 Message only implementation 
+- Add MessageFactory
+- Update Client Interface to use MessageInterface instead of RequestInterface
+- Add Recipe executor dedicated to Symfony Messenger
+- Add Client dedicated to Symfony Messenger
+
 ##[4.0.3] - 2021-03-09
 ###Stable Release
 - Clean symfony yaml indentations

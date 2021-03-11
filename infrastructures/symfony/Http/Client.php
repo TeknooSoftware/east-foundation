@@ -103,11 +103,11 @@ class Client implements ClientWithResponseEventInterface
      */
     public function sendResponse(MessageInterface $response = null, bool $silently = false): ClientInterface
     {
-        if ($response instanceof ResponseInterface) {
+        if ($response instanceof MessageInterface) {
             $this->acceptResponse($response);
         }
 
-        if (true === $silently && !$this->response instanceof ResponseInterface) {
+        if (true === $silently && !$this->response instanceof MessageInterface) {
             return $this;
         }
 
