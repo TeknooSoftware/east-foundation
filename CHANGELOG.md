@@ -7,6 +7,7 @@
 - Update Client Interface to use MessageInterface instead of RequestInterface
 - Add Recipe executor dedicated to Symfony Messenger
 - Add Client dedicated to Symfony Messenger
+- Remove some public services
 
 ##[4.0.3] - 2021-03-09
 ###Stable Release
