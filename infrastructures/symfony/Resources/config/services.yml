@@ -33,7 +33,7 @@ services:
         class: '%teknoo.east.symfony.listener.kernel.class%'
         arguments:
             - '@Teknoo\East\Foundation\Manager\ManagerInterface'
-            - '@Teknoo\East\Foundation\Http\ClientInterface'
+            - '@Teknoo\East\FoundationBundle\Http\Client'
             - '@Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface'
         tags:
             - { name: 'kernel.event_listener', event: 'kernel.request', method: 'onKernelRequest', priority: 0 }
@@ -59,13 +59,11 @@ services:
     #Messenger
     Teknoo\East\FoundationBundle\Messenger\Executor:
         class: 'Teknoo\East\FoundationBundle\Messenger\Executor'
-        public: true
         arguments:
             - '@Teknoo\East\Foundation\Manager\ManagerInterface'
 
     Teknoo\East\FoundationBundle\Messenger\Client:
         class: 'Teknoo\East\FoundationBundle\Messenger\Client'
-        public: true
         arguments:
             - '@?messenger.default_bus'
             - '@?logger'
@@ -76,7 +74,6 @@ services:
 
     Teknoo\East\FoundationBundle\Http\Client:
         class: 'Teknoo\East\FoundationBundle\Http\Client'
-        public: true
         arguments:
             - '@Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory'
             - null
