@@ -154,6 +154,19 @@ class ClientTest extends TestCase
         );
     }
 
+    public function testSendResponseWithoutBus()
+    {
+        /**
+         * @var ResponseInterface
+         */
+        $response = $this->createMock(ResponseInterface::class);
+
+        self::assertInstanceOf(
+            $this->getClientClass(),
+            (new Client(null))->sendResponse($response)
+        );
+    }
+
     public function testSendResponseWithAccept()
     {
         /**

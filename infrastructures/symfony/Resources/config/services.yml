@@ -67,7 +67,7 @@ services:
         class: 'Teknoo\East\FoundationBundle\Messenger\Client'
         public: true
         arguments:
-            - '@messenger.default_bus'
+            - '@?messenger.default_bus'
             - '@?logger'
 
     #HTTP

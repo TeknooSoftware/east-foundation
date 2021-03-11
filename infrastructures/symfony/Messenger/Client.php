@@ -42,13 +42,13 @@ use Teknoo\East\Foundation\Http\ClientInterface;
  */
 class Client implements ClientInterface
 {
-    private MessageBusInterface $bus;
+    private ?MessageBusInterface $bus;
 
     private ?LoggerInterface $logger;
 
     private ?MessageInterface $response = null;
 
-    public function __construct(MessageBusInterface $bus, ?LoggerInterface $logger = null)
+    public function __construct(?MessageBusInterface $bus, ?LoggerInterface $logger = null)
     {
         $this->bus = $bus;
         $this->logger = $logger;
@@ -82,9 +82,11 @@ class Client implements ClientInterface
             throw new \RuntimeException('Error, any response object has been pushed to the client');
         }
 
-        $this->bus->dispatch(
-            new Envelope($this->response)
-        );
+        if ($this->bus instanceof MessageBusInterface) {
+            $this->bus->dispatch(
+                new Envelope($this->response)
+            );
+        }
 
         $this->response = null;
 
