@@ -1,5 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[4.1.1] - 2021-03-11
+###Stable Release
+- Add MessageFactory definitions into the laminas_di file
+
 ##[4.1.0] - 2021-03-11
 ###Stable Release
 - Add PSR11 Message only implementation 

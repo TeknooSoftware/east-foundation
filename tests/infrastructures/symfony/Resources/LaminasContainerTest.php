@@ -32,6 +32,8 @@ use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UploadedFileFactoryInterface;
+use Teknoo\East\Diactoros\MessageFactory;
+use Teknoo\East\Foundation\Http\Message\MessageFactoryInterface;
 
 /**
  * Class DefinitionProviderTest.
@@ -136,6 +138,26 @@ class LaminasContainerTest extends \PHPUnit\Framework\TestCase
         self::assertInstanceOf(
           StreamFactoryInterface::class,
             $container->get(StreamFactoryInterface::class)
+        );
+    }
+
+    public function testMessageFactory()
+    {
+        $container = $this->buildContainer();
+
+        self::assertInstanceOf(
+          MessageFactory::class,
+            $container->get(MessageFactory::class)
+        );
+    }
+
+    public function testMessageFactoryInterface()
+    {
+        $container = $this->buildContainer();
+
+        self::assertInstanceOf(
+          MessageFactoryInterface::class,
+            $container->get(MessageFactoryInterface::class)
         );
     }
 }
