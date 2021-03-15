@@ -33,6 +33,7 @@ use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UploadedFileFactoryInterface;
 use Teknoo\East\Diactoros\MessageFactory;
+use Teknoo\East\Diactoros\ResponseMessageFactory;
 use Teknoo\East\Foundation\Http\Message\MessageFactoryInterface;
 
 /**
@@ -151,13 +152,13 @@ class LaminasContainerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testMessageFactoryInterface()
+    public function testResponseMessageFactory()
     {
         $container = $this->buildContainer();
 
         self::assertInstanceOf(
-          MessageFactoryInterface::class,
-            $container->get(MessageFactoryInterface::class)
+            ResponseMessageFactory::class,
+            $container->get(ResponseMessageFactory::class)
         );
     }
 }

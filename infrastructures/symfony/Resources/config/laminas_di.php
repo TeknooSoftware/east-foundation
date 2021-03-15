@@ -34,24 +34,24 @@ use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UploadedFileFactoryInterface;
 use Teknoo\East\Diactoros\MessageFactory;
-use Teknoo\East\Foundation\Http\Message\MessageFactoryInterface;
+use Teknoo\East\Diactoros\ResponseMessageFactory;
 
 use function DI\get;
 use function DI\create;
 
 return [
-  ResponseFactory::class => create(),
-  ResponseFactoryInterface::class => get(ResponseFactory::class),
+    ResponseFactory::class => create(),
+    ResponseFactoryInterface::class => get(ResponseFactory::class),
 
-  StreamFactory::class => create(),
-  StreamFactoryInterface::class => get(StreamFactory::class),
+    StreamFactory::class => create(),
+    StreamFactoryInterface::class => get(StreamFactory::class),
 
-  ServerRequestFactory::class => create(),
-  ServerRequestFactoryInterface::class => get(ServerRequestFactory::class),
+    ServerRequestFactory::class => create(),
+    ServerRequestFactoryInterface::class => get(ServerRequestFactory::class),
 
-  UploadedFileFactory::class => create(),
-  UploadedFileFactoryInterface::class => get(UploadedFileFactory::class),
+    UploadedFileFactory::class => create(),
+    UploadedFileFactoryInterface::class => get(UploadedFileFactory::class),
 
-  MessageFactory::class => create(),
-  MessageFactoryInterface::class => get(MessageFactory::class),
+    MessageFactory::class => create(),
+    ResponseMessageFactory::class => create(),
 ];

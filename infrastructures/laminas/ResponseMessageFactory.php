@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * East Foundation.
  *
  * LICENSE
@@ -20,13 +21,17 @@
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
 
-namespace Teknoo\Tests\East\Diactoros;
+declare(strict_types=1);
 
-use PHPUnit\Framework\TestCase;
+namespace Teknoo\East\Diactoros;
+
+use Laminas\Diactoros\ResponseFactory;
 use Psr\Http\Message\MessageInterface;
-use Teknoo\East\Diactoros\MessageFactory;
+use Teknoo\East\Foundation\Http\Message\MessageFactoryInterface;
 
 /**
+ * Factory to build Response PSR11 instance impleenting also MessageFactoryInterface
+ *
  * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)
  * @copyright   Copyright (c) 2020-2021 SASU Teknoo Software (https://teknoo.software)
  *
@@ -34,26 +39,11 @@ use Teknoo\East\Diactoros\MessageFactory;
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
- *
- * @covers \Teknoo\East\Diactoros\MessageFactory
  */
-class MessageFactoryTest extends TestCase
+class ResponseMessageFactory extends ResponseFactory implements MessageFactoryInterface
 {
-    public function buildFactory(): MessageFactory
+    public function createMessage(string $protocolVersion): MessageInterface
     {
-        return new MessageFactory();
-    }
-
-    public function testCreateMessage()
-    {
-        self::assertInstanceOf(
-            MessageInterface::class,
-            $message = $this->buildFactory()->createMessage('1.1')
-        );
-
-        self::assertEquals(
-            '1.1',
-            $message->getProtocolVersion()
-        );
+        return $this->createResponse()->withProtocolVersion($protocolVersion);
     }
 }

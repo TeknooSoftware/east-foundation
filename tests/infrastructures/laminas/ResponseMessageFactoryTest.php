@@ -24,7 +24,8 @@ namespace Teknoo\Tests\East\Diactoros;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\MessageInterface;
-use Teknoo\East\Diactoros\MessageFactory;
+use Psr\Http\Message\ResponseInterface;
+use Teknoo\East\Diactoros\ResponseMessageFactory;
 
 /**
  * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)
@@ -35,13 +36,13 @@ use Teknoo\East\Diactoros\MessageFactory;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  *
- * @covers \Teknoo\East\Diactoros\MessageFactory
+ * @covers \Teknoo\East\Diactoros\ResponseMessageFactory
  */
-class MessageFactoryTest extends TestCase
+class ResponseMessageFactoryTest extends TestCase
 {
-    public function buildFactory(): MessageFactory
+    public function buildFactory(): ResponseMessageFactory
     {
-        return new MessageFactory();
+        return new ResponseMessageFactory();
     }
 
     public function testCreateMessage()
@@ -49,6 +50,11 @@ class MessageFactoryTest extends TestCase
         self::assertInstanceOf(
             MessageInterface::class,
             $message = $this->buildFactory()->createMessage('1.1')
+        );
+        
+        self::assertInstanceOf(
+            ResponseInterface::class,
+            $message
         );
 
         self::assertEquals(

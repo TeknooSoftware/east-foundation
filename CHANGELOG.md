@@ -1,6 +1,11 @@
 #Teknoo Software - East Foundation - Change Log
 
-##[4.1.1] - 2021-03-11
+##[4.1.2] - 2021-03-15
+###Stable Release
+- Create ResponseMessageFactory to return a PSR 11 response (use Laminas implementation) instead of
+  basic Message.
+
+##[4.1.1] - 2021-03-13
 ###Stable Release
 - Add MessageFactory definitions into the laminas_di file
 
