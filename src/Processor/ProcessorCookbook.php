@@ -5,7 +5,7 @@
  *
  * LICENSE
  *
- * This source file is subject to the MIT license and the version 3 of the GPL3
+ * This source file is subject to the MIT license
  * license that are bundled with this package in the folder licences
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -29,6 +29,7 @@ use Teknoo\Recipe\Bowl\DynamicBowl;
 use Teknoo\Recipe\Cookbook\BaseCookbookTrait;
 use Teknoo\Recipe\CookbookInterface;
 use Teknoo\Recipe\RecipeInterface as OriginalRecipeInterface;
+use TypeError;
 
 /**
  * Base cookbook to execute the endpoint found by the manager in the main recipe for the current HTTP request thanks
@@ -78,7 +79,7 @@ class ProcessorCookbook implements ProcessorCookbookInterface
     public function fill(OriginalRecipeInterface $recipe): CookbookInterface
     {
         if (!$recipe instanceof ProcessorRecipeInterface) {
-            throw new \TypeError('$recipe must be an instance of ProcessorRecipeInterface');
+            throw new TypeError('$recipe must be an instance of ProcessorRecipeInterface');
         }
 
         return $this->originalFill($recipe);

@@ -5,7 +5,7 @@
  *
  * LICENSE
  *
- * This source file is subject to the MIT license and the version 3 of the GPL3
+ * This source file is subject to the MIT license
  * license that are bundled with this package in the folder licences
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -25,6 +25,8 @@ declare(strict_types=1);
 
 namespace Teknoo\East\Foundation\Router;
 
+use LogicException;
+use ReflectionClass;
 use Teknoo\Immutable\ImmutableInterface;
 
 /**
@@ -42,15 +44,11 @@ interface ParameterInterface extends ImmutableInterface
 {
     /**
      * To get the name of the controller's parameter representing by the current instance.
-     *
-     * @return string
      */
     public function getName(): string;
 
     /**
      * To know if the controller's parameter has a default value.
-     *
-     * @return bool
      */
     public function hasDefaultValue(): bool;
 
@@ -58,16 +56,12 @@ interface ParameterInterface extends ImmutableInterface
      * To get the default value of the controller's parameter.
      * If the parameter has no default value, the method must throw a \LogicException.
      *
-     * @return mixed
-     *
-     * @throws \LogicException
+     * @throws LogicException
      */
-    public function getDefaultValue();
+    public function getDefaultValue(): mixed;
 
     /**
      * To know if the parameter has a restriction on accepted class's instance for this controller's parameter.
-     *
-     * @return bool
      */
     public function hasClass(): bool;
 
@@ -75,9 +69,7 @@ interface ParameterInterface extends ImmutableInterface
      * To get the \ReflectionClass instance representing the accepted class's instance for this controller's parameter.
      * If the parameter has no default value, the method must throw a \LogicException.
      *
-     * @return \ReflectionClass
-     *
-     * @throws \LogicException
+     * @throws LogicException
      */
-    public function getClass(): \ReflectionClass;
+    public function getClass(): ReflectionClass;
 }

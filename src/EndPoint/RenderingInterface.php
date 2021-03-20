@@ -5,7 +5,7 @@
  *
  * LICENSE
  *
- * This source file is subject to the MIT license and the version 3 of the GPL3
+ * This source file is subject to the MIT license
  * license that are bundled with this package in the folder licences
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -41,13 +41,9 @@ interface RenderingInterface
     /**
      * Renders a view via a template engine like Twig or another system.
      *
-     * @param ClientInterface      $client
-     * @param string               $view       The view name
      * @param array<string, mixed> $parameters An array of parameters to pass to the view
      * @param int                  $status The status code to use for the Response
      * @param array<string, mixed> $headers An array of values to inject into HTTP header response
-     *
-     * @return EndPointInterface
      */
     public function render(
         ClientInterface $client,

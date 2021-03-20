@@ -5,7 +5,7 @@
  *
  * LICENSE
  *
- * This source file is subject to the MIT license and the version 3 of the GPL3
+ * This source file is subject to the MIT license
  * license that are bundled with this package in the folder licences
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -47,11 +47,6 @@ interface ManagerInterface extends ChefInterface
 {
     /**
      * Method to call to process a request in East Foundation by East's controller.
-     *
-     * @param ClientInterface        $client
-     * @param MessageInterface $message
-     *
-     * @return ManagerInterface
      */
     public function receiveRequest(
         ClientInterface $client,
@@ -61,11 +56,6 @@ interface ManagerInterface extends ChefInterface
     /**
      * Method to call from a middleware to continue the propagation of the request through middlewares registered into
      * the queue of the manager.
-     *
-     * @param ClientInterface        $client
-     * @param MessageInterface $message
-     *
-     * @return ManagerInterface
      */
     public function continueExecution(
         ClientInterface $client,
@@ -75,8 +65,6 @@ interface ManagerInterface extends ChefInterface
     /**
      * Method to stop propagation to other middlewares when a middleware has determined the request
      * is handle by one of its controllers.
-     *
-     * @return ManagerInterface
      */
     public function stop(): ManagerInterface;
 }

@@ -5,7 +5,7 @@
  *
  * LICENSE
  *
- * This source file is subject to the MIT license and the version 3 of the GPL3
+ * This source file is subject to the MIT license
  * license that are bundled with this package in the folder licences
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -58,17 +58,11 @@ class Result implements ResultInterface
         $this->next = $next;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getController(): callable
     {
         return $this->controller;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNext(): ?ResultInterface
     {
         return $this->next;

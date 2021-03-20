@@ -5,7 +5,7 @@
  *
  * LICENSE
  *
- * This source file is subject to the MIT license and the version 3 of the GPL3
+ * This source file is subject to the MIT license
  * license that are bundled with this package in the folder licences
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace Teknoo\East\FoundationBundle\EndPoint;
 
+use Exception;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -47,15 +48,10 @@ trait ExceptionTrait
      * This will result in a 404 response code. Usage example:
      *
      *     throw $this->createNotFoundException('Page not found!');
-     *
-     * @param string          $message  A message
-     * @param \Exception|null $previous The previous exception
-     *
-     * @return NotFoundHttpException
      */
     protected function createNotFoundException(
         string $message = 'Not Found',
-        \Exception $previous = null
+        ?Exception $previous = null
     ): NotFoundHttpException {
         return new NotFoundHttpException($message, $previous);
     }
@@ -66,15 +62,10 @@ trait ExceptionTrait
      * This will result in a 403 response code. Usage example:
      *
      *     throw $this->createAccessDeniedException('Unable to access this page!');
-     *
-     * @param string          $message  A message
-     * @param \Exception|null $previous The previous exception
-     *
-     * @return AccessDeniedHttpException
      */
     protected function createAccessDeniedException(
         string $message = 'Access Denied.',
-        \Exception $previous = null
+        ?Exception $previous = null
     ): AccessDeniedHttpException {
         return new AccessDeniedHttpException($message, $previous);
     }

@@ -5,7 +5,7 @@
  *
  * LICENSE
  *
- * This source file is subject to the MIT license and the version 3 of the GPL3
+ * This source file is subject to the MIT license
  * license that are bundled with this package in the folder licences
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -27,6 +27,7 @@ namespace Teknoo\East\Foundation\Promise;
 
 use Teknoo\Recipe\Promise\Promise as RecipePromise;
 use Teknoo\Recipe\Promise\PromiseInterface as RecipePromiseInterface;
+use Throwable;
 
 /**
  * With #East, methods and objects communicate via callback defined in interfaces. But it's not always possible to know
@@ -46,9 +47,6 @@ class Promise extends RecipePromise implements PromiseInterface
 {
     private ?PromiseInterface $nextPromise = null;
 
-    /**
-     * {@inheritdoc}
-     */
     public function next(?PromiseInterface $promise = null): PromiseInterface
     {
         $clone = clone $this;
@@ -57,20 +55,14 @@ class Promise extends RecipePromise implements PromiseInterface
         return $clone;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function success($result = null): RecipePromiseInterface
+    public function success(mixed $result = null): RecipePromiseInterface
     {
         parent::success($result, $this->nextPromise);
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function fail(\Throwable $throwable): RecipePromiseInterface
+    public function fail(Throwable $throwable): RecipePromiseInterface
     {
         parent::fail($throwable, $this->nextPromise);
 

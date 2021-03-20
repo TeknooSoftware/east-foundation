@@ -5,7 +5,7 @@
  *
  * LICENSE
  *
- * This source file is subject to the MIT license and the version 3 of the GPL3
+ * This source file is subject to the MIT license
  * license that are bundled with this package in the folder licences
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -42,10 +42,6 @@ interface InferiorityInterface
 {
     /**
      * To define object able to test if an another object is lower then it, and pass the result to the promise.
-     *
-     * @param InferiorityInterface|object|mixed $object
-     * @param PromiseInterface $promise
-     * @return InferiorityInterface
      */
-    public function isLessThan($object, PromiseInterface $promise): InferiorityInterface;
+    public function isLessThan(mixed $object, PromiseInterface $promise): InferiorityInterface;
 }

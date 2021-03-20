@@ -5,7 +5,7 @@
  *
  * LICENSE
  *
- * This source file is subject to the MIT license and the version 3 of the GPL3
+ * This source file is subject to the MIT license
  * license that are bundled with this package in the folder licences
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -27,9 +27,11 @@ namespace Teknoo\East\FoundationBundle\Command;
 
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ResponseInterface;
+use RuntimeException;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Teknoo\East\Foundation\Http\ClientInterface;
+use Throwable;
 
 /**
  * Default implementation of Teknoo\East\Foundation\Http\ClientInterface to Symfony Command to use East foundation
@@ -68,7 +70,7 @@ class Client implements ClientInterface
     private function getErrorOutput(): OutputInterface
     {
         if (!$this->output instanceof OutputInterface) {
-            throw new \RuntimeException('Error, the output has not been set into the client');
+            throw new RuntimeException('Error, the output has not been set into the client');
         }
 
         if ($this->output instanceof ConsoleOutputInterface) {
@@ -103,7 +105,7 @@ class Client implements ClientInterface
         }
 
         if (!$this->output instanceof OutputInterface) {
-            throw new \RuntimeException('Error, the output has not been set into the client');
+            throw new RuntimeException('Error, the output has not been set into the client');
         }
 
         if ($this->response instanceof ResponseInterface) {
@@ -115,7 +117,7 @@ class Client implements ClientInterface
         return $this;
     }
 
-    public function errorInRequest(\Throwable $throwable, bool $silently = false): ClientInterface
+    public function errorInRequest(Throwable $throwable, bool $silently = false): ClientInterface
     {
         $this->getErrorOutput()->writeln($throwable->getMessage());
 

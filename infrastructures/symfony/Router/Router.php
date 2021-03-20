@@ -5,7 +5,7 @@
  *
  * LICENSE
  *
- * This source file is subject to the MIT license and the version 3 of the GPL3
+ * This source file is subject to the MIT license
  * license that are bundled with this package in the folder licences
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace Teknoo\East\FoundationBundle\Router;
 
 use Psr\Http\Message\MessageInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller as SfController;
+use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController as SfAbstractController;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
@@ -38,6 +38,12 @@ use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 use Teknoo\East\Foundation\Router\Result;
 use Teknoo\East\Foundation\Router\ResultInterface;
 use Teknoo\East\Foundation\Router\RouterInterface;
+
+use function explode;
+use function is_callable;
+use function is_string;
+use function strpos;
+use function substr;
 
 /**
  * Class Router to check if a request is runnable by one of its controller and pass it to the selected controller.
@@ -71,16 +77,16 @@ class Router implements RouterInterface
 
     private function cleanSymfonyHandler(string $path): string
     {
-        if (0 === \strpos($path, '/app.php')) {
-            return \substr($path, 8);
+        if (0 === strpos($path, '/app.php')) {
+            return substr($path, 8);
         }
 
-        if (0 === \strpos($path, '/app_dev.php')) {
-            return \substr($path, 12);
+        if (0 === strpos($path, '/app_dev.php')) {
+            return substr($path, 12);
         }
 
-        if (0 === \strpos($path, '/index.php')) {
-            return \substr($path, 10);
+        if (0 === strpos($path, '/index.php')) {
+            return substr($path, 10);
         }
 
         return $path;
@@ -89,10 +95,6 @@ class Router implements RouterInterface
     /**
      * Method to find the controller to call for this method via the Symfony Matcher. Return only controller as service
      * (callable provided by the Symfony matcher), ignore other.
-     *
-     * @param ServerRequestInterface $request
-     *
-     * @return callable|null
      */
     private function matchRequest(ServerRequestInterface $request): ?callable
     {
@@ -109,18 +111,17 @@ class Router implements RouterInterface
         }
 
         $controller = $parameters['_controller'];
-        if (!($isCallable = \is_callable($controller)) && !$this->container->has($controller)) {
+        if (!($isCallable = is_callable($controller)) && !$this->container->has($controller)) {
             return null;
         }
 
-        if ($isCallable && \is_string($controller)) {
-            if (false !== \strpos($controller, '::')) {
-                $explodedController = \explode('::', $controller);
+        if ($isCallable && is_string($controller)) {
+            if (false !== strpos($controller, '::')) {
+                $explodedController = explode('::', $controller);
 
-                $reflection = new \ReflectionClass((string) $explodedController[0]);
-                $isSymfonyLegacy = \class_exists(SfController::class) && $reflection->isSubclassOf(SfController::class);
+                $reflection = new ReflectionClass((string) $explodedController[0]);
                 $isSymfony = $reflection->isSubclassOf(SfAbstractController::class);
-                if ($isSymfonyLegacy || $isSymfony) {
+                if ($isSymfony) {
                     return null;
                 }
 
@@ -140,19 +141,15 @@ class Router implements RouterInterface
 
         $entry = $this->container->get($parameters['_controller']);
 
-        $isSymfonyLegacy = \class_exists(SfController::class) && $entry instanceof SfController;
         $isSymfony = $entry instanceof SfAbstractController;
 
-        if (!\is_callable($entry) || $isSymfonyLegacy || $isSymfony) {
+        if (!is_callable($entry) || $isSymfony) {
             return null;
         }
 
         return $entry;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function execute(
         ClientInterface $client,
         MessageInterface $message,
@@ -164,7 +161,7 @@ class Router implements RouterInterface
 
         $controller = $this->matchRequest($message);
 
-        if (\is_callable($controller)) {
+        if (is_callable($controller)) {
             $result = new Result($controller);
 
             $manager->updateWorkPlan([ResultInterface::class => $result]);

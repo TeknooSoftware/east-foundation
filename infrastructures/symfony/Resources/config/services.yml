@@ -26,9 +26,6 @@ services:
             - '@Psr\Http\Message\ResponseFactoryInterface'
 
     #Symfony kernel event listener
-    teknoo.east.symfony.listener.kernel:
-        alias: 'Teknoo\East\FoundationBundle\Listener\KernelListener'
-
     Teknoo\East\FoundationBundle\Listener\KernelListener:
         class: '%teknoo.east.symfony.listener.kernel.class%'
         arguments:
@@ -39,9 +36,6 @@ services:
             - { name: 'kernel.event_listener', event: 'kernel.request', method: 'onKernelRequest', priority: 0 }
 
     #Symfony normalizer
-    teknoo.east.symfony.normalizer.east_normalizer:
-        alias: 'Teknoo\East\FoundationBundle\Normalizer\EastNormalizer'
-
     Teknoo\East\FoundationBundle\Normalizer\EastNormalizer:
         class: '%teknoo.east.symfony.normalizer.east_normalizer.class%'
         tags:

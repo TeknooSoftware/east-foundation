@@ -5,7 +5,7 @@
  *
  * LICENSE
  *
- * This source file is subject to the MIT license and the version 3 of the GPL3
+ * This source file is subject to the MIT license
  * license that are bundled with this package in the folder licences
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -25,10 +25,15 @@ declare(strict_types=1);
 
 namespace Teknoo\East\FoundationBundle\Normalizer;
 
+use RuntimeException;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Teknoo\East\Foundation\Normalizer\EastNormalizerInterface;
 use Teknoo\East\Foundation\Normalizer\Object\NormalizableInterface;
+
+use function array_merge;
+use function is_scalar;
+use function sprintf;
 
 /**
  * Symfony normalizer to allow serialization of object following the East pattern, and implementing the interface
@@ -53,9 +58,6 @@ class EastNormalizer implements EastNormalizerInterface, NormalizerInterface, No
 
     private ?NormalizerInterface $normalizer = null;
 
-    /**
-     * @inheritDoc
-     */
     public function setNormalizer(NormalizerInterface $normalizer): self
     {
         $this->normalizer = $normalizer;
@@ -64,19 +66,15 @@ class EastNormalizer implements EastNormalizerInterface, NormalizerInterface, No
     }
 
     /**
-     * @inheritDoc
      * @param array<string, mixed> $data
      */
     public function injectData(array $data): EastNormalizerInterface
     {
-        $this->data = \array_merge($this->data, $data);
+        $this->data = array_merge($this->data, $data);
 
         return $this;
     }
 
-    /**
-     * @return EastNormalizer
-     */
     private function cleanData(): self
     {
         $this->data = [];
@@ -85,18 +83,15 @@ class EastNormalizer implements EastNormalizerInterface, NormalizerInterface, No
     }
 
     /**
-     * @inheritDoc
-     * @param mixed $object
-     * @param string|null $format
      * @param array<string, mixed> $context
      */
-    public function normalize($object, $format = null, array $context = array())
+    public function normalize(mixed $object, ?string $format = null, array $context = array())
     {
         if (!$object instanceof NormalizableInterface) {
-            throw new \RuntimeException(
-                \sprintf(
+            throw new RuntimeException(
+                sprintf(
                     'Error the class "%s" does not implement the interface "%s"',
-                    \get_class($object),
+                    $object::class,
                     NormalizableInterface::class
                 )
             );
@@ -112,7 +107,7 @@ class EastNormalizer implements EastNormalizerInterface, NormalizerInterface, No
         }
 
         foreach ($that->data as &$item) {
-            if (!\is_scalar($item)) {
+            if (!is_scalar($item)) {
                 $item = $this->normalizer->normalize($item, $format, $context);
             }
         }
@@ -120,12 +115,7 @@ class EastNormalizer implements EastNormalizerInterface, NormalizerInterface, No
         return $that->data;
     }
 
-    /**
-     * @inheritDoc
-     * @param mixed $data
-     * @param string|null $format
-     */
-    public function supportsNormalization($data, $format = null)
+    public function supportsNormalization(mixed $data, ?string $format = null)
     {
         return $data instanceof NormalizableInterface;
     }

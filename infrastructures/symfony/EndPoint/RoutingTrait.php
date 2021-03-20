@@ -5,7 +5,7 @@
  *
  * LICENSE
  *
- * This source file is subject to the MIT license and the version 3 of the GPL3
+ * This source file is subject to the MIT license
  * license that are bundled with this package in the folder licences
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace Teknoo\East\FoundationBundle\EndPoint;
 
+use LogicException;
 use Teknoo\East\Foundation\EndPoint\RedirectingInterface;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -48,10 +49,6 @@ trait RoutingTrait
 
     /**
      * To inject the router into the trait, needed to generate url.
-     *
-     * @param UrlGeneratorInterface $router
-     *
-     * @return EastEndPointTrait
      */
     public function setRouter(UrlGeneratorInterface $router): self
     {
@@ -62,22 +59,14 @@ trait RoutingTrait
 
     /**
      * Generates a URL from the given parameters.
-     *
-     * @param string $route         The name of the route
-     * @param mixed  $parameters    An array of parameters
-     * @param int    $referenceType The type of reference (one of the constants in UrlGeneratorInterface)
-     *
-     * @return string The generated URL
-     *
-     * @see UrlGeneratorInterface
      */
     protected function generateUrl(
         string $route,
-        $parameters = array(),
+        mixed $parameters = array(),
         int $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH
     ): string {
         if (!$this->router instanceof UrlGeneratorInterface) {
-            throw new \LogicException('The router is not registered in your application.');
+            throw new LogicException('The router is not registered in your application.');
         }
 
         return $this->router->generate($route, $parameters, $referenceType);
@@ -86,12 +75,7 @@ trait RoutingTrait
     /**
      * Returns a RedirectResponse to the given URL.
      *
-     * @param ClientInterface $client
-     * @param string          $url    The URL to redirect to
-     * @param int             $status The status code to use for the Response
      * @param array<string, mixed> $headers An array of values to inject into HTTP header response
-     *
-     * @return RedirectingInterface
      */
     public function redirect(
         ClientInterface $client,
@@ -111,13 +95,6 @@ trait RoutingTrait
 
     /**
      * Returns a RedirectResponse to the given route with the given parameters.
-     *
-     * @param ClientInterface $client
-     * @param string          $route      The name of the route
-     * @param array           $parameters An array of parameters
-     * @param int             $status     The status code to use for the Response
-     *
-     * @return RedirectingInterface
      */
     protected function redirectToRoute(
         ClientInterface $client,

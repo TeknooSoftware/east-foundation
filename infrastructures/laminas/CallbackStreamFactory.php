@@ -5,7 +5,7 @@
  *
  * LICENSE
  *
- * This source file is subject to the MIT license and the version 3 of the GPL3
+ * This source file is subject to the MIT license
  * license that are bundled with this package in the folder licences
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -27,7 +27,12 @@ namespace Teknoo\East\Diactoros;
 
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
+use RuntimeException;
 use Teknoo\East\Foundation\Http\Message\CallbackStreamFactoryInterface;
+
+use function fclose;
+use function fopen;
+use function stream_get_contents;
 
 /**
  * Adapter of Laminas\Diactoros\CallbackStream for CallbackStreamInterface
@@ -42,9 +47,6 @@ use Teknoo\East\Foundation\Http\Message\CallbackStreamFactoryInterface;
  */
 class CallbackStreamFactory implements StreamFactoryInterface, CallbackStreamFactoryInterface
 {
-    /**
-     * @inheritDoc
-     */
     public function createStream(string $content = ''): StreamInterface
     {
         return new CallbackStream(
@@ -54,20 +56,17 @@ class CallbackStreamFactory implements StreamFactoryInterface, CallbackStreamFac
         );
     }
 
-    /**
-     * @inheritDoc
-     */
     public function createStreamFromFile(string $filename, string $mode = 'r'): StreamInterface
     {
         return new CallbackStream(
             static function () use ($filename, $mode) {
-                $hF = @\fopen($filename, $mode);
+                $hF = @fopen($filename, $mode);
                 if (!$hF) {
-                    throw new \RuntimeException("Can not open $filename");
+                    throw new RuntimeException("Can not open $filename");
                 }
 
-                $content = \stream_get_contents($hF);
-                \fclose($hF);
+                $content = stream_get_contents($hF);
+                fclose($hF);
 
                 return $content;
             }
@@ -81,7 +80,7 @@ class CallbackStreamFactory implements StreamFactoryInterface, CallbackStreamFac
     {
         return new CallbackStream(
             static function () use ($resource) {
-                return \stream_get_contents($resource);
+                return stream_get_contents($resource);
             }
         );
     }

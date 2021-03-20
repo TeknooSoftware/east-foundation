@@ -5,7 +5,7 @@
  *
  * LICENSE
  *
- * This source file is subject to the MIT license and the version 3 of the GPL3
+ * This source file is subject to the MIT license
  * license that are bundled with this package in the folder licences
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -26,6 +26,8 @@ declare(strict_types=1);
 namespace Teknoo\East\Foundation\Http;
 
 use Psr\Http\Message\MessageInterface;
+use RuntimeException;
+use Throwable;
 
 /**
  * ClientInterface is a contract to create object representing the client in the server side. The client must be
@@ -53,40 +55,25 @@ interface ClientInterface
      * To update a response in the client. You must pass a callable able to work on the response passed into argument,
      * and repush it into the client via its method "acceptResponse". (Response object are immutable).
      * The callable must accept a ClientInterface object as first argument, and a PSR7 Response as second (can be null).
-     *
-     * @param callable $modifier
-     *
-     * @return ClientInterface
      */
     public function updateResponse(callable $modifier): ClientInterface;
 
     /**
      * To accept a response from the controller action without send it to the HTTP client.
-     *
-     * @param MessageInterface $response
-     *
-     * @return ClientInterface
      */
     public function acceptResponse(MessageInterface $response): ClientInterface;
 
     /**
      * To accept a response from the controller action and send it to the HTTP client.
      *
-     * @param MessageInterface|null $response
-     * @param bool $silently=false
-     *
-     * @return ClientInterface
-     * @throws \RuntimeException when no response was been defined via acceptResponse and $response argument is null.
+     * @throws RuntimeException when no response was been defined via acceptResponse and $response argument is null.
      */
-    public function sendResponse(MessageInterface $response = null, bool $silently = false): ClientInterface;
+    public function sendResponse(?MessageInterface $response = null, bool $silently = false): ClientInterface;
 
     /**
      * To intercept an error during a request and forward the message to the HTTP client.
      *
-     * @param \Throwable $throwable
      * @param bool $silently To ask client to not throw the exception (execute throw $throwable) or not. Default false
-     *
-     * @return ClientInterface
      */
-    public function errorInRequest(\Throwable $throwable, bool $silently = false): ClientInterface;
+    public function errorInRequest(Throwable $throwable, bool $silently = false): ClientInterface;
 }

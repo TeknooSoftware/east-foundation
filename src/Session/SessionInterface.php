@@ -5,7 +5,7 @@
  *
  * LICENSE
  *
- * This source file is subject to the MIT license and the version 3 of the GPL3
+ * This source file is subject to the MIT license
  * license that are bundled with this package in the folder licences
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -44,37 +44,23 @@ interface SessionInterface
     /**
      * Stores a given value in the session
      *
-     * @param string                                               $key
      * @param int|bool|string|float|array<mixed>|object|\JsonSerializable $value allows any nested combination
      *                                                                    of the previous types as well
-     *
-     * @return SessionInterface
      */
-    public function set(string $key, $value): SessionInterface;
+    public function set(string $key, mixed $value): SessionInterface;
 
     /**
      * Retrieves a value from the session
-     *
-     * @param string                                               $key
-     * @param PromiseInterface $promise
-     *
-     * @return SessionInterface
      */
     public function get(string $key, PromiseInterface $promise): SessionInterface;
 
     /**
      * Removes an item from the session
-     *
-     * @param string $key
-     *
-     * @return SessionInterface
      */
     public function remove(string $key): SessionInterface;
 
     /**
      * Clears the contents of the session
-     *
-     * @return SessionInterface
      */
     public function clear(): SessionInterface;
 }

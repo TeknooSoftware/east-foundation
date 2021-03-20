@@ -5,7 +5,7 @@
  *
  * LICENSE
  *
- * This source file is subject to the MIT license and the version 3 of the GPL3
+ * This source file is subject to the MIT license
  * license that are bundled with this package in the folder licences
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -28,9 +28,11 @@ namespace Teknoo\East\FoundationBundle\Http;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Teknoo\East\Foundation\Http\ClientInterface;
+use Throwable;
 
 /**
  * Default implementation of Teknoo\East\Foundation\Http\ClientInterface and
@@ -68,9 +70,6 @@ class Client implements ClientWithResponseEventInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setRequestEvent(RequestEvent $requestEvent): ClientWithResponseEventInterface
     {
         $this->requestEvent = $requestEvent;
@@ -78,9 +77,6 @@ class Client implements ClientWithResponseEventInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function updateResponse(callable $modifier): ClientInterface
     {
         $modifier($this, $this->response);
@@ -88,9 +84,6 @@ class Client implements ClientWithResponseEventInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function acceptResponse(MessageInterface $response): ClientInterface
     {
         $this->response = $response;
@@ -98,9 +91,6 @@ class Client implements ClientWithResponseEventInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function sendResponse(MessageInterface $response = null, bool $silently = false): ClientInterface
     {
         if ($response instanceof MessageInterface) {
@@ -112,11 +102,11 @@ class Client implements ClientWithResponseEventInterface
         }
 
         if (!$this->requestEvent instanceof RequestEvent) {
-            throw new \RuntimeException('Error, the requestEvent has not been set into the client');
+            throw new RuntimeException('Error, the requestEvent has not been set into the client');
         }
 
         if (!$this->response instanceof ResponseInterface) {
-            throw new \RuntimeException('Error, any response object has been pushed to the client');
+            throw new RuntimeException('Error, any response object has been pushed to the client');
         }
 
         $this->requestEvent->setResponse(
@@ -128,10 +118,7 @@ class Client implements ClientWithResponseEventInterface
         return $this;
     }
 
-    /**
-     * @throws \Throwable
-     */
-    public function errorInRequest(\Throwable $throwable, bool $silently = false): ClientInterface
+    public function errorInRequest(Throwable $throwable, bool $silently = false): ClientInterface
     {
         if ($this->logger instanceof LoggerInterface) {
             $this->logger->error($throwable->getMessage(), ['exception' => $throwable]);

@@ -1,5 +1,11 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[5.0.0] - 2021-03-20
+###Stable Release
+- Migrate to PHP 8.0+
+- Remove support of Symfony 4.4, only 5.2+
+- QA and license file
+  
 ##[4.1.2] - 2021-03-15
 ###Stable Release
 - Create ResponseMessageFactory to return a PSR 11 response (use Laminas implementation) instead of

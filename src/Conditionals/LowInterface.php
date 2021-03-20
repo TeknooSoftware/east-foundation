@@ -5,7 +5,7 @@
  *
  * LICENSE
  *
- * This source file is subject to the MIT license and the version 3 of the GPL3
+ * This source file is subject to the MIT license
  * license that are bundled with this package in the folder licences
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -43,10 +43,6 @@ interface LowInterface
 {
     /**
      * To define object able to test if an another object is lower or equal then it, and pass the result to the promise.
-     *
-     * @param LowInterface|object|mixed $object
-     * @param PromiseInterface $promise
-     * @return LowInterface
      */
-    public function isLowerThan($object, PromiseInterface $promise): LowInterface;
+    public function isLowerThan(mixed $object, PromiseInterface $promise): LowInterface;
 }

@@ -5,7 +5,7 @@
  *
  * LICENSE
  *
- * This source file is subject to the MIT license and the version 3 of the GPL3
+ * This source file is subject to the MIT license
  * license that are bundled with this package in the folder licences
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -43,16 +43,12 @@ interface ResultInterface extends ImmutableInterface
 {
     /**
      * To know the controller to call for this route.
-     *
-     * @return callable
      */
     public function getController(): callable;
 
     /**
      * If there are several result found by the router for a same request, next router result can be fetched by this
      * method. Else this method must return null.
-     *
-     * @return ResultInterface|null
      */
     public function getNext(): ?ResultInterface;
 }

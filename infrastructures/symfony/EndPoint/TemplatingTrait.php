@@ -5,7 +5,7 @@
  *
  * LICENSE
  *
- * This source file is subject to the MIT license and the version 3 of the GPL3
+ * This source file is subject to the MIT license
  * license that are bundled with this package in the folder licences
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -26,12 +26,14 @@ declare(strict_types=1);
 namespace Teknoo\East\FoundationBundle\EndPoint;
 
 use Psr\Http\Message\StreamFactoryInterface;
+use RuntimeException;
 use Teknoo\East\Foundation\EndPoint\RenderingInterface;
 use Teknoo\East\Foundation\Http\Message\CallbackStreamInterface;
 use Teknoo\East\Foundation\Http\ClientInterface;
 use Teknoo\East\Foundation\Promise\Promise;
 use Teknoo\East\Foundation\Template\EngineInterface;
 use Teknoo\East\Foundation\Template\ResultInterface;
+use Throwable;
 
 /**
  * Trait to help developer to write endpoint with Symfony (also called controller) and reuse Symfony components
@@ -54,10 +56,6 @@ trait TemplatingTrait
 
     /**
      * To inject the template engine to render views.
-     *
-     * @param EngineInterface $templating
-     *
-     * @return EastEndPointTrait
      */
     public function setTemplating(EngineInterface $templating): self
     {
@@ -77,13 +75,10 @@ trait TemplatingTrait
     /**
      * Renders a view.
      *
-     * @param ClientInterface $client
      * @param string          $view       The view name
      * @param array           $parameters An array of parameters to pass to the view
      * @param int             $status The status code to use for the Response
      * @param array<string, mixed> $headers An array of values to inject into HTTP header response
-     *
-     * @return RenderingInterface
      */
     public function render(
         ClientInterface $client,
@@ -93,7 +88,7 @@ trait TemplatingTrait
         array $headers = []
     ): RenderingInterface {
         if (!$this->templating instanceof EngineInterface) {
-            $client->errorInRequest(new \RuntimeException('Missing template engine'));
+            $client->errorInRequest(new RuntimeException('Missing template engine'));
 
             return $this;
         }
@@ -119,7 +114,7 @@ trait TemplatingTrait
 
                     $client->acceptResponse($response);
                 },
-                static function (\Throwable $error) use ($client) {
+                static function (Throwable $error) use ($client) {
                     $client->errorInRequest($error);
                 }
             ),
