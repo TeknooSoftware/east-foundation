@@ -5,9 +5,6 @@ parameters:
     treatPhpDocTypesAsCertain: false
     ignoreErrors:
         -
-            message: '#Cannot call method createResponse\(\) on [a-zA-Z0-9\\_]+\|null.#'
-            path: infrastructures/symfony/Http/Client.php
-        -
             message: '#Method [a-zA-Z0-9\\_]+::registerMiddleware\(\) should return [a-zA-Z0-9\\_]+ but returns [a-zA-Z0-9\\_]+.#'
             path: src/Recipe/Recipe.php
         -

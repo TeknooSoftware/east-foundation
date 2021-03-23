@@ -39,11 +39,9 @@ use Teknoo\Recipe\BaseRecipeInterface;
  */
 class Executor
 {
-    private ManagerInterface $manager;
-
-    public function __construct(ManagerInterface $manager)
-    {
-        $this->manager = $manager;
+    public function __construct(
+        private ManagerInterface $manager,
+    ) {
     }
 
     /**

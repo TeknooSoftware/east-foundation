@@ -51,20 +51,11 @@ class Client implements ClientWithResponseEventInterface
 {
     private ?MessageInterface $response = null;
 
-    private ?RequestEvent $requestEvent = null;
-
-    private ?HttpFoundationFactory $factory;
-
-    private ?LoggerInterface $logger;
-
     public function __construct(
-        HttpFoundationFactory $factory,
-        ?RequestEvent $requestEvent = null,
-        ?LoggerInterface $logger = null
+        private HttpFoundationFactory $factory,
+        private ?RequestEvent $requestEvent = null,
+        private ?LoggerInterface $logger = null,
     ) {
-        $this->factory = $factory;
-        $this->logger = $logger;
-
         if ($requestEvent instanceof RequestEvent) {
             $this->setRequestEvent($requestEvent);
         }

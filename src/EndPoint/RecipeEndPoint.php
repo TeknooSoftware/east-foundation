@@ -49,26 +49,14 @@ use function substr;
  */
 class RecipeEndPoint
 {
-    private BaseRecipeInterface $recipe;
-
-    private ?ContainerInterface $container;
-
-    /**
-     * @var array<string, mixed>
-     */
-    private array $initialWorkPlan;
-
     /**
      * @param array<string, mixed> $initialWorkPlan
      */
     public function __construct(
-        BaseRecipeInterface $recipe,
-        ?ContainerInterface $container = null,
-        array $initialWorkPlan = []
+        private BaseRecipeInterface $recipe,
+        private ?ContainerInterface $container = null,
+        private array $initialWorkPlan = [],
     ) {
-        $this->recipe = $recipe;
-        $this->container = $container;
-        $this->initialWorkPlan = $initialWorkPlan;
     }
 
     private function fetchWorkplan(ServerRequestInterface $request): array

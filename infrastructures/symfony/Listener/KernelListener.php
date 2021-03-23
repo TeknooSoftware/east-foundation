@@ -48,20 +48,11 @@ use Teknoo\East\FoundationBundle\Http\ClientWithResponseEventInterface;
  */
 class KernelListener
 {
-    private ManagerInterface $manager;
-
-    private ClientWithResponseEventInterface $client;
-
-    private HttpMessageFactoryInterface $factory;
-
     public function __construct(
-        ManagerInterface $manager,
-        ClientWithResponseEventInterface $event,
-        HttpMessageFactoryInterface $factory
+        private ManagerInterface $manager,
+        private ClientWithResponseEventInterface $client,
+        private HttpMessageFactoryInterface $factory,
     ) {
-        $this->manager = $manager;
-        $this->client = $event;
-        $this->factory = $factory;
     }
 
     /**

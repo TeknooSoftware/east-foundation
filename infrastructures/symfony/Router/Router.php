@@ -63,16 +63,10 @@ use function substr;
  */
 class Router implements RouterInterface
 {
-    private UrlMatcherInterface $matcher;
-
-    private ContainerInterface $container;
-
     public function __construct(
-        UrlMatcherInterface $urlMatcher,
-        ContainerInterface $container
+        private UrlMatcherInterface $matcher,
+        private ContainerInterface $container,
     ) {
-        $this->matcher = $urlMatcher;
-        $this->container = $container;
     }
 
     private function cleanSymfonyHandler(string $path): string

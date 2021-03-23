@@ -52,12 +52,11 @@ class ProcessorCookbook implements ProcessorCookbookInterface
         fill as originalFill;
     }
 
-    private ProcessorInterface $processor;
-
-    public function __construct(ProcessorRecipeInterface $recipe, ProcessorInterface $processor)
-    {
+    public function __construct(
+        ProcessorRecipeInterface $recipe,
+        private ProcessorInterface $processor,
+    ) {
         $this->fill($recipe);
-        $this->processor = $processor;
     }
 
     protected function populateRecipe(OriginalRecipeInterface $recipe): OriginalRecipeInterface

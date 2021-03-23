@@ -43,11 +43,9 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface as SymfonySession;
  */
 class Session implements SessionInterface
 {
-    private SymfonySession $symfonySession;
-
-    public function __construct(SymfonySession $symfonySession)
-    {
-        $this->symfonySession = $symfonySession;
+    public function __construct(
+        private SymfonySession $symfonySession,
+    ) {
     }
 
     public function set(string $key, mixed $value): SessionInterface

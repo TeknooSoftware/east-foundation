@@ -44,16 +44,12 @@ use Throwable;
  */
 class Client implements ClientInterface
 {
-    private ?MessageBusInterface $bus;
-
-    private ?LoggerInterface $logger;
-
     private ?MessageInterface $response = null;
 
-    public function __construct(?MessageBusInterface $bus, ?LoggerInterface $logger = null)
-    {
-        $this->bus = $bus;
-        $this->logger = $logger;
+    public function __construct(
+        private ?MessageBusInterface $bus,
+        private ?LoggerInterface $logger = null,
+    ) {
     }
 
     public function updateResponse(callable $modifier): ClientInterface

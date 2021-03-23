@@ -53,23 +53,13 @@ class Cookbook implements CookbookInterface
         fill as originalFill;
     }
 
-    private RouterInterface $router;
-
-    private ProcessorCookbookInterface $processorCookbook;
-
-    private LoopDetectorInterface $loopDetector;
-
     public function __construct(
         RecipeInterface $recipe,
-        RouterInterface $router,
-        ProcessorCookbookInterface $processorCookbook,
-        LoopDetectorInterface $loopDetector
+        private RouterInterface $router,
+        private ProcessorCookbookInterface $processorCookbook,
+        private LoopDetectorInterface $loopDetector,
     ) {
         $this->fill($recipe);
-
-        $this->router = $router;
-        $this->processorCookbook = $processorCookbook;
-        $this->loopDetector = $loopDetector;
     }
 
     protected function populateRecipe(OriginalRecipeInterface $recipe): OriginalRecipeInterface
