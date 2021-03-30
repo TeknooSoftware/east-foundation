@@ -42,7 +42,8 @@ use Teknoo\East\Foundation\Router\RouterInterface;
 use function explode;
 use function is_callable;
 use function is_string;
-use function strpos;
+use function str_starts_with;
+use function str_contains;
 use function substr;
 
 /**
@@ -71,15 +72,15 @@ class Router implements RouterInterface
 
     private function cleanSymfonyHandler(string $path): string
     {
-        if (0 === strpos($path, '/app.php')) {
+        if (str_starts_with($path, '/app.php')) {
             return substr($path, 8);
         }
 
-        if (0 === strpos($path, '/app_dev.php')) {
+        if (str_starts_with($path, '/app_dev.php')) {
             return substr($path, 12);
         }
 
-        if (0 === strpos($path, '/index.php')) {
+        if (str_starts_with($path, '/index.php')) {
             return substr($path, 10);
         }
 
@@ -110,7 +111,7 @@ class Router implements RouterInterface
         }
 
         if ($isCallable && is_string($controller)) {
-            if (false !== strpos($controller, '::')) {
+            if (str_contains($controller, '::')) {
                 $explodedController = explode('::', $controller);
 
                 $reflection = new ReflectionClass((string) $explodedController[0]);
