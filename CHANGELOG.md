@@ -1,5 +1,10 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[5.0.2] - 2021-03-30
+###Stable Release
+- switch to str_contains
+- Messenger's executor use an empty manager and clone it
+
 ##[5.0.1] - 2021-03-24
 ###Stable Release
 - Constructor Property Promotion

@@ -23,10 +23,13 @@
 namespace Teknoo\Tests\East\FoundationBundle\Messenger;
 
 use PHPUnit\Framework\TestCase;
-use Teknoo\East\FoundationBundle\Listener\KernelListener;
+use Teknoo\East\Foundation\Manager\Manager;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\East\FoundationBundle\Messenger\Executor;
 use Teknoo\Recipe\BaseRecipeInterface;
+use Teknoo\Recipe\Bowl\BowlInterface;
+use Teknoo\Recipe\ChefInterface;
+use Teknoo\Recipe\RecipeInterface;
 
 /**
  * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)
@@ -78,10 +81,40 @@ class ExecutorTest extends TestCase
 
     public function testExecute()
     {
+        $executor = $this->buildExecutor();
         self::assertInstanceOf(
             Executor::class,
-            $this->buildExecutor()->execute(
+            $executor->execute(
                 $this->createMock(BaseRecipeInterface::class),
+                []
+            )
+        );
+    }
+
+    public function testExecuteTwoTimes()
+    {
+        $executor = new Executor(new Manager());
+        $recipe = $this->createMock(RecipeInterface::class);
+        $recipe->expects(self::any())->method('train')->willReturnCallback(
+            function (ChefInterface $chef) use ($recipe) {
+                $chef->followSteps([$this->createMock(BowlInterface::class)]);
+
+                return $recipe;
+            }
+        );
+
+        self::assertInstanceOf(
+            Executor::class,
+            $executor->execute(
+                $recipe,
+                []
+            )
+        );
+
+        self::assertInstanceOf(
+            Executor::class,
+            $executor->execute(
+                $recipe,
                 []
             )
         );

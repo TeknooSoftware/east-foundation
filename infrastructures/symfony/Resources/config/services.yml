@@ -51,10 +51,13 @@ services:
         public: true
 
     #Messenger
+    teknoo.east.foundation.symfony.manager:
+        class: 'Teknoo\East\Foundation\Manager\Manager'
+
     Teknoo\East\FoundationBundle\Messenger\Executor:
         class: 'Teknoo\East\FoundationBundle\Messenger\Executor'
         arguments:
-            - '@Teknoo\East\Foundation\Manager\ManagerInterface'
+            - '@teknoo.east.foundation.symfony.manager'
 
     Teknoo\East\FoundationBundle\Messenger\Client:
         class: 'Teknoo\East\FoundationBundle\Messenger\Client'

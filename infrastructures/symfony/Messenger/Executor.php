@@ -49,9 +49,11 @@ class Executor
      */
     public function execute(BaseRecipeInterface $recipe, array $workPlan): self
     {
-        $this->manager->read($recipe);
+        $manager = clone $this->manager;
 
-        $this->manager->process($workPlan);
+        $manager->read($recipe);
+
+        $manager->process($workPlan);
 
         return $this;
     }
