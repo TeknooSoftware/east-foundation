@@ -31,7 +31,6 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Teknoo\East\Foundation\Normalizer\EastNormalizerInterface;
 use Teknoo\East\Foundation\Normalizer\Object\NormalizableInterface;
 
-use function array_merge;
 use function is_scalar;
 use function sprintf;
 
@@ -70,7 +69,7 @@ class EastNormalizer implements EastNormalizerInterface, NormalizerInterface, No
      */
     public function injectData(array $data): EastNormalizerInterface
     {
-        $this->data = array_merge($this->data, $data);
+        $this->data = $data + $this->data;
 
         return $this;
     }

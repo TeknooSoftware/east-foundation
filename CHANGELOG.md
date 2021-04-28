@@ -1,5 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[5.0.3] - 2021-04-28
+###Stable Release
+- Some optimisations on array functions to limit O(n)
+
 ##[5.0.2] - 2021-03-30
 ###Stable Release
 - switch to str_contains

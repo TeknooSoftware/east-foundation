@@ -34,8 +34,6 @@ use Teknoo\East\Foundation\Router\ResultInterface;
 use Teknoo\Immutable\ImmutableInterface;
 use Teknoo\Immutable\ImmutableTrait;
 
-use function array_merge;
-
 /**
  * Processor implementation to inject the controller returned by the router into the dedicated place in the workplan
  * to allow the chef to execute it via a DynamicBowl.
@@ -70,12 +68,7 @@ class Processor implements ProcessorInterface, ImmutableInterface
             $mandatory['request'] = $message;
         }
 
-        $values = array_merge(
-            $parameters,
-            [self::WORK_PLAN_CONTROLLER_KEY => $result->getController()],
-            //To prevent overloading from request.
-            $mandatory
-        );
+        $values = $mandatory + [self::WORK_PLAN_CONTROLLER_KEY => $result->getController()] + $parameters;
 
         $manager->updateWorkPlan($values);
 
@@ -87,10 +80,8 @@ class Processor implements ProcessorInterface, ImmutableInterface
      */
     private function getParameters(ServerRequestInterface $request): array
     {
-        return array_merge(
-            (array) $request->getQueryParams(),
-            (array) $request->getParsedBody(),
-            (array) $request->getAttributes()
-        );
+        return (array) $request->getAttributes()
+            + (array) $request->getParsedBody()
+            + (array) $request->getQueryParams();
     }
 }
