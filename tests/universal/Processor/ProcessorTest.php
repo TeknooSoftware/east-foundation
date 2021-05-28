@@ -52,17 +52,19 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
     /**
      * @return Processor
      */
-    private function buildProcessor()
+    private function buildProcessor(bool $inSilentMode = false)
     {
-        return new Processor();
+        return new Processor($inSilentMode);
     }
 
-    public function testExecuteRequestWithNoResult()
+    public function testExecuteRequestWithNoResultClientInSilentMode()
     {
         /**
          * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
+        $clientMock->expects(self::never())->method('mustSendAResponse');
+        $clientMock->expects(self::never())->method('sendAResponseIsOptional');
 
         /**
          * @var ServerRequestInterface|\PHPUnit\Framework\MockObject\MockObject
@@ -75,7 +77,7 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
 
         self::assertInstanceOf(
             ProcessorInterface::class,
-            $this->buildProcessor()->execute(
+            $this->buildProcessor(true)->execute(
                 $clientMock,
                 $requestMock,
                 $manager
@@ -83,12 +85,42 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testExecuteRequestAndPreventionOfVarRequestAndClientVarOverwritting()
+    public function testExecuteRequestWithNoResultClientNotInSilentMode()
     {
         /**
          * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
+        $clientMock->expects(self::never())->method('mustSendAResponse');
+        $clientMock->expects(self::never())->method('sendAResponseIsOptional');
+
+        /**
+         * @var ServerRequestInterface|\PHPUnit\Framework\MockObject\MockObject
+         */
+        $requestMock = $this->createMock(ServerRequestInterface::class);
+        $requestMock->expects(self::any())->method('getAttributes')->willReturn(['bar' => 456, 'foo' => 123]);
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects(self::never())->method('updateWorkPlan');
+
+        self::assertInstanceOf(
+            ProcessorInterface::class,
+            $this->buildProcessor(false)->execute(
+                $clientMock,
+                $requestMock,
+                $manager
+            )
+        );
+    }
+
+    public function testExecuteRequestAndPreventionOfVarRequestAndClientVarOverwrittingInSilentMode()
+    {
+        /**
+         * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
+         */
+        $clientMock = $this->createMock(ClientInterface::class);
+        $clientMock->expects(self::never())->method('mustSendAResponse');
+        $clientMock->expects(self::once())->method('sendAResponseIsOptional');
 
         /**
          * @var ServerRequestInterface|\PHPUnit\Framework\MockObject\MockObject
@@ -119,7 +151,7 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
 
         self::assertInstanceOf(
             ProcessorInterface::class,
-            $this->buildProcessor()->execute(
+            $this->buildProcessor(true)->execute(
                 $clientMock,
                 $requestMock,
                 $manager,
@@ -128,12 +160,61 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testExecuteMessageWithNoResult()
+    public function testExecuteRequestAndPreventionOfVarRequestAndClientVarOverwrittingNotInSilentMode()
     {
         /**
          * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
+        $clientMock->expects(self::once())->method('mustSendAResponse');
+        $clientMock->expects(self::never())->method('sendAResponseIsOptional');
+
+        /**
+         * @var ServerRequestInterface|\PHPUnit\Framework\MockObject\MockObject
+         */
+        $requestMock = $this->createMock(ServerRequestInterface::class);
+        $requestMock->expects(self::any())->method('getAttributes')->willReturn([
+            'bar' => 456,
+            'foo' => 123,
+            'request' => $this->createMock(Request::class)
+        ]);
+
+        $routerResult = $this->createMock(ResultInterface::class);
+        $routerResult->expects(self::any())->method('getController')->willReturn($controller = function () {
+        });
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects(self::once())
+            ->method('updateWorkPlan')
+            ->with([
+                'bar' => 456,
+                'foo' => 123,
+                ProcessorInterface::WORK_PLAN_CONTROLLER_KEY => $controller,
+                'client' => $clientMock,
+                'request' => $requestMock,
+                'message' => $requestMock,
+                'manager' => $manager,
+            ]);
+
+        self::assertInstanceOf(
+            ProcessorInterface::class,
+            $this->buildProcessor(false)->execute(
+                $clientMock,
+                $requestMock,
+                $manager,
+                $routerResult
+            )
+        );
+    }
+
+    public function testExecuteMessageWithNoResultInSilentMode()
+    {
+        /**
+         * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
+         */
+        $clientMock = $this->createMock(ClientInterface::class);
+        $clientMock->expects(self::never())->method('mustSendAResponse');
+        $clientMock->expects(self::never())->method('sendAResponseIsOptional');
 
         /**
          * @var MessageInterface|\PHPUnit\Framework\MockObject\MockObject
@@ -145,7 +226,34 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
 
         self::assertInstanceOf(
             ProcessorInterface::class,
-            $this->buildProcessor()->execute(
+            $this->buildProcessor(true)->execute(
+                $clientMock,
+                $messageMock,
+                $manager
+            )
+        );
+    }
+
+    public function testExecuteMessageWithNoResultNotInSilentMode()
+    {
+        /**
+         * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
+         */
+        $clientMock = $this->createMock(ClientInterface::class);
+        $clientMock->expects(self::never())->method('mustSendAResponse');
+        $clientMock->expects(self::never())->method('sendAResponseIsOptional');
+
+        /**
+         * @var MessageInterface|\PHPUnit\Framework\MockObject\MockObject
+         */
+        $messageMock = $this->createMock(MessageInterface::class);
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects(self::never())->method('updateWorkPlan');
+
+        self::assertInstanceOf(
+            ProcessorInterface::class,
+            $this->buildProcessor(false)->execute(
                 $clientMock,
                 $messageMock,
                 $manager

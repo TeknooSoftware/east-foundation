@@ -67,6 +67,15 @@ class FeatureContext implements Context
     public function iHaveDiInitialized()
     {
         $this->container = include(\dirname(\dirname(__DIR__)) . '/src/generator.php');
+        $this->container->set('teknoo.east.client.must_send_response', true);
+    }
+
+    /**
+     * @Given client are configured to ignore missing response
+     */
+    public function clientAreConfiguredToIgnoreMissingResponse()
+    {
+        $this->container->set('teknoo.east.client.must_send_response', false);
     }
 
     /**
@@ -151,6 +160,14 @@ class FeatureContext implements Context
             $controller = new RecipeEndPoint($recipe);
         }
 
+        if ('fooBar' === $arg2) {
+            $recipe = new Recipe;
+            $recipe = $recipe->cook(function (ClientInterface $client, ServerRequest $request, $test) {
+
+            }, 'body');
+            $controller = new RecipeEndPoint($recipe);
+        }
+
         $this->router->registerRoute($arg1, $controller);
     }
 
@@ -166,6 +183,8 @@ class FeatureContext implements Context
 
         $this->client = new class($this) implements ClientInterface {
             private FeatureContext $context;
+
+            private bool $inSilentlyMode = false;
 
             public function __construct(FeatureContext $context)
             {
@@ -188,8 +207,14 @@ class FeatureContext implements Context
 
             public function sendResponse(MessageInterface $response = null, bool $silently = false): ClientInterface
             {
+                $silently = $silently || $this->inSilentlyMode;
+
                 if (!empty($response)) {
                     $this->context->response = $response;
+                }
+
+                if (false === $silently && !$this->context->response instanceof MessageInterface) {
+                    throw new RuntimeException('Error, there are no response');
                 }
 
                 return $this;
@@ -204,11 +229,15 @@ class FeatureContext implements Context
 
             public function mustSendAResponse(): ClientInterface
             {
+                $this->inSilentlyMode = false;
+
                 return $this;
             }
 
             public function sendAResponseIsOptional(): ClientInterface
             {
+                $this->inSilentlyMode = true;
+
                 return $this;
             }
         };
@@ -244,11 +273,20 @@ class FeatureContext implements Context
     }
 
     /**
-     * @Then I should get :arg1
+     * @Then I should get as response :arg1
      */
-    public function iShouldGet($arg1)
+    public function iShouldGetAsResponse ($arg1)
     {
         Assert::assertEquals($arg1, (string) $this->response->getBody());
+    }
+
+    /**
+     * @Then I should get nothing
+     */
+    public function iShouldGetNothing()
+    {
+        $this->client->sendResponse();
+        Assert::assertNull($this->response);
     }
 
     /**
@@ -258,5 +296,20 @@ class FeatureContext implements Context
     {
         Assert::assertNull($this->response);
         Assert::assertInstanceOf(\Throwable::class, $this->error);
+    }
+
+    /**
+     * @Then The client must throw an exception
+     */
+    public function theClientMustThrowAnException()
+    {
+        $errorCatched = false;
+        try {
+            $this->client->sendResponse();
+        } catch (\Throwable $error) {
+            $errorCatched = true;
+        }
+        Assert::assertTrue($errorCatched);
+        Assert::assertNull($this->response);
     }
 }

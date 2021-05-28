@@ -5,6 +5,8 @@
 - Add method to configure client's behavior when a it must send a missing response (silently or throw an exception)
     - Add `ClientInterface::mustSendAResponse`
     - Add `ClientInterface::sendAResponseIsOptional`
+- Processor will configure in non silent mode if a compatible callable is available and was returned by Router
+    - This behavior can be disable by set `teknoo.east.client.must_send_response` to false in DI
 
 ##[5.0.3] - 2021-04-28
 ###Stable Release

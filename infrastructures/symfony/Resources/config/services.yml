@@ -3,7 +3,6 @@ parameters:
     teknoo.east.symfony.listener.kernel.class: 'Teknoo\East\FoundationBundle\Listener\KernelListener'
     teknoo.east.symfony.normalizer.east_normalizer.class: 'Teknoo\East\FoundationBundle\Normalizer\EastNormalizer'
     teknoo.east.twig.template.engine: 'Teknoo\East\Twig\Template\Engine'
-    teknoo.east.symfony.client.must_send_response: false
 
 services:
     #Symfony router
@@ -33,7 +32,6 @@ services:
             - '@Teknoo\East\Foundation\Manager\ManagerInterface'
             - '@Teknoo\East\FoundationBundle\Http\Client'
             - '@Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface'
-            - 'teknoo.east.symfony.client.must_send_response'
         tags:
             - { name: 'kernel.event_listener', event: 'kernel.request', method: 'onKernelRequest', priority: 0 }
 

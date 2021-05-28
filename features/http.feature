@@ -16,7 +16,7 @@ Feature: HTTP
     And The router can process the request "/foo/bar" to controller "closureFoo"
     When The server will receive the request "https://foo.com/foo/bar?test=fooBar"
     Then The client must accept a response
-    And I should get "fooBar"
+    And I should get as response "fooBar"
 
   Scenario: Execute a request mapped by the router to a recipe
     Given I have DI initialized
@@ -24,7 +24,22 @@ Feature: HTTP
     And The router can process the request "/foo/bar" to recipe "barFoo"
     When The server will receive the request "https://foo.com/foo/bar?test=barFoo"
     Then The client must accept a response
-    And I should get "barFoohttps://foo.com/foo/bar?test=barFoo"
+    And I should get as response "barFoohttps://foo.com/foo/bar?test=barFoo"
+
+  Scenario: Execute a request mapped by the router to a recipe, but ignore the missing response
+    Given I have DI initialized
+    And client are configured to ignore missing response
+    And I register a router
+    And The router can process the request "/foo/bar" to recipe "fooBar"
+    When The server will receive the request "https://foo.com/foo/bar?test=barFoo"
+    And I should get nothing
+
+  Scenario: Execute a request mapped by the router to a recipe, but not ignore the missing response
+    Given I have DI initialized
+    And I register a router
+    And The router can process the request "/foo/bar" to recipe "fooBar"
+    When The server will receive the request "https://foo.com/foo/bar?test=barFoo"
+    Then The client must throw an exception
 
   Scenario: Execute a request mapped by the router but an error will be occurring
     Given I have DI initialized

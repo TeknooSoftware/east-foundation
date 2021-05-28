@@ -50,6 +50,11 @@ class Processor implements ProcessorInterface, ImmutableInterface
 {
     use ImmutableTrait;
 
+    public function __construct(
+        private bool $clientInSilentMode = false,
+    ) {
+    }
+
     public function execute(
         ClientInterface $client,
         MessageInterface $message,
@@ -69,6 +74,12 @@ class Processor implements ProcessorInterface, ImmutableInterface
         }
 
         $values = $mandatory + [self::WORK_PLAN_CONTROLLER_KEY => $result->getController()] + $parameters;
+
+        if (false === $this->clientInSilentMode) {
+            $client->mustSendAResponse();
+        } else {
+            $client->sendAResponseIsOptional();
+        }
 
         $manager->updateWorkPlan($values);
 

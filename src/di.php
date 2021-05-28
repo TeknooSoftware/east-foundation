@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace Teknoo\East\Foundation;
 
+use Psr\Container\ContainerInterface;
 use Teknoo\East\Foundation\Manager\Manager;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\East\Foundation\Processor\Processor;
@@ -42,8 +43,11 @@ use Teknoo\East\Foundation\Router\RouterInterface;
 
 use function DI\get;
 use function DI\create;
+use function DI\value;
 
 return [
+    'teknoo.east.client.must_send_response' => value(true),
+
     Manager::class => get(ManagerInterface::class),
     ManagerInterface::class => static function (
         CookbookInterface $recipeCookbook
@@ -58,7 +62,9 @@ return [
     LoopDetectorInterface::class => create(LoopDetector::class),
 
     Processor::class => get(ProcessorInterface::class),
-    ProcessorInterface::class => create(Processor::class),
+    ProcessorInterface::class => static function (ContainerInterface $container): ProcessorInterface {
+        return new Processor(!$container->get('teknoo.east.client.must_send_response'));
+    },
 
     ProcessorRecipeInterface::class => static function (): ProcessorRecipeInterface {
         return new class extends Recipe implements ProcessorRecipeInterface {
