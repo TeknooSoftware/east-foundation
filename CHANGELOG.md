@@ -1,5 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[5.1.1] - 2021-05-28
+###Stable Release
+- Fix Processor to allow silent client when no compatible callable was found
+
 ##[5.1.0] - 2021-05-28
 ###Stable Release
 - Add method to configure client's behavior when a it must send a missing response (silently or throw an exception)

@@ -64,7 +64,7 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
          */
         $clientMock = $this->createMock(ClientInterface::class);
         $clientMock->expects(self::never())->method('mustSendAResponse');
-        $clientMock->expects(self::never())->method('sendAResponseIsOptional');
+        $clientMock->expects(self::once())->method('sendAResponseIsOptional');
 
         /**
          * @var ServerRequestInterface|\PHPUnit\Framework\MockObject\MockObject
@@ -92,7 +92,7 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
          */
         $clientMock = $this->createMock(ClientInterface::class);
         $clientMock->expects(self::never())->method('mustSendAResponse');
-        $clientMock->expects(self::never())->method('sendAResponseIsOptional');
+        $clientMock->expects(self::once())->method('sendAResponseIsOptional');
 
         /**
          * @var ServerRequestInterface|\PHPUnit\Framework\MockObject\MockObject
@@ -167,7 +167,7 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
          */
         $clientMock = $this->createMock(ClientInterface::class);
         $clientMock->expects(self::once())->method('mustSendAResponse');
-        $clientMock->expects(self::never())->method('sendAResponseIsOptional');
+        $clientMock->expects(self::any())->method('sendAResponseIsOptional');
 
         /**
          * @var ServerRequestInterface|\PHPUnit\Framework\MockObject\MockObject
@@ -214,7 +214,7 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
          */
         $clientMock = $this->createMock(ClientInterface::class);
         $clientMock->expects(self::never())->method('mustSendAResponse');
-        $clientMock->expects(self::never())->method('sendAResponseIsOptional');
+        $clientMock->expects(self::once())->method('sendAResponseIsOptional');
 
         /**
          * @var MessageInterface|\PHPUnit\Framework\MockObject\MockObject
@@ -241,7 +241,7 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
          */
         $clientMock = $this->createMock(ClientInterface::class);
         $clientMock->expects(self::never())->method('mustSendAResponse');
-        $clientMock->expects(self::never())->method('sendAResponseIsOptional');
+        $clientMock->expects(self::once())->method('sendAResponseIsOptional');
 
         /**
          * @var MessageInterface|\PHPUnit\Framework\MockObject\MockObject

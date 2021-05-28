@@ -61,6 +61,8 @@ class Processor implements ProcessorInterface, ImmutableInterface
         ManagerInterface $manager,
         ResultInterface $result = null
     ): MiddlewareInterface {
+        $client->sendAResponseIsOptional();
+
         if (!$result instanceof ResultInterface) {
             return $this;
         }
@@ -77,8 +79,6 @@ class Processor implements ProcessorInterface, ImmutableInterface
 
         if (false === $this->clientInSilentMode) {
             $client->mustSendAResponse();
-        } else {
-            $client->sendAResponseIsOptional();
         }
 
         $manager->updateWorkPlan($values);
