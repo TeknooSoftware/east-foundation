@@ -218,6 +218,7 @@ class ClientTest extends TestCase
     {
         $this->expectException(\RuntimeException::class);
         $client = $this->buildClient();
+
         self::assertInstanceOf(
             $this->getClientClass(),
             $client->sendResponse()
@@ -452,5 +453,19 @@ class ClientTest extends TestCase
         $reflectionProperty = new \ReflectionProperty($clonedClient, 'factory');
         $reflectionProperty->setAccessible(true);
         self::assertNotSame($this->getHttpFoundationFactoryMock(), $reflectionProperty->getValue($clonedClient));
+    }
+
+    public function testMustSendAResponse()
+    {
+        $client = $this->buildClient();
+
+        self::assertInstanceOf(Client::class, $client->mustSendAResponse());
+    }
+
+    public function testSendAResponseIsOptional()
+    {
+        $client = $this->buildClient();
+
+        self::assertInstanceOf(Client::class, $client->sendAResponseIsOptional());
     }
 }

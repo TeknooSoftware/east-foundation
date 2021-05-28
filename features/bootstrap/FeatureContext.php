@@ -165,23 +165,13 @@ class FeatureContext implements Context
         $this->error = null;
 
         $this->client = new class($this) implements ClientInterface {
-            /**
-             * @var FeatureContext
-             */
-            private $context;
+            private FeatureContext $context;
 
-            /**
-             *  constructor.
-             * @param FeatureContext $context
-             */
             public function __construct(FeatureContext $context)
             {
                 $this->context = $context;
             }
 
-            /**
-             * @inheritDoc
-             */
             public function updateResponse(callable $modifier): ClientInterface
             {
                 $modifier($this, $this->context->response);
@@ -189,9 +179,6 @@ class FeatureContext implements Context
                 return $this;
             }
 
-            /**
-             * @inheritDoc
-             */
             public function acceptResponse(MessageInterface $response): ClientInterface
             {
                 $this->context->response = $response;
@@ -199,9 +186,6 @@ class FeatureContext implements Context
                 return $this;
             }
 
-            /**
-             * @inheritDoc
-             */
             public function sendResponse(MessageInterface $response = null, bool $silently = false): ClientInterface
             {
                 if (!empty($response)) {
@@ -211,13 +195,20 @@ class FeatureContext implements Context
                 return $this;
             }
 
-            /**
-             * @inheritDoc
-             */
             public function errorInRequest(\Throwable $throwable, bool $silently = false): ClientInterface
             {
                 $this->context->error = $throwable;
 
+                return $this;
+            }
+
+            public function mustSendAResponse(): ClientInterface
+            {
+                return $this;
+            }
+
+            public function sendAResponseIsOptional(): ClientInterface
+            {
                 return $this;
             }
         };

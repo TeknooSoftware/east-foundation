@@ -52,6 +52,7 @@ class KernelListener
         private ManagerInterface $manager,
         private ClientWithResponseEventInterface $client,
         private HttpMessageFactoryInterface $factory,
+        private bool $clientInSilentMode = true,
     ) {
     }
 
@@ -81,11 +82,15 @@ class KernelListener
         }
 
         $client = clone $this->client;
+        if (false === $this->clientInSilentMode) {
+            $client->mustSendAResponse();
+        }
+
         $client->setRequestEvent($event);
 
         $psrRequest = $this->getPsrRequest($event->getRequest());
         $this->manager->receiveRequest($client, $psrRequest);
-        $client->sendResponse(null, true);
+        $client->sendResponse(null);
 
         return $this;
     }

@@ -51,6 +51,8 @@ class Client implements ClientWithResponseEventInterface
 {
     private ?MessageInterface $response = null;
 
+    private bool $inSilentlyMode = false;
+
     public function __construct(
         private HttpFoundationFactory $factory,
         private ?RequestEvent $requestEvent = null,
@@ -84,6 +86,8 @@ class Client implements ClientWithResponseEventInterface
 
     public function sendResponse(MessageInterface $response = null, bool $silently = false): ClientInterface
     {
+        $silently = $silently || $this->inSilentlyMode;
+
         if ($response instanceof MessageInterface) {
             $this->acceptResponse($response);
         }
@@ -134,5 +138,19 @@ class Client implements ClientWithResponseEventInterface
         if (null !== $this->requestEvent) {
             $this->requestEvent = clone $this->requestEvent;
         }
+    }
+
+    public function mustSendAResponse(): ClientInterface
+    {
+        $this->inSilentlyMode = false;
+
+        return $this;
+    }
+
+    public function sendAResponseIsOptional(): ClientInterface
+    {
+        $this->inSilentlyMode = true;
+
+        return $this;
     }
 }

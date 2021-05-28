@@ -53,6 +53,8 @@ class Client implements ClientInterface
 
     public int $returnCode = 0;
 
+    private bool $inSilentlyMode = false;
+
     public function __construct(?OutputInterface $output = null)
     {
         if (null !== $output) {
@@ -96,6 +98,8 @@ class Client implements ClientInterface
 
     public function sendResponse(MessageInterface $response = null, bool $silently = false): ClientInterface
     {
+        $silently = $silently || $this->inSilentlyMode;
+
         if ($response instanceof ResponseInterface) {
             $this->acceptResponse($response);
         }
@@ -122,6 +126,20 @@ class Client implements ClientInterface
         $this->getErrorOutput()->writeln($throwable->getMessage());
 
         $this->returnCode = $throwable->getCode();
+
+        return $this;
+    }
+
+    public function mustSendAResponse(): ClientInterface
+    {
+        $this->inSilentlyMode = false;
+
+        return $this;
+    }
+
+    public function sendAResponseIsOptional(): ClientInterface
+    {
+        $this->inSilentlyMode = true;
 
         return $this;
     }

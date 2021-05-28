@@ -99,12 +99,13 @@ class KernelListenerTest extends TestCase
     /**
      * @return KernelListener
      */
-    private function buildKernelListener(): KernelListener
+    private function buildKernelListener(bool $clientInSilentMode = true): KernelListener
     {
         return new KernelListener(
             $this->getManagerMock(),
             $this->getClientWithResponseEventInterfaceMock(),
-            $this->getFactoryMock()
+            $this->getFactoryMock(),
+            $clientInSilentMode
         );
     }
 
@@ -135,9 +136,44 @@ class KernelListenerTest extends TestCase
             ->with($request)
             ->willReturnSelf();
 
+        $this->getClientWithResponseEventInterfaceMock()
+            ->expects(self::never())
+            ->method('mustSendAResponse');
+
         self::assertInstanceOf(
             $this->getKernelListenerClass(),
             $this->buildKernelListener()->onKernelRequest(
+                $request
+            )
+        );
+    }
+
+    public function testOnKernelRequestWithNonSilentClient()
+    {
+        $request = $this->createMock(RequestEvent::class);
+        $request->expects(self::any())->method('getRequest')->willReturn(new Request());
+
+        $psrRquest = $this->createMock(ServerRequestInterface::class);
+        $psrRquest->expects(self::any())->method('withAttribute')->willReturnSelf();
+
+        $this->getFactoryMock()
+            ->expects(self::any())
+            ->method('createRequest')
+            ->willReturn($psrRquest);
+
+        $this->getClientWithResponseEventInterfaceMock()
+            ->expects(self::once())
+            ->method('setRequestEvent')
+            ->with($request)
+            ->willReturnSelf();
+
+        $this->getClientWithResponseEventInterfaceMock()
+            ->expects(self::once())
+            ->method('mustSendAResponse');
+
+        self::assertInstanceOf(
+            $this->getKernelListenerClass(),
+            $this->buildKernelListener(false)->onKernelRequest(
                 $request
             )
         );

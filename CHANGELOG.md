@@ -1,5 +1,11 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[5.1.0] - 2021-05-28
+###Stable Release
+- Add method to configure client's behavior when a it must send a missing response (silently or throw an exception)
+    - Add `ClientInterface::mustSendAResponse`
+    - Add `ClientInterface::sendAResponseIsOptional`
+
 ##[5.0.3] - 2021-04-28
 ###Stable Release
 - Some optimisations on array functions to limit O(n)

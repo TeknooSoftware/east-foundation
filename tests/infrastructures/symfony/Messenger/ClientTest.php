@@ -327,4 +327,18 @@ class ClientTest extends TestCase
         $this->expectException(\TypeError::class);
         $this->buildClient()->errorInRequest(new \stdClass());
     }
+
+    public function testMustSendAResponse()
+    {
+        $client = $this->buildClient();
+
+        self::assertInstanceOf(Client::class, $client->mustSendAResponse());
+    }
+
+    public function testSendAResponseIsOptional()
+    {
+        $client = $this->buildClient();
+
+        self::assertInstanceOf(Client::class, $client->sendAResponseIsOptional());
+    }
 }
