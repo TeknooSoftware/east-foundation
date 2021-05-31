@@ -1,5 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[5.1.2] - 2021-05-31
+###Stable Release
+- Minor version about libs requirements
+
 ##[5.1.1] - 2021-05-28
 ###Stable Release
 - Fix Processor to allow silent client when no compatible callable was found
