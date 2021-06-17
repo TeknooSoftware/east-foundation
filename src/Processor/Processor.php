@@ -68,7 +68,11 @@ class Processor implements ProcessorInterface, ImmutableInterface
         }
 
         $parameters = [];
-        $mandatory = ['client' => $client, 'message' => $message, 'manager' => $manager];
+        $mandatory = [
+            ClientInterface::class => $client,
+            MessageInterface::class => $message,
+            ManagerInterface::class => $manager
+        ];
 
         if ($message instanceof ServerRequestInterface) {
             $parameters = $this->getParameters($message);

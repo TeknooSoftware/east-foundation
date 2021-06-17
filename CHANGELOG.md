@@ -1,5 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[5.1.3] - 2021-06-17
+###Stable Release
+- Fix Processor mandatories ingredients to use classname instead of legacy keyword
+
 ##[5.1.2] - 2021-05-31
 ###Stable Release
 - Minor version about libs requirements

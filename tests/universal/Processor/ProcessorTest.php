@@ -143,10 +143,10 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
                 'bar' => 456,
                 'foo' => 123,
                 ProcessorInterface::WORK_PLAN_CONTROLLER_KEY => $controller,
-                'client' => $clientMock,
                 'request' => $requestMock,
-                'message' => $requestMock,
-                'manager' => $manager,
+                ClientInterface::class => $clientMock,
+                MessageInterface::class => $requestMock,
+                ManagerInterface::class => $manager,
             ]);
 
         self::assertInstanceOf(
@@ -190,10 +190,10 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
                 'bar' => 456,
                 'foo' => 123,
                 ProcessorInterface::WORK_PLAN_CONTROLLER_KEY => $controller,
-                'client' => $clientMock,
                 'request' => $requestMock,
-                'message' => $requestMock,
-                'manager' => $manager,
+                ClientInterface::class => $clientMock,
+                MessageInterface::class => $requestMock,
+                ManagerInterface::class => $manager,
             ]);
 
         self::assertInstanceOf(
