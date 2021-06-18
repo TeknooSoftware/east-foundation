@@ -73,6 +73,17 @@ class Manager extends Chef implements ManagerInterface
         return $this;
     }
 
+    public function updateMessage(
+        MessageInterface $message
+    ): ManagerInterface {
+        $this->updateWorkPlan([
+            MessageInterface::class => $message,
+            'request' => $message, //@deprecated
+        ]);
+
+        return $this;
+    }
+
     public function stop(): ManagerInterface
     {
         $this->finish(null);

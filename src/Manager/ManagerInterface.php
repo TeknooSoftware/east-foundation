@@ -63,6 +63,13 @@ interface ManagerInterface extends ChefInterface
     ): ManagerInterface;
 
     /**
+     * Method to call from a middleware to update message into the manager's workplan
+     */
+    public function updateMessage(
+        MessageInterface $message
+    ): ManagerInterface;
+
+    /**
      * Method to stop propagation to other middlewares when a middleware has determined the request
      * is handle by one of its controllers.
      */

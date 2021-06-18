@@ -293,7 +293,8 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         $this->getUrlMatcherMock()->expects(self::any())->method('match')->willReturn(['_controller' => function () {
         }]);
 
-        $manager->expects(self::once())->method('continueExecution')->willReturnSelf();
+        $manager->expects(self::any())->method('continueExecution')->willReturnSelf();
+        $manager->expects(self::once())->method('updateMessage')->willReturnSelf();
         $manager->expects(self::once())->method('updateWorkPlan')
             ->willReturnCallback(function ($workPlan) use ($manager) {
                 self::assertInstanceOf(ResultInterface::class, $workPlan[ResultInterface::class]);
@@ -337,7 +338,8 @@ class RouterTest extends \PHPUnit\Framework\TestCase
 
         $this->getUrlMatcherMock()->expects(self::any())->method('match')->willReturn(['_controller' => \get_class($class).'::action']);
 
-        $manager->expects(self::once())->method('continueExecution')->willReturnSelf();
+        $manager->expects(self::any())->method('continueExecution')->willReturnSelf();
+        $manager->expects(self::once())->method('updateMessage')->willReturnSelf();
 
         self::assertInstanceOf(
             $this->getRouterClass(),
@@ -479,7 +481,8 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         $this->getContainerMock()->expects(self::any())->method('get')->with('fooBar')->willReturn(function () {
         });
 
-        $manager->expects(self::once())->method('continueExecution')->willReturnSelf();
+        $manager->expects(self::any())->method('continueExecution')->willReturnSelf();
+        $manager->expects(self::once())->method('updateMessage')->willReturnSelf();
 
         self::assertInstanceOf(
             $this->getRouterClass(),
@@ -538,7 +541,8 @@ class RouterTest extends \PHPUnit\Framework\TestCase
             ->willReturn(['_controller' => function () {
             }]);
 
-        $manager->expects(self::once())->method('continueExecution')->willReturnSelf();
+        $manager->expects(self::any())->method('continueExecution')->willReturnSelf();
+        $manager->expects(self::once())->method('updateMessage')->willReturnSelf();
         $this->buildRouter()->execute($client, $request, $manager);
     }
 
@@ -575,7 +579,8 @@ class RouterTest extends \PHPUnit\Framework\TestCase
             ->willReturn(['_controller' => function () {
             }]);
 
-        $manager->expects(self::once())->method('continueExecution')->willReturnSelf();
+        $manager->expects(self::any())->method('continueExecution')->willReturnSelf();
+        $manager->expects(self::once())->method('updateMessage')->willReturnSelf();
         $this->buildRouter()->execute($client, $request, $manager);
     }
 
@@ -612,7 +617,8 @@ class RouterTest extends \PHPUnit\Framework\TestCase
             ->willReturn(['_controller' => function () {
             }]);
 
-        $manager->expects(self::once())->method('continueExecution')->willReturnSelf();
+        $manager->expects(self::any())->method('continueExecution')->willReturnSelf();
+        $manager->expects(self::once())->method('updateMessage')->willReturnSelf();
         $this->buildRouter()->execute($client, $request, $manager);
     }
 

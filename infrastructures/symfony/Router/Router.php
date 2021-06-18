@@ -160,7 +160,7 @@ class Router implements RouterInterface
             $result = new Result($controller);
 
             $manager->updateWorkPlan([ResultInterface::class => $result]);
-            $manager->continueExecution($client, $message);
+            $manager->updateMessage($message);
         }
 
         return $this;

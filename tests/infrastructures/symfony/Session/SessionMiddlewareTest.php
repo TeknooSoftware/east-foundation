@@ -108,9 +108,14 @@ class SessionMiddlewareTest extends \PHPUnit\Framework\TestCase
             }))
             ->willReturn($requestUpdated);
 
-        $manager->expects(self::once())
+        $manager->expects(self::any())
             ->method('continueExecution')
             ->with($client, $requestUpdated)
+            ->willReturnSelf();
+
+        $manager->expects(self::once())
+            ->method('updateMessage')
+            ->with($requestUpdated)
             ->willReturnSelf();
 
         self::assertInstanceOf(

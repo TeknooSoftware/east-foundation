@@ -1,5 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[5.2.0] - 2021-06-18
+###Stable Release
+- Add ManagerInterface::updateMessage() to update a message from a step without call continueExecution()/
+
 ##[5.1.3] - 2021-06-17
 ###Stable Release
 - Fix Processor mandatories ingredients to use classname instead of legacy keyword

@@ -111,7 +111,7 @@ class FeatureContext implements Context
                     $result = new Result($this->routes[$path]);
                     $manager->updateWorkPlan([ResultInterface::class => $result]);
 
-                    $manager->continueExecution($client, $message);
+                    $manager->updateMessage($message);
                 };
 
                 return $this;
