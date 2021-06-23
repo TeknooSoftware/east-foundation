@@ -1,8 +1,16 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[5.3.0] - 2021-06-23
+###Stable Release
+- Move ClientInterface to `Teknoo\East\Foundation\Client` from `Teknoo\East\Foundation\Http`
+- Add `Teknoo\East\Foundation\Client\ResultInterface`
+- `ClientInterface` accept also ResultInterface instead PSR's message
+- All clients implementations adopts new client interfaces
+- Symfony Clients implementations supports `ResultInterface` and `JsonSerializable` responses
+
 ##[5.2.0] - 2021-06-18
 ###Stable Release
-- Add ManagerInterface::updateMessage() to update a message from a step without call continueExecution()/
+- Add ManagerInterface::updateMessage() to update a message from a step without call continueExecution()
 
 ##[5.1.3] - 2021-06-17
 ###Stable Release

@@ -26,8 +26,8 @@ use Psr\Http\Message\ResponseInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\HttpKernel\Event\RequestEvent;
-use Teknoo\East\Foundation\Http\ClientInterface;
+use Teknoo\East\Foundation\Client\ClientInterface;
+use Teknoo\East\Foundation\Client\ResponseInterface as EastResponse;
 use Teknoo\East\FoundationBundle\Command\Client;
 
 /**
@@ -170,6 +170,47 @@ class ClientTest extends TestCase
         );
     }
 
+    public function testSendJsonWithAccept()
+    {
+        $response = new class implements EastResponse, \JsonSerializable
+        {
+            public function __toString(): string
+            {
+                return 'foo';
+            }
+
+            public function jsonSerialize()
+            {
+                return ['foo' => 'bar'];
+            }
+        };
+
+        $this->getOutputMock()
+            ->expects(self::any())
+            ->method('writeln');
+
+        $client = $this->buildClient();
+        self::assertInstanceOf(
+            $this->getClientClass(),
+            $client->acceptResponse($response)->sendResponse()
+        );
+    }
+
+    public function testSendResponsetWithAccept()
+    {
+        $response = $this->createMock(EastResponse::class);
+
+        $this->getOutputMock()
+            ->expects(self::any())
+            ->method('writeln');
+
+        $client = $this->buildClient();
+        self::assertInstanceOf(
+            $this->getClientClass(),
+            $client->acceptResponse($response)->sendResponse()
+        );
+    }
+
     public function testSendResponseWithoutResponse()
     {
         $client = $this->buildClient();
@@ -204,6 +245,47 @@ class ClientTest extends TestCase
          * @var ResponseInterface
          */
         $response = $this->createMock(ResponseInterface::class);
+
+        $this->getOutputMock()
+            ->expects(self::once())
+            ->method('writeln');
+
+        $client = $this->buildClient();
+        self::assertInstanceOf(
+            $this->getClientClass(),
+            $client->sendResponse($response, true)->sendResponse(null, true)
+        );
+    }
+
+    public function testSendResponseCleanEastResponse()
+    {
+        $response = $this->createMock(EastResponse::class);
+
+        $this->getOutputMock()
+            ->expects(self::once())
+            ->method('writeln');
+
+        $client = $this->buildClient();
+        self::assertInstanceOf(
+            $this->getClientClass(),
+            $client->sendResponse($response, true)->sendResponse(null, true)
+        );
+    }
+
+    public function testSendResponseCleanJson()
+    {
+        $response = new class implements EastResponse, \JsonSerializable
+        {
+            public function __toString(): string
+            {
+                return 'foo';
+            }
+
+            public function jsonSerialize()
+            {
+                return ['foo' => 'bar'];
+            }
+        };
 
         $this->getOutputMock()
             ->expects(self::once())

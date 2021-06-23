@@ -13,7 +13,8 @@ use Teknoo\East\Foundation\EndPoint\RecipeEndPoint;
 use Teknoo\East\Foundation\Recipe\CookbookInterface;
 use Teknoo\East\Foundation\Recipe\Recipe;
 use Teknoo\East\Foundation\Router\RouterInterface;
-use Teknoo\East\Foundation\Http\ClientInterface;
+use Teknoo\East\Foundation\Client\ClientInterface;
+use Teknoo\East\Foundation\Client\ResponseInterface as EastResponse;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\East\Foundation\Manager\Manager;
 use Teknoo\East\Foundation\Router\ResultInterface;
@@ -122,12 +123,12 @@ class FeatureContext implements Context
     }
 
     /**
-     * @Given The router can process the request :arg1 to controller :arg2
+     * @Given The router can process the request :url to controller :controllerName
      */
-    public function theRouterCanProcessTheRequestToController($arg1, $arg2)
+    public function theRouterCanProcessTheRequestToController($url, $controllerName)
     {
-        $controller = $arg2;
-        if ('closureFoo' === $arg2) {
+        $controller = $controllerName;
+        if ('closureFoo' === $controllerName) {
             $controller = function (ClientInterface $client, ServerRequest $request) {
                 $params = $request->getQueryParams();
 
@@ -141,26 +142,61 @@ class FeatureContext implements Context
             };
         }
 
-        $this->router->registerRoute($arg1, $controller);
+        $this->router->registerRoute($url, $controller);
     }
 
     /**
-     * @Given The router can process the request :arg1 to recipe :arg2
+     * @Given The router can process the request :url to recipe :controllerName to return a :type response
      */
-    public function theRouterCanProcessTheRequestToRecipe($arg1, $arg2)
+    public function theRouterCanProcessTheRequestToRecipeToReturnResponse($url, $controllerName, $type)
     {
-        $controller = $arg2;
-        if ('barFoo' === $arg2) {
+        $controller = $controllerName;
+        if ('barFoo' === $controllerName) {
             $recipe = new Recipe;
-            $recipe = $recipe->cook(function (ClientInterface $client, ServerRequest $request, $test) {
-                $client->acceptResponse(
-                    new TextResponse($test.$request->getUri())
-                );
+            $recipe = $recipe->cook(function (ClientInterface $client, ServerRequest $request, $test) use ($type) {
+                if ('psr' === $type) {
+                    $client->acceptResponse(
+                        new TextResponse($test . $request->getUri())
+                    );
+                } elseif ('east' === $type) {
+                    $client->acceptResponse(
+                        new class($test) implements EastResponse {
+                            public function __construct(
+                                private string $value,
+                            ) {
+                            }
+
+                            public function __toString(): string
+                            {
+                                return $this->value;
+                            }
+                        }
+                    );
+                }elseif ('json' === $type) {
+                    $client->acceptResponse(
+                        new class($test) implements EastResponse, JsonSerializable {
+                            public function __construct(
+                                private string $value,
+                            ) {
+                            }
+
+                            public function __toString(): string
+                            {
+                                return $this->value;
+                            }
+
+                            public function jsonSerialize()
+                            {
+                                return ['foo' => $this->value];
+                            }
+                        }
+                    );
+                }
             }, 'body');
             $controller = new RecipeEndPoint($recipe);
         }
 
-        if ('fooBar' === $arg2) {
+        if ('fooBar' === $controllerName) {
             $recipe = new Recipe;
             $recipe = $recipe->cook(function (ClientInterface $client, ServerRequest $request, $test) {
 
@@ -168,13 +204,13 @@ class FeatureContext implements Context
             $controller = new RecipeEndPoint($recipe);
         }
 
-        $this->router->registerRoute($arg1, $controller);
+        $this->router->registerRoute($url, $controller);
     }
 
     /**
-     * @When The server will receive the request :arg1
+     * @When The server will receive the request :url
      */
-    public function theServerWillReceiveTheRequest($arg1)
+    public function theServerWillReceiveTheRequest($url)
     {
         $manager = new Manager($this->container->get(CookbookInterface::class));
 
@@ -198,15 +234,17 @@ class FeatureContext implements Context
                 return $this;
             }
 
-            public function acceptResponse(MessageInterface $response): ClientInterface
+            public function acceptResponse(EastResponse | MessageInterface | null $response): ClientInterface
             {
                 $this->context->response = $response;
 
                 return $this;
             }
 
-            public function sendResponse(MessageInterface $response = null, bool $silently = false): ClientInterface
-            {
+            public function sendResponse(
+                EastResponse | MessageInterface | null $response = null,
+                bool $silently = false
+            ): ClientInterface {
                 $silently = $silently || $this->inSilentlyMode;
 
                 if (!empty($response)) {
@@ -243,7 +281,7 @@ class FeatureContext implements Context
         };
 
         $request = new ServerRequest();
-        $request = $request->withUri(new \Zend\Diactoros\Uri($arg1));
+        $request = $request->withUri(new \Zend\Diactoros\Uri($url));
         $query = [];
         \parse_str($request->getUri()->getQuery(), $query);
         $request = $request->withQueryParams($query);
@@ -264,20 +302,59 @@ class FeatureContext implements Context
     }
 
     /**
-     * @Then The client must accept a response
+     * @Then The client must accept a psr response
      */
-    public function theClientMustAcceptAResponse()
+    public function theClientMustAcceptAPSRResponse()
     {
         Assert::assertInstanceOf(ResponseInterface::class, $this->response);
         Assert::assertNull($this->error);
     }
 
     /**
-     * @Then I should get as response :arg1
+     * @Then The client must accept a east response
      */
-    public function iShouldGetAsResponse ($arg1)
+    public function theClientMustAcceptAEastResponse()
     {
-        Assert::assertEquals($arg1, (string) $this->response->getBody());
+        Assert::assertInstanceOf(EastResponse::class, $this->response);
+        Assert::assertNull($this->error);
+    }
+
+    /**
+     * @Then The client must accept a json response
+     */
+    public function theClientMustAcceptAJsonResponse()
+    {
+        Assert::assertInstanceOf(JsonSerializable::class, $this->response);
+        Assert::assertNull($this->error);
+    }
+
+    /**
+     * @Then I should get as response :value
+     */
+    public function iShouldGetAsResponse ($value)
+    {
+        if ($this->response instanceof ResponseInterface) {
+            Assert::assertEquals($value, (string)$this->response->getBody());
+
+            return;
+        }
+
+        if ($this->response instanceof JsonSerializable) {
+            Assert::assertEquals(
+                \json_decode($value, true),
+                \json_decode((string) json_encode($this->response), true)
+            );
+
+            return;
+        }
+
+        if ($this->response instanceof EastResponse) {
+            Assert::assertEquals($value, (string) $this->response);
+
+            return;
+        }
+
+        throw new \RuntimeException('Response not managed');
     }
 
     /**

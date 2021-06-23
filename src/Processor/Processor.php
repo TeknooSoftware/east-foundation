@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace Teknoo\East\Foundation\Processor;
 
 use Psr\Http\Message\MessageInterface;
-use Teknoo\East\Foundation\Http\ClientInterface;
+use Teknoo\East\Foundation\Client\ClientInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\East\Foundation\Middleware\MiddlewareInterface;

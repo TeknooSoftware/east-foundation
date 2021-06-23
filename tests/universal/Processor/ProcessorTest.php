@@ -24,16 +24,12 @@ namespace Teknoo\Tests\East\Foundation\Processor;
 
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Teknoo\East\Foundation\Http\ClientInterface;
+use Teknoo\East\Foundation\Client\ClientInterface;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\East\Foundation\Processor\Processor;
 use Teknoo\East\Foundation\Processor\ProcessorInterface;
-use Teknoo\East\Foundation\Router\Parameter;
 use Teknoo\East\Foundation\Router\ResultInterface;
-use Teknoo\East\Foundation\Router\RouterInterface;
-use Teknoo\East\FoundationBundle\Http\Client;
 
 /**
  * Class ProcessorTest.
