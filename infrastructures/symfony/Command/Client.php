@@ -25,13 +25,16 @@ declare(strict_types=1);
 
 namespace Teknoo\East\FoundationBundle\Command;
 
+use JsonSerializable;
 use Psr\Http\Message\MessageInterface;
-use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Teknoo\East\Foundation\Http\ClientInterface;
+use Teknoo\East\Foundation\Client\ClientInterface;
+use Teknoo\East\Foundation\Client\ResponseInterface;
 use Throwable;
+
+use function json_encode;
 
 /**
  * Default implementation of Teknoo\East\Foundation\Http\ClientInterface to Symfony Command to use East foundation
@@ -49,7 +52,7 @@ class Client implements ClientInterface
 {
     private ?OutputInterface $output = null;
 
-    private ?MessageInterface $response = null;
+    private ResponseInterface | MessageInterface | null $response = null;
 
     public int $returnCode = 0;
 
@@ -89,22 +92,24 @@ class Client implements ClientInterface
         return $this;
     }
 
-    public function acceptResponse(MessageInterface $response): ClientInterface
+    public function acceptResponse(ResponseInterface | MessageInterface $response): ClientInterface
     {
         $this->response = $response;
 
         return $this;
     }
 
-    public function sendResponse(MessageInterface $response = null, bool $silently = false): ClientInterface
-    {
+    public function sendResponse(
+        ResponseInterface | MessageInterface | null $response = null,
+        bool $silently = false
+    ): ClientInterface {
         $silently = $silently || $this->inSilentlyMode;
 
-        if ($response instanceof ResponseInterface) {
+        if (null !== $response) {
             $this->acceptResponse($response);
         }
 
-        if (true === $silently && !$this->response instanceof ResponseInterface) {
+        if (true === $silently && null === $this->response) {
             return $this;
         }
 
@@ -112,8 +117,12 @@ class Client implements ClientInterface
             throw new RuntimeException('Error, the output has not been set into the client');
         }
 
-        if ($this->response instanceof ResponseInterface) {
+        if ($this->response instanceof MessageInterface) {
             $this->output->writeln((string) $this->response->getBody());
+        } elseif ($this->response instanceof JsonSerializable) {
+            $this->output->writeln((string) json_encode($this->response));
+        } else {
+            $this->output->writeln((string) $this->response);
         }
 
         $this->response = null;

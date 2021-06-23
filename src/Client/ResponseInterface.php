@@ -23,22 +23,9 @@
 
 declare(strict_types=1);
 
-namespace Teknoo\East\Foundation\Http;
-
-use Teknoo\East\Foundation\Client\ClientInterface as BaseClientInterface;
+namespace Teknoo\East\Foundation\Client;
 
 /**
- * ClientInterface is a contract to create object representing the client in the server side. The client must be
- * agnostic and accepts only \Throwable exception and PSR7 response. It's possible to pass a PSR7 Response object
- * without send it via the method "acceptResponse".
- *
- * To update an response, it's mandatory to call the method
- * "updateResponse" and pass a callable able to update the response and update it into the client.
- *
- * The method "sendResponse" as a behavior like updateResponse but send directly the response.
- *
- * All public method of the client must only return the self client or a clone instance.
- *
  * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)
  * @copyright   Copyright (c) 2020-2021 SASU Teknoo Software (https://teknoo.software)
  *
@@ -47,6 +34,7 @@ use Teknoo\East\Foundation\Client\ClientInterface as BaseClientInterface;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-interface ClientInterface extends BaseClientInterface
+interface ResponseInterface
 {
+    public function __toString(): string;
 }

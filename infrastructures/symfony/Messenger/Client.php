@@ -30,7 +30,8 @@ use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
-use Teknoo\East\Foundation\Http\ClientInterface;
+use Teknoo\East\Foundation\Client\ClientInterface;
+use Teknoo\East\Foundation\Client\ResponseInterface;
 use Throwable;
 
 /**
@@ -44,7 +45,7 @@ use Throwable;
  */
 class Client implements ClientInterface
 {
-    private ?MessageInterface $response = null;
+    private ResponseInterface | MessageInterface | null $response = null;
 
     private bool $inSilentlyMode = false;
 
@@ -61,27 +62,29 @@ class Client implements ClientInterface
         return $this;
     }
 
-    public function acceptResponse(MessageInterface $response): ClientInterface
+    public function acceptResponse(ResponseInterface | MessageInterface $response): ClientInterface
     {
         $this->response = $response;
 
         return $this;
     }
 
-    public function sendResponse(MessageInterface $response = null, bool $silently = false): ClientInterface
-    {
+    public function sendResponse(
+        ResponseInterface | MessageInterface | null $response = null,
+        bool $silently = false
+    ): ClientInterface {
         $silently = $silently || $this->inSilentlyMode;
 
-        if ($response instanceof MessageInterface) {
+        if (null !== $response) {
             $this->acceptResponse($response);
         }
 
-        if (true === $silently && !$this->response instanceof MessageInterface) {
+        if (true === $silently && null === $this->response) {
             return $this;
         }
 
-        if (!$this->response instanceof MessageInterface) {
-            throw new RuntimeException('Error, any response object has been pushed to the client');
+        if (null === $this->response) {
+            throw new RuntimeException('Error, any compliant response object has been pushed to the client');
         }
 
         if ($this->bus instanceof MessageBusInterface) {

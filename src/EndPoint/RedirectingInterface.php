@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace Teknoo\East\Foundation\EndPoint;
 
-use Teknoo\East\Foundation\Http\ClientInterface;
+use Teknoo\East\Foundation\Client\ClientInterface;
 
 /**
  * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)

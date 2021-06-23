@@ -26,7 +26,8 @@ declare(strict_types=1);
 namespace Teknoo\East\FoundationBundle\Resources\config;
 
 use Psr\Container\ContainerInterface;
-use Teknoo\East\Foundation\Http\ClientInterface;
+use Teknoo\East\Foundation\Client\ClientInterface as BaseClient;
+use Teknoo\East\Foundation\Http\ClientInterface as HttpClient;
 use Teknoo\East\Foundation\Recipe\RecipeInterface;
 use Teknoo\East\FoundationBundle\Http\Client;
 use Teknoo\East\FoundationBundle\Session\SessionMiddleware;
@@ -38,7 +39,8 @@ use function DI\create;
 return [
     SessionMiddleware::class => create(SessionMiddleware::class),
 
-    ClientInterface::class => get(Client::class),
+    BaseClient::class => get(Client::class),
+    HttpClient::class => get(Client::class),
 
     RecipeInterface::class => decorate(static function ($previous, ContainerInterface $container) {
         if ($previous instanceof RecipeInterface) {

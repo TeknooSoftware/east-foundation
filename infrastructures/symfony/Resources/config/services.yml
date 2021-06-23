@@ -73,6 +73,8 @@ services:
         class: 'Teknoo\East\FoundationBundle\Http\Client'
         arguments:
             - '@Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory'
+            - '@Psr\Http\Message\ResponseFactoryInterface'
+            - '@Psr\Http\Message\StreamFactoryInterface'
             - null
             - '@?logger'
 

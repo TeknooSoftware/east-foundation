@@ -28,7 +28,7 @@ use Teknoo\East\FoundationBundle\Session\Session;
 use Teknoo\East\FoundationBundle\Session\SessionMiddleware;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Teknoo\East\Foundation\Http\ClientInterface;
+use Teknoo\East\Foundation\Client\ClientInterface;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
 
 /**

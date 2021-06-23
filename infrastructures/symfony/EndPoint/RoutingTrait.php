@@ -27,7 +27,7 @@ namespace Teknoo\East\FoundationBundle\EndPoint;
 
 use LogicException;
 use Teknoo\East\Foundation\EndPoint\RedirectingInterface;
-use Teknoo\East\Foundation\Http\ClientInterface;
+use Teknoo\East\Foundation\Client\ClientInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**

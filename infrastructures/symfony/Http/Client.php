@@ -25,17 +25,23 @@ declare(strict_types=1);
 
 namespace Teknoo\East\FoundationBundle\Http;
 
+use JsonSerializable;
 use Psr\Http\Message\MessageInterface;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
-use Teknoo\East\Foundation\Http\ClientInterface;
+use Teknoo\East\Foundation\Client\ResponseInterface as EastResponse;
+use Teknoo\East\Foundation\Client\ClientInterface;
 use Throwable;
 
+use function json_encode;
+
 /**
- * Default implementation of Teknoo\East\Foundation\Http\ClientInterface and
+ * Default implementation of Teknoo\East\Foundation\Client\ClientInterface and
  * Teknoo\East\FoundationBundle\Http\ClientWithResponseEventInterface to create client integrated with Symfony and able
  * to manage RequestEvent instance from Symfony Kernel loop.
  *
@@ -49,12 +55,14 @@ use Throwable;
  */
 class Client implements ClientWithResponseEventInterface
 {
-    private ?MessageInterface $response = null;
+    private EastResponse | MessageInterface | null $response = null;
 
     private bool $inSilentlyMode = false;
 
     public function __construct(
         private HttpFoundationFactory $factory,
+        private ResponseFactoryInterface $responseFactory,
+        private StreamFactoryInterface $streamFactory,
         private ?RequestEvent $requestEvent = null,
         private ?LoggerInterface $logger = null,
     ) {
@@ -77,27 +85,42 @@ class Client implements ClientWithResponseEventInterface
         return $this;
     }
 
-    public function acceptResponse(MessageInterface $response): ClientInterface
+    public function acceptResponse(EastResponse | MessageInterface $response): ClientInterface
     {
         $this->response = $response;
 
         return $this;
     }
 
-    public function sendResponse(MessageInterface $response = null, bool $silently = false): ClientInterface
-    {
+    public function sendResponse(
+        EastResponse | MessageInterface | null $response = null,
+        bool $silently = false
+    ): ClientInterface {
         $silently = $silently || $this->inSilentlyMode;
 
-        if ($response instanceof MessageInterface) {
+        if (null !== $response) {
             $this->acceptResponse($response);
         }
 
-        if (true === $silently && !$this->response instanceof MessageInterface) {
+        if (true === $silently && null === $this->response) {
             return $this;
         }
 
         if (!$this->requestEvent instanceof RequestEvent) {
             throw new RuntimeException('Error, the requestEvent has not been set into the client');
+        }
+
+        if ($this->response instanceof EastResponse) {
+            if ($this->response instanceof JsonSerializable) {
+                $content = (string) json_encode($this->response);
+            } else {
+                $content = (string) $this->response;
+            }
+
+            $psrResponse = $this->responseFactory->createResponse();
+            $this->response = $psrResponse->withBody(
+                $this->streamFactory->createStream($content)
+            );
         }
 
         if (!$this->response instanceof ResponseInterface) {
