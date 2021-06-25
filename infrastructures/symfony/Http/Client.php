@@ -110,7 +110,10 @@ class Client implements ClientWithResponseEventInterface
             throw new RuntimeException('Error, the requestEvent has not been set into the client');
         }
 
-        if ($this->response instanceof EastResponse) {
+        if (
+            !$this->response instanceof ResponseInterface
+            && $this->response instanceof EastResponse
+        ) {
             if ($this->response instanceof JsonSerializable) {
                 $content = (string) json_encode($this->response);
             } else {

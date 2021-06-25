@@ -26,6 +26,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Http\Message\StreamInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
@@ -304,6 +305,56 @@ class ClientTest extends TestCase
     public function testSendEastResponse()
     {
         $response = $this->createMock(EastResponse::class);
+
+        $this->getRequestEventMock()
+            ->expects(self::any())
+            ->method('setResponse')
+            ->with($this->callback(function ($response) {
+                return $response instanceof Response;
+            }))
+            ->willReturnSelf();
+
+        $this->getHttpFoundationFactoryMock()
+            ->expects(self::any())
+            ->method('createResponse')
+            ->with($this->callback(function ($response) {
+                return $response instanceof ResponseInterface;
+            }))
+            ->willReturn($this->createMock(Response::class));
+
+        $client = $this->buildClient();
+        self::assertInstanceOf(
+            $this->getClientClass(),
+            $client->sendResponse($response)
+        );
+    }
+
+    public function testSendPsrAndEastResponse()
+    {
+        $response = new class implements EastResponse, ResponseInterface, \JsonSerializable {
+            public function getProtocolVersion() {}
+            public function withProtocolVersion($version) {}
+            public function getHeaders() {}
+            public function hasHeader($name) {}
+            public function getHeader($name) {}
+            public function getHeaderLine($name) {}
+            public function withHeader($name, $value) {}
+            public function withAddedHeader($name, $value) {}
+            public function withoutHeader($name) {}
+            public function getBody() {}
+            public function withBody(StreamInterface $body) {}
+            public function __toString(): string
+            {
+                throw new \Exception("Must be not called");
+            }
+            public function jsonSerialize()
+            {
+                throw new \Exception("Must be not called");
+            }
+            public function getStatusCode() {}
+            public function withStatus($code, $reasonPhrase = '') {}
+            public function getReasonPhrase() {}
+        };
 
         $this->getRequestEventMock()
             ->expects(self::any())

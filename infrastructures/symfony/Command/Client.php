@@ -117,10 +117,10 @@ class Client implements ClientInterface
             throw new RuntimeException('Error, the output has not been set into the client');
         }
 
-        if ($this->response instanceof MessageInterface) {
-            $this->output->writeln((string) $this->response->getBody());
-        } elseif ($this->response instanceof JsonSerializable) {
+        if ($this->response instanceof JsonSerializable) {
             $this->output->writeln((string) json_encode($this->response));
+        } elseif ($this->response instanceof MessageInterface) {
+            $this->output->writeln((string) $this->response->getBody());
         } else {
             $this->output->writeln((string) $this->response);
         }
