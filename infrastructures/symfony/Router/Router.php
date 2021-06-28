@@ -87,7 +87,7 @@ class Router implements RouterInterface
         return $path;
     }
 
-    /**
+    /*
      * Method to find the controller to call for this method via the Symfony Matcher. Return only controller as service
      * (callable provided by the Symfony matcher), ignore other.
      */

@@ -41,7 +41,7 @@ use Teknoo\East\Foundation\Promise\PromiseInterface;
  */
 interface SuperiorityInterface
 {
-    /**
+    /*
      * To define object able to test if an another object is great than it, and pass the result
      * to the promise.
      */

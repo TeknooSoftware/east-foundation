@@ -45,7 +45,7 @@ use Teknoo\East\Foundation\Http\ClientInterface;
  */
 interface ClientWithResponseEventInterface extends ClientInterface
 {
-    /**
+    /*
      * To register the RequestEvent instance into the client via the KernelListener.
      */
     public function setRequestEvent(RequestEvent $requestEvent): ClientWithResponseEventInterface;

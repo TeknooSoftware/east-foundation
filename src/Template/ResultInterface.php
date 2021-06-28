@@ -26,6 +26,8 @@ declare(strict_types=1);
 namespace Teknoo\East\Foundation\Template;
 
 /**
+ * Interface to implement a ValueObject class wrapping the template engine's result.
+ *
  * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)
  * @copyright   Copyright (c) 2020-2021 SASU Teknoo Software (https://teknoo.software)
  *
@@ -36,7 +38,7 @@ namespace Teknoo\East\Foundation\Template;
  */
 interface ResultInterface
 {
-    /**
+    /*
      * To return the result of the template's rendering. Can be called async.
      */
     public function __toString(): string;

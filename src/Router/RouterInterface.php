@@ -28,7 +28,7 @@ namespace Teknoo\East\Foundation\Router;
 use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
 
 /**
- * Interface RouterInterface is a contract to create router to check if a request is runnable by one of its
+ * Interface `RouterInterface` is a contract to create router to check if a request is runnable by one of its
  * controller and pass it to the selected controller.
  *
  * The router must define the request the result and use the key defined by RouterInterface::ROUTER_RESULT_KEY

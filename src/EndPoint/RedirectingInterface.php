@@ -28,6 +28,8 @@ namespace Teknoo\East\Foundation\EndPoint;
 use Teknoo\East\Foundation\Client\ClientInterface;
 
 /**
+ * To define an endpoint able to redirect a client to another request
+ *
  * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)
  * @copyright   Copyright (c) 2020-2021 SASU Teknoo Software (https://teknoo.software)
  *

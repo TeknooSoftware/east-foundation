@@ -41,7 +41,7 @@ use Teknoo\East\Foundation\Promise\PromiseInterface;
  */
 interface HighInterface
 {
-    /**
+    /*
      * To define object able to test if an another object is great or equal to it, and pass the result to the promise.
      */
     public function isUpperThan(mixed $object, PromiseInterface $promise): HighInterface;

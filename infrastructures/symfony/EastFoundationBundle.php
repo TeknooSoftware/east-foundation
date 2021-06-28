@@ -30,8 +30,6 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Teknoo\East\FoundationBundle\DependencyInjection\EastFoundationCompilerPass;
 
 /**
- * Class EastFoundationBundle.
- *
  * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)
  * @copyright   Copyright (c) 2020-2021 SASU Teknoo Software (https://teknoo.software)
  *

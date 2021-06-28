@@ -45,7 +45,7 @@ use Teknoo\Recipe\ChefInterface;
  */
 interface ManagerInterface extends ChefInterface
 {
-    /**
+    /*
      * Method to call to process a request in East Foundation by East's controller.
      */
     public function receiveRequest(
@@ -53,7 +53,7 @@ interface ManagerInterface extends ChefInterface
         MessageInterface $message
     ): ManagerInterface;
 
-    /**
+    /*
      * Method to call from a middleware to continue the propagation of the request through middlewares registered into
      * the queue of the manager.
      */
@@ -62,14 +62,14 @@ interface ManagerInterface extends ChefInterface
         MessageInterface $message
     ): ManagerInterface;
 
-    /**
+    /*
      * Method to call from a middleware to update message into the manager's workplan
      */
     public function updateMessage(
         MessageInterface $message
     ): ManagerInterface;
 
-    /**
+    /*
      * Method to stop propagation to other middlewares when a middleware has determined the request
      * is handle by one of its controllers.
      */

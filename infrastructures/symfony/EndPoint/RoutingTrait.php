@@ -47,7 +47,7 @@ trait RoutingTrait
 
     protected ?UrlGeneratorInterface $router = null;
 
-    /**
+    /*
      * To inject the router into the trait, needed to generate url.
      */
     public function setRouter(UrlGeneratorInterface $router): self
@@ -57,7 +57,7 @@ trait RoutingTrait
         return $this;
     }
 
-    /**
+    /*
      * Generates a URL from the given parameters.
      */
     protected function generateUrl(
@@ -72,7 +72,7 @@ trait RoutingTrait
         return $this->router->generate($route, $parameters, $referenceType);
     }
 
-    /**
+    /*
      * Returns a RedirectResponse to the given URL.
      *
      * @param array<string, mixed> $headers An array of values to inject into HTTP header response
@@ -93,7 +93,7 @@ trait RoutingTrait
         return $this;
     }
 
-    /**
+    /*
      * Returns a RedirectResponse to the given route with the given parameters.
      */
     protected function redirectToRoute(

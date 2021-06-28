@@ -51,14 +51,14 @@ use Throwable;
  */
 interface ClientInterface
 {
-    /**
+    /*
      * To update a response in the client. You must pass a callable able to work on the response passed into argument,
      * and repush it into the client via its method "acceptResponse". (Response object are immutable).
      * The callable must accept a ClientInterface object as first argument, and a the Response as second (can be null).
      */
     public function updateResponse(callable $modifier): ClientInterface;
 
-    /**
+    /*
      * To accept a response from the controller action without send it to the client.
      */
     public function acceptResponse(ResponseInterface | MessageInterface $response): ClientInterface;

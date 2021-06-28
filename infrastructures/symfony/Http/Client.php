@@ -45,6 +45,10 @@ use function json_encode;
  * Teknoo\East\FoundationBundle\Http\ClientWithResponseEventInterface to create client integrated with Symfony and able
  * to manage RequestEvent instance from Symfony Kernel loop.
  *
+ * If the response object does not implement the PSR11 `MessageInterface`, a new standard 200 response with the content
+ * of the response will be created and returned. If the response object implements the `\JsonSerializable` interface,
+ * the response will be serialized as json instead of string content.
+ *
  * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)
  * @copyright   Copyright (c) 2020-2021 SASU Teknoo Software (https://teknoo.software)
  *
@@ -124,6 +128,10 @@ class Client implements ClientWithResponseEventInterface
             $this->response = $psrResponse->withBody(
                 $this->streamFactory->createStream($content)
             );
+
+            if ($this->response instanceof JsonSerializable) {
+                $this->response = $this->response->withAddedHeader('content-type', 'application/json');
+            }
         }
 
         if (!$this->response instanceof ResponseInterface) {

@@ -42,7 +42,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 trait ExceptionTrait
 {
-    /**
+    /*
      * Returns a NotFoundHttpException.
      *
      * This will result in a 404 response code. Usage example:
@@ -56,7 +56,7 @@ trait ExceptionTrait
         return new NotFoundHttpException($message, $previous);
     }
 
-    /**
+    /*
      * Returns an AccessDeniedException.
      *
      * This will result in a 403 response code. Usage example:

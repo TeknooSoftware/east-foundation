@@ -47,7 +47,7 @@ trait AuthenticationTrait
 {
     protected ?TokenStorageInterface $tokenStorage = null;
 
-    /**
+    /*
      * To inject the Token storage to extract users from session or token.
      */
     public function setTokenStorage(TokenStorageInterface $tokenStorage): self

@@ -42,17 +42,17 @@ use Teknoo\Immutable\ImmutableInterface;
  */
 interface ParameterInterface extends ImmutableInterface
 {
-    /**
+    /*
      * To get the name of the controller's parameter representing by the current instance.
      */
     public function getName(): string;
 
-    /**
+    /*
      * To know if the controller's parameter has a default value.
      */
     public function hasDefaultValue(): bool;
 
-    /**
+    /*
      * To get the default value of the controller's parameter.
      * If the parameter has no default value, the method must throw a \LogicException.
      *
@@ -60,14 +60,14 @@ interface ParameterInterface extends ImmutableInterface
      */
     public function getDefaultValue(): mixed;
 
-    /**
+    /*
      * To know if the parameter has a restriction on accepted class's instance for this controller's parameter.
      */
     public function hasClass(): bool;
 
     /**
-     * To get the \ReflectionClass instance representing the accepted class's instance for this controller's parameter.
-     * If the parameter has no default value, the method must throw a \LogicException.
+     * To get the `\ReflectionClass` instance representing the accepted class's instance for this controller's
+     * parameter. If the parameter has no default value, the method must throw a `\LogicException`.
      *
      * @throws LogicException
      */

@@ -32,7 +32,8 @@ use Throwable;
 use Twig\Environment;
 
 /**
- * Class Engine.
+ * Twig adapter to use into East context, implementing the `EngineInterface`.
+ * The template is rendered only when the result is converted to string
  *
  * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)
  * @copyright   Copyright (c) 2020-2021 SASU Teknoo Software (https://teknoo.software)

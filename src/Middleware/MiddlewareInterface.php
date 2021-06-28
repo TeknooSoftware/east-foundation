@@ -45,7 +45,7 @@ use Teknoo\East\Foundation\Manager\ManagerInterface;
  */
 interface MiddlewareInterface
 {
-    /**
+    /*
      * Method called by a manager to ask the middleware if it can process the request.
      */
     public function execute(

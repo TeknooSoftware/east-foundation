@@ -54,7 +54,7 @@ trait TemplatingTrait
 
     protected StreamFactoryInterface $streamFactory;
 
-    /**
+    /*
      * To inject the template engine to render views.
      */
     public function setTemplating(EngineInterface $templating): self

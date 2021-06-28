@@ -28,7 +28,8 @@ namespace Teknoo\East\Foundation\Session;
 use Teknoo\East\Foundation\Promise\PromiseInterface;
 
 /**
- * Interface to define object representing sessions in the request to allow developpers to share data betweens requests.
+ * Interface to define object representing sessions in the request to allow developpers to share data between requests.
+ *
  * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)
  * @copyright   Copyright (c) 2020-2021 SASU Teknoo Software (https://teknoo.software)
  *
@@ -49,17 +50,17 @@ interface SessionInterface
      */
     public function set(string $key, mixed $value): SessionInterface;
 
-    /**
+    /*
      * Retrieves a value from the session
      */
     public function get(string $key, PromiseInterface $promise): SessionInterface;
 
-    /**
+    /*
      * Removes an item from the session
      */
     public function remove(string $key): SessionInterface;
 
-    /**
+    /*
      * Clears the contents of the session
      */
     public function clear(): SessionInterface;

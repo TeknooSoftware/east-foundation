@@ -28,8 +28,8 @@ namespace Teknoo\East\Foundation\Router;
 use Teknoo\Immutable\ImmutableInterface;
 
 /**
- * Interface ResultInterface to represent immutable object implementing a result of a router. A router can return
- * several results for a same request. Next results are available from the method 'getNext'.
+ * Interface `ResultInterface` to represent immutable object implementing a result of a router. A router can return
+ * several results for a same request. Next results are available from the method `getNext`.
  *
  * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)
  * @copyright   Copyright (c) 2020-2021 SASU Teknoo Software (https://teknoo.software)
@@ -41,12 +41,12 @@ use Teknoo\Immutable\ImmutableInterface;
  */
 interface ResultInterface extends ImmutableInterface
 {
-    /**
+    /*
      * To know the controller to call for this route.
      */
     public function getController(): callable;
 
-    /**
+    /*
      * If there are several result found by the router for a same request, next router result can be fetched by this
      * method. Else this method must return null.
      */

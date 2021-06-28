@@ -1,5 +1,9 @@
 #Teknoo Software - East Foundation - Change Log
 
+##[5.3.2] - 2021-06-28
+###Stable Release
+- Update documents and dev libs requirements
+
 ##[5.3.1] - 2021-06-25
 ###Stable Release
 - Fix Symfony Http Client implementation to not convert to string a response implementing the PSR Response interface

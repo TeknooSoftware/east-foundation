@@ -8,7 +8,7 @@ Teknoo Software - East Foundation
 [![PHPStan](https://img.shields.io/badge/PHPStan-enabled-brightgreen.svg?style=flat)](https://github.com/phpstan/phpstan)
 
 East Foundation is a universal package to implement the [#east](http://blog.est.voyage/phpTour2015/) philosophy with 
-any framework supporting PSR-11 or with Symfony 3+. :
+any framework supporting PSR-11 or with Symfony 5.2+. :
 All public method of objects must return $this or a new instance of $this.
 
 This bundle uses PSR7 requests and responses and do automatically the conversion from Symfony's requests and responses.
@@ -22,26 +22,29 @@ Quick Example
 
     declare(strict_types=1);
     
+    use Psr\Http\Message\MessageInterface;
+    use Teknoo\East\Foundation\Client\ResponseInterface;
     use Teknoo\East\Foundation\Router\ResultInterface;
-    use function DI\decorate;
     use DI\ContainerBuilder;
     use Laminas\Diactoros\ServerRequest;
     use Laminas\Diactoros\Response\TextResponse;
-    use Psr\Http\Message\ResponseInterface;
-    use Psr\Http\Message\ServerRequestInterface;
-    use Teknoo\East\Foundation\Http\ClientInterface;
+    use Teknoo\East\Foundation\Client\ClientInterface;
     use Teknoo\East\Foundation\Manager\ManagerInterface;
     use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
     use Teknoo\East\Foundation\Recipe\RecipeInterface;
     use Teknoo\East\Foundation\Router\Result;
     use Teknoo\East\Foundation\Router\RouterInterface;
     
+    use function DI\decorate;
+    
     require_once 'vendor/autoload.php';
     
     //Simulate client, accepts responses from controller and pass them to the "framework" or lower layer to send them to
     //the browser.
     $client = new class implements ClientInterface {
-        private ?ResponseInterface $response = null;
+        private ResponseInterface | MessageInterface | null $response = null;
+    
+        private bool $inSilentlyMode = false;
     
         public function updateResponse(callable $modifier): ClientInterface
         {
@@ -50,40 +53,81 @@ Quick Example
             return $this;
         }
     
-        public function acceptResponse(ResponseInterface $response): ClientInterface
+        public function acceptResponse(ResponseInterface | MessageInterface $response): ClientInterface
         {
             $this->response = $response;
     
             return $this;
         }
     
-        public function sendResponse(ResponseInterface $response = null , bool $silently = false): ClientInterface
+        public function sendResponse(
+            ResponseInterface | MessageInterface | null $response = null,
+            bool $silently = false
+        ): ClientInterface
         {
-            if ($response instanceof ResponseInterface) {
+            $silently = $silently || $this->inSilentlyMode;
+    
+            if (null !== $response) {
                 $this->acceptResponse($response);
             }
     
-            print (string) $response->getBody().PHP_EOL;
+            if (true === $silently && null === $this->response) {
+                return $this;
+            }
+    
+            if ($this->response instanceof  MessageInterface) {
+                print $this->response->getBody() . PHP_EOL;
+            } else {
+                print $this->response . PHP_EOL;
+            }
     
             return $this;
         }
     
-        public function errorInRequest(\Throwable $throwable): ClientInterface
+        public function errorInRequest(Throwable $throwable, bool $silently = false): ClientInterface
         {
-            print $throwable->getMessage();
+            print $throwable->getMessage() . PHP_EOL;
+    
+            return $this;
+        }
+    
+        public function mustSendAResponse(): ClientInterface
+        {
+            $this->inSilentlyMode = false;
+    
+            return $this;
+        }
+    
+        public function sendAResponseIsOptional(): ClientInterface
+        {
+            $this->inSilentlyMode = true;
     
             return $this;
         }
     };
     
     //First controller / endpoint, dedicated for the request /foo
-    $endPoint1 = function (ServerRequestInterface $request, ClientInterface $client) {
-        $client->sendResponse(new TextResponse('request /bar, endpoint 1, value : '.$request->getQueryParams()['value']));
+    $endPoint1 = static function (MessageInterface $message, ClientInterface $client) {
+        $client->sendResponse(
+            new TextResponse('request /bar, endpoint 1, value : ' . $message->getQueryParams()['value'])
+        );
     };
     
     //Second controller / endpoint, dedicated for the request /bar
-    $endPoint2 = function (ClientInterface $client, string $value) {
-        $client->sendResponse(new TextResponse('request /bar, endpoint 2, value : '.$value));
+    $endPoint2 = static function (ClientInterface $client, string $value) {
+        $client->sendResponse(
+            new class ($value) implements ResponseInterface {
+                public function __construct(
+                    private string $value,
+                ) {
+                }
+    
+                public function __toString()
+                {
+                    return "request /bar, endpoint 2, value : {$this->value}";
+                }
+            }
+        );
     };
     
     /**
@@ -108,23 +152,19 @@ Quick Example
     
         public function execute(
             ClientInterface $client ,
-            ServerRequestInterface $request ,
+            MessageInterface $message,
             ManagerInterface $manager
         ): MiddlewareInterface
         {
-            $result = null;
-            $uri = (string) $request->getUri();
-            switch ($uri) {
-                case '/foo':
-                    $result = new Result($this->endPoint1);
-                    break;
-                case '/bar':
-                    $result = new Result($this->endPoint2);
-                    break;
-            }
+            $uri = (string) $message->getUri();
     
-            $manager->updateWorkPlan([ResultInterface::class => $result]);
-            $manager->continueExecution($client, $request);
+            $manager->updateWorkPlan([
+                ResultInterface::class => match ($uri) {
+                    '/foo' => new Result($this->endPoint1),
+                    '/bar' => new Result($this->endPoint2),
+                },
+            ]);
+            $manager->continueExecution($client, $message);
     
             return $this;
         }
@@ -181,17 +221,70 @@ To install with Symfony
 
 This library requires :
 
-    * PHP 7.4+
+    * PHP 8.0+
     * A PHP autoloader (Composer is recommended)
     * Teknoo/Immutable.
     * Teknoo/States.
     * Teknoo/Recipe.
-    * Optional: Symfony 4.4+
+    * Optional: Symfony 5.2+
+
+News from Teknoo East Foundation 5.0
+------------------------------------
+
+This library requires PHP 8.0 or newer and it's only compatible with Symfony 5.2 or newer :
+
+- Migrate to PHP 8.0+
+- Remove support of Symfony 4.4, only 5.2+
+- Constructor Property Promotion
+- Non-capturing catches
+- switch to str_contains
+- Messenger's executor use an empty manager and clone it
+- Add method to configure client's behavior when a it must send a missing response (silently or throw an exception)
+ - Add `ClientInterface::mustSendAResponse`
+ - Add `ClientInterface::sendAResponseIsOptional`
+- Processor will configure in non silent mode if a compatible callable is available and was returned by Router
+ - This behavior can be disable by set `teknoo.east.client.must_send_response` to false in DI
+- Move ClientInterface to `Teknoo\East\Foundation\Client` from `Teknoo\East\Foundation\Http`
+- Add `Teknoo\East\Foundation\Client\ResultInterface`
+- `ClientInterface` accept also ResultInterface instead PSR's message
+- All clients implementations adopts new client interfaces
+- Symfony Clients implementations supports `ResultInterface` and `JsonSerializable` responses
+
+News from Teknoo East Foundation 4.0
+------------------------------------
+
+This library requires PHP 7.4 or newer and it's only compatible with Symfony 4.4 or newer :
+
+- Switch to States 4.1.9 and PHPStan 0.12.79
+- Prepare library to be used in non HTTP context
+- Use MessageInterface instead of ServerRequestInterface
+- Cookbook and ProcessorCookbook use BaseCookbookTrait
+- Add PSR11 Message only implementation
+- Add MessageFactory
+- Update Client Interface to use MessageInterface instead of RequestInterface
+- Add Recipe executor dedicated to Symfony Messenger
+- Add Client dedicated to Symfony Messenger
+- Remove some public services
+
+News from Teknoo East Foundation 3.0
+------------------------------------
+
+This library requires PHP 7.4 or newer and it's only compatible with Symfony 4.4 or newer :
+
+- Remove Symfony Template component (integration deprecated into symfony)
+- Create EngineInterface to allow creation of adapter to any templating Engine
+- Create ResultInterface to allow asynchrone template rendering for callback streaming
+- Create Twig Engine implementing EngineInterface and ResultInterface
+- Remove 'east.controller.service' tag (not used)
+- Add east.endpoint.template to inject Twig engine adapter
+- Fix services definitions
+- Complete tests
+- Migrate universal folder in src to src's root and remove legacy support
 
 News from Teknoo East Foundation 2.0
 ------------------------------------
 
-This library requires PHP 7.4 or newer and it's only compatible with Symfony 4.4 or newer, Some change causes bc breaks :
+This library requires PHP 7.4 or newer and it's only compatible with Symfony 4.4 or newer :
 
 - PHP 7.4 is the minimum required
 - Switch to typed properties

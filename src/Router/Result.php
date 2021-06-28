@@ -29,7 +29,7 @@ use Teknoo\Immutable\ImmutableTrait;
 
 /**
  * Immutable object implementing a result of a router. A router can return
- * several results for a same request. Next results are available from the method 'getNext'.
+ * several results for a same request. Next results are available from the method `getNext`.
  *
  * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)
  * @copyright   Copyright (c) 2020-2021 SASU Teknoo Software (https://teknoo.software)

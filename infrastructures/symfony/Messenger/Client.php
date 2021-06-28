@@ -35,6 +35,12 @@ use Teknoo\East\Foundation\Client\ResponseInterface;
 use Throwable;
 
 /**
+ * Default implementation of Teknoo\East\Foundation\Client\ClientInterface dedicated to Symfony Messenger
+ * to use East foundation to represent the bus and emit message on message.
+ *
+ * Any response (PSR11 `MessageInterface`, East `ResponseInterface` or `\JsonSerializable`) are directly passed to
+ * Symfony Messenger bus as object.
+ *
  * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)
  * @copyright   Copyright (c) 2020-2021 SASU Teknoo Software (https://teknoo.software)
  *

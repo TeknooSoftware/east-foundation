@@ -40,12 +40,12 @@ use Psr\Http\Message\StreamInterface;
  */
 interface CallbackStreamInterface extends StreamInterface
 {
-    /**
+    /*
      * Attach a new callback to the instance.
      */
     public function bind(callable $callback): CallbackStreamInterface;
 
-    /**
+    /*
      * Separates any underlying resources from the stream.
      * After the stream has been detached, the stream is in an unusable state.
      */

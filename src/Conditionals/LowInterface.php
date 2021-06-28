@@ -41,7 +41,7 @@ use Teknoo\East\Foundation\Promise\PromiseInterface;
  */
 interface LowInterface
 {
-    /**
+    /*
      * To define object able to test if an another object is lower or equal then it, and pass the result to the promise.
      */
     public function isLowerThan(mixed $object, PromiseInterface $promise): LowInterface;

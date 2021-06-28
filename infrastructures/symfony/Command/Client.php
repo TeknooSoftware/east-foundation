@@ -37,8 +37,12 @@ use Throwable;
 use function json_encode;
 
 /**
- * Default implementation of Teknoo\East\Foundation\Http\ClientInterface to Symfony Command to use East foundation
+ * Default implementation of Teknoo\East\Foundation\Client\ClientInterface to Symfony Command to use East foundation
  * in CLI.
+ *
+ * If the response implements PSR11 `MessageInterface`, its body will be used as output,
+ * If the response implements `\JsonSerializable`, the response will be serialized as json and used as ouput,
+ * Else the response will be converted as string to be used as output
  *
  * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)
  * @copyright   Copyright (c) 2020-2021 SASU Teknoo Software (https://teknoo.software)

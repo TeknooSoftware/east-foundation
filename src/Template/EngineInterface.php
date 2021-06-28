@@ -28,6 +28,8 @@ namespace Teknoo\East\Foundation\Template;
 use Teknoo\East\Foundation\Promise\PromiseInterface;
 
 /**
+ * To implement an adapter to use into a East Context, able to render templates to return HTML content to the client
+ *
  * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)
  * @copyright   Copyright (c) 2020-2021 SASU Teknoo Software (https://teknoo.software)
  *
@@ -38,7 +40,7 @@ use Teknoo\East\Foundation\Promise\PromiseInterface;
  */
 interface EngineInterface
 {
-    /**
+    /*
      * Adapter to plug a template engine, like Twig to and RenderingInterface endpoint
      *
      * @param array<string, mixed> $parameters

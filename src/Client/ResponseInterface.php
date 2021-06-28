@@ -25,7 +25,15 @@ declare(strict_types=1);
 
 namespace Teknoo\East\Foundation\Client;
 
+use Stringable;
+
 /**
+ * Interface defining a response able to be supported by a client. To use for response no compliant with a PSR11
+ * `MessageInterface`.
+ *
+ * Classes implementing this interface must also implement the `Stringable` interface to provide a fallback export
+ * for clients not supporting directly the object.
+ *
  * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)
  * @copyright   Copyright (c) 2020-2021 SASU Teknoo Software (https://teknoo.software)
  *
@@ -34,7 +42,6 @@ namespace Teknoo\East\Foundation\Client;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-interface ResponseInterface
+interface ResponseInterface extends Stringable
 {
-    public function __toString(): string;
 }

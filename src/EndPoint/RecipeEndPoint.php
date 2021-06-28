@@ -37,7 +37,7 @@ use function substr;
 
 /**
  * EndPoint wrapper to execute a recipe as endpoint The workplan is build with the server request and the client
- * instance (with keys "request" and "client").
+ * instance (with keys `Psr\Http\Message\ServerRequestInterface` and `Teknoo\East\Foundation\Client\ClientInterface`).
  *
  * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)
  * @copyright   Copyright (c) 2020-2021 SASU Teknoo Software (https://teknoo.software)

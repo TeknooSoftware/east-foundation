@@ -43,7 +43,7 @@ use Teknoo\Recipe\RecipeInterface as BaseInterface;
  */
 interface RecipeInterface extends BaseInterface
 {
-    /**
+    /*
      * Method to register middleware in the manager to process request.
      */
     public function registerMiddleware(

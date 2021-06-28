@@ -40,7 +40,7 @@ use Teknoo\East\Foundation\Promise\PromiseInterface;
  */
 interface EqualityInterface
 {
-    /**
+    /*
      * To define object able to test if an another object is equal to it, and pass the result to the promise.
      */
     public function isEqualTo(mixed $object, PromiseInterface $promise): EqualityInterface;

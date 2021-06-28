@@ -55,7 +55,7 @@ class KernelListener
     ) {
     }
 
-    /**
+    /*
      * To transform a symfony request as a psr request and inject the symfony request as attribute if the endpoint need
      * the symfony request.
      */
@@ -67,8 +67,7 @@ class KernelListener
         return $psrRequest;
     }
 
-
-    /**
+    /*
      * To intercept a RequestEvent in the kernel loop to extract the request (if it's not an exception request) and
      * process it into East foundation.
      */
