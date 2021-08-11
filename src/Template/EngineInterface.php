@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace Teknoo\East\Foundation\Template;
 
-use Teknoo\East\Foundation\Promise\PromiseInterface;
+use Teknoo\Recipe\Promise\PromiseInterface;
 
 /**
  * To implement an adapter to use into a East Context, able to render templates to return HTML content to the client

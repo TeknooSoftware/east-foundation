@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace Teknoo\East\Foundation\Conditionals;
 
-use Teknoo\East\Foundation\Promise\PromiseInterface;
+use Teknoo\Recipe\Promise\PromiseInterface;
 
 /**
  * Interface to define object able to test if an another object is lower or equal then it, and pass the result

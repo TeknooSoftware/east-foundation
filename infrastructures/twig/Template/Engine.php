@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace Teknoo\East\Twig\Template;
 
-use Teknoo\East\Foundation\Promise\PromiseInterface;
+use Teknoo\Recipe\Promise\PromiseInterface;
 use Teknoo\East\Foundation\Template\EngineInterface;
 use Teknoo\East\Foundation\Template\ResultInterface;
 use Throwable;

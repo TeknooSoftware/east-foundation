@@ -31,7 +31,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\User\UserInterface;
 use Teknoo\East\Foundation\EndPoint\EndPointInterface;
 use Teknoo\East\Foundation\Http\Message\CallbackStreamInterface;
-use Teknoo\East\Foundation\Promise\PromiseInterface;
+use Teknoo\Recipe\Promise\PromiseInterface;
 use Teknoo\East\Foundation\Template\EngineInterface;
 use Teknoo\East\Foundation\Template\ResultInterface;
 use Teknoo\East\FoundationBundle\EndPoint\EastEndPointTrait;

@@ -23,8 +23,8 @@
 namespace Teknoo\Tests\East\FoundationBundle\Session;
 
 use Symfony\Component\HttpFoundation\Session\SessionInterface as SymfonySession;
-use Teknoo\East\Foundation\Promise\Promise;
-use Teknoo\East\Foundation\Promise\PromiseInterface;
+use Teknoo\Recipe\Promise\Promise;
+use Teknoo\Recipe\Promise\PromiseInterface;
 use Teknoo\East\FoundationBundle\Session\Session;
 
 /**

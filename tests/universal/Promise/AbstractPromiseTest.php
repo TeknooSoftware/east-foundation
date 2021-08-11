@@ -131,7 +131,7 @@ abstract class AbstractPromiseTest extends \PHPUnit\Framework\TestCase
             function ($result, $next) use (&$called) {
                 $called = true;
                 self::assertEquals('foo', $result);
-                self::assertNull($next);
+                self::assertIsCallable($next);
             },
             function () {
                 self::fail('Error, fail callback must not be called');
@@ -168,7 +168,7 @@ abstract class AbstractPromiseTest extends \PHPUnit\Framework\TestCase
             function ($result, $next) use (&$called) {
                 $called = true;
                 self::assertEquals(new \Exception('fooBar'), $result);
-                self::assertNull($next);
+                self::assertIsCallable($next);
             }
         );
 
@@ -201,7 +201,7 @@ abstract class AbstractPromiseTest extends \PHPUnit\Framework\TestCase
             function ($result, $next) use (&$called, $refNext) {
                 $called = true;
                 self::assertEquals('foo', $result);
-                self::assertEquals($refNext, $next);
+                self::assertIsCallable($next);
             },
             function () {
                 self::fail('Error, fail callback must not be called');
@@ -240,7 +240,7 @@ abstract class AbstractPromiseTest extends \PHPUnit\Framework\TestCase
             function ($result, $next) use (&$called, $refNext) {
                 $called = true;
                 self::assertEquals(new \Exception('fooBar'), $result);
-                self::assertEquals($refNext, $next);
+                self::assertIsCallable($next);
             }
         );
 

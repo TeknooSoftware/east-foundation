@@ -40,11 +40,9 @@ use Teknoo\Recipe\Promise\PromiseInterface as RecipePromiseInterface;
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
+ *
+ * @deprecated use Teknoo\Recipe\Promise\PromiseInterface directly
  */
 interface PromiseInterface extends RecipePromiseInterface
 {
-    /*
-     * To define a new promise to pass to the called callback.
-     */
-    public function next(?PromiseInterface $promise = null): PromiseInterface;
 }

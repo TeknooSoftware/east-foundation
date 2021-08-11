@@ -30,7 +30,7 @@ use RuntimeException;
 use Teknoo\East\Foundation\EndPoint\RenderingInterface;
 use Teknoo\East\Foundation\Http\Message\CallbackStreamInterface;
 use Teknoo\East\Foundation\Client\ClientInterface;
-use Teknoo\East\Foundation\Promise\Promise;
+use Teknoo\Recipe\Promise\Promise;
 use Teknoo\East\Foundation\Template\EngineInterface;
 use Teknoo\East\Foundation\Template\ResultInterface;
 use Throwable;

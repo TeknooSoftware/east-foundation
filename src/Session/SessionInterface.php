@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace Teknoo\East\Foundation\Session;
 
-use Teknoo\East\Foundation\Promise\PromiseInterface;
+use Teknoo\Recipe\Promise\PromiseInterface;
 
 /**
  * Interface to define object representing sessions in the request to allow developpers to share data between requests.

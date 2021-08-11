@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace Teknoo\East\FoundationBundle\Session;
 
 use DomainException;
-use Teknoo\East\Foundation\Promise\PromiseInterface;
+use Teknoo\Recipe\Promise\PromiseInterface;
 use Teknoo\East\Foundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface as SymfonySession;
 

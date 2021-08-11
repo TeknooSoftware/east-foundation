@@ -25,9 +25,11 @@ declare(strict_types=1);
 
 namespace Teknoo\East\Foundation\Promise;
 
-use Teknoo\Recipe\Promise\Promise as RecipePromise;
-use Teknoo\Recipe\Promise\PromiseInterface as RecipePromiseInterface;
+use Teknoo\Recipe\Promise\Promise as BasePromise;
+use Teknoo\Recipe\Promise\PromiseInterface as BaseInterface;
 use Throwable;
+
+use function trigger_error;
 
 /**
  * With #East, methods and objects communicate via callback defined in interfaces. But it's not always possible to know
@@ -42,29 +44,33 @@ use Throwable;
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
+ *
+ * @deprecated Use Teknoo\Recipe\Promise\Promise directly
  */
-class Promise extends RecipePromise implements PromiseInterface
+class Promise extends BasePromise implements PromiseInterface
 {
-    private ?PromiseInterface $nextPromise = null;
-
-    public function next(?PromiseInterface $promise = null): PromiseInterface
+    public function __construct(callable $onSuccess = null, callable $onFail = null)
     {
-        $clone = clone $this;
-        $clone->nextPromise = $promise;
+        @trigger_error("Since 5.3.3, Use Teknoo\Recipe\Promise\Promise directly", E_USER_DEPRECATED);
 
-        return $clone;
+        parent::__construct($onSuccess, $onFail);
     }
 
-    public function success(mixed $result = null): RecipePromiseInterface
+    public function next(?BaseInterface $promise = null): BaseInterface
     {
-        parent::success($result, $this->nextPromise);
+        return parent::next($promise);
+    }
+
+    public function success(mixed $result = null): PromiseInterface
+    {
+        parent::success($result);
 
         return $this;
     }
 
-    public function fail(Throwable $throwable): RecipePromiseInterface
+    public function fail(Throwable $throwable): PromiseInterface
     {
-        parent::fail($throwable, $this->nextPromise);
+        parent::fail($throwable);
 
         return $this;
     }

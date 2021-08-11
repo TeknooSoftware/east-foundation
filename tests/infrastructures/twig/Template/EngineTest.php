@@ -24,7 +24,7 @@ namespace Teknoo\Tests\East\Twig\Template;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Teknoo\East\Foundation\Promise\PromiseInterface;
+use Teknoo\Recipe\Promise\PromiseInterface;
 use Teknoo\East\Foundation\Template\ResultInterface;
 use Teknoo\East\Foundation\Template\EngineInterface;
 use Teknoo\East\Twig\Template\Engine;
