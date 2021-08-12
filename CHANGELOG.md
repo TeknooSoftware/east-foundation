@@ -1,15 +1,10 @@
 # Teknoo Software - East Foundation - Change Log
 
-## [5.3.4] - 2021-08-12
-### Stable Release
-- Support of Recipe 3.2.1 about following promise disabled by default in Recipe Promise, enable by default 
-  in East deprecated promise.
-
 ## [5.3.3] - 2021-08-11
 ### Stable Release
 - Remove support of Symfony 5.2.
 - Switch to Recipe 3.2.
-- Switch to Recipe's promise instead East' Promise.
+- Switch to Recipe's promise instead East' Promise. 
 - East' Promise are now deprecated.
 
 ## [5.3.2] - 2021-06-28
