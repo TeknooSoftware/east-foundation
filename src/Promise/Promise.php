@@ -49,11 +49,11 @@ use function trigger_error;
  */
 class Promise extends BasePromise implements PromiseInterface
 {
-    public function __construct(callable $onSuccess = null, callable $onFail = null)
+    public function __construct(callable $onSuccess = null, callable $onFail = null, bool $allowNext = true)
     {
         @trigger_error("Since 5.3.3, Use Teknoo\Recipe\Promise\Promise directly", E_USER_DEPRECATED);
 
-        parent::__construct($onSuccess, $onFail);
+        parent::__construct($onSuccess, $onFail, $allowNext);
     }
 
     public function next(?BaseInterface $promise = null): BaseInterface

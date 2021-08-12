@@ -44,7 +44,7 @@ abstract class AbstractPromiseTest extends \PHPUnit\Framework\TestCase
      *
      * @return PromiseInterface
      */
-    abstract public function buildPromise($onSuccess, $onFail): PromiseInterface;
+    abstract public function buildPromise($onSuccess, $onFail, $allowNext = true): PromiseInterface;
 
     public function testConstructorBadSuccessCallable()
     {
@@ -106,7 +106,7 @@ abstract class AbstractPromiseTest extends \PHPUnit\Framework\TestCase
     {
         $promise = $this->buildPromise(function () {
         }, function () {
-        });
+        }, true);
         $nextPromise = $promise->next(null);
 
         self::assertInstanceOf(PromiseInterface::class, $nextPromise);
@@ -117,7 +117,7 @@ abstract class AbstractPromiseTest extends \PHPUnit\Framework\TestCase
     {
         $promise = $this->buildPromise(function () {
         }, function () {
-        });
+        }, true);
         $nextPromise = $promise->next($this->createMock(PromiseInterface::class));
 
         self::assertInstanceOf(PromiseInterface::class, $nextPromise);
@@ -135,7 +135,8 @@ abstract class AbstractPromiseTest extends \PHPUnit\Framework\TestCase
             },
             function () {
                 self::fail('Error, fail callback must not be called');
-            }
+            },
+            true
         );
 
         self::assertInstanceOf(
@@ -169,7 +170,8 @@ abstract class AbstractPromiseTest extends \PHPUnit\Framework\TestCase
                 $called = true;
                 self::assertEquals(new \Exception('fooBar'), $result);
                 self::assertIsCallable($next);
-            }
+            },
+            true
         );
 
         self::assertInstanceOf(
@@ -205,7 +207,8 @@ abstract class AbstractPromiseTest extends \PHPUnit\Framework\TestCase
             },
             function () {
                 self::fail('Error, fail callback must not be called');
-            }
+            },
+            true
         );
 
         self::assertInstanceOf(
@@ -241,7 +244,8 @@ abstract class AbstractPromiseTest extends \PHPUnit\Framework\TestCase
                 $called = true;
                 self::assertEquals(new \Exception('fooBar'), $result);
                 self::assertIsCallable($next);
-            }
+            },
+            true
         );
 
         self::assertInstanceOf(
