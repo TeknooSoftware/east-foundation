@@ -1,5 +1,9 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [5.3.4] - 2021-08-19
+### Stable Release
+- QA, Fix PHPDoc
+
 ## [5.3.3] - 2021-08-11
 ### Stable Release
 - Remove support of Symfony 5.2.

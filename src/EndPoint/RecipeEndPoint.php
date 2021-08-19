@@ -59,6 +59,9 @@ class RecipeEndPoint
     ) {
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function fetchWorkplan(ServerRequestInterface $request): array
     {
         if (null === $this->container) {

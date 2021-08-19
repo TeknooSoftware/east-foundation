@@ -69,6 +69,7 @@ interface ParameterInterface extends ImmutableInterface
      * To get the `\ReflectionClass` instance representing the accepted class's instance for this controller's
      * parameter. If the parameter has no default value, the method must throw a `\LogicException`.
      *
+     * @return ReflectionClass<object>
      * @throws LogicException
      */
     public function getClass(): ReflectionClass;

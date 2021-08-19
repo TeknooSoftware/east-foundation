@@ -55,6 +55,9 @@ class Engine implements EngineInterface
         try {
             $promise->success(
                 new class ($this->twig, $view, $parameters) implements ResultInterface {
+                    /**
+                     * @param array<string, mixed> $parameters
+                     */
                     public function __construct(
                         private Environment $twig,
                         private string $view,

@@ -51,9 +51,13 @@ class Parameter implements ParameterInterface
 
     private mixed $defaultValue;
 
+    /**
+     * @var ReflectionClass<object>|null
+     */
     private ?ReflectionClass $classHinted;
 
     /**
+     * @param ReflectionClass<object>|null $classHinted
      * @throws InvalidArgumentException when $classHinted is invalid (not a \ReflectionClass or null value
      */
     public function __construct(string $name, bool $hasDefaultValue, mixed $defaultValue, ?ReflectionClass $classHinted)

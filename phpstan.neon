@@ -1,7 +1,5 @@
 parameters:
     scopeClass: Teknoo\States\PHPStan\Analyser\Scope
-    checkMissingIterableValueType: false
-    checkGenericClassInNonGenericObjectType: false
     treatPhpDocTypesAsCertain: false
     ignoreErrors:
         -

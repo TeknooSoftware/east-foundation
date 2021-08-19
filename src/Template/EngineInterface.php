@@ -42,7 +42,8 @@ interface EngineInterface
 {
     /*
      * Adapter to plug a template engine, like Twig to and RenderingInterface endpoint
-     *
+     */
+    /**
      * @param array<string, mixed> $parameters
      */
     public function render(
