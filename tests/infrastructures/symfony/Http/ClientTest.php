@@ -97,6 +97,7 @@ class ClientTest extends TestCase
 
             $response = $this->createMock(ResponseInterface::class);
             $response->expects(self::any())->method('withBody')->willReturnSelf();
+            $response->expects(self::any())->method('withAddedHeader')->willReturnSelf();
 
             $this->responseFactory->expects(self::any())
                 ->method('createResponse')

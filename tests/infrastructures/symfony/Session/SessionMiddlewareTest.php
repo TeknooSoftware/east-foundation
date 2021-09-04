@@ -118,6 +118,10 @@ class SessionMiddlewareTest extends \PHPUnit\Framework\TestCase
             ->with($requestUpdated)
             ->willReturnSelf();
 
+        $manager->expects(self::once())
+            ->method('updateWorkPlan')
+            ->willReturnSelf();
+
         self::assertInstanceOf(
             SessionMiddleware::class,
             $this->buildMiddleware()->execute($client, $request, $manager)

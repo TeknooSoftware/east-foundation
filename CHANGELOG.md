@@ -1,5 +1,11 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [5.3.5] - 2021-09-04
+### Stable Release
+- Remove dead code in Symfony Router adapter.
+- Fix error with `JsonSerializable` response's content type in client.
+- Put `SessionInterface` instance also into workplan.
+
 ## [5.3.4] - 2021-08-19
 ### Stable Release
 - QA, Fix PHPDoc

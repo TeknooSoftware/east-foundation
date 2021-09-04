@@ -62,6 +62,9 @@ class SessionMiddleware implements MiddlewareInterface
             $request = $message->withAttribute(SessionInterface::ATTRIBUTE_KEY, $session);
 
             $manager->updateMessage($request);
+            $manager->updateWorkPlan([
+                SessionInterface::class => $session,
+            ]);
         }
 
         return $this;

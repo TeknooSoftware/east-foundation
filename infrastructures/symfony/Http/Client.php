@@ -124,12 +124,13 @@ class Client implements ClientWithResponseEventInterface
                 $content = (string) $this->response;
             }
 
+            $originalResponse = $this->response;
             $psrResponse = $this->responseFactory->createResponse();
             $this->response = $psrResponse->withBody(
                 $this->streamFactory->createStream($content)
             );
 
-            if ($this->response instanceof JsonSerializable) {
+            if ($originalResponse instanceof JsonSerializable) {
                 $this->response = $this->response->withAddedHeader('content-type', 'application/json');
             }
         }
