@@ -281,7 +281,7 @@ class FeatureContext implements Context
         };
 
         $request = new ServerRequest();
-        $request = $request->withUri(new \Zend\Diactoros\Uri($url));
+        $request = $request->withUri(new \Laminas\Diactoros\Uri($url));
         $query = [];
         \parse_str($request->getUri()->getQuery(), $query);
         $request = $request->withQueryParams($query);
