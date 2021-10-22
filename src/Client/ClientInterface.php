@@ -82,15 +82,11 @@ interface ClientInterface
 
     /**
      * To set the client to be not silent, by default, when it will send a missing response and throw an exception
-     *
-     * @return ClientInterface
      */
     public function mustSendAResponse(): ClientInterface;
 
     /**
      * To set the client to be silent, by default, when it will send a missing response and throw an exception
-     *
-     * @return ClientInterface
      */
     public function sendAResponseIsOptional(): ClientInterface;
 }

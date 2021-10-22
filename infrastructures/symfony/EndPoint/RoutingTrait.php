@@ -74,8 +74,6 @@ trait RoutingTrait
 
     /*
      * Returns a RedirectResponse to the given URL.
-     *
-     * @param array<string, mixed> $headers An array of values to inject into HTTP header response
      */
     public function redirect(
         ClientInterface $client,
