@@ -1,6 +1,4 @@
 parameters:
-    scopeClass: Teknoo\States\PHPStan\Analyser\Scope
-    treatPhpDocTypesAsCertain: false
     ignoreErrors:
         -
             message: '#Method [a-zA-Z0-9\\_]+::registerMiddleware\(\) should return [a-zA-Z0-9\\_]+ but returns [a-zA-Z0-9\\_]+.#'
@@ -11,8 +9,30 @@ parameters:
         -
             message: '#Method [a-zA-Z0-9\\_]+::matchRequest\(\) should return \(callable\(\): mixed\)\|null but returns#'
             path: infrastructures/symfony/Router/Router.php
+        -
+            message: '#mixed#'
+            path: infrastructures/symfony
 services:
-	-
-		class: Teknoo\States\PHPStan\MethodsClassExtension
-		tags:
-			- phpstan.broker.methodsClassReflectionExtension
+    -
+        class: Teknoo\States\PHPStan\MethodsClassExtension
+        arguments:
+            parser: @defaultAnalysisParser
+        tags:
+            - phpstan.broker.methodsClassReflectionExtension
+
+    -
+        class: Teknoo\States\PHPStan\Analyser\ASTVisitor
+        arguments:
+            parser: @defaultAnalysisParser
+
+    -
+        class: Teknoo\States\PHPStan\Analyser\NodeScopeResolver
+        autowired: PHPStan\Analyser\NodeScopeResolver
+        arguments:
+            parser: @defaultAnalysisParser
+            classReflector: @nodeScopeResolverClassReflector
+            polluteScopeWithLoopInitialAssignments: %polluteScopeWithLoopInitialAssignments%
+            polluteScopeWithAlwaysIterableForeach: %polluteScopeWithAlwaysIterableForeach%
+            earlyTerminatingMethodCalls: %earlyTerminatingMethodCalls%
+            earlyTerminatingFunctionCalls: %earlyTerminatingFunctionCalls%
+            implicitThrows: %exceptions.implicitThrows%

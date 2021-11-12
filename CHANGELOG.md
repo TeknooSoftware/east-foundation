@@ -1,5 +1,9 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [5.3.6] - 2021-11-12
+### Stable Release
+- Migrate to PHPStan 1.1+.
+
 ## [5.3.5] - 2021-09-04
 ### Stable Release
 - Remove dead code in Symfony Router adapter.

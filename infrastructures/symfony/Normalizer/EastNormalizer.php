@@ -31,6 +31,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Teknoo\East\Foundation\Normalizer\EastNormalizerInterface;
 use Teknoo\East\Foundation\Normalizer\Object\NormalizableInterface;
 
+use function is_object;
 use function is_scalar;
 use function sprintf;
 
@@ -91,7 +92,7 @@ class EastNormalizer implements EastNormalizerInterface, NormalizerInterface, No
             throw new RuntimeException(
                 sprintf(
                     'Error the class "%s" does not implement the interface "%s"',
-                    $object::class,
+                    is_object($object) ? $object::class : 'scalar',
                     NormalizableInterface::class
                 )
             );

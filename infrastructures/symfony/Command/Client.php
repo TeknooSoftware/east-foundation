@@ -138,7 +138,7 @@ class Client implements ClientInterface
     {
         $this->getErrorOutput()->writeln($throwable->getMessage());
 
-        $this->returnCode = $throwable->getCode();
+        $this->returnCode = (int) $throwable->getCode();
 
         return $this;
     }
