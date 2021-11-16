@@ -1,5 +1,9 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [5.3.7] - 2021-11-16
+### Stable Release
+- QA
+
 ## [5.3.6] - 2021-11-12
 ### Stable Release
 - Migrate to PHPStan 1.1+.
