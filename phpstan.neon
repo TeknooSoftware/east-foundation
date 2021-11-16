@@ -1,17 +1,12 @@
 parameters:
     ignoreErrors:
+        - '#[a-zA-Z0-9\\_]+::registerMiddleware\(\)#'
         -
-            message: '#Method [a-zA-Z0-9\\_]+::registerMiddleware\(\) should return [a-zA-Z0-9\\_]+ but returns [a-zA-Z0-9\\_]+.#'
-            path: src/Recipe/Recipe.php
+            message: '#Cannot cast mixed to int#'
+            path: infrastructures/symfony/Command
         -
-            message: '#Parameter \#1 \$[a-zA-Z]+ of class ReflectionClass constructor expects class-string\<T of object\>\|T of object, string given\.#'
-            path: infrastructures/symfony/Router/Router.php
-        -
-            message: '#Method [a-zA-Z0-9\\_]+::matchRequest\(\) should return \(callable\(\): mixed\)\|null but returns#'
-            path: infrastructures/symfony/Router/Router.php
-        -
-            message: '#mixed#'
-            path: infrastructures/symfony
+            message: '#should return \(callable\(\): mixed\)\|null but returns non-empty-string#'
+            path: infrastructures/symfony/Router
 services:
     -
         class: Teknoo\States\PHPStan\MethodsClassExtension

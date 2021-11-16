@@ -112,6 +112,7 @@ class Router implements RouterInterface
 
         if ($isCallable && is_string($controller)) {
             if (str_contains($controller, '::')) {
+                /** @var array{class-string, string} $explodedController */
                 $explodedController = explode('::', $controller);
 
                 $reflection = new ReflectionClass((string) $explodedController[0]);
