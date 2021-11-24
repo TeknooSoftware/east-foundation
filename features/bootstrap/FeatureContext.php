@@ -185,7 +185,7 @@ class FeatureContext implements Context
                                 return $this->value;
                             }
 
-                            public function jsonSerialize()
+                            public function jsonSerialize(): mixed
                             {
                                 return ['foo' => $this->value];
                             }

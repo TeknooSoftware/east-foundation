@@ -179,7 +179,7 @@ class ClientTest extends TestCase
                 return 'foo';
             }
 
-            public function jsonSerialize()
+            public function jsonSerialize(): mixed
             {
                 return ['foo' => 'bar'];
             }
@@ -281,7 +281,7 @@ class ClientTest extends TestCase
                 return 'foo';
             }
 
-            public function jsonSerialize()
+            public function jsonSerialize(): mixed
             {
                 return ['foo' => 'bar'];
             }

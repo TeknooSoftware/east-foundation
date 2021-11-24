@@ -203,7 +203,7 @@ class ClientTest extends TestCase
                 return 'foo';
             }
 
-            public function jsonSerialize()
+            public function jsonSerialize(): mixed
             {
                 return ['foo' => 'bar'];
             }
@@ -260,7 +260,7 @@ class ClientTest extends TestCase
                 return 'foo';
             }
 
-            public function jsonSerialize()
+            public function jsonSerialize(): mixed
             {
                 return ['foo' => 'bar'];
             }
@@ -348,7 +348,7 @@ class ClientTest extends TestCase
             {
                 throw new \Exception("Must be not called");
             }
-            public function jsonSerialize()
+            public function jsonSerialize(): mixed
             {
                 throw new \Exception("Must be not called");
             }
@@ -389,7 +389,7 @@ class ClientTest extends TestCase
                 return 'foo';
             }
 
-            public function jsonSerialize()
+            public function jsonSerialize(): mixed
             {
                 return ['foo' => 'bar'];
             }
@@ -484,7 +484,7 @@ class ClientTest extends TestCase
                 return 'foo';
             }
 
-            public function jsonSerialize()
+            public function jsonSerialize(): mixed
             {
                 return ['foo' => 'bar'];
             }
