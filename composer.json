@@ -47,7 +47,7 @@
         "phpstan/phpstan": "^1.2.0",
         "behat/behat": "~3.10",
         "symfony/config": "~5.3",
-        "symfony/console": "~5.3",
+        "symfony/console": "~5.4",
         "symfony/dependency-injection": "~5.3",
         "symfony/framework-bundle": "~5.3",
         "symfony/http-kernel": "~5.3",
