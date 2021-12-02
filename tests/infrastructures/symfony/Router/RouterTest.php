@@ -86,11 +86,12 @@ class RouterTest extends \PHPUnit\Framework\TestCase
     /**
      * @return Router
      */
-    private function buildRouter(): Router
+    private function buildRouter(array $excludedPaths = []): Router
     {
         return new Router(
             $this->getUrlMatcherMock(),
-            $this->getContainerMock()
+            $this->getContainerMock(),
+            $excludedPaths,
         );
     }
 
@@ -209,6 +210,34 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         self::assertInstanceOf(
             $this->getRouterClass(),
             $this->buildRouter()->execute($client, $request, $manager)
+        );
+    }
+
+    public function testExecuteWithNoPathEcluded()
+    {
+        $uri = $this->createMock(UriInterface::class);
+        $uri->expects(self::any())->method('getPath')->willReturn('/foo');
+        /**
+         * @var \PHPUnit\Framework\MockObject\MockObject|ClientInterface
+         */
+        $client = $this->createMock(ClientInterface::class);
+        /**
+         * @var ServerRequestInterface|\PHPUnit\Framework\MockObject\MockObject $request
+         */
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->expects(self::any())->method('getUri')->willReturn($uri);
+        /**
+         * @var ManagerInterface|\PHPUnit\Framework\MockObject\MockObject $manager
+         */
+        $manager = $this->createMock(ManagerInterface::class);
+
+        $this->getUrlMatcherMock()->expects(self::any())->method('match')->willReturn(['foo', 'bar']);
+
+        $manager->expects(self::never())->method('continueExecution');
+
+        self::assertInstanceOf(
+            $this->getRouterClass(),
+            $this->buildRouter(['/foo'])->execute($client, $request, $manager)
         );
     }
 

@@ -39,11 +39,13 @@ use Teknoo\East\Foundation\Router\Result;
 use Teknoo\East\Foundation\Router\ResultInterface;
 use Teknoo\East\Foundation\Router\RouterInterface;
 
+use function array_flip;
 use function explode;
 use function is_callable;
 use function is_string;
 use function str_starts_with;
 use function str_contains;
+use function strtolower;
 use function substr;
 
 /**
@@ -64,10 +66,20 @@ use function substr;
  */
 class Router implements RouterInterface
 {
+    /**
+     * @var array<string, mixed>
+     */
+    private array $excludePaths;
+
+    /**
+     * @param array<int, string> $excludePaths
+     */
     public function __construct(
         private UrlMatcherInterface $matcher,
         private ContainerInterface $container,
+        array $excludePaths = [],
     ) {
+        $this->excludePaths = array_flip($excludePaths);
     }
 
     private function cleanSymfonyHandler(string $path): string
@@ -93,10 +105,16 @@ class Router implements RouterInterface
      */
     private function matchRequest(ServerRequestInterface $request): ?callable
     {
+        $path = $this->cleanSymfonyHandler(
+            (string) $request->getUri()->getPath()
+        );
+
+        if (isset($this->excludePaths[strtolower($path)])) {
+            return null;
+        }
+
         try {
-            $parameters = $this->matcher->match(
-                $this->cleanSymfonyHandler((string) $request->getUri()->getPath())
-            );
+            $parameters = $this->matcher->match($path);
         } catch (ResourceNotFoundException) {
             /* Do nothing, keep the framework to manage it */
         }
