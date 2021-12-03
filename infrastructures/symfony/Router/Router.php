@@ -41,8 +41,10 @@ use Teknoo\East\Foundation\Router\RouterInterface;
 
 use function array_flip;
 use function explode;
+use function implode;
 use function is_callable;
 use function is_string;
+use function preg_match;
 use function str_starts_with;
 use function str_contains;
 use function strtolower;
@@ -66,10 +68,7 @@ use function substr;
  */
 class Router implements RouterInterface
 {
-    /**
-     * @var array<string, mixed>
-     */
-    private array $excludePaths;
+    private ?string $excludePathsRegex = null;
 
     /**
      * @param array<int, string> $excludePaths
@@ -79,7 +78,9 @@ class Router implements RouterInterface
         private ContainerInterface $container,
         array $excludePaths = [],
     ) {
-        $this->excludePaths = array_flip($excludePaths);
+        if (!empty($excludePaths)) {
+            $this->excludePathsRegex = '#^(' . implode('|', $excludePaths) . ')#S';
+        }
     }
 
     private function cleanSymfonyHandler(string $path): string
@@ -109,7 +110,7 @@ class Router implements RouterInterface
             (string) $request->getUri()->getPath()
         );
 
-        if (isset($this->excludePaths[strtolower($path)])) {
+        if (null !== $this->excludePathsRegex && preg_match($this->excludePathsRegex, $path)) {
             return null;
         }
 

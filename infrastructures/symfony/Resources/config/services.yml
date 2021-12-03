@@ -1,6 +1,6 @@
 parameters:
     teknoo.east.symfony.router.class: 'Teknoo\East\FoundationBundle\Router\Router'
-    teknoo.east.symfony.router.excluded_paths: []
+    teknoo.east.symfony.router.excluded_paths: ['/_error', '/_wdt', '/_profiler']
     teknoo.east.symfony.listener.kernel.class: 'Teknoo\East\FoundationBundle\Listener\KernelListener'
     teknoo.east.symfony.normalizer.east_normalizer.class: 'Teknoo\East\FoundationBundle\Normalizer\EastNormalizer'
     teknoo.east.twig.template.engine: 'Teknoo\East\Twig\Template\Engine'

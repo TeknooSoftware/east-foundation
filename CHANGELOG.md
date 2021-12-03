@@ -1,5 +1,15 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [5.3.9] - 2021-12-03
+### Stable Release
+- Fix some deprecated with PHP 8.1
+- Add `excludedPaths` option in Router to not manage some path in this library 
+  and fallback directly to Symfony (usefull for profiler or other stuff from Symfony).
+
+## [5.3.8] - 2021-12-03
+### Stable Release
+- Fix some deprecated with PHP 8.1
+
 ## [5.3.7] - 2021-11-16
 ### Stable Release
 - QA
