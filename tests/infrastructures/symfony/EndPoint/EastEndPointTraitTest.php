@@ -28,6 +28,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Teknoo\East\Foundation\EndPoint\EndPointInterface;
 use Teknoo\East\Foundation\Http\Message\CallbackStreamInterface;
@@ -521,38 +522,12 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testGetUserBadTocken()
+    public function testGetUserBadToken()
     {
         $storage = $this->createMock(TokenStorageInterface::class, [], [], '', false);
         $storage->expects(self::any())
             ->method('getToken')
-            ->willReturn('fooBar');
-
-        self::assertEmpty(
-            (new class() implements EndPointInterface {
-                use EastEndPointTrait;
-
-                public function getGetUser()
-                {
-                    return $this->getUser();
-                }
-            })->setTokenStorage($storage)->getGetUser()
-        );
-    }
-
-    public function testGetUserBadEmptyUser()
-    {
-        $storage = $this->createMock(TokenStorageInterface::class, [], [], '', false);
-        $storage->expects(self::any())
-            ->method('getToken')
-            ->willReturn(new class() implements EndPointInterface {
-                use EastEndPointTrait;
-
-                public function getUser()
-                {
-                    return null;
-                }
-            });
+            ->willReturn($this->createMock(TokenInterface::class));
 
         self::assertEmpty(
             (new class() implements EndPointInterface {
@@ -568,37 +543,21 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
 
     public function testGetUserUser()
     {
+        $token = $this->createMock(TokenInterface::class);
+        $token->expects(self::any())
+            ->method('getUser')
+            ->willReturnCallback(function () {
+                return new class() implements UserInterface {
+                    public function getRoles(): array {}
+                    public function eraseCredentials() {}
+                    public function getUserIdentifier(): string {}
+                };
+            });
+
         $storage = $this->createMock(TokenStorageInterface::class, [], [], '', false);
         $storage->expects(self::any())
             ->method('getToken')
-            ->willReturn(new class() implements EndPointInterface {
-                use EastEndPointTrait;
-
-                public function getUser()
-                {
-                    return new class() implements UserInterface {
-                        public function getRoles()
-                        {
-                        }
-
-                        public function getPassword()
-                        {
-                        }
-
-                        public function getSalt()
-                        {
-                        }
-
-                        public function getUsername()
-                        {
-                        }
-
-                        public function eraseCredentials()
-                        {
-                        }
-                    };
-                }
-            });
+            ->willReturn($token);
 
         self::assertInstanceOf(
             UserInterface::class,
