@@ -548,6 +548,9 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
             ->method('getUser')
             ->willReturnCallback(function () {
                 return new class() implements UserInterface {
+                    public function getPassword() {}
+                    public function getSalt() {}
+                    public function getUsername() {}
                     public function getRoles(): array {}
                     public function eraseCredentials() {}
                     public function getUserIdentifier(): string {}
