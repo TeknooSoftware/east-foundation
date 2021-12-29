@@ -2,9 +2,6 @@ parameters:
     ignoreErrors:
         - '#[a-zA-Z0-9\\_]+::registerMiddleware\(\)#'
         -
-            message: '#Cannot cast mixed to int#'
-            path: infrastructures/symfony/Command
-        -
             message: '#should return \(callable\(\): mixed\)\|null but returns non-empty-string#'
             path: infrastructures/symfony/Router
 services:
@@ -25,7 +22,7 @@ services:
         autowired: PHPStan\Analyser\NodeScopeResolver
         arguments:
             parser: @defaultAnalysisParser
-            classReflector: @nodeScopeResolverClassReflector
+            reflector: @nodeScopeResolverReflector
             polluteScopeWithLoopInitialAssignments: %polluteScopeWithLoopInitialAssignments%
             polluteScopeWithAlwaysIterableForeach: %polluteScopeWithAlwaysIterableForeach%
             earlyTerminatingMethodCalls: %earlyTerminatingMethodCalls%
