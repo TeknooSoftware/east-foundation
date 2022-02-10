@@ -80,7 +80,7 @@ abstract class AbstractPromiseTest extends \PHPUnit\Framework\TestCase
 
     public function testConstructorImmutable()
     {
-        $this->expectException(ImmutableException::class);
+        $this->expectException(\Throwable::class);
         $this->buildPromise(
             function () {
             },
