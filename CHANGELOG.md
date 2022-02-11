@@ -1,5 +1,11 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [5.3.11] - 2022-02-11
+### Stable Release
+- Support Immutable 3.0
+- Support State 6.0
+- Support Recipe 4.0
+
 ## [5.3.10] - 2021-12-12
 ### Stable Release
 - Remove unused QA tool
