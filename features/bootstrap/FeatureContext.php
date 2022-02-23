@@ -9,6 +9,7 @@ use PHPUnit\Framework\Assert;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Teknoo\Recipe\Bowl\FiberRecipeBowl;
 use Teknoo\East\Foundation\EndPoint\RecipeEndPoint;
 use Teknoo\East\Foundation\Recipe\CookbookInterface;
 use Teknoo\East\Foundation\Recipe\Recipe;
@@ -145,10 +146,7 @@ class FeatureContext implements Context
         $this->router->registerRoute($url, $controller);
     }
 
-    /**
-     * @Given The router can process the request :url to recipe :controllerName to return a :type response
-     */
-    public function theRouterCanProcessTheRequestToRecipeToReturnResponse($url, $controllerName, $type)
+    private function createRecipeToReturnResponse(string $url, string $controllerName, string $type, bool $inFiber)
     {
         $controller = $controllerName;
         if ('barFoo' === $controllerName) {
@@ -193,7 +191,12 @@ class FeatureContext implements Context
                     );
                 }
             }, 'body');
-            $controller = new RecipeEndPoint($recipe);
+
+            if (false === $inFiber) {
+                $controller = new RecipeEndPoint($recipe);
+            } else {
+                $controller = new RecipeEndPoint(new FiberRecipeBowl($recipe, 0));
+            }
         }
 
         if ('fooBar' === $controllerName) {
@@ -201,10 +204,30 @@ class FeatureContext implements Context
             $recipe = $recipe->cook(function (ClientInterface $client, ServerRequest $request, $test) {
 
             }, 'body');
-            $controller = new RecipeEndPoint($recipe);
+            if (false === $inFiber) {
+                $controller = new RecipeEndPoint($recipe);
+            } else {
+                $controller = new RecipeEndPoint(new FiberRecipeBowl($recipe, 0));
+            }
         }
 
         $this->router->registerRoute($url, $controller);
+    }
+
+    /**
+     * @Given The router can process the request :url to recipe :controllerName to return a :type response
+     */
+    public function theRouterCanProcessTheRequestToRecipeToReturnResponse($url, $controllerName, $type)
+    {
+        $this->createRecipeToReturnResponse($url, $controllerName, $type, false);
+    }
+
+    /**
+     * @Given The router can process the request :url to recipe :controllerName in a fiber to return a :type response
+     */
+    public function theRouterCanProcessTheRequestToRecipeInAFiberToReturnResponse($url, $controllerName, $type)
+    {
+        $this->createRecipeToReturnResponse($url, $controllerName, $type, true);
     }
 
     /**

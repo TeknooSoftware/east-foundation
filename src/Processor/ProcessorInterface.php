@@ -12,8 +12,8 @@
  * to richarddeloge@gmail.com so we can send you a copy immediately.
  *
  *
- * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)
- * @copyright   Copyright (c) 2020-2021 SASU Teknoo Software (https://teknoo.software)
+ * @copyright   Copyright (c) EIRL Richard Déloge (richarddeloge@gmail.com)
+ * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software)
  *
  * @link        http://teknoo.software/east Project website
  *
@@ -32,8 +32,8 @@ use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
  *
  * If some arguments are missing in the request. The processor must throws exceptions.
  *
- * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)
- * @copyright   Copyright (c) 2020-2021 SASU Teknoo Software (https://teknoo.software)
+ * @copyright   Copyright (c) EIRL Richard Déloge (richarddeloge@gmail.com)
+ * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software)
  *
  * @link        http://teknoo.software/east Project website
  *
@@ -42,7 +42,7 @@ use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
  */
 interface ProcessorInterface extends MiddlewareInterface
 {
-    public const MIDDLEWARE_PRIORITY = 15;
+    final public const MIDDLEWARE_PRIORITY = 15;
 
-    public const WORK_PLAN_CONTROLLER_KEY = 'controller';
+    final public const WORK_PLAN_CONTROLLER_KEY = 'controller';
 }

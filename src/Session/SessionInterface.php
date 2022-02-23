@@ -12,8 +12,8 @@
  * to richarddeloge@gmail.com so we can send you a copy immediately.
  *
  *
- * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)
- * @copyright   Copyright (c) 2020-2021 SASU Teknoo Software (https://teknoo.software)
+ * @copyright   Copyright (c) EIRL Richard Déloge (richarddeloge@gmail.com)
+ * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software)
  *
  * @link        http://teknoo.software/east Project website
  *
@@ -30,8 +30,8 @@ use Teknoo\Recipe\Promise\PromiseInterface;
 /**
  * Interface to define object representing sessions in the request to allow developpers to share data between requests.
  *
- * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)
- * @copyright   Copyright (c) 2020-2021 SASU Teknoo Software (https://teknoo.software)
+ * @copyright   Copyright (c) EIRL Richard Déloge (richarddeloge@gmail.com)
+ * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software)
  *
  * @link        http://teknoo.software/east Project website
  *
@@ -40,7 +40,7 @@ use Teknoo\Recipe\Promise\PromiseInterface;
  */
 interface SessionInterface
 {
-    public const ATTRIBUTE_KEY = 'session';
+    final public const ATTRIBUTE_KEY = 'session';
 
     /**
      * Stores a given value in the session

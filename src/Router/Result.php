@@ -12,8 +12,8 @@
  * to richarddeloge@gmail.com so we can send you a copy immediately.
  *
  *
- * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)
- * @copyright   Copyright (c) 2020-2021 SASU Teknoo Software (https://teknoo.software)
+ * @copyright   Copyright (c) EIRL Richard Déloge (richarddeloge@gmail.com)
+ * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software)
  *
  * @link        http://teknoo.software/east Project website
  *
@@ -31,8 +31,8 @@ use Teknoo\Immutable\ImmutableTrait;
  * Immutable object implementing a result of a router. A router can return
  * several results for a same request. Next results are available from the method `getNext`.
  *
- * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)
- * @copyright   Copyright (c) 2020-2021 SASU Teknoo Software (https://teknoo.software)
+ * @copyright   Copyright (c) EIRL Richard Déloge (richarddeloge@gmail.com)
+ * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software)
  *
  * @link        http://teknoo.software/east Project website
  *
@@ -48,14 +48,13 @@ class Result implements ResultInterface
      */
     private $controller;
 
-    private ?ResultInterface $next;
-
-    public function __construct(callable $controller, ?ResultInterface $next = null)
-    {
+    public function __construct(
+        callable $controller,
+        private readonly ?ResultInterface $next = null
+    ) {
         $this->uniqueConstructorCheck();
 
         $this->controller = $controller;
-        $this->next = $next;
     }
 
     public function getController(): callable

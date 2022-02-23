@@ -12,8 +12,8 @@
  * to richarddeloge@gmail.com so we can send you a copy immediately.
  *
  *
- * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)
- * @copyright   Copyright (c) 2020-2021 SASU Teknoo Software (https://teknoo.software)
+ * @copyright   Copyright (c) EIRL Richard Déloge (richarddeloge@gmail.com)
+ * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software)
  *
  * @link        http://teknoo.software/east Project website
  *
@@ -30,6 +30,9 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\Recipe\BaseRecipeInterface;
+use Teknoo\Recipe\Bowl\BowlInterface;
+use Teknoo\Recipe\Bowl\RecipeBowl;
+use Teknoo\Recipe\CookingSupervisorInterface;
 
 use function is_string;
 use function strlen;
@@ -39,8 +42,8 @@ use function substr;
  * EndPoint wrapper to execute a recipe as endpoint The workplan is build with the server request and the client
  * instance (with keys `Psr\Http\Message\ServerRequestInterface` and `Teknoo\East\Foundation\Client\ClientInterface`).
  *
- * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)
- * @copyright   Copyright (c) 2020-2021 SASU Teknoo Software (https://teknoo.software)
+ * @copyright   Copyright (c) EIRL Richard Déloge (richarddeloge@gmail.com)
+ * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software)
  *
  * @link        http://teknoo.software/east Project website
  *
@@ -49,14 +52,21 @@ use function substr;
  */
 class RecipeEndPoint
 {
+    private BowlInterface $bowl;
+
     /**
      * @param array<string, mixed> $initialWorkPlan
      */
     public function __construct(
-        private BaseRecipeInterface $recipe,
+        BaseRecipeInterface|BowlInterface $recipe,
         private ?ContainerInterface $container = null,
         private array $initialWorkPlan = [],
     ) {
+        if ($recipe instanceof BaseRecipeInterface) {
+            $this->bowl = new RecipeBowl($recipe, 0);
+        } else {
+            $this->bowl = $recipe;
+        }
     }
 
     /**
@@ -99,11 +109,19 @@ class RecipeEndPoint
 
     public function __invoke(
         ManagerInterface $manager,
-        ServerRequestInterface $request
+        ServerRequestInterface $request,
+        ?CookingSupervisorInterface $cookingSupervisor = null,
     ): RecipeEndPoint {
-        $manager = $manager->reserveAndBegin($this->recipe);
+        $workPlan = $this->fetchWorkplan($request);
+        $this->bowl->execute(
+            $manager,
+            $workPlan,
+            $cookingSupervisor,
+        );
 
-        $manager->process($this->fetchWorkplan($request));
+        if (null !== $cookingSupervisor) {
+            $cookingSupervisor->finish();
+        }
 
         return $this;
     }

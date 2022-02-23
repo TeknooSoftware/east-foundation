@@ -8,7 +8,7 @@ Teknoo Software - East Foundation
 [![PHPStan](https://img.shields.io/badge/PHPStan-enabled-brightgreen.svg?style=flat)](https://github.com/phpstan/phpstan)
 
 East Foundation is a universal package to implement the [#east](http://blog.est.voyage/phpTour2015/) philosophy with 
-any framework supporting PSR-11 or with Symfony 5.2+. :
+any framework supporting PSR-11 or with Symfony 6.0+. :
 All public method of objects must return $this or a new instance of $this.
 
 This bundle uses PSR7 requests and responses and do automatically the conversion from Symfony's requests and responses.
@@ -221,12 +221,12 @@ To install with Symfony
 
 This library requires :
 
-    * PHP 8.0+
+    * PHP 8.1+
     * A PHP autoloader (Composer is recommended)
     * Teknoo/Immutable.
     * Teknoo/States.
     * Teknoo/Recipe.
-    * Optional: Symfony 5.2+
+    * Optional: Symfony 6.0+
 
 News from Teknoo East Foundation 5.0
 ------------------------------------
