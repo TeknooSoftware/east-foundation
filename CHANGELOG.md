@@ -1,5 +1,13 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [6.0.0] - 2022-02-23
+### Stable Release
+- Constants are final in `SessionMiddleware`, processors, routers and sessions components
+- Use readonly for immutables objects (`Processor` and routers's results)
+- Support Fibers in main `Cookbook` and `RecipeEndPoint`. `RecipeEndPoint` accepts also bowl
+ and `FiberRecipeBowl`.
+- Remove support of PHP 8.0 and Symfony 5.4 and below
+
 ## [5.3.11] - 2022-02-11
 ### Stable Release
 - Support Immutable 3.0

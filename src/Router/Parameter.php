@@ -12,8 +12,8 @@
  * to richarddeloge@gmail.com so we can send you a copy immediately.
  *
  *
- * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)
- * @copyright   Copyright (c) 2020-2021 SASU Teknoo Software (https://teknoo.software)
+ * @copyright   Copyright (c) EIRL Richard Déloge (richarddeloge@gmail.com)
+ * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software)
  *
  * @link        http://teknoo.software/east Project website
  *
@@ -33,8 +33,8 @@ use Teknoo\Immutable\ImmutableTrait;
 /**
  * ValueObject representing a parameter for a controller.
  *
- * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)
- * @copyright   Copyright (c) 2020-2021 SASU Teknoo Software (https://teknoo.software)
+ * @copyright   Copyright (c) EIRL Richard Déloge (richarddeloge@gmail.com)
+ * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software)
  *
  * @link        http://teknoo.software/east Project website
  *
@@ -45,29 +45,17 @@ class Parameter implements ParameterInterface
 {
     use ImmutableTrait;
 
-    private string $name;
-
-    private bool $hasDefaultValue;
-
-    private mixed $defaultValue;
-
-    /**
-     * @var ReflectionClass<object>|null
-     */
-    private ?ReflectionClass $classHinted;
-
     /**
      * @param ReflectionClass<object>|null $classHinted
      * @throws InvalidArgumentException when $classHinted is invalid (not a \ReflectionClass or null value
      */
-    public function __construct(string $name, bool $hasDefaultValue, mixed $defaultValue, ?ReflectionClass $classHinted)
-    {
+    public function __construct(
+        private readonly string $name,
+        private readonly bool $hasDefaultValue,
+        private readonly mixed $defaultValue,
+        private readonly ?ReflectionClass $classHinted
+    ) {
         $this->uniqueConstructorCheck();
-
-        $this->name = $name;
-        $this->hasDefaultValue = $hasDefaultValue;
-        $this->defaultValue = $defaultValue;
-        $this->classHinted = $classHinted;
     }
 
     public function getName(): string

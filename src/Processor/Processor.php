@@ -12,8 +12,8 @@
  * to richarddeloge@gmail.com so we can send you a copy immediately.
  *
  *
- * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)
- * @copyright   Copyright (c) 2020-2021 SASU Teknoo Software (https://teknoo.software)
+ * @copyright   Copyright (c) EIRL Richard Déloge (richarddeloge@gmail.com)
+ * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software)
  *
  * @link        http://teknoo.software/east Project website
  *
@@ -38,8 +38,8 @@ use Teknoo\Immutable\ImmutableTrait;
  * Processor implementation to inject the controller returned by the router into the dedicated place in the workplan
  * to allow the chef to execute it via a DynamicBowl.
  *
- * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)
- * @copyright   Copyright (c) 2020-2021 SASU Teknoo Software (https://teknoo.software)
+ * @copyright   Copyright (c) EIRL Richard Déloge (richarddeloge@gmail.com)
+ * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software)
  *
  * @link        http://teknoo.software/east Project website
  *
@@ -51,7 +51,7 @@ class Processor implements ProcessorInterface, ImmutableInterface
     use ImmutableTrait;
 
     public function __construct(
-        private bool $clientInSilentMode = false,
+        private readonly bool $clientInSilentMode = false,
     ) {
     }
 

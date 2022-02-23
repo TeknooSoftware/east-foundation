@@ -12,8 +12,8 @@
  * to richarddeloge@gmail.com so we can send you a copy immediately.
  *
  *
- * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)
- * @copyright   Copyright (c) 2020-2021 SASU Teknoo Software (https://teknoo.software)
+ * @copyright   Copyright (c) EIRL Richard Déloge (richarddeloge@gmail.com)
+ * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software)
  *
  * @link        http://teknoo.software/east Project website
  *
@@ -27,14 +27,14 @@ namespace Teknoo\East\Foundation\Processor;
 
 use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\East\Foundation\Router\ResultInterface;
-use Teknoo\Recipe\Bowl\RecipeBowl;
+use Teknoo\Recipe\Bowl\AbstractRecipeBowl;
 
 /**
  * Invokable able to detect if all requests in the stack are processed or if the Processor
  * Recipe is ended.
  *
- * @copyright   Copyright (c) 2009-2021 EIRL Richard Déloge (richarddeloge@gmail.com)
- * @copyright   Copyright (c) 2020-2021 SASU Teknoo Software (https://teknoo.software)
+ * @copyright   Copyright (c) EIRL Richard Déloge (richarddeloge@gmail.com)
+ * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software)
  *
  * @link        http://teknoo.software/east Project website
  *
@@ -44,7 +44,7 @@ use Teknoo\Recipe\Bowl\RecipeBowl;
 class LoopDetector implements LoopDetectorInterface
 {
     public function __invoke(
-        RecipeBowl $bowl,
+        AbstractRecipeBowl $bowl,
         ManagerInterface $manager,
         ResultInterface $result = null
     ): LoopDetectorInterface {
