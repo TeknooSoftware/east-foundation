@@ -228,6 +228,17 @@ This library requires :
     * Teknoo/Recipe.
     * Optional: Symfony 6.0+
 
+News from Teknoo East Foundation 6.0
+------------------------------------
+
+This library requires PHP 8.1 or newer and it's only compatible with Symfony 6.1 or newer :
+
+- Constants are final in `SessionMiddleware`, processors, routers and sessions components.
+- Use readonly for immutables objects (`Processor` and routers' results).
+- Support Fibers in main `Cookbook` and `RecipeEndPoint`. `RecipeEndPoint` accepts also bowl
+  and `FiberRecipeBowl`.
+- Remove support of PHP 8.0 and Symfony 5.4 and below.
+
 News from Teknoo East Foundation 5.0
 ------------------------------------
 
