@@ -1,5 +1,9 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [6.0.1] - 2022-02-27
+### Stable Release
+- Requipe Recipe 6.0.1+ to fix issue with `RecipeBowl`.
+
 ## [6.0.0] - 2022-02-23
 ### Stable Release
 - Constants are final in `SessionMiddleware`, processors, routers and sessions components
