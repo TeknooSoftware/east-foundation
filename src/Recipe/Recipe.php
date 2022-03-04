@@ -53,7 +53,7 @@ class Recipe extends BaseRecipe implements RecipeInterface
         }
 
         return $this->cook(
-            [$middleware, 'execute'],
+            $middleware->execute(...),
             $middlewareName,
             [],
             $priority
