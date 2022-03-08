@@ -1,5 +1,9 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [6.0.2] - 2022-03-08
+### Stable Release
+- Require Immutable 3.0.1 or later
+
 ## [6.0.1] - 2022-02-27
 ### Stable Release
 - Requipe Recipe 6.0.1+ to fix issue with `RecipeBowl`.
