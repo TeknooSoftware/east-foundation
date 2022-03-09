@@ -55,6 +55,9 @@ class Session implements SessionInterface
         return $this;
     }
 
+    /**
+     * @param PromiseInterface<mixed, mixed> $promise
+     */
     public function get(string $key, PromiseInterface $promise): SessionInterface
     {
         if ($this->symfonySession->has($key)) {

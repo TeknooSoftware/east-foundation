@@ -38,11 +38,17 @@ use Teknoo\Recipe\Promise\PromiseInterface;
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
+ *
+ * @template TSuccessArgType
+ * @template TResultType
  */
 interface LowInterface
 {
-    /*
+    /**
      * To define object able to test if an another object is lower or equal then it, and pass the result to the promise.
+     *
+     * @param PromiseInterface<TSuccessArgType, TResultType> $promise
+     * @return LowInterface<TSuccessArgType, TResultType>
      */
     public function isLowerThan(mixed $object, PromiseInterface $promise): LowInterface;
 }

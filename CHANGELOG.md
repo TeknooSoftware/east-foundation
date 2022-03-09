@@ -1,5 +1,11 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [6.0.3] - 2022-03-08
+### Stable Release
+- Require Recipe 4.1.2 or later
+- Improve PHPDoc about `PromiseInterface` with template
+- Remove deprecated features from 5.* and below
+
 ## [6.0.2] - 2022-03-08
 ### Stable Release
 - Require Immutable 3.0.1 or later

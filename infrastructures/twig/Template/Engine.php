@@ -50,6 +50,9 @@ class Engine implements EngineInterface
     ) {
     }
 
+    /**
+     * @param PromiseInterface<mixed, mixed> $promise
+     */
     public function render(PromiseInterface $promise, string $view, array $parameters = []): EngineInterface
     {
         try {

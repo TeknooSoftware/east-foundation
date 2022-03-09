@@ -50,8 +50,10 @@ interface SessionInterface
      */
     public function set(string $key, mixed $value): SessionInterface;
 
-    /*
+    /**
      * Retrieves a value from the session
+     *
+     * @param PromiseInterface<mixed, mixed> $promise
      */
     public function get(string $key, PromiseInterface $promise): SessionInterface;
 

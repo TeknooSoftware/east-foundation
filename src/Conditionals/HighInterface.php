@@ -38,11 +38,17 @@ use Teknoo\Recipe\Promise\PromiseInterface;
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
+ *
+ * @template TSuccessArgType
+ * @template TResultType
  */
 interface HighInterface
 {
-    /*
+    /**
      * To define object able to test if an another object is great or equal to it, and pass the result to the promise.
+     *
+     * @param PromiseInterface<TSuccessArgType, TResultType> $promise
+     * @return HighInterface<TSuccessArgType, TResultType>
      */
     public function isUpperThan(mixed $object, PromiseInterface $promise): HighInterface;
 }

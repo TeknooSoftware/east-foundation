@@ -38,12 +38,18 @@ use Teknoo\Recipe\Promise\PromiseInterface;
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
+ *
+ * @template TSuccessArgType
+ * @template TResultType
  */
 interface SuperiorityInterface
 {
-    /*
+    /**
      * To define object able to test if an another object is great than it, and pass the result
      * to the promise.
+     *
+     * @param PromiseInterface<TSuccessArgType, TResultType> $promise
+     * @return SuperiorityInterface<TSuccessArgType, TResultType>
      */
     public function isGreaterThan(mixed $object, PromiseInterface $promise): SuperiorityInterface;
 }

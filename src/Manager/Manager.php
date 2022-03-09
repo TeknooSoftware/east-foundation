@@ -52,8 +52,6 @@ class Manager extends Chef implements ManagerInterface
         $this->process([
             MessageInterface::class => $message,
             ClientInterface::class => $client,
-            'request' => $message, //@deprecated
-            'client' => $client, //@deprecated
         ]);
 
         return $this;
@@ -66,8 +64,6 @@ class Manager extends Chef implements ManagerInterface
         $this->continue([
             MessageInterface::class => $message,
             ClientInterface::class => $client,
-            'request' => $message, //@deprecated
-            'client' => $client, //@deprecated
         ]);
 
         return $this;
@@ -78,7 +74,6 @@ class Manager extends Chef implements ManagerInterface
     ): ManagerInterface {
         $this->updateWorkPlan([
             MessageInterface::class => $message,
-            'request' => $message, //@deprecated
         ]);
 
         return $this;

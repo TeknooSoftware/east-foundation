@@ -37,11 +37,17 @@ use Teknoo\Recipe\Promise\PromiseInterface;
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
+ *
+ * @template TSuccessArgType
+ * @template TResultType
  */
 interface EqualityInterface
 {
-    /*
+    /**
      * To define object able to test if an another object is equal to it, and pass the result to the promise.
+     *
+     * @param PromiseInterface<TSuccessArgType, TResultType> $promise
+     * @return EqualityInterface<TSuccessArgType, TResultType>
      */
     public function isEqualTo(mixed $object, PromiseInterface $promise): EqualityInterface;
 }
