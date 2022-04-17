@@ -1,5 +1,9 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [6.0.4] - 2022-04-17
+### Stable Release
+- Rename `.yml` files to `.yaml`
+
 ## [6.0.3] - 2022-03-08
 ### Stable Release
 - Require Recipe 4.1.2 or later
