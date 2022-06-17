@@ -47,9 +47,6 @@ class EastFoundationBundleTest extends \PHPUnit\Framework\TestCase
         return new EastFoundationBundle();
     }
 
-    /**
-     * @return string
-     */
     private function getBundleClass(): string
     {
         return EastFoundationBundle::class;

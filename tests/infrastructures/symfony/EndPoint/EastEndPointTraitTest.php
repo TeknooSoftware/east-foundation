@@ -106,9 +106,7 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
         $client = $this->createMock(ClientInterface::class);
         $client->expects(self::once())
             ->method('acceptResponse')
-            ->with($this->callback(function ($instance) {
-                return $instance instanceof ResponseInterface;
-            }))
+            ->with($this->callback(fn($instance) => $instance instanceof ResponseInterface))
             ->willReturnSelf();
 
         $controller = (new class() implements EndPointInterface {
@@ -120,7 +118,7 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
         });
 
         self::assertInstanceOf(
-            get_class($controller),
+            $controller::class,
             $controller->setResponseFactory($responseFactory)->getRedirect($client)
         );
     }
@@ -141,9 +139,7 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
         $client = $this->createMock(ClientInterface::class);
         $client->expects(self::once())
             ->method('acceptResponse')
-            ->with($this->callback(function ($instance) {
-                return $instance instanceof ResponseInterface;
-            }))
+            ->with($this->callback(fn($instance) => $instance instanceof ResponseInterface))
             ->willReturnSelf();
 
         $controller = (new class() implements EndPointInterface {
@@ -156,7 +152,7 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
         });
 
         self::assertInstanceOf(
-            get_class($controller),
+            $controller::class,
             $controller->setResponseFactory($responseFactory)->setRouter($router)->getRedirect($client)
         );
     }
@@ -185,7 +181,7 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
         $stream->expects(self::any())->method('write')->willReturnCallback(
             function ($value) use (&$body) {
                 $body = $value;
-                return \strlen($body);
+                return \strlen((string) $body);
             }
         );
         $stream->expects(self::any())->method('getContents')->willReturnCallback(
@@ -199,9 +195,7 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
         $client = $this->createMock(ClientInterface::class);
         $client->expects(self::once())
             ->method('acceptResponse')
-            ->with($this->callback(function ($instance) {
-                return $instance instanceof ResponseInterface && $instance->getBody()->getContents();
-            }))
+            ->with($this->callback(fn($instance) => $instance instanceof ResponseInterface && $instance->getBody()->getContents()))
             ->willReturnSelf();
 
         $result = $this->createMock(ResultInterface::class);
@@ -225,7 +219,7 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
         });
 
         self::assertInstanceOf(
-            get_class($controller),
+            $controller::class,
             $controller
                 ->setStreamFactory($streamFactory)
                 ->setResponseFactory($responseFactory)
@@ -273,9 +267,7 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
         $client = $this->createMock(ClientInterface::class);
         $client->expects(self::once())
             ->method('acceptResponse')
-            ->with($this->callback(function ($instance) {
-                return $instance instanceof ResponseInterface && $instance->getBody()->getContents();
-            }))
+            ->with($this->callback(fn($instance) => $instance instanceof ResponseInterface && $instance->getBody()->getContents()))
             ->willReturnSelf();
 
         $result = $this->createMock(ResultInterface::class);
@@ -299,7 +291,7 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
         });
 
         self::assertInstanceOf(
-            get_class($controller),
+            $controller::class,
             $controller
                 ->setStreamFactory($streamFactory)
                 ->setResponseFactory($responseFactory)
@@ -344,7 +336,7 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
         });
 
         self::assertInstanceOf(
-            get_class($controller),
+            $controller::class,
             $controller
                 ->setStreamFactory($streamFactory)
                 ->setResponseFactory($responseFactory)
@@ -459,7 +451,7 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
         (new class() implements EndPointInterface {
             use EastEndPointTrait;
 
-            public function getCreateNotFoundException()
+            public function getCreateNotFoundException(): never
             {
                 throw $this->createNotFoundException();
             }
@@ -478,7 +470,7 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
         (new class() implements EndPointInterface {
             use EastEndPointTrait;
 
-            public function getCreateAccessDeniedException()
+            public function getCreateAccessDeniedException(): never
             {
                 throw $this->createAccessDeniedException();
             }
@@ -546,15 +538,13 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
         $token = $this->createMock(TokenInterface::class);
         $token->expects(self::any())
             ->method('getUser')
-            ->willReturnCallback(function () {
-                return new class() implements UserInterface {
-                    public function getPassword() {}
-                    public function getSalt() {}
-                    public function getUsername() {}
-                    public function getRoles(): array {}
-                    public function eraseCredentials() {}
-                    public function getUserIdentifier(): string {}
-                };
+            ->willReturnCallback(fn() => new class() implements UserInterface {
+                public function getPassword() {}
+                public function getSalt() {}
+                public function getUsername() {}
+                public function getRoles(): array {}
+                public function eraseCredentials() {}
+                public function getUserIdentifier(): string {}
             });
 
         $storage = $this->createMock(TokenStorageInterface::class, [], [], '', false);

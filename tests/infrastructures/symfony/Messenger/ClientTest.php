@@ -73,9 +73,6 @@ class ClientTest extends TestCase
         );
     }
 
-    /**
-     * @return string
-     */
     private function getClientClass(): string
     {
         return Client::class;

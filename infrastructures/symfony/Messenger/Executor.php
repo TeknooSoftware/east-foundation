@@ -45,7 +45,7 @@ use Teknoo\Recipe\BaseRecipeInterface;
 class Executor
 {
     public function __construct(
-        private ManagerInterface $manager,
+        private readonly ManagerInterface $manager,
     ) {
     }
 

@@ -103,9 +103,7 @@ class SessionMiddlewareTest extends \PHPUnit\Framework\TestCase
 
         $request->expects(self::once())
             ->method('withAttribute')
-            ->with(SessionInterface::ATTRIBUTE_KEY, $this->callback(function ($object) {
-                return $object instanceof Session;
-            }))
+            ->with(SessionInterface::ATTRIBUTE_KEY, $this->callback(fn($object) => $object instanceof Session))
             ->willReturn($requestUpdated);
 
         $manager->expects(self::any())

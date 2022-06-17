@@ -55,9 +55,9 @@ class Cookbook implements CookbookInterface
 
     public function __construct(
         RecipeInterface $recipe,
-        private RouterInterface $router,
-        private ProcessorCookbookInterface $processorCookbook,
-        private LoopDetectorInterface $loopDetector,
+        private readonly RouterInterface $router,
+        private readonly ProcessorCookbookInterface $processorCookbook,
+        private readonly LoopDetectorInterface $loopDetector,
     ) {
         $this->fill($recipe);
     }
@@ -68,15 +68,13 @@ class Cookbook implements CookbookInterface
             $recipe = $recipe->registerMiddleware($this->router, RouterInterface::MIDDLEWARE_PRIORITY);
         }
 
-        $recipe = $recipe->execute(
+        return $recipe->execute(
             $this->processorCookbook,
             ProcessorRecipeInterface::class,
             $this->loopDetector,
             ProcessorRecipeInterface::MIDDLEWARE_PRIORITY,
             true
         );
-
-        return $recipe;
     }
 
     public function fill(OriginalRecipeInterface $recipe): BaseCookbookInterface

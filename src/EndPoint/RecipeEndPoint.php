@@ -59,8 +59,8 @@ class RecipeEndPoint
      */
     public function __construct(
         BaseRecipeInterface|BowlInterface $recipe,
-        private ?ContainerInterface $container = null,
-        private array $initialWorkPlan = [],
+        private readonly ?ContainerInterface $container = null,
+        private readonly array $initialWorkPlan = [],
     ) {
         if ($recipe instanceof BaseRecipeInterface) {
             $this->bowl = new RecipeBowl($recipe, 0);

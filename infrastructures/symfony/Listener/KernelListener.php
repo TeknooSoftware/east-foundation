@@ -49,9 +49,9 @@ use Teknoo\East\FoundationBundle\Http\ClientWithResponseEventInterface;
 class KernelListener
 {
     public function __construct(
-        private ManagerInterface $manager,
-        private ClientWithResponseEventInterface $client,
-        private HttpMessageFactoryInterface $factory,
+        private readonly ManagerInterface $manager,
+        private readonly ClientWithResponseEventInterface $client,
+        private readonly HttpMessageFactoryInterface $factory,
     ) {
     }
 
@@ -62,9 +62,8 @@ class KernelListener
     private function getPsrRequest(Request $symfonyRequest): ServerRequestInterface
     {
         $psrRequest = $this->factory->createRequest($symfonyRequest);
-        $psrRequest = $psrRequest->withAttribute('request', $symfonyRequest);
 
-        return $psrRequest;
+        return $psrRequest->withAttribute('request', $symfonyRequest);
     }
 
     /*

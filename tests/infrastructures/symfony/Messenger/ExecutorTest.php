@@ -22,6 +22,7 @@
 
 namespace Teknoo\Tests\East\FoundationBundle\Messenger;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\MessageInterface;
 use Teknoo\East\Foundation\Client\ClientInterface;
@@ -50,10 +51,7 @@ class ExecutorTest extends TestCase
      */
     private $manager;
 
-    /**
-     * @return ManagerInterface|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private function getManagerMock()
+    private function getManagerMock(): ManagerInterface&MockObject
     {
         if (!$this->manager instanceof ManagerInterface) {
             $this->manager = $this->createMock(ManagerInterface::class);

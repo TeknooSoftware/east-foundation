@@ -133,9 +133,6 @@ class ClientTest extends TestCase
         );
     }
 
-    /**
-     * @return string
-     */
     private function getClientClass(): string
     {
         return Client::class;
@@ -283,17 +280,13 @@ class ClientTest extends TestCase
         $this->getRequestEventMock()
             ->expects(self::any())
             ->method('setResponse')
-            ->with($this->callback(function ($response) {
-                return $response instanceof Response;
-            }))
+            ->with($this->callback(fn($response) => $response instanceof Response))
             ->willReturnSelf();
 
         $this->getHttpFoundationFactoryMock()
             ->expects(self::any())
             ->method('createResponse')
-            ->with($this->callback(function ($response) {
-                return $response instanceof ResponseInterface;
-            }))
+            ->with($this->callback(fn($response) => $response instanceof ResponseInterface))
             ->willReturn($this->createMock(Response::class));
 
         $client = $this->buildClient();
@@ -310,17 +303,13 @@ class ClientTest extends TestCase
         $this->getRequestEventMock()
             ->expects(self::any())
             ->method('setResponse')
-            ->with($this->callback(function ($response) {
-                return $response instanceof Response;
-            }))
+            ->with($this->callback(fn($response) => $response instanceof Response))
             ->willReturnSelf();
 
         $this->getHttpFoundationFactoryMock()
             ->expects(self::any())
             ->method('createResponse')
-            ->with($this->callback(function ($response) {
-                return $response instanceof ResponseInterface;
-            }))
+            ->with($this->callback(fn($response) => $response instanceof ResponseInterface))
             ->willReturn($this->createMock(Response::class));
 
         $client = $this->buildClient();
@@ -360,17 +349,13 @@ class ClientTest extends TestCase
         $this->getRequestEventMock()
             ->expects(self::any())
             ->method('setResponse')
-            ->with($this->callback(function ($response) {
-                return $response instanceof Response;
-            }))
+            ->with($this->callback(fn($response) => $response instanceof Response))
             ->willReturnSelf();
 
         $this->getHttpFoundationFactoryMock()
             ->expects(self::any())
             ->method('createResponse')
-            ->with($this->callback(function ($response) {
-                return $response instanceof ResponseInterface;
-            }))
+            ->with($this->callback(fn($response) => $response instanceof ResponseInterface))
             ->willReturn($this->createMock(Response::class));
 
         $client = $this->buildClient();
@@ -398,17 +383,13 @@ class ClientTest extends TestCase
         $this->getRequestEventMock()
             ->expects(self::any())
             ->method('setResponse')
-            ->with($this->callback(function ($response) {
-                return $response instanceof Response;
-            }))
+            ->with($this->callback(fn($response) => $response instanceof Response))
             ->willReturnSelf();
 
         $this->getHttpFoundationFactoryMock()
             ->expects(self::any())
             ->method('createResponse')
-            ->with($this->callback(function ($response) {
-                return $response instanceof ResponseInterface;
-            }))
+            ->with($this->callback(fn($response) => $response instanceof ResponseInterface))
             ->willReturn($this->createMock(Response::class));
 
         $client = $this->buildClient();
@@ -428,17 +409,13 @@ class ClientTest extends TestCase
         $this->getRequestEventMock()
             ->expects(self::any())
             ->method('setResponse')
-            ->with($this->callback(function ($response) {
-                return $response instanceof Response;
-            }))
+            ->with($this->callback(fn($response) => $response instanceof Response))
             ->willReturnSelf();
 
         $this->getHttpFoundationFactoryMock()
             ->expects(self::any())
             ->method('createResponse')
-            ->with($this->callback(function ($response) {
-                return $response instanceof ResponseInterface;
-            }))
+            ->with($this->callback(fn($response) => $response instanceof ResponseInterface))
             ->willReturn($this->createMock(Response::class));
 
         $client = $this->buildClient();
@@ -455,17 +432,13 @@ class ClientTest extends TestCase
         $this->getRequestEventMock()
             ->expects(self::any())
             ->method('setResponse')
-            ->with($this->callback(function ($response) {
-                return $response instanceof Response;
-            }))
+            ->with($this->callback(fn($response) => $response instanceof Response))
             ->willReturnSelf();
 
         $this->getHttpFoundationFactoryMock()
             ->expects(self::any())
             ->method('createResponse')
-            ->with($this->callback(function ($response) {
-                return $response instanceof ResponseInterface;
-            }))
+            ->with($this->callback(fn($response) => $response instanceof ResponseInterface))
             ->willReturn($this->createMock(Response::class));
 
         $client = $this->buildClient();
@@ -493,17 +466,13 @@ class ClientTest extends TestCase
         $this->getRequestEventMock()
             ->expects(self::any())
             ->method('setResponse')
-            ->with($this->callback(function ($response) {
-                return $response instanceof Response;
-            }))
+            ->with($this->callback(fn($response) => $response instanceof Response))
             ->willReturnSelf();
 
         $this->getHttpFoundationFactoryMock()
             ->expects(self::any())
             ->method('createResponse')
-            ->with($this->callback(function ($response) {
-                return $response instanceof ResponseInterface;
-            }))
+            ->with($this->callback(fn($response) => $response instanceof ResponseInterface))
             ->willReturn($this->createMock(Response::class));
 
         $client = $this->buildClient();
@@ -554,17 +523,13 @@ class ClientTest extends TestCase
         $this->getRequestEventMock()
             ->expects(self::any())
             ->method('setResponse')
-            ->with($this->callback(function ($response) {
-                return $response instanceof Response;
-            }))
+            ->with($this->callback(fn($response) => $response instanceof Response))
             ->willReturnSelf();
 
         $this->getHttpFoundationFactoryMock()
             ->expects(self::any())
             ->method('createResponse')
-            ->with($this->callback(function ($response) {
-                return $response instanceof ResponseInterface;
-            }))
+            ->with($this->callback(fn($response) => $response instanceof ResponseInterface))
             ->willReturn($this->createMock(Response::class));
 
         $client = $this->buildClient();
@@ -584,17 +549,13 @@ class ClientTest extends TestCase
         $this->getRequestEventMock()
             ->expects(self::once())
             ->method('setResponse')
-            ->with($this->callback(function ($response) {
-                return $response instanceof Response;
-            }))
+            ->with($this->callback(fn($response) => $response instanceof Response))
             ->willReturnSelf();
 
         $this->getHttpFoundationFactoryMock()
             ->expects(self::once())
             ->method('createResponse')
-            ->with($this->callback(function ($response) {
-                return $response instanceof ResponseInterface;
-            }))
+            ->with($this->callback(fn($response) => $response instanceof ResponseInterface))
             ->willReturn($this->createMock(Response::class));
 
         $client = $this->buildClient();
@@ -614,17 +575,13 @@ class ClientTest extends TestCase
         $this->getRequestEventMock()
             ->expects(self::any())
             ->method('setResponse')
-            ->with($this->callback(function ($response) {
-                return $response instanceof Response;
-            }))
+            ->with($this->callback(fn($response) => $response instanceof Response))
             ->willReturnSelf();
 
         $this->getHttpFoundationFactoryMock()
             ->expects(self::any())
             ->method('createResponse')
-            ->with($this->callback(function ($response) {
-                return $response instanceof ResponseInterface;
-            }))
+            ->with($this->callback(fn($response) => $response instanceof ResponseInterface))
             ->willReturn($this->createMock(Response::class));
 
         $client = $this->buildClient();

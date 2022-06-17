@@ -65,10 +65,10 @@ class Client implements ClientWithResponseEventInterface
 
     public function __construct(
         private HttpFoundationFactory $factory,
-        private ResponseFactoryInterface $responseFactory,
-        private StreamFactoryInterface $streamFactory,
+        private readonly ResponseFactoryInterface $responseFactory,
+        private readonly StreamFactoryInterface $streamFactory,
         private ?RequestEvent $requestEvent = null,
-        private ?LoggerInterface $logger = null,
+        private readonly ?LoggerInterface $logger = null,
     ) {
         if ($requestEvent instanceof RequestEvent) {
             $this->setRequestEvent($requestEvent);
@@ -119,7 +119,7 @@ class Client implements ClientWithResponseEventInterface
             && $this->response instanceof EastResponse
         ) {
             if ($this->response instanceof JsonSerializable) {
-                $content = (string) json_encode($this->response);
+                $content = (string) json_encode($this->response, JSON_THROW_ON_ERROR);
             } else {
                 $content = (string) $this->response;
             }

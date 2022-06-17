@@ -98,9 +98,7 @@ trait TemplatingTrait
             new Promise(
                 static function (ResultInterface $result) use ($stream, $client, $response) {
                     if ($stream instanceof CallbackStreamInterface) {
-                        $stream->bind(static function () use ($result) {
-                            return (string) $result;
-                        });
+                        $stream->bind(static fn() => (string) $result);
                     } else {
                         $stream->write((string) $result);
                     }

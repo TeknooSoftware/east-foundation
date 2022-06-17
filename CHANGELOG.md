@@ -1,5 +1,10 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [6.0.5] - 2022-06-17
+### Stable Release
+- Clean code and test thanks to Rector
+- Update libs requirements
+
 ## [6.0.4] - 2022-04-17
 ### Stable Release
 - Rename `.yml` files to `.yaml`

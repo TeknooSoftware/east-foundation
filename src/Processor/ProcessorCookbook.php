@@ -54,7 +54,7 @@ class ProcessorCookbook implements ProcessorCookbookInterface
 
     public function __construct(
         ProcessorRecipeInterface $recipe,
-        private ProcessorInterface $processor,
+        private readonly ProcessorInterface $processor,
     ) {
         $this->fill($recipe);
     }
@@ -65,14 +65,12 @@ class ProcessorCookbook implements ProcessorCookbookInterface
             $recipe = $recipe->registerMiddleware($this->processor, ProcessorInterface::MIDDLEWARE_PRIORITY);
         }
 
-        $recipe = $recipe->cook(
+        return $recipe->cook(
             new DynamicBowl(ProcessorInterface::WORK_PLAN_CONTROLLER_KEY, false),
             ProcessorInterface::WORK_PLAN_CONTROLLER_KEY,
             [],
             20
         );
-
-        return $recipe;
     }
 
     public function fill(OriginalRecipeInterface $recipe): CookbookInterface

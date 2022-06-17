@@ -22,6 +22,7 @@
 
 namespace Teknoo\Tests\East\FoundationBundle\DependencyInjection;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Teknoo\East\FoundationBundle\DependencyInjection\EastFoundationExtension;
 
@@ -44,10 +45,7 @@ class EastFrameworkExtensionTest extends \PHPUnit\Framework\TestCase
      */
     private $container;
 
-    /**
-     * @return ContainerBuilder|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private function getContainerBuilderMock()
+    private function getContainerBuilderMock(): ContainerBuilder&MockObject
     {
         if (!$this->container instanceof ContainerBuilder) {
             $this->container = $this->createMock(ContainerBuilder::class);
@@ -64,9 +62,6 @@ class EastFrameworkExtensionTest extends \PHPUnit\Framework\TestCase
         return new EastFoundationExtension();
     }
 
-    /**
-     * @return string
-     */
     private function getExtensionClass(): string
     {
         return EastFoundationExtension::class;

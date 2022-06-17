@@ -22,6 +22,7 @@
 
 namespace Teknoo\Tests\East\FoundationBundle\Listener;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -60,10 +61,7 @@ class KernelListenerTest extends TestCase
      */
     private $factory;
 
-    /**
-     * @return ManagerInterface|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private function getManagerMock()
+    private function getManagerMock(): ManagerInterface&MockObject
     {
         if (!$this->manager instanceof ManagerInterface) {
             $this->manager = $this->createMock(ManagerInterface::class);
@@ -72,10 +70,7 @@ class KernelListenerTest extends TestCase
         return $this->manager;
     }
 
-    /**
-     * @return ClientWithResponseEventInterface|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private function getClientWithResponseEventInterfaceMock()
+    private function getClientWithResponseEventInterfaceMock(): ClientWithResponseEventInterface&MockObject
     {
         if (!$this->clientWithResponseEventInterface instanceof ClientWithResponseEventInterface) {
             $this->clientWithResponseEventInterface = $this->createMock(ClientWithResponseEventInterface::class);
@@ -84,10 +79,7 @@ class KernelListenerTest extends TestCase
         return $this->clientWithResponseEventInterface;
     }
 
-    /**
-     * @return HttpMessageFactoryInterface|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private function getFactoryMock()
+    private function getFactoryMock(): HttpMessageFactoryInterface&MockObject
     {
         if (!$this->factory instanceof HttpMessageFactoryInterface) {
             $this->factory = $this->createMock(HttpMessageFactoryInterface::class);
@@ -108,9 +100,6 @@ class KernelListenerTest extends TestCase
         );
     }
 
-    /**
-     * @return string
-     */
     private function getKernelListenerClass(): string
     {
         return KernelListener::class;

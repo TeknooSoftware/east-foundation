@@ -44,7 +44,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface as SymfonySession;
 class Session implements SessionInterface
 {
     public function __construct(
-        private SymfonySession $symfonySession,
+        private readonly SymfonySession $symfonySession,
     ) {
     }
 

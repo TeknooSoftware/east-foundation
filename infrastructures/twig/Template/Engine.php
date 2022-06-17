@@ -46,7 +46,7 @@ use Twig\Environment;
 class Engine implements EngineInterface
 {
     public function __construct(
-        private Environment $twig,
+        private readonly Environment $twig,
     ) {
     }
 
@@ -62,9 +62,9 @@ class Engine implements EngineInterface
                      * @param array<string, mixed> $parameters
                      */
                     public function __construct(
-                        private Environment $twig,
-                        private string $view,
-                        private array $parameters,
+                        private readonly Environment $twig,
+                        private readonly string $view,
+                        private readonly array $parameters,
                     ) {
                     }
 

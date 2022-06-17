@@ -95,9 +95,6 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @return string
-     */
     private function getRouterClass(): string
     {
         return Router::class;
@@ -361,7 +358,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
             }
         };
 
-        $this->getUrlMatcherMock()->expects(self::any())->method('match')->willReturn(['_controller' => \get_class($class).'::action']);
+        $this->getUrlMatcherMock()->expects(self::any())->method('match')->willReturn(['_controller' => $class::class.'::action']);
 
         $manager->expects(self::any())->method('continueExecution')->willReturnSelf();
         $manager->expects(self::once())->method('updateMessage')->willReturnSelf();
@@ -397,7 +394,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
             }
         };
 
-        $this->getUrlMatcherMock()->expects(self::any())->method('match')->willReturn(['_controller' => \get_class($class).'::action']);
+        $this->getUrlMatcherMock()->expects(self::any())->method('match')->willReturn(['_controller' => $class::class.'::action']);
 
         $manager->expects(self::never())->method('continueExecution')->willReturnSelf();
 
@@ -432,7 +429,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
             }
         };
 
-        $this->getUrlMatcherMock()->expects(self::any())->method('match')->willReturn(['_controller' => \get_class($class).'::action2']);
+        $this->getUrlMatcherMock()->expects(self::any())->method('match')->willReturn(['_controller' => $class::class.'::action2']);
 
         $manager->expects(self::never())->method('continueExecution')->willReturnSelf();
 
@@ -467,7 +464,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
             }
         };
 
-        $this->getUrlMatcherMock()->expects(self::any())->method('match')->willReturn(['_controller' => \get_class($class).'::action']);
+        $this->getUrlMatcherMock()->expects(self::any())->method('match')->willReturn(['_controller' => $class::class.'::action']);
 
         $manager->expects(self::never())->method('continueExecution');
 

@@ -74,8 +74,8 @@ class Router implements RouterInterface
      * @param array<int, string> $excludePaths
      */
     public function __construct(
-        private UrlMatcherInterface $matcher,
-        private ContainerInterface $container,
+        private readonly UrlMatcherInterface $matcher,
+        private readonly ContainerInterface $container,
         array $excludePaths = [],
     ) {
         if (!empty($excludePaths)) {
@@ -106,6 +106,7 @@ class Router implements RouterInterface
      */
     private function matchRequest(ServerRequestInterface $request): ?callable
     {
+        $parameters = [];
         $path = $this->cleanSymfonyHandler(
             (string) $request->getUri()->getPath()
         );

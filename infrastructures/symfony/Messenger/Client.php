@@ -56,8 +56,8 @@ class Client implements ClientInterface
     private bool $inSilentlyMode = false;
 
     public function __construct(
-        private ?MessageBusInterface $bus,
-        private ?LoggerInterface $logger = null,
+        private readonly ?MessageBusInterface $bus,
+        private readonly ?LoggerInterface $logger = null,
     ) {
     }
 

@@ -70,9 +70,6 @@ class ClientTest extends TestCase
         return new Client($this->getOutputMock());
     }
 
-    /**
-     * @return string
-     */
     private function getClientClass(): string
     {
         return Client::class;

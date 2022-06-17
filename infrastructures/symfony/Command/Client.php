@@ -122,7 +122,7 @@ class Client implements ClientInterface
         }
 
         if ($this->response instanceof JsonSerializable) {
-            $this->output->writeln((string) json_encode($this->response));
+            $this->output->writeln((string) json_encode($this->response, JSON_THROW_ON_ERROR));
         } elseif ($this->response instanceof MessageInterface) {
             $this->output->writeln((string) $this->response->getBody());
         } else {

@@ -22,6 +22,7 @@
 
 namespace Teknoo\Tests\East\FoundationBundle\DependencyInjection;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Teknoo\East\FoundationBundle\DependencyInjection\EastFoundationCompilerPass;
 use Symfony\Component\DependencyInjection\Definition;
@@ -45,10 +46,7 @@ class EastFrameworkCompilerPassTest extends \PHPUnit\Framework\TestCase
      */
     private $container;
 
-    /**
-     * @return ContainerBuilder|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private function getContainerBuilderMock()
+    private function getContainerBuilderMock(): ContainerBuilder&MockObject
     {
         if (!$this->container instanceof ContainerBuilder) {
             $this->container = $this->createMock(ContainerBuilder::class);
@@ -65,9 +63,6 @@ class EastFrameworkCompilerPassTest extends \PHPUnit\Framework\TestCase
         return new EastFoundationCompilerPass();
     }
 
-    /**
-     * @return string
-     */
     public function getCompilerPassClass(): string
     {
         return EastFoundationCompilerPass::class;
@@ -114,9 +109,7 @@ class EastFrameworkCompilerPassTest extends \PHPUnit\Framework\TestCase
         $this->getContainerBuilderMock()
             ->expects(self::any())
             ->method('has')
-            ->willReturnCallback(function ($value) {
-                return 'twig' != $value;
-            });
+            ->willReturnCallback(fn($value) => 'twig' != $value);
 
         $this->getContainerBuilderMock()
             ->expects(self::any())
