@@ -116,7 +116,10 @@ class EastNormalizer implements EastNormalizerInterface, NormalizerInterface, No
         return $that->data;
     }
 
-    public function supportsNormalization(mixed $data, ?string $format = null): bool
+    /**
+     * @param array<string, mixed> $context
+     */
+    public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
     {
         return $data instanceof NormalizableInterface;
     }
