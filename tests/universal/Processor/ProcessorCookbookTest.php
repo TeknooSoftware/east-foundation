@@ -14,7 +14,7 @@
  * @copyright   Copyright (c) EIRL Richard Déloge (richarddeloge@gmail.com)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software)
  *
- * @link        http://teknoo.software/east Project website
+ * @link        http://teknoo.software/east-foundation Project website
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
@@ -33,7 +33,7 @@ use Teknoo\Recipe\RecipeInterface as OriginalRecipeInterface;
  * @copyright   Copyright (c) EIRL Richard Déloge (richarddeloge@gmail.com)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software)
  *
- * @link        http://teknoo.software/east Project website
+ * @link        http://teknoo.software/east-foundation Project website
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>

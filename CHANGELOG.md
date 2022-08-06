@@ -1,5 +1,9 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [6.0.7] - 2022-08-06
+### Stable Release
+- Update composer.json
+
 ## [6.0.6] - 2022-06-29
 ### Stable Release
 - Fix deprecated in `EastNormalizer`
