@@ -2,7 +2,7 @@ parameters:
     ignoreErrors:
         - '#[a-zA-Z0-9\\_]+::registerMiddleware\(\)#'
         -
-            message: '#should return \(callable\(\): mixed\)\|null but returns non-empty-string#'
+            message: '#should return \(callable\(\): mixed\)\|null but returns non-falsy-string#'
             path: infrastructures/symfony/Router
 services:
     -
