@@ -73,6 +73,7 @@
     },
     "autoload-dev": {
         "psr-4": {
+            "Teknoo\\Tests\\East\\Foundation\\Behat\\": "tests/behat",
             "Teknoo\\Tests\\East\\Foundation\\": "tests/universal",
             "Teknoo\\Tests\\East\\Diactoros\\": "tests/infrastructures/laminas",
             "Teknoo\\Tests\\East\\FoundationBundle\\": "tests/infrastructures/symfony",

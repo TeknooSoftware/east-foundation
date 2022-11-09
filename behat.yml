@@ -1,0 +1,6 @@
+# behat.yml
+default:
+  suites:
+    default:
+      contexts:
+        - Teknoo\Tests\East\Foundation\Behat\FeatureContext: ~

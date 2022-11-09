@@ -2,13 +2,17 @@
 
 declare(strict_types=1);
 
+namespace Teknoo\Tests\East\Foundation\Behat;
+
 use Behat\Behat\Context\Context;
+use JsonSerializable;
 use Laminas\Diactoros\Response\TextResponse;
 use Laminas\Diactoros\ServerRequest;
 use PHPUnit\Framework\Assert;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use RuntimeException;
 use Teknoo\Recipe\Bowl\FiberRecipeBowl;
 use Teknoo\East\Foundation\EndPoint\RecipeEndPoint;
 use Teknoo\East\Foundation\Recipe\CookbookInterface;
@@ -21,6 +25,10 @@ use Teknoo\East\Foundation\Manager\Manager;
 use Teknoo\East\Foundation\Router\ResultInterface;
 use Teknoo\East\Foundation\Router\Result;
 use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
+use Throwable;
+use function dirname;
+use function json_decode;
+use function parse_str;
 
 /**
  * Defines application features from the specific context.
@@ -68,7 +76,7 @@ class FeatureContext implements Context
      */
     public function iHaveDiInitialized()
     {
-        $this->container = include(\dirname(\dirname(__DIR__)) . '/src/generator.php');
+        $this->container = include(dirname(dirname(__DIR__)) . '/src/generator.php');
         $this->container->set('teknoo.east.client.must_send_response', true);
     }
 
@@ -281,7 +289,7 @@ class FeatureContext implements Context
                 return $this;
             }
 
-            public function errorInRequest(\Throwable $throwable, bool $silently = false): ClientInterface
+            public function errorInRequest(Throwable $throwable, bool $silently = false): ClientInterface
             {
                 $this->context->error = $throwable;
 
@@ -306,7 +314,7 @@ class FeatureContext implements Context
         $request = new ServerRequest();
         $request = $request->withUri(new \Laminas\Diactoros\Uri($url));
         $query = [];
-        \parse_str($request->getUri()->getQuery(), $query);
+        parse_str($request->getUri()->getQuery(), $query);
         $request = $request->withQueryParams($query);
 
         $manager->receiveRequest(
@@ -364,8 +372,8 @@ class FeatureContext implements Context
 
         if ($this->response instanceof JsonSerializable) {
             Assert::assertEquals(
-                \json_decode($value, true),
-                \json_decode((string) json_encode($this->response), true)
+                json_decode($value, true),
+                json_decode((string) json_encode($this->response), true)
             );
 
             return;
@@ -377,7 +385,7 @@ class FeatureContext implements Context
             return;
         }
 
-        throw new \RuntimeException('Response not managed');
+        throw new RuntimeException('Response not managed');
     }
 
     /**
@@ -395,7 +403,7 @@ class FeatureContext implements Context
     public function theClientMustAcceptAnError()
     {
         Assert::assertNull($this->response);
-        Assert::assertInstanceOf(\Throwable::class, $this->error);
+        Assert::assertInstanceOf(Throwable::class, $this->error);
     }
 
     /**
@@ -406,7 +414,7 @@ class FeatureContext implements Context
         $errorCatched = false;
         try {
             $this->client->sendResponse();
-        } catch (\Throwable $error) {
+        } catch (Throwable $error) {
             $errorCatched = true;
         }
         Assert::assertTrue($errorCatched);
