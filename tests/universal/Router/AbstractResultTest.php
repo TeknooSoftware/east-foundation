@@ -20,6 +20,8 @@
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
 
+declare(strict_types=1);
+
 namespace Teknoo\Tests\East\Foundation\Router;
 
 use Teknoo\East\Foundation\Router\ResultInterface;

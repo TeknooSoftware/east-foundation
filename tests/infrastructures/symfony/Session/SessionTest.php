@@ -20,6 +20,8 @@
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
 
+declare(strict_types=1);
+
 namespace Teknoo\Tests\East\FoundationBundle\Session;
 
 use Symfony\Component\HttpFoundation\Session\SessionInterface as SymfonySession;
