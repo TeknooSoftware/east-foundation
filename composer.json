@@ -43,7 +43,7 @@
         "squizlabs/php_codesniffer": "^3.7",
         "sebastian/phpcpd": "^6.0.3",
         "phploc/phploc": "^7.0.2",
-        "phpstan/phpstan": "^1.9",
+        "phpstan/phpstan": "^1.9.3",
         "icanhazstring/composer-unused": "^0.8.4",
         "behat/behat": "^3.11",
         "nikic/php-parser": "^v4.15.1",
