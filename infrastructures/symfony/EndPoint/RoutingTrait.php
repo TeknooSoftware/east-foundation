@@ -62,7 +62,7 @@ trait RoutingTrait
      */
     protected function generateUrl(
         string $route,
-        mixed $parameters = array(),
+        mixed $parameters = [],
         int $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH
     ): string {
         if (!$this->router instanceof UrlGeneratorInterface) {
@@ -97,7 +97,7 @@ trait RoutingTrait
     protected function redirectToRoute(
         ClientInterface $client,
         string $route,
-        array $parameters = array(),
+        array $parameters = [],
         int $status = 302
     ): RedirectingInterface {
         return $this->redirect($client, $this->generateUrl($route, $parameters), $status);

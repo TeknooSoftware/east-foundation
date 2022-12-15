@@ -77,7 +77,7 @@ trait AuthenticationTrait
         /*
          * @var TokenInterface
          */
-        if (!is_callable([$token, 'getUser']) || !is_object($user = $token->getUser())) {
+        if (!is_callable($token->getUser(...)) || !is_object($user = $token->getUser())) {
             // e.g. anonymous authentication
             return null;
         }

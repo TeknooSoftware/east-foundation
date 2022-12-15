@@ -50,20 +50,20 @@ class CallbackStreamFactory implements StreamFactoryInterface, CallbackStreamFac
     public function createStream(string $content = ''): StreamInterface
     {
         return new CallbackStream(
-            static fn() => $content
+            static fn(): string => $content
         );
     }
 
     public function createStreamFromFile(string $filename, string $mode = 'r'): StreamInterface
     {
         return new CallbackStream(
-            static function () use ($filename, $mode) {
+            static function () use ($filename, $mode): string {
                 $hF = @fopen($filename, $mode);
                 if (!$hF) {
                     throw new RuntimeException("Can not open $filename");
                 }
 
-                $content = stream_get_contents($hF);
+                $content = (string) stream_get_contents($hF);
                 fclose($hF);
 
                 return $content;
@@ -77,7 +77,7 @@ class CallbackStreamFactory implements StreamFactoryInterface, CallbackStreamFac
     public function createStreamFromResource($resource): StreamInterface
     {
         return new CallbackStream(
-            static fn() => stream_get_contents($resource)
+            static fn(): string => (string) stream_get_contents($resource)
         );
     }
 }

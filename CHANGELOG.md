@@ -1,5 +1,10 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [6.1.0] - 2022-11-15
+### Stable Release
+- Some QA fixes
+- Remove support of Symfony 6.0
+
 ## [6.0.7] - 2022-08-06
 ### Stable Release
 - Update composer.json

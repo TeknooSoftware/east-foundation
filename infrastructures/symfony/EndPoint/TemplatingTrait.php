@@ -78,7 +78,7 @@ trait TemplatingTrait
     public function render(
         ClientInterface $client,
         string $view,
-        array $parameters = array(),
+        array $parameters = [],
         int $status = 200,
         array $headers = []
     ): RenderingInterface {
@@ -96,9 +96,9 @@ trait TemplatingTrait
 
         $this->templating->render(
             new Promise(
-                static function (ResultInterface $result) use ($stream, $client, $response) {
+                static function (ResultInterface $result) use ($stream, $client, $response): void {
                     if ($stream instanceof CallbackStreamInterface) {
-                        $stream->bind(static fn() => (string) $result);
+                        $stream->bind(static fn(): string => (string) $result);
                     } else {
                         $stream->write((string) $result);
                     }
@@ -107,7 +107,7 @@ trait TemplatingTrait
 
                     $client->acceptResponse($response);
                 },
-                static function (Throwable $error) use ($client) {
+                static function (Throwable $error) use ($client): void {
                     $client->errorInRequest($error);
                 }
             ),
