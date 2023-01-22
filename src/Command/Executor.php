@@ -23,12 +23,16 @@
 
 declare(strict_types=1);
 
-namespace Teknoo\East\FoundationBundle\Messenger;
+namespace Teknoo\East\Foundation\Command;
 
-use Teknoo\East\Foundation\Command\Executor as BaseExecutor;
+use Psr\Http\Message\MessageInterface;
+use Teknoo\East\Foundation\Client\ClientInterface;
+use Teknoo\East\Foundation\Manager\ManagerInterface;
+use Teknoo\Recipe\BaseRecipeInterface;
+use Teknoo\Recipe\Recipe;
 
 /**
- * Class to use with Symfony Message's handler to execute a message in a East application via the manager.
+ * Class to use in CLI context to execute a message in a East application via the manager.
  * The workplan to pass is the responsibility of the handler.
  *
  * @copyright   Copyright (c) EIRL Richard Déloge (richarddeloge@gmail.com)
@@ -39,6 +43,35 @@ use Teknoo\East\Foundation\Command\Executor as BaseExecutor;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-class Executor extends BaseExecutor
+class Executor
 {
+    public function __construct(
+        private readonly ManagerInterface $manager,
+    ) {
+    }
+
+    /**
+     * @param array<string, mixed> $workPlan
+     */
+    public function execute(
+        BaseRecipeInterface $recipe,
+        MessageInterface $message,
+        ClientInterface $client,
+        array $workPlan,
+    ): self {
+        $manager = clone $this->manager;
+
+        if ($recipe instanceof Recipe) {
+            $recipe = $recipe->onError($client->errorInRequest(...));
+        }
+
+        $manager->read($recipe);
+
+        $workPlan[MessageInterface::class] = $message;
+        $workPlan[ClientInterface::class] = $client;
+
+        $manager->process($workPlan);
+
+        return $this;
+    }
 }

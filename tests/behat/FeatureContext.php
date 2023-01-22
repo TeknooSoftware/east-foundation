@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Teknoo\Tests\East\Foundation\Behat;
 
 use Behat\Behat\Context\Context;
+use DI\Container;
 use JsonSerializable;
+use Laminas\Diactoros\Request;
 use Laminas\Diactoros\Response\TextResponse;
 use Laminas\Diactoros\ServerRequest;
 use PHPUnit\Framework\Assert;
@@ -13,6 +15,10 @@ use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
+use Teknoo\East\Foundation\Command\Executor;
+use Teknoo\East\Foundation\Liveness\Exception\TimeLimitReachedException;
+use Teknoo\East\Foundation\Liveness\PingService;
+use Teknoo\East\Foundation\Liveness\TimeoutService;
 use Teknoo\Recipe\Bowl\FiberRecipeBowl;
 use Teknoo\East\Foundation\EndPoint\RecipeEndPoint;
 use Teknoo\East\Foundation\Recipe\CookbookInterface;
@@ -28,38 +34,33 @@ use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
 use Throwable;
 
 use function dirname;
+use function file_put_contents;
 use function json_decode;
 use function parse_str;
+use function set_time_limit;
+use function time;
 
 /**
  * Defines application features from the specific context.
  */
 class FeatureContext implements Context
 {
-    /**
-     * @var \DI\Container
-     */
-    private $container;
+    private ?Container $container = null;
 
-    /**
-     * @var RouterInterface
-     */
-    private $router;
+    private ?RouterInterface $router = null;
 
-    /**
-     * @var ClientInterface
-     */
-    private $client;
+    private ?ClientInterface $client = null;
 
-    /**
-     * @var ResponseInterface
-     */
-    public $response;
+    public ResponseInterface|EastResponse|null $response = null;
 
     /**
      * @va \Throwable
      */
-    public $error;
+    public ?Throwable $error = null;
+
+    private ?string $pingFile = null;
+
+    private ?Executor $executor = null;
 
     /**
      * Initializes context.
@@ -77,7 +78,10 @@ class FeatureContext implements Context
      */
     public function iHaveDiInitialized()
     {
-        $this->container = include(dirname(dirname(__DIR__)) . '/src/generator.php');
+        set_time_limit(0);
+        $this->error = null;
+        $this->pingFile = null;
+        $this->container = include(dirname(__DIR__, 2) . '/src/generator.php');
         $this->container->set('teknoo.east.client.must_send_response', true);
     }
 
@@ -239,16 +243,8 @@ class FeatureContext implements Context
         $this->createRecipeToReturnResponse($url, $controllerName, $type, true);
     }
 
-    /**
-     * @When The server will receive the request :url
-     */
-    public function theServerWillReceiveTheRequest($url)
+    private function createClient(): void
     {
-        $manager = new Manager($this->container->get(CookbookInterface::class));
-
-        $this->response = null;
-        $this->error = null;
-
         $this->client = new class($this) implements ClientInterface {
             private FeatureContext $context;
 
@@ -311,6 +307,19 @@ class FeatureContext implements Context
                 return $this;
             }
         };
+    }
+
+    /**
+     * @When The server will receive the request :url
+     */
+    public function theServerWillReceiveTheRequest($url)
+    {
+        $manager = new Manager($this->container->get(CookbookInterface::class));
+
+        $this->response = null;
+        $this->error = null;
+
+        $this->createClient();;
 
         $request = new ServerRequest();
         $request = $request->withUri(new \Laminas\Diactoros\Uri($url));
@@ -419,6 +428,161 @@ class FeatureContext implements Context
             $errorCatched = true;
         }
         Assert::assertTrue($errorCatched);
+        Assert::assertNull($this->response);
+    }
+
+    /**
+     * @Given a cli agent
+     */
+    public function aCliAgent()
+    {
+        $this->response = null;
+        $this->error = null;
+
+        $this->executor = new Executor(
+            new Manager(null),
+        );
+
+        $this->createClient();
+    }
+
+    /**
+     * @Given a liveness behavior build on event on a file :fileName
+     */
+    public function aLivenessBehaviorBuildOnEventOnAFile(string $fileName)
+    {
+        $filePath = $this->pingFile = dirname(__DIR__, 1) . "/var/$fileName";
+        $this->container
+            ->get(PingService::class)
+            ->register(
+                id: "behat-ping",
+                callback: fn () => file_put_contents($filePath, time()),
+            );
+    }
+
+    /**
+     * @Given each task must be limited in time of :value seconds and killed when they exceed it.
+     */
+    public function eachTaskMustBeLimitedInTimeOfSecondsAndKilledWhenTheyExceedIt(int $value)
+    {
+        $this->container
+            ->get(TimeoutService::class)
+            ->enable($value);
+    }
+
+    /**
+     * @Then task must be finished
+     */
+    public function taskMustBeFinished()
+    {
+        Assert::assertInstanceOf(
+            EastResponse::class,
+            $this->response,
+        );
+    }
+
+    /**
+     * @Then no exception must be throwed
+     */
+    public function noExceptionMustBeThrowed()
+    {
+        Assert::assertNull($this->error);
+    }
+
+    /**
+     * @When the agent start a short task
+     */
+    public function theAgentStartAShortTask()
+    {
+        $recipe = new Recipe();
+        $recipe = $recipe->cook(
+            action: function (
+                PingService $service,
+                ClientInterface $client,
+            ): void {
+                $service->ping();
+                $expectedTime = time() + 2;
+                while (time() < $expectedTime) {
+                    $x = str_repeat('x', 100000);
+                }
+                $service->ping();
+                $client->acceptResponse(
+                   new class implements EastResponse {
+                       public function __toString(): string
+                       {
+                           return 'ok';
+                       }
+                   }
+                );
+            },
+            name: 'shortTask'
+        );
+
+        $this->executor->execute(
+            $recipe,
+            new Request(),
+            $this->client,
+            [
+                PingService::class => $this->container->get(PingService::class),
+            ],
+        );
+    }
+
+    /**
+     * @When the agent start a too long task
+     */
+    public function theAgentStartATooLongTask()
+    {
+        $recipe = new Recipe();
+        $recipe = $recipe->cook(
+            action: function (
+                PingService $service,
+                ClientInterface $client,
+            ): void {
+                $service->ping();
+                $expectedTime = time() + 60;
+                while (time() < $expectedTime) {
+                    $x = str_repeat('x', 100000);
+                }
+                $service->ping();
+                $client->acceptResponse(
+                    new class implements EastResponse {
+                        public function __toString(): string
+                        {
+                            return 'ok';
+                        }
+                    }
+                );
+            },
+            name: 'shortTask'
+        );
+
+        $this->executor->execute(
+            $recipe,
+            new Request(),
+            $this->client,
+            [
+                PingService::class => $this->container->get(PingService::class),
+            ],
+        );
+    }
+
+    /**
+     * @Then An exception must be catched
+     */
+    public function anExceptionMustBeCatched()
+    {
+        Assert::assertInstanceOf(
+            TimeLimitReachedException::class,
+            $this->error,
+        );
+    }
+
+    /**
+     * @Then the task must be not finished
+     */
+    public function theTaskMustBeNotFinished()
+    {
         Assert::assertNull($this->response);
     }
 }

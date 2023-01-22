@@ -1,5 +1,15 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [6.2.0] - 2023-01-22
+### Stable Release
+- Add `DatesService` from Teknoo East Common
+- Add `DatesService::since` to get a date in the past. Same behavior of `DateTime::modify`
+- Add `TimerService` to schedule a task / function call in x seconds, several tasks in different timer can be scheduled
+- Add `TimeoutService` to centralize and manager `set_time_limit` behavior and use a throwable exception instead of 
+  fatal error
+- Add a `PingService` to centralize ping behavior for liveness feature.
+- Migrate `Executor` from Symfony Messenger to `East\Foundation\Command`
+
 ## [6.1.0] - 2022-11-15
 ### Stable Release
 - Some QA fixes

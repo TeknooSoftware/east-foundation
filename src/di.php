@@ -26,6 +26,9 @@ declare(strict_types=1);
 namespace Teknoo\East\Foundation;
 
 use Psr\Container\ContainerInterface;
+use RuntimeException;
+use Teknoo\East\Foundation\Liveness\PingService;
+use Teknoo\East\Foundation\Liveness\TimeoutService;
 use Teknoo\East\Foundation\Manager\Manager;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\East\Foundation\Processor\Processor;
@@ -40,6 +43,8 @@ use Teknoo\East\Foundation\Recipe\Cookbook;
 use Teknoo\East\Foundation\Recipe\CookbookInterface;
 use Teknoo\East\Foundation\Recipe\RecipeInterface;
 use Teknoo\East\Foundation\Router\RouterInterface;
+use Teknoo\East\Foundation\Time\DatesService;
+use Teknoo\East\Foundation\Time\TimerService;
 
 use function DI\get;
 use function DI\create;
@@ -89,4 +94,25 @@ return [
             get(ProcessorCookbookInterface::class),
             get(LoopDetectorInterface::class)
         ),
+
+    DatesService::class => create(),
+    TimerService::class => static function (ContainerInterface $container): TimerService {
+        if (!TimerService::isAvailable()) {
+            // @codeCoverageIgnoreStart
+            throw new RuntimeException("Error, the pcntl extension is available for this component");
+            // @codeCoverageIgnoreEnd
+        }
+
+        return new TimerService($container->get(DatesService::class));
+    },
+
+    PingService::class => create(),
+    TimeoutService::class => static function (ContainerInterface $container): TimeoutService {
+        $timerService = null;
+        if (TimerService::isAvailable()) {
+            $timerService = $container->get(TimerService::class);
+        }
+
+        return new TimeoutService($timerService);
+    },
 ];

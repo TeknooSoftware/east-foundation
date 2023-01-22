@@ -23,22 +23,46 @@
 
 declare(strict_types=1);
 
-namespace Teknoo\East\FoundationBundle\Messenger;
+namespace Teknoo\East\Foundation\Liveness;
 
-use Teknoo\East\Foundation\Command\Executor as BaseExecutor;
+use function array_map;
 
 /**
- * Class to use with Symfony Message's handler to execute a message in a East application via the manager.
- * The workplan to pass is the responsibility of the handler.
- *
- * @copyright   Copyright (c) EIRL Richard Déloge (richarddeloge@gmail.com)
- * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software)
- *
- * @link        http://teknoo.software/east-foundation Project website
+ * Simple service to centralise all pings operations to call all in a single method call. Any ping operations can be
+ * added and removed dynamicly. A ping operation is mandatory identified by an id.
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-class Executor extends BaseExecutor
+class PingService
 {
+    /**
+     * @var array<string, callable>
+     */
+    private array $callbacks = [];
+
+    public function register(string $id, callable $callback): self
+    {
+        $this->callbacks[$id] = $callback;
+
+        return $this;
+    }
+
+    public function unregister(string $id): self
+    {
+        if (isset($this->callbacks[$id])) {
+            unset($this->callbacks[$id]);
+        }
+
+        return $this;
+    }
+
+    public function ping(): self
+    {
+        foreach ($this->callbacks as $callback) {
+            $callback();
+        }
+
+        return $this;
+    }
 }

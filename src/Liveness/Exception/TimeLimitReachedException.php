@@ -23,22 +23,15 @@
 
 declare(strict_types=1);
 
-namespace Teknoo\East\FoundationBundle\Messenger;
+namespace Teknoo\East\Foundation\Liveness\Exception;
 
-use Teknoo\East\Foundation\Command\Executor as BaseExecutor;
+use RuntimeException;
 
 /**
- * Class to use with Symfony Message's handler to execute a message in a East application via the manager.
- * The workplan to pass is the responsibility of the handler.
- *
- * @copyright   Copyright (c) EIRL Richard Déloge (richarddeloge@gmail.com)
- * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software)
- *
- * @link        http://teknoo.software/east-foundation Project website
- *
+ * Default exception used with the Timeout Service
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-class Executor extends BaseExecutor
+class TimeLimitReachedException extends RuntimeException
 {
 }

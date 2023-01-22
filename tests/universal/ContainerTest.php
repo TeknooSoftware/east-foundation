@@ -26,6 +26,8 @@ namespace Teknoo\Tests\East\Foundation;
 
 use DI\Container;
 use Psr\Log\LoggerInterface;
+use Teknoo\East\Foundation\Liveness\PingService;
+use Teknoo\East\Foundation\Liveness\TimeoutService;
 use Teknoo\East\Foundation\Manager\Manager;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\East\Foundation\Manager\Queue\Queue;
@@ -42,6 +44,9 @@ use Teknoo\East\Foundation\Recipe\Cookbook;
 use Teknoo\East\Foundation\Recipe\CookbookInterface;
 use Teknoo\East\Foundation\Recipe\RecipeInterface;
 use Teknoo\East\Foundation\Router\RouterInterface;
+use Teknoo\East\Foundation\Time\DatesService;
+use Teknoo\East\Foundation\Time\TimerService;
+use function defined;
 
 /**
  * Class DefinitionProviderTest.
@@ -194,5 +199,45 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         );
 
         self::assertSame($cookbook1, $cookbook2);
+    }
+
+    public function testDatesService()
+    {
+        $container = $this->buildContainer();
+        self::assertInstanceOf(
+            DatesService::class,
+            $container->get(DatesService::class)
+        );
+    }
+
+    public function testTimerService()
+    {
+        if (defined('PCNTL_MOCKED')) {
+            self::markTestSkipped('PCNTL is not available');
+        }
+
+        $container = $this->buildContainer();
+        self::assertInstanceOf(
+            TimerService::class,
+            $container->get(TimerService::class)
+        );
+    }
+
+    public function testPingService()
+    {
+        $container = $this->buildContainer();
+        self::assertInstanceOf(
+            PingService::class,
+            $container->get(PingService::class)
+        );
+    }
+
+    public function testTimeoutService()
+    {
+        $container = $this->buildContainer();
+        self::assertInstanceOf(
+            TimeoutService::class,
+            $container->get(TimeoutService::class)
+        );
     }
 }
