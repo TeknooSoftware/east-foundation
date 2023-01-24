@@ -93,8 +93,10 @@ class TimerService
                                 continue;
                             }
 
-                            ($this->callbacks[$timerId])();
+                            $callback = $this->callbacks[$timerId];
                             unset($this->callbacks[$timerId]);
+                            $callback();
+                            unset($callback);
                         }
                     }
                 },

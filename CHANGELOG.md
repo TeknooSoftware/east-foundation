@@ -1,5 +1,9 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [6.2.1] - 2023-01-24
+### Stable Release
+- Fix `TimerService` to allow reschedule a new timer with the same timer id during the timer call.
+
 ## [6.2.0] - 2023-01-22
 ### Stable Release
 - Add `DatesService` from Teknoo East Common
