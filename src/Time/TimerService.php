@@ -28,7 +28,7 @@ namespace Teknoo\East\Foundation\Time;
 use DateTimeInterface;
 use RuntimeException;
 
-use function array_shift;
+use function array_diff;
 use function current;
 use function function_exists;
 use function key;
@@ -59,7 +59,7 @@ class TimerService
     /**
      * @var array<int, array<int, string>>
      */
-    private array $pipe = [];
+    private array $pipes = [];
 
     public function __construct(
         private DatesService $datesService,
@@ -81,13 +81,13 @@ class TimerService
     public function executeCallbacks(): self
     {
         $mustReRun = true;
-        while (!empty($this->pipe) && true === $mustReRun) {
+        while (!empty($this->pipes) && true === $mustReRun) {
             $mustReRun = false;
             $this->datesService->passMeTheDate(
                 setter: function (DateTimeInterface $dateTime): void {
                     $timestamp = $dateTime->getTimestamp();
-                    while (false !== ($timersIds = current($this->pipe)) && key($this->pipe) <= $timestamp) {
-                        unset($this->pipe[key($this->pipe)]);
+                    while (false !== ($timersIds = current($this->pipes)) && key($this->pipes) <= $timestamp) {
+                        unset($this->pipes[key($this->pipes)]);
                         foreach ($timersIds as $timerId) {
                             if (!isset($this->callbacks[$timerId])) {
                                 continue;
@@ -103,13 +103,13 @@ class TimerService
                 preferRealDate: true,
             );
 
-            if (empty($this->pipe)) {
+            if (empty($this->pipes)) {
                 break;
             }
 
             $this->datesService->passMeTheDate(
                 setter: function (DateTimeInterface $dateTime) use (&$mustReRun): void {
-                    $seconds = (key($this->pipe)) - $dateTime->getTimestamp();
+                    $seconds = (key($this->pipes)) - $dateTime->getTimestamp();
                     if ($seconds <= 0) {
                         $mustReRun = true;
                     } else {
@@ -129,6 +129,10 @@ class TimerService
             unset($this->callbacks[$timerId]);
         }
 
+        foreach ($this->pipes as &$pipe) {
+            $pipe = array_diff($pipe, [$timerId]);
+        }
+
         return $this;
     }
 
@@ -141,9 +145,9 @@ class TimerService
         }
 
         $next = null;
-        if (!empty($this->pipe)) {
-            reset($this->pipe);
-            $next = key($this->pipe);
+        if (!empty($this->pipes)) {
+            reset($this->pipes);
+            $next = key($this->pipes);
         }
 
         $this->callbacks[$timerId] = $callback;
@@ -151,8 +155,8 @@ class TimerService
         $this->datesService->passMeTheDate(
             setter: function (DateTimeInterface $dateTime) use ($seconds, $timerId, $next): void {
                 $timestamp = (int) ($dateTime->getTimestamp() + $seconds);
-                $this->pipe[$timestamp][] = $timerId;
-                ksort($this->pipe);
+                $this->pipes[$timestamp][] = $timerId;
+                ksort($this->pipes);
 
                 if (null === $next || $next > $timestamp) {
                     pcntl_signal(SIGALRM, $this->executeCallbacks(...));

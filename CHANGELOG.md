@@ -1,5 +1,9 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [6.2.2] - 2023-01-26
+### Stable Release
+- Fix `TimerService` when a new timer with a previous used id, to not be called at previous time.
+
 ## [6.2.1] - 2023-01-24
 ### Stable Release
 - Fix `TimerService` to allow reschedule a new timer with the same timer id during the timer call.

@@ -76,7 +76,7 @@ class TimerServiceTest extends TestCase
         self::assertInstanceOf(
             TimerService::class,
             $service->register(
-                seconds: 2,
+                seconds: 1,
                 timerId: 'test1',
                 callback: function () use (&$called): void {
                     $called = true;
@@ -85,7 +85,7 @@ class TimerServiceTest extends TestCase
         );
 
         self::assertFalse($called);
-        $expectedTime = time() + 3;
+        $expectedTime = time() + 2;
         while (time() < $expectedTime) {
             $x = str_repeat('x', 100000);
         }
@@ -104,7 +104,7 @@ class TimerServiceTest extends TestCase
         self::assertInstanceOf(
             TimerService::class,
             $service->register(
-                seconds: 2,
+                seconds: 1,
                 timerId: 'test1',
                 callback: function () use (&$called): void {
                     $called = true;
@@ -119,7 +119,7 @@ class TimerServiceTest extends TestCase
         );
 
         self::assertFalse($called);
-        $expectedTime = time() + 3;
+        $expectedTime = time() + 2;
         while (time() < $expectedTime) {
             $x = str_repeat('x', 100000);
         }
@@ -139,7 +139,7 @@ class TimerServiceTest extends TestCase
         self::assertInstanceOf(
             TimerService::class,
             $service->register(
-                seconds: 2,
+                seconds: 1,
                 timerId: 'test1',
                 callback: function () use (&$called1): void {
                     $called1 = true;
@@ -149,7 +149,7 @@ class TimerServiceTest extends TestCase
         self::assertInstanceOf(
             TimerService::class,
             $service->register(
-                seconds: 5,
+                seconds: 3,
                 timerId: 'test2',
                 callback: function () use (&$called2): void {
                     $called2 = true;
@@ -160,7 +160,7 @@ class TimerServiceTest extends TestCase
         self::assertFalse($called1);
         self::assertFalse($called2);
 
-        $expectedTime = time() + 3;
+        $expectedTime = time() + 2;
         while (time() < $expectedTime) {
             $x = str_repeat('x', 100000);
         }
@@ -168,7 +168,7 @@ class TimerServiceTest extends TestCase
         self::assertTrue($called1);
         self::assertFalse($called2);
 
-        $expectedTime = time() + 3;
+        $expectedTime = time() + 2;
         while (time() < $expectedTime) {
             $x = str_repeat('x', 100000);
         }
@@ -188,18 +188,18 @@ class TimerServiceTest extends TestCase
         self::assertInstanceOf(
             TimerService::class,
             $service->register(
-                seconds: 2,
+                seconds: 1,
                 timerId: 'test1',
                 callback: function () use (&$called1): void {
                     $called1 = true;
-                    sleep(6);
+                    sleep(3);
                 },
             )
         );
         self::assertInstanceOf(
             TimerService::class,
             $service->register(
-                seconds: 5,
+                seconds: 2,
                 timerId: 'test2',
                 callback: function () use (&$called2): void {
                     $called2 = true;
@@ -210,7 +210,7 @@ class TimerServiceTest extends TestCase
         self::assertFalse($called1);
         self::assertFalse($called2);
 
-        $expectedTime = time() + 3;
+        $expectedTime = time() + 2;
         while (time() < $expectedTime) {
             $x = str_repeat('x', 100000);
         }
@@ -232,7 +232,7 @@ class TimerServiceTest extends TestCase
         self::assertInstanceOf(
             TimerService::class,
             $service->register(
-                seconds: 5,
+                seconds: 3,
                 timerId: 'test1',
                 callback: function () use (&$called1): void {
                     $called1 = true;
@@ -242,7 +242,7 @@ class TimerServiceTest extends TestCase
         self::assertInstanceOf(
             TimerService::class,
             $service->register(
-                seconds: 2,
+                seconds: 1,
                 timerId: 'test2',
                 callback: function () use (&$called2): void {
                     $called2 = true;
@@ -253,7 +253,7 @@ class TimerServiceTest extends TestCase
         self::assertFalse($called1);
         self::assertFalse($called2);
 
-        $expectedTime = time() + 3;
+        $expectedTime = time() + 2;
         while (time() < $expectedTime) {
             $x = str_repeat('x', 100000);
         }
@@ -261,7 +261,7 @@ class TimerServiceTest extends TestCase
         self::assertFalse($called1);
         self::assertTrue($called2);
 
-        $expectedTime = time() + 3;
+        $expectedTime = time() + 2;
         while (time() < $expectedTime) {
             $x = str_repeat('x', 100000);
         }
@@ -281,7 +281,7 @@ class TimerServiceTest extends TestCase
         self::assertInstanceOf(
             TimerService::class,
             $service->register(
-                seconds: 2,
+                seconds: 1,
                 timerId: 'test1',
                 callback: function () use (&$called1): void {
                     $called1 = true;
@@ -291,7 +291,7 @@ class TimerServiceTest extends TestCase
         self::assertInstanceOf(
             TimerService::class,
             $service->register(
-                seconds: 5,
+                seconds: 3,
                 timerId: 'test2',
                 callback: function () use (&$called2): void {
                     $called2 = true;
@@ -308,7 +308,7 @@ class TimerServiceTest extends TestCase
         self::assertFalse($called1);
         self::assertFalse($called2);
 
-        $expectedTime = time() + 3;
+        $expectedTime = time() + 2;
         while (time() < $expectedTime) {
             $x = str_repeat('x', 100000);
         }
@@ -316,11 +316,83 @@ class TimerServiceTest extends TestCase
         self::assertFalse($called1);
         self::assertFalse($called2);
 
-        $expectedTime = time() + 3;
+        $expectedTime = time() + 2;
         while (time() < $expectedTime) {
             $x = str_repeat('x', 100000);
         }
         self::assertFalse($called1);
+        self::assertTrue($called2);
+    }
+
+    public function testRegisterTwoFunctionAndFirstRemovedAndReregister()
+    {
+        if (defined('PCNTL_MOCKED')) {
+            self::markTestSkipped('PCNTL is not available');
+        }
+
+        $service = new TimerService(new DatesService());
+
+        $called1 = false;
+        $called2 = false;
+        self::assertInstanceOf(
+            TimerService::class,
+            $service->register(
+                seconds: 1,
+                timerId: 'test1',
+                callback: function () use (&$called1): void {
+                    $called1 = true;
+                },
+            )
+        );
+        self::assertInstanceOf(
+            TimerService::class,
+            $service->register(
+                seconds: 3,
+                timerId: 'test2',
+                callback: function () use (&$called2): void {
+                    $called2 = true;
+                },
+            )
+        );
+        self::assertInstanceOf(
+            TimerService::class,
+            $service->unregister(
+                timerId: 'test1',
+            )
+        );
+        self::assertInstanceOf(
+            TimerService::class,
+            $service->register(
+                seconds: 5,
+                timerId: 'test1',
+                callback: function () use (&$called1): void {
+                    $called1 = true;
+                },
+            )
+        );
+
+        self::assertFalse($called1);
+        self::assertFalse($called2);
+
+        $expectedTime = time() + 2;
+        while (time() < $expectedTime) {
+            $x = str_repeat('x', 100000);
+        }
+
+        self::assertFalse($called1);
+        self::assertFalse($called2);
+
+        $expectedTime = time() + 2;
+        while (time() < $expectedTime) {
+            $x = str_repeat('x', 100000);
+        }
+        self::assertFalse($called1);
+        self::assertTrue($called2);
+        $expectedTime = time() + 2;
+        while (time() < $expectedTime) {
+            $x = str_repeat('x', 100000);
+        }
+        self::assertTrue($called1);
         self::assertTrue($called2);
     }
 }
