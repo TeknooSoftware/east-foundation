@@ -1,5 +1,9 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [6.2.3] - 2023-02-01
+### Stable Release
+- Fix `TimerService` when a timer is rescheduled without unregister before. 
+
 ## [6.2.2] - 2023-01-26
 ### Stable Release
 - Fix `TimerService` when a new timer with a previous used id, to not be called at previous time.

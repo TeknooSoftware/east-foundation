@@ -89,14 +89,12 @@ class TimerService
                     while (false !== ($timersIds = current($this->pipes)) && key($this->pipes) <= $timestamp) {
                         unset($this->pipes[key($this->pipes)]);
                         foreach ($timersIds as $timerId) {
-                            if (!isset($this->callbacks[$timerId])) {
-                                continue;
+                            if (isset($this->callbacks[$timerId])) {
+                                $callback = $this->callbacks[$timerId];
+                                unset($this->callbacks[$timerId]);
+                                $callback();
+                                unset($callback);
                             }
-
-                            $callback = $this->callbacks[$timerId];
-                            unset($this->callbacks[$timerId]);
-                            $callback();
-                            unset($callback);
                         }
                     }
                 },
@@ -148,6 +146,10 @@ class TimerService
         if (!empty($this->pipes)) {
             reset($this->pipes);
             $next = key($this->pipes);
+        }
+
+        if (isset($this->callbacks[$timerId])) {
+            $this->unregister($timerId);
         }
 
         $this->callbacks[$timerId] = $callback;
