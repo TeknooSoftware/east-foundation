@@ -1,5 +1,9 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [6.2.4] - 2023-02-03
+### Stable Release
+- Update dev libs to support PHPUnit 10 and remove unused phploc
+
 ## [6.2.3] - 2023-02-01
 ### Stable Release
 - Fix `TimerService` when a timer is rescheduled without unregister before. 
