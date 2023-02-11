@@ -11,3 +11,4 @@ composer.lock
 /vendor/*
 /.phpunit.result.cache
 /tests/var/ping
+/.phpunit.cache/

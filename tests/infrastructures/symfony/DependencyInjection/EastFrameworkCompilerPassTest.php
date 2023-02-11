@@ -92,7 +92,15 @@ class EastFrameworkCompilerPassTest extends \PHPUnit\Framework\TestCase
         $this->getContainerBuilderMock()
             ->expects($this->exactly(2))
             ->method('getDefinition')
-            ->withConsecutive(['service1'], ['service2'])
+            ->with(
+                $this->callback(
+                    fn ($value) => match ($value) {
+                        'service1' => true,
+                        'service2' => true,
+                        default => false,
+                    }
+                )
+            )
             ->willReturn($def);
 
         self::assertInstanceOf(
@@ -125,7 +133,15 @@ class EastFrameworkCompilerPassTest extends \PHPUnit\Framework\TestCase
         $this->getContainerBuilderMock()
             ->expects(self::any())
             ->method('getDefinition')
-            ->withConsecutive(['service1'], ['service2'])
+            ->with(
+                $this->callback(
+                    fn ($value) => match ($value) {
+                        'service1' => true,
+                        'service2' => true,
+                        default => false,
+                    }
+                )
+            )
             ->willReturn($def);
 
         self::assertInstanceOf(

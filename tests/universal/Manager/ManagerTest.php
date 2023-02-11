@@ -34,7 +34,7 @@ use Teknoo\East\Foundation\Recipe\RecipeInterface;
 use Teknoo\Recipe\Bowl\Bowl;
 use Teknoo\Recipe\Bowl\BowlInterface;
 use Teknoo\Recipe\ChefInterface;
-use Teknoo\Tests\Recipe\AbstractChefTest;
+use Teknoo\Tests\Recipe\AbstractChefTests;
 
 /**
  * Class ManagerTest.
@@ -48,7 +48,7 @@ use Teknoo\Tests\Recipe\AbstractChefTest;
  * @author      Richard Déloge <richarddeloge@gmail.com>
  * @covers \Teknoo\East\Foundation\Manager\Manager
  */
-class ManagerTest extends AbstractChefTest
+class ManagerTest extends AbstractChefTests
 {
     /**
      * @return ChefInterface|ManagerInterface

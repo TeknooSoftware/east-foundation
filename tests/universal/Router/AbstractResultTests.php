@@ -36,7 +36,7 @@ use Teknoo\Immutable\Exception\ImmutableException;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-abstract class AbstractResultTest extends \PHPUnit\Framework\TestCase
+abstract class AbstractResultTests extends \PHPUnit\Framework\TestCase
 {
     /**
      * @return ResultInterface

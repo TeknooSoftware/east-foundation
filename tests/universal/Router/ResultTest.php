@@ -40,7 +40,7 @@ use Teknoo\Immutable\Exception\ImmutableException;
  *
  * @covers \Teknoo\East\Foundation\Router\Result
  */
-class ResultTest extends AbstractResultTest
+class ResultTest extends AbstractResultTests
 {
     public function buildResult(): ResultInterface
     {

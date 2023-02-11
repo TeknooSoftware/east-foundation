@@ -39,7 +39,7 @@ use Teknoo\Immutable\Exception\ImmutableException;
  *
  * @covers \Teknoo\East\Foundation\Router\Parameter
  */
-class ParameterTest extends AbstractParameterTest
+class ParameterTest extends AbstractParameterTests
 {
     public function buildParameter(): ParameterInterface
     {
