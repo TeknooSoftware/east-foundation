@@ -27,7 +27,9 @@ namespace Teknoo\Tests\East\Foundation;
 use DI\Container;
 use Psr\Log\LoggerInterface;
 use Teknoo\East\Foundation\Liveness\PingService;
+use Teknoo\East\Foundation\Liveness\PingServiceInterface;
 use Teknoo\East\Foundation\Liveness\TimeoutService;
+use Teknoo\East\Foundation\Liveness\TimeoutServiceInterface;
 use Teknoo\East\Foundation\Manager\Manager;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\East\Foundation\Manager\Queue\Queue;
@@ -46,6 +48,7 @@ use Teknoo\East\Foundation\Recipe\RecipeInterface;
 use Teknoo\East\Foundation\Router\RouterInterface;
 use Teknoo\East\Foundation\Time\DatesService;
 use Teknoo\East\Foundation\Time\TimerService;
+use Teknoo\East\Foundation\Time\TimerServiceInterface;
 use function defined;
 
 /**
@@ -221,6 +224,10 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
             TimerService::class,
             $container->get(TimerService::class)
         );
+        self::assertInstanceOf(
+            TimerServiceInterface::class,
+            $container->get(TimerServiceInterface::class)
+        );
     }
 
     public function testPingService()
@@ -230,6 +237,10 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
             PingService::class,
             $container->get(PingService::class)
         );
+        self::assertInstanceOf(
+            PingServiceInterface::class,
+            $container->get(PingServiceInterface::class)
+        );
     }
 
     public function testTimeoutService()
@@ -238,6 +249,10 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         self::assertInstanceOf(
             TimeoutService::class,
             $container->get(TimeoutService::class)
+        );
+        self::assertInstanceOf(
+            TimeoutServiceInterface::class,
+            $container->get(TimeoutServiceInterface::class)
         );
     }
 }

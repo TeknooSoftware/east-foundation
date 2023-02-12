@@ -49,7 +49,7 @@ use const SIGALRM;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-class TimerService
+class TimerService implements TimerServiceInterface
 {
     /**
      * @var array<string, callable>

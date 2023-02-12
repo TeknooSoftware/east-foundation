@@ -28,7 +28,9 @@ namespace Teknoo\East\Foundation;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
 use Teknoo\East\Foundation\Liveness\PingService;
+use Teknoo\East\Foundation\Liveness\PingServiceInterface;
 use Teknoo\East\Foundation\Liveness\TimeoutService;
+use Teknoo\East\Foundation\Liveness\TimeoutServiceInterface;
 use Teknoo\East\Foundation\Manager\Manager;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\East\Foundation\Processor\Processor;
@@ -45,6 +47,7 @@ use Teknoo\East\Foundation\Recipe\RecipeInterface;
 use Teknoo\East\Foundation\Router\RouterInterface;
 use Teknoo\East\Foundation\Time\DatesService;
 use Teknoo\East\Foundation\Time\TimerService;
+use Teknoo\East\Foundation\Time\TimerServiceInterface;
 
 use function DI\get;
 use function DI\create;
@@ -96,6 +99,7 @@ return [
         ),
 
     DatesService::class => create(),
+    TimerServiceInterface::class => get(TimerService::class),
     TimerService::class => static function (ContainerInterface $container): TimerService {
         if (!TimerService::isAvailable()) {
             // @codeCoverageIgnoreStart
@@ -106,11 +110,13 @@ return [
         return new TimerService($container->get(DatesService::class));
     },
 
+    PingServiceInterface::class => get(PingService::class),
     PingService::class => create(),
+    TimeoutServiceInterface::class => get(TimeoutService::class),
     TimeoutService::class => static function (ContainerInterface $container): TimeoutService {
         $timerService = null;
         if (TimerService::isAvailable()) {
-            $timerService = $container->get(TimerService::class);
+            $timerService = $container->get(TimerServiceInterface::class);
         }
 
         return new TimeoutService($timerService);

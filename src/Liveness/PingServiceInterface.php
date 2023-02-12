@@ -26,41 +26,17 @@ declare(strict_types=1);
 namespace Teknoo\East\Foundation\Liveness;
 
 /**
- * Service to centralize all pings operations to call all in a single method call. Any ping operations can be
+ * Interface to group all pings operations to call all in a single method call. Any ping operations can be
  * added and removed dynamicly. A ping operation is mandatory identified by an id.
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-class PingService implements PingServiceInterface
+interface PingServiceInterface
 {
-    /**
-     * @var array<string, callable>
-     */
-    private array $callbacks = [];
+    public function register(string $id, callable $callback): PingServiceInterface;
 
-    public function register(string $id, callable $callback): PingServiceInterface
-    {
-        $this->callbacks[$id] = $callback;
+    public function unregister(string $id): PingServiceInterface;
 
-        return $this;
-    }
-
-    public function unregister(string $id): PingServiceInterface
-    {
-        if (isset($this->callbacks[$id])) {
-            unset($this->callbacks[$id]);
-        }
-
-        return $this;
-    }
-
-    public function ping(): PingServiceInterface
-    {
-        foreach ($this->callbacks as $callback) {
-            $callback();
-        }
-
-        return $this;
-    }
+    public function ping(): PingServiceInterface;
 }

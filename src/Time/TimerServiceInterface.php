@@ -23,44 +23,35 @@
 
 declare(strict_types=1);
 
-namespace Teknoo\East\Foundation\Liveness;
+namespace Teknoo\East\Foundation\Time;
+
+use DateTimeInterface;
+use RuntimeException;
+
+use function array_diff;
+use function current;
+use function function_exists;
+use function key;
+use function ksort;
+use function pcntl_alarm;
+use function pcntl_async_signals;
+use function pcntl_signal;
+use function reset;
+
+use const SIGALRM;
 
 /**
- * Service to centralize all pings operations to call all in a single method call. Any ping operations can be
- * added and removed dynamicly. A ping operation is mandatory identified by an id.
+ * Simple timer service able to call asyncly a method within X seconds. Several call, at different time can be called.
+ * The call is not warranty to be call exactly at X seconds and can be called after (PHP is monothread).
+ * A call can be unreferenced before timeout
+ * This service need the pcntl extension to be use, it is not available on Windows OS.
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-class PingService implements PingServiceInterface
+interface TimerServiceInterface
 {
-    /**
-     * @var array<string, callable>
-     */
-    private array $callbacks = [];
+    public function unregister(string $timerId): TimerServiceInterface;
 
-    public function register(string $id, callable $callback): PingServiceInterface
-    {
-        $this->callbacks[$id] = $callback;
-
-        return $this;
-    }
-
-    public function unregister(string $id): PingServiceInterface
-    {
-        if (isset($this->callbacks[$id])) {
-            unset($this->callbacks[$id]);
-        }
-
-        return $this;
-    }
-
-    public function ping(): PingServiceInterface
-    {
-        foreach ($this->callbacks as $callback) {
-            $callback();
-        }
-
-        return $this;
-    }
+    public function register(int $seconds, string $timerId, callable $callback): TimerServiceInterface;
 }

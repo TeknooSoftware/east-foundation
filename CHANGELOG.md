@@ -1,5 +1,11 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [6.2.6] - 2023-02-12
+### Stable Release
+- Add `Teknoo\East\Foundation\Liveness\PingServiceInterface` for `PingService`
+- Add `Teknoo\East\Foundation\Liveness\TimeoutServiceInterface` for `TimeoutService`
+- Add `Teknoo\East\Foundation\Time\TimerServiceInterface` for `TimerService`
+
 ## [6.2.5] - 2023-02-11
 ### Stable Release
 - Remove phpcpd and upgrade phpunit.xml

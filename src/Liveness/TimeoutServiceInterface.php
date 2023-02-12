@@ -32,53 +32,16 @@ use Teknoo\East\Foundation\Time\TimerService;
 use function set_time_limit;
 
 /**
- * Service to manage timeout behavior and kill operations that take too long. Its behavior is similar to
+ * Interface to manage timeout behavior and kill operations that take too long. Its behavior is similar to
  * \set_time_limit, but an throwable exception is throwed instead a fatal error. A fallback on \set_time_limit is even
  * defined X seconds (5 by default). The time limit can be disable.
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-class TimeoutService implements TimeoutServiceInterface
+interface TimeoutServiceInterface
 {
-    /**
-     * @var callable
-     */
-    private $setTimeoutCallable;
+    public function enable(int $seconds, int $grace = 5): TimeoutServiceInterface;
 
-    public function __construct(
-        private ?TimerService $timer = null,
-    ) {
-        $this->setTimeoutCallable = set_time_limit(...);
-    }
-
-    public function __destruct()
-    {
-        $this->disable();
-    }
-
-    public static function throwException(): never
-    {
-        throw new TimeLimitReachedException('Error, time limit exceeded');
-    }
-
-    public function enable(int $seconds, int $grace = 5): TimeoutServiceInterface
-    {
-        $this->timer?->register(
-            seconds: $seconds,
-            timerId: static::class,
-            callback: self::throwException(...),
-        );
-        ($this->setTimeoutCallable)($seconds + $grace);
-
-        return $this;
-    }
-
-    public function disable(): TimeoutServiceInterface
-    {
-        ($this->setTimeoutCallable)(0);
-        $this->timer?->unregister(static::class);
-
-        return $this;
-    }
+    public function disable(): TimeoutServiceInterface;
 }
