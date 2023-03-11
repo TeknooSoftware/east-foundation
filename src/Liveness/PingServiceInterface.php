@@ -29,6 +29,11 @@ namespace Teknoo\East\Foundation\Liveness;
  * Interface to group all pings operations to call all in a single method call. Any ping operations can be
  * added and removed dynamicly. A ping operation is mandatory identified by an id.
  *
+ * @copyright   Copyright (c) EIRL Richard Déloge (richarddeloge@gmail.com)
+ * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software)
+ *
+ * @link        http://teknoo.software/east-foundation Project website
+ *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */

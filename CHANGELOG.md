@@ -1,5 +1,9 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [6.2.7] - 2023-03-11
+### Stable Release
+- Q/A
+
 ## [6.2.6] - 2023-02-12
 ### Stable Release
 - Add `Teknoo\East\Foundation\Liveness\PingServiceInterface` for `PingService`

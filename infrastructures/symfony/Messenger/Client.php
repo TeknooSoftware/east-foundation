@@ -27,11 +27,11 @@ namespace Teknoo\East\FoundationBundle\Messenger;
 
 use Psr\Http\Message\MessageInterface;
 use Psr\Log\LoggerInterface;
-use RuntimeException;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Teknoo\East\Foundation\Client\ClientInterface;
 use Teknoo\East\Foundation\Client\ResponseInterface;
+use Teknoo\East\FoundationBundle\Messenger\Exception\NoResponseException;
 use Throwable;
 
 /**
@@ -90,7 +90,7 @@ class Client implements ClientInterface
         }
 
         if (null === $this->response) {
-            throw new RuntimeException('Error, any compliant response object has been pushed to the client');
+            throw new NoResponseException('Error, any compliant response object has been pushed to the client');
         }
 
         if ($this->bus instanceof MessageBusInterface) {

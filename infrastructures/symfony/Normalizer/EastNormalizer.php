@@ -25,11 +25,11 @@ declare(strict_types=1);
 
 namespace Teknoo\East\FoundationBundle\Normalizer;
 
-use RuntimeException;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Teknoo\East\Foundation\Normalizer\EastNormalizerInterface;
 use Teknoo\East\Foundation\Normalizer\Object\NormalizableInterface;
+use Teknoo\East\FoundationBundle\Normalizer\Exception\NotNormalizableException;
 
 use function is_object;
 use function is_scalar;
@@ -89,7 +89,7 @@ class EastNormalizer implements EastNormalizerInterface, NormalizerInterface, No
     public function normalize(mixed $object, ?string $format = null, array $context = []): array
     {
         if (!$object instanceof NormalizableInterface) {
-            throw new RuntimeException(
+            throw new NotNormalizableException(
                 sprintf(
                     'Error the class "%s" does not implement the interface "%s"',
                     is_object($object) ? $object::class : 'scalar',

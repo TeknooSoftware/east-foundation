@@ -25,7 +25,6 @@ declare(strict_types=1);
 
 namespace Teknoo\East\Foundation\Liveness;
 
-use RuntimeException;
 use Teknoo\East\Foundation\Liveness\Exception\TimeLimitReachedException;
 use Teknoo\East\Foundation\Time\TimerService;
 
@@ -35,6 +34,11 @@ use function set_time_limit;
  * Service to manage timeout behavior and kill operations that take too long. Its behavior is similar to
  * \set_time_limit, but an throwable exception is throwed instead a fatal error. A fallback on \set_time_limit is even
  * defined X seconds (5 by default). The time limit can be disable.
+ *
+ * @copyright   Copyright (c) EIRL Richard Déloge (richarddeloge@gmail.com)
+ * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software)
+ *
+ * @link        http://teknoo.software/east-foundation Project website
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>

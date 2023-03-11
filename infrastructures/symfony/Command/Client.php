@@ -27,11 +27,11 @@ namespace Teknoo\East\FoundationBundle\Command;
 
 use JsonSerializable;
 use Psr\Http\Message\MessageInterface;
-use RuntimeException;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Teknoo\East\Foundation\Client\ClientInterface;
 use Teknoo\East\Foundation\Client\ResponseInterface;
+use Teknoo\East\FoundationBundle\Command\Exception\NoResponseException;
 use Throwable;
 
 use function json_encode;
@@ -79,7 +79,7 @@ class Client implements ClientInterface
     private function getErrorOutput(): OutputInterface
     {
         if (!$this->output instanceof OutputInterface) {
-            throw new RuntimeException('Error, the output has not been set into the client');
+            throw new NoResponseException('Error, the output has not been set into the client');
         }
 
         if ($this->output instanceof ConsoleOutputInterface) {
@@ -118,7 +118,7 @@ class Client implements ClientInterface
         }
 
         if (!$this->output instanceof OutputInterface) {
-            throw new RuntimeException('Error, the output has not been set into the client');
+            throw new NoResponseException('Error, the output has not been set into the client');
         }
 
         if ($this->response instanceof JsonSerializable) {

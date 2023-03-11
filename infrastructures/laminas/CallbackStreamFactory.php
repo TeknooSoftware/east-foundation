@@ -27,7 +27,7 @@ namespace Teknoo\East\Diactoros;
 
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
-use RuntimeException;
+use Teknoo\East\Diactoros\Exception\CallbackStreamException;
 use Teknoo\East\Foundation\Http\Message\CallbackStreamFactoryInterface;
 
 use function fclose;
@@ -60,7 +60,7 @@ class CallbackStreamFactory implements StreamFactoryInterface, CallbackStreamFac
             static function () use ($filename, $mode): string {
                 $hF = @fopen($filename, $mode);
                 if (!$hF) {
-                    throw new RuntimeException("Can not open $filename");
+                    throw new CallbackStreamException("Can not open $filename");
                 }
 
                 $content = (string) stream_get_contents($hF);

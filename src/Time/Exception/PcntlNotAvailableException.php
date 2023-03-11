@@ -23,13 +23,11 @@
 
 declare(strict_types=1);
 
-namespace Teknoo\East\Foundation\Liveness\Exception;
+namespace Teknoo\East\Foundation\Time\Exception;
 
 use RuntimeException;
 
 /**
- * Default exception used with the Timeout Service
- *
  * @copyright   Copyright (c) EIRL Richard Déloge (richarddeloge@gmail.com)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software)
  *
@@ -38,6 +36,6 @@ use RuntimeException;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
  */
-class TimeLimitReachedException extends RuntimeException
+class PcntlNotAvailableException extends RuntimeException
 {
 }

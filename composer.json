@@ -34,8 +34,8 @@
         "psr/http-message": "^1.0",
         "php-di/php-di": "^6.4",
         "teknoo/immutable": "^3.0.1.14",
-        "teknoo/states": "^6.0.15",
-        "teknoo/recipe": "^4.2.3"
+        "teknoo/states": "^6.0.16",
+        "teknoo/recipe": "^4.2.4"
     },
     "require-dev": {
         "ext-pcntl": "*",

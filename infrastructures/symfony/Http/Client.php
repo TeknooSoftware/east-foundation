@@ -31,11 +31,12 @@ use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
-use RuntimeException;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Teknoo\East\Foundation\Client\ResponseInterface as EastResponse;
 use Teknoo\East\Foundation\Client\ClientInterface;
+use Teknoo\East\FoundationBundle\Http\Exception\NoRequestException;
+use Teknoo\East\FoundationBundle\Http\Exception\NoResponseException;
 use Throwable;
 
 use function json_encode;
@@ -111,7 +112,7 @@ class Client implements ClientWithResponseEventInterface
         }
 
         if (!$this->requestEvent instanceof RequestEvent) {
-            throw new RuntimeException('Error, the requestEvent has not been set into the client');
+            throw new NoRequestException('Error, the requestEvent has not been set into the client');
         }
 
         if (
@@ -136,7 +137,7 @@ class Client implements ClientWithResponseEventInterface
         }
 
         if (!$this->response instanceof ResponseInterface) {
-            throw new RuntimeException('Error, any response object has been pushed to the client');
+            throw new NoResponseException('Error, any response object has been pushed to the client');
         }
 
         $this->requestEvent->setResponse(

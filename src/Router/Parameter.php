@@ -27,7 +27,7 @@ namespace Teknoo\East\Foundation\Router;
 
 use InvalidArgumentException;
 use ReflectionClass;
-use RuntimeException;
+use Teknoo\East\Foundation\Router\Exception\NoClassHintedException;
 use Teknoo\Immutable\ImmutableTrait;
 
 /**
@@ -81,7 +81,7 @@ class Parameter implements ParameterInterface
     public function getClass(): ReflectionClass
     {
         if (!$this->classHinted instanceof ReflectionClass) {
-            throw new RuntimeException("Error this parameter {$this->name} has not class hinted");
+            throw new NoClassHintedException("Error this parameter {$this->name} has not class hinted");
         }
 
         return $this->classHinted;

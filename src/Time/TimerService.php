@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace Teknoo\East\Foundation\Time;
 
 use DateTimeInterface;
-use RuntimeException;
+use Teknoo\East\Foundation\Time\Exception\PcntlNotAvailableException;
 
 use function array_diff;
 use function current;
@@ -45,6 +45,11 @@ use const SIGALRM;
  * The call is not warranty to be call exactly at X seconds and can be called after (PHP is monothread).
  * A call can be unreferenced before timeout
  * This service need the pcntl extension to be use, it is not available on Windows OS.
+ *
+ * @copyright   Copyright (c) EIRL Richard Déloge (richarddeloge@gmail.com)
+ * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software)
+ *
+ * @link        http://teknoo.software/east-foundation Project website
  *
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richarddeloge@gmail.com>
@@ -74,6 +79,22 @@ class TimerService implements TimerServiceInterface
             && function_exists('pcntl_alarm');
     }
 
+    public function executeCallsBefore(DateTimeInterface $dateTime): void
+    {
+        $timestamp = $dateTime->getTimestamp();
+        while (false !== ($timersIds = current($this->pipes)) && key($this->pipes) <= $timestamp) {
+            unset($this->pipes[key($this->pipes)]);
+            foreach ($timersIds as $timerId) {
+                if (isset($this->callbacks[$timerId])) {
+                    $callback = $this->callbacks[$timerId];
+                    unset($this->callbacks[$timerId]);
+                    $callback();
+                    unset($callback);
+                }
+            }
+        }
+    }
+
     /**
      * Internal method called when SIGALARM is received
      * @interal
@@ -84,20 +105,7 @@ class TimerService implements TimerServiceInterface
         while (!empty($this->pipes) && true === $mustReRun) {
             $mustReRun = false;
             $this->datesService->passMeTheDate(
-                setter: function (DateTimeInterface $dateTime): void {
-                    $timestamp = $dateTime->getTimestamp();
-                    while (false !== ($timersIds = current($this->pipes)) && key($this->pipes) <= $timestamp) {
-                        unset($this->pipes[key($this->pipes)]);
-                        foreach ($timersIds as $timerId) {
-                            if (isset($this->callbacks[$timerId])) {
-                                $callback = $this->callbacks[$timerId];
-                                unset($this->callbacks[$timerId]);
-                                $callback();
-                                unset($callback);
-                            }
-                        }
-                    }
-                },
+                setter: $this->executeCallsBefore(...),
                 preferRealDate: true,
             );
 
@@ -138,7 +146,7 @@ class TimerService implements TimerServiceInterface
     {
         if (!self::isAvailable()) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException('Pcntl extension is not available');
+            throw new PcntlNotAvailableException('Pcntl extension is not available');
             // @codeCoverageIgnoreEnd
         }
 
