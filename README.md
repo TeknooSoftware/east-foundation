@@ -312,7 +312,7 @@ to avoid compilation error with Symfony 4.4
 
 Credits
 -------
-Richard Déloge - <richarddeloge@gmail.com> - Lead developer.
+Richard Déloge - <richard@teknoo.software> - Lead developer.
 Teknoo Software - <http://teknoo.software>
 
 About Teknoo Software
