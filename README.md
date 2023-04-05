@@ -226,7 +226,7 @@ This library requires :
     * Teknoo/Immutable.
     * Teknoo/States.
     * Teknoo/Recipe.
-    * Optional: Symfony 6.0+
+    * Optional: Symfony 6.1+
 
 News from Teknoo East Foundation 6.0
 ------------------------------------
