@@ -1,5 +1,9 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [6.2.8] - 2023-04-11
+### Stable Release
+- Allow psr/http-message 2
+
 ## [6.2.7] - 2023-03-11
 ### Stable Release
 - Q/A
