@@ -1,5 +1,11 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [6.2.9] - 2023-04-16
+### Stable Release
+- Update dev lib requirements
+- Support PHPUnit 10.1+
+- Migrate phpunit.xml
+
 ## [6.2.8] - 2023-04-11
 ### Stable Release
 - Allow psr/http-message 2
