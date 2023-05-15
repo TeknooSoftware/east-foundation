@@ -1,5 +1,10 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [6.2.10] - 2023-05-15
+### Stable Release
+- Update dev lib requirements
+- Update copyrights
+
 ## [6.2.9] - 2023-04-16
 ### Stable Release
 - Update dev lib requirements
