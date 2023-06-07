@@ -1,5 +1,11 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [6.2.11] - 2023-06-07
+### Stable Release
+- Update Teknoo libs
+- Require Symfony 6.3 or newer
+- Improve documentation
+
 ## [6.2.10] - 2023-05-15
 ### Stable Release
 - Update dev lib requirements

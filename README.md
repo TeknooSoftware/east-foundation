@@ -8,198 +8,14 @@ Teknoo Software - East Foundation
 [![PHPStan](https://img.shields.io/badge/PHPStan-enabled-brightgreen.svg?style=flat)](https://github.com/phpstan/phpstan)
 
 East Foundation is a universal package to implement the [#east](http://blog.est.voyage/phpTour2015/) philosophy with 
-any framework supporting PSR-11 or with Symfony 6.0+. :
-All public method of objects must return $this or a new instance of $this.
+any framework supporting PSR-11 or with Symfony 6.3+ : All public method of objects must return `$this` or a new 
+instance of `$this`.
 
 This bundle uses PSR7 requests and responses and do automatically the conversion from Symfony's requests and responses.
 So your controllers and services can be independent of Symfony. This bundle reuse internally Symfony's components
-to manage routes and find controller to call.
+to manage routes and find controller to call. It is also designed to be used with other framework.
 
-Quick Example
--------------
-
-    <?php
-
-    declare(strict_types=1);
-    
-    use Psr\Http\Message\MessageInterface;
-    use Teknoo\East\Foundation\Client\ResponseInterface;
-    use Teknoo\East\Foundation\Router\ResultInterface;
-    use DI\ContainerBuilder;
-    use Laminas\Diactoros\ServerRequest;
-    use Laminas\Diactoros\Response\TextResponse;
-    use Teknoo\East\Foundation\Client\ClientInterface;
-    use Teknoo\East\Foundation\Manager\ManagerInterface;
-    use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
-    use Teknoo\East\Foundation\Recipe\RecipeInterface;
-    use Teknoo\East\Foundation\Router\Result;
-    use Teknoo\East\Foundation\Router\RouterInterface;
-    
-    use function DI\decorate;
-    
-    require_once 'vendor/autoload.php';
-    
-    //Simulate client, accepts responses from controller and pass them to the "framework" or lower layer to send them to
-    //the browser.
-    $client = new class implements ClientInterface {
-        private ResponseInterface | MessageInterface | null $response = null;
-    
-        private bool $inSilentlyMode = false;
-    
-        public function updateResponse(callable $modifier): ClientInterface
-        {
-            $modifier($this, $this->response);
-    
-            return $this;
-        }
-    
-        public function acceptResponse(ResponseInterface | MessageInterface $response): ClientInterface
-        {
-            $this->response = $response;
-    
-            return $this;
-        }
-    
-        public function sendResponse(
-            ResponseInterface | MessageInterface | null $response = null,
-            bool $silently = false
-        ): ClientInterface
-        {
-            $silently = $silently || $this->inSilentlyMode;
-    
-            if (null !== $response) {
-                $this->acceptResponse($response);
-            }
-    
-            if (true === $silently && null === $this->response) {
-                return $this;
-            }
-    
-            if ($this->response instanceof  MessageInterface) {
-                print $this->response->getBody() . PHP_EOL;
-            } else {
-                print $this->response . PHP_EOL;
-            }
-    
-            return $this;
-        }
-    
-        public function errorInRequest(Throwable $throwable, bool $silently = false): ClientInterface
-        {
-            print $throwable->getMessage() . PHP_EOL;
-    
-            return $this;
-        }
-    
-        public function mustSendAResponse(): ClientInterface
-        {
-            $this->inSilentlyMode = false;
-    
-            return $this;
-        }
-    
-        public function sendAResponseIsOptional(): ClientInterface
-        {
-            $this->inSilentlyMode = true;
-    
-            return $this;
-        }
-    };
-    
-    //First controller / endpoint, dedicated for the request /foo
-    $endPoint1 = static function (MessageInterface $message, ClientInterface $client) {
-        $client->sendResponse(
-            new TextResponse('request /bar, endpoint 1, value : ' . $message->getQueryParams()['value'])
-        );
-    };
-    
-    //Second controller / endpoint, dedicated for the request /bar
-    $endPoint2 = static function (ClientInterface $client, string $value) {
-        $client->sendResponse(
-            new class ($value) implements ResponseInterface {
-                public function __construct(
-                    private string $value,
-                ) {
-                }
-    
-                public function __toString()
-                {
-                    return "request /bar, endpoint 2, value : {$this->value}";
-                }
-            }
-        );
-    };
-    
-    /**
-     * Simulate router
-     */
-    $router = new class($endPoint1, $endPoint2) implements RouterInterface {
-        /**
-         * @var callable
-         */
-        private $endPoint1;
-    
-        /**
-         * @var callable
-         */
-        private $endPoint2;
-    
-        public function __construct(callable $endPoint1 , callable $endPoint2)
-        {
-            $this->endPoint1 = $endPoint1;
-            $this->endPoint2 = $endPoint2;
-        }
-    
-        public function execute(
-            ClientInterface $client ,
-            MessageInterface $message,
-            ManagerInterface $manager
-        ): MiddlewareInterface
-        {
-            $uri = (string) $message->getUri();
-    
-            $manager->updateWorkPlan([
-                ResultInterface::class => match ($uri) {
-                    '/foo' => new Result($this->endPoint1),
-                    '/bar' => new Result($this->endPoint2),
-                },
-            ]);
-            $manager->continueExecution($client, $message);
-    
-            return $this;
-        }
-    };
-    
-    $builder = new ContainerBuilder();
-    $builder->addDefinitions('src/di.php');
-    $builder->addDefinitions([
-        RouterInterface::class => $router,
-    
-        RecipeInterface::class => decorate(function ($previous) use ($router) {
-            if ($previous instanceof RecipeInterface) {
-                $previous = $previous->registerMiddleware(
-                    $router,
-                    RouterInterface::MIDDLEWARE_PRIORITY
-                );
-            }
-    
-            return $previous;
-        })
-    ]);
-    
-    $container = $builder->build();
-    
-    //Simulate Server request reception
-    $request1 = new ServerRequest([], [], '/foo', 'GET');
-    $request1 = $request1->withQueryParams(['value' => 'bar']);
-    $request2 = new ServerRequest([], [], '/bar', 'GET');
-    $request2 = $request2->withQueryParams(['value' => 'foo']);
-    
-    $manager = $container->get(ManagerInterface::class);
-    $manager->receiveRequest($client, $request1);
-    //Print: request /bar, endpoint 1, value : bar
-    $manager->receiveRequest($client, $request2);
-    //Print: request /bar, endpoint 2, value : foo
+A complete documentation is available in [documentation/README.md](documentation/README.md)
 
 Support this project
 ---------------------
@@ -226,14 +42,7 @@ Space is licensed under the MIT License - see the licenses folder for details.
 
 Installation & Requirements
 ---------------------------
-To install this library with composer, run this command :
-
-    composer require teknoo/east-foundation
-    
-To install with Symfony
-
-    composer require teknoo/composer-install
-    composer require teknoo/east-foundation-symfony  
+To installm [follow these instructions](documentation/install.md).
 
 This library requires :
 
@@ -242,7 +51,7 @@ This library requires :
     * Teknoo/Immutable.
     * Teknoo/States.
     * Teknoo/Recipe.
-    * Optional: Symfony 6.1+
+    * Optional: Symfony 6.3+
 
 News from Teknoo East Foundation 6.0
 ------------------------------------
