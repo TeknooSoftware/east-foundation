@@ -66,6 +66,11 @@ class EastNormalizerTest extends \PHPUnit\Framework\TestCase
         ));
     }
 
+    public function testGetSupportedTypes()
+    {
+        self::assertIsArray($this->buildNormalizer()->getSupportedTypes('array'));
+    }
+
     public function testNormalizeBadObject()
     {
         $this->expectException(\RuntimeException::class);

@@ -120,4 +120,14 @@ class EastNormalizer implements EastNormalizerInterface, NormalizerInterface, No
     {
         return $data instanceof NormalizableInterface;
     }
+
+    /**
+     * @return array<class-string|'*'|'object'|string, bool|null>
+     */
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            NormalizableInterface::class => false,
+        ];
+    }
 }

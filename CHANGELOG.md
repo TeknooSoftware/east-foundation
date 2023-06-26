@@ -1,5 +1,9 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [6.2.12] - 2023-06-25
+### Stable Release
+- Fix deprecation in Symfony normalizer
+
 ## [6.2.11] - 2023-06-07
 ### Stable Release
 - Update Teknoo libs
