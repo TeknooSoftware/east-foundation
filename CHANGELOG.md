@@ -1,5 +1,10 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [7.0.0-beta1] - 2023-07-12
+### Stable Release
+- Support PHP-DI 7.0+
+- Support Laminas Diactoros 3.0+
+
 ## [6.2.12] - 2023-06-25
 ### Stable Release
 - Fix deprecation in Symfony normalizer
