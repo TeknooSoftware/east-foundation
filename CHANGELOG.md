@@ -1,7 +1,12 @@
 # Teknoo Software - East Foundation - Change Log
 
-## [7.0.0-beta1] - 2023-07-12
+## [7.0.0] - 2023-07-13
 ### Stable Release
+- Support PHP-DI 7.0+
+- Support Laminas Diactoros 3.0+
+
+## [7.0.0-beta1] - 2023-07-12
+### Beta Release
 - Support PHP-DI 7.0+
 - Support Laminas Diactoros 3.0+
 
