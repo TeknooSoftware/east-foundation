@@ -26,7 +26,9 @@ declare(strict_types=1);
 namespace Teknoo\East\Foundation\Time;
 
 use DateTime;
+use DateTimeImmutable;
 use DateTimeInterface;
+use Psr\Clock\ClockInterface;
 
 /**
  * Simple service to manage date and hour in a recipe to return always the same date during the request and avoid
@@ -38,13 +40,17 @@ use DateTimeInterface;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
  */
-class DatesService
+class DatesService implements ClockInterface
 {
     private ?DateTimeInterface $currentDate = null;
 
-    public function setCurrentDate(DateTimeInterface $currentDate): DatesService
+    public function setCurrentDate(DateTimeInterface|ClockInterface $currentDate): DatesService
     {
-        $this->currentDate = $currentDate;
+        if ($currentDate instanceof ClockInterface) {
+            $this->currentDate = $currentDate->now();
+        } else {
+            $this->currentDate = $currentDate;
+        }
 
         return $this;
     }
@@ -80,5 +86,15 @@ class DatesService
         );
 
         return $this;
+    }
+
+    public function now(): DateTimeImmutable
+    {
+        $now = $this->getCurrentDate();
+        if ($now instanceof DateTimeImmutable) {
+            return $now;
+        }
+
+        return DateTimeImmutable::createFromInterface($now);
     }
 }

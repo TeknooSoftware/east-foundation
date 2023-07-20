@@ -1,5 +1,9 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [7.1.0] - 2023-07-20
+### Stable Release
+- Support `PSR-20` with the `DatesService`.
+
 ## [7.0.0] - 2023-07-13
 ### Stable Release
 - Support PHP-DI 7.0+

@@ -25,8 +25,10 @@ declare(strict_types=1);
 namespace Teknoo\Tests\East\Foundation\Time;
 
 use DateTime;
+use DateTimeImmutable;
 use DateTimeInterface;
 use PHPUnit\Framework\TestCase;
+use Psr\Clock\ClockInterface;
 use Teknoo\East\Foundation\Time\DatesService;
 
 /**
@@ -92,6 +94,43 @@ class DatesServiceTest extends TestCase
         self::assertInstanceOf(
             DatesService::class,
             $service->setCurrentDate($date)
+        );
+
+        self::assertInstanceOf(
+            DatesService::class,
+            $service->passMeTheDate($object->setDate(...))
+        );
+
+        self::assertEquals($date, $object->getDate());
+    }
+
+    public function testPassMeTheDateWithDefinedDateFromClockk()
+    {
+        $date = new DateTime('2017-01-01');
+
+        $object = new class {
+            private $date;
+            public function getDate(): ?DateTimeInterface
+            {
+                return $this->date;
+            }
+            public function setDate(DateTimeInterface $date): self
+            {
+                $this->date = $date;
+                return $this;
+            }
+        };
+
+        $service = $this->buildService();
+
+        $clock = $this->createMock(ClockInterface::class);
+        $clock->expects(self::any())
+            ->method('now')
+            ->willReturn(DateTimeImmutable::createFromInterface($date));
+
+        self::assertInstanceOf(
+            DatesService::class,
+            $service->setCurrentDate($clock)
         );
 
         self::assertInstanceOf(
@@ -231,5 +270,52 @@ class DatesServiceTest extends TestCase
             $service->since('5 days', $object->setDate(...), true)
         );
         self::assertInstanceOf(DateTimeInterface::class, $object->getDate());
+    }
+
+    public function testNowWithNoDefinedDate()
+    {
+        $service = $this->buildService();
+        self::assertInstanceOf(
+            DateTimeImmutable::class,
+            $service->now(),
+        );
+    }
+
+    public function testNowWithDefinedDate()
+    {
+        $date = new DateTime('2017-01-01');
+
+        $service = $this->buildService();
+
+        self::assertInstanceOf(
+            DatesService::class,
+            $service->setCurrentDate($date)
+        );
+
+        self::assertInstanceOf(
+            DateTimeImmutable::class,
+            $now = $service->now(),
+        );
+
+        self::assertEquals($date, $now);
+    }
+
+    public function testNowWithDefinedImmutableDate()
+    {
+        $date = new DateTimeImmutable('2017-01-01');
+
+        $service = $this->buildService();
+
+        self::assertInstanceOf(
+            DatesService::class,
+            $service->setCurrentDate($date)
+        );
+
+        self::assertInstanceOf(
+            DateTimeImmutable::class,
+            $now = $service->now(),
+        );
+
+        self::assertEquals($date, $now);
     }
 }
