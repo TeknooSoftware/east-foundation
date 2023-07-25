@@ -1,5 +1,14 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [7.2.0] - 2023-07-25
+### Stable Release
+- Support `PSR-15` with add to new `Recipe Bowl` type :
+  - `FiberHandlerBowl` (and `FiberMiddlewareBowl`) to support PSR 15 Requests handlers into a recipe.
+  - `MiddlewareBowl` (and `FiberMiddlewareBowl`) to support PSR 15 middleware into a recipe.
+    - The injected request handler is a wrap of the East Manager to resume/continue the recipe and get a PSR Response
+      from the client.
+  - These bowls will automatically push response to the client at the end of the execution
+
 ## [7.1.0] - 2023-07-20
 ### Stable Release
 - Support `PSR-20` with the `DatesService`.

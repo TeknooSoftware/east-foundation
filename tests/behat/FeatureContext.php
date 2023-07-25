@@ -35,8 +35,14 @@ use PHPUnit\Framework\Assert;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface as PsrMiddleware;
+use Psr\Http\Server\RequestHandlerInterface;
 use RuntimeException;
 use Teknoo\East\Foundation\Command\Executor;
+use Teknoo\East\Foundation\Http\Bowl\PSR15\FiberHandlerBowl;
+use Teknoo\East\Foundation\Http\Bowl\PSR15\FiberMiddlewareBowl;
+use Teknoo\East\Foundation\Http\Bowl\PSR15\HandlerBowl;
+use Teknoo\East\Foundation\Http\Bowl\PSR15\MiddlewareBowl;
 use Teknoo\East\Foundation\Liveness\Exception\TimeLimitReachedException;
 use Teknoo\East\Foundation\Liveness\PingService;
 use Teknoo\East\Foundation\Liveness\TimeoutService;
@@ -183,66 +189,113 @@ class FeatureContext implements Context
     private function createRecipeToReturnResponse(string $url, string $controllerName, string $type, bool $inFiber)
     {
         $controller = $controllerName;
-        if ('barFoo' === $controllerName) {
-            $recipe = new Recipe;
-            $recipe = $recipe->cook(function (ClientInterface $client, ServerRequest $request, $test) use ($type) {
-                if ('psr' === $type) {
-                    $client->acceptResponse(
-                        new TextResponse($test . $request->getUri())
-                    );
-                } elseif ('east' === $type) {
-                    $client->acceptResponse(
-                        new class($test) implements EastResponse {
-                            public function __construct(
-                                private string $value,
-                            ) {
-                            }
+        $recipe = new Recipe;
 
-                            public function __toString(): string
-                            {
-                                return $this->value;
-                            }
-                        }
-                    );
-                }elseif ('json' === $type) {
-                    $client->acceptResponse(
-                        new class($test) implements EastResponse, JsonSerializable {
-                            public function __construct(
-                                private string $value,
-                            ) {
-                            }
+        if ('standard' === $controllerName) {
+            $recipe = $recipe->cook(
+                function (ClientInterface $client, ServerRequest $request, $test) use ($type) {
+                    if ('psr' === $type) {
+                        $client->acceptResponse(
+                            new TextResponse($test . $request->getUri())
+                        );
+                    } elseif ('east' === $type) {
+                        $client->acceptResponse(
+                            new class($test) implements EastResponse {
+                                public function __construct(
+                                    private string $value,
+                                ) {
+                                }
 
-                            public function __toString(): string
-                            {
-                                return $this->value;
+                                public function __toString(): string
+                                {
+                                    return $this->value;
+                                }
                             }
+                        );
+                    }elseif ('json' === $type) {
+                        $client->acceptResponse(
+                            new class($test) implements EastResponse, JsonSerializable {
+                                public function __construct(
+                                    private string $value,
+                                ) {
+                                }
 
-                            public function jsonSerialize(): mixed
-                            {
-                                return ['foo' => $this->value];
+                                public function __toString(): string
+                                {
+                                    return $this->value;
+                                }
+
+                                public function jsonSerialize(): mixed
+                                {
+                                    return ['foo' => $this->value];
+                                }
                             }
-                        }
-                    );
-                }
-            }, 'body');
-
-            if (false === $inFiber) {
-                $controller = new RecipeEndPoint($recipe);
-            } else {
-                $controller = new RecipeEndPoint(new FiberRecipeBowl($recipe, 0));
-            }
+                        );
+                    }
+                },
+                'body',
+            );
         }
 
-        if ('fooBar' === $controllerName) {
-            $recipe = new Recipe;
-            $recipe = $recipe->cook(function (ClientInterface $client, ServerRequest $request, $test) {
+        if ('psr 15 handler' === $controller) {
+            $handler = new class implements RequestHandlerInterface {
+                public function handle(ServerRequestInterface $request): ResponseInterface
+                {
+                    return new TextResponse('PSR15 Handler ' . $request->getQueryParams()['test']);
+                }
+            };
 
-            }, 'body');
             if (false === $inFiber) {
-                $controller = new RecipeEndPoint($recipe);
+                $bowl = new HandlerBowl($handler, []);
             } else {
-                $controller = new RecipeEndPoint(new FiberRecipeBowl($recipe, 0));
+                $bowl = new FiberHandlerBowl($handler, []);
             }
+
+            $recipe = $recipe->cook($bowl,'body',);
+        }
+
+        if ('psr 15 middleware' === $controller) {
+            $middleware = new class implements PsrMiddleware {
+                public function process(
+                    ServerRequestInterface $request,
+                    RequestHandlerInterface $handler
+                ): ResponseInterface {
+                    $response = $handler->handle($request);
+
+                    return new TextResponse('PSR15 Middleware ' . ((string) $response->getBody()));
+                }
+            };
+
+            if (false === $inFiber) {
+                $bowl = new MiddlewareBowl($middleware, []);
+            } else {
+                $bowl = new FiberMiddlewareBowl($middleware, []);
+            }
+
+            $recipe = $recipe->cook($bowl, 'body1');
+            $recipe = $recipe->cook(
+                function (ClientInterface $client, ServerRequest $request)  {
+                    $client->acceptResponse(
+                        new TextResponse($request->getQueryParams()['test'])
+                    );
+                },
+                'body2'
+            );
+        }
+
+        if ('empty' === $controllerName) {
+            $recipe = $recipe->cook(
+                function (ClientInterface $client, ServerRequest $request, $test) {
+
+                },
+                'body',
+            );
+        }
+
+        if (false === $inFiber) {
+            $controller = new RecipeEndPoint($recipe);
+        } else {
+            $controller = new RecipeEndPoint(new FiberRecipeBowl($recipe, 0));
         }
 
         $this->router->registerRoute($url, $controller);
@@ -396,7 +449,7 @@ class FeatureContext implements Context
     public function iShouldGetAsResponse ($value)
     {
         if ($this->response instanceof ResponseInterface) {
-            Assert::assertEquals($value, (string)$this->response->getBody());
+            Assert::assertEquals($value, (string) $this->response->getBody());
 
             return;
         }

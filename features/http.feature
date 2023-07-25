@@ -21,7 +21,7 @@ Feature: HTTP
   Scenario: Execute a request mapped by the router to a recipe
     Given I have DI initialized
     And I register a router
-    And The router can process the request "/foo/bar" to recipe "barFoo" to return a "psr" response
+    And The router can process the request "/foo/bar" to recipe "standard" to return a "psr" response
     When The server will receive the request "https://foo.com/foo/bar?test=barFoo"
     Then The client must accept a psr response
     And I should get as response "barFoohttps://foo.com/foo/bar?test=barFoo"
@@ -29,7 +29,7 @@ Feature: HTTP
   Scenario: Execute a request mapped by the router to a recipe in a fiber
     Given I have DI initialized
     And I register a router
-    And The router can process the request "/foo/bar" to recipe "barFoo" in a fiber to return a "psr" response
+    And The router can process the request "/foo/bar" to recipe "standard" in a fiber to return a "psr" response
     When The server will receive the request "https://foo.com/foo/bar?test=barFoo"
     Then The client must accept a psr response
     And I should get as response "barFoohttps://foo.com/foo/bar?test=barFoo"
@@ -37,7 +37,7 @@ Feature: HTTP
   Scenario: Execute a request mapped by the router to a recipe
     Given I have DI initialized
     And I register a router
-    And The router can process the request "/foo/bar" to recipe "barFoo" to return a "east" response
+    And The router can process the request "/foo/bar" to recipe "standard" to return a "east" response
     When The server will receive the request "https://foo.com/foo/bar?test=barFoo"
     Then The client must accept a east response
     And I should get as response "barFoo"
@@ -45,15 +45,47 @@ Feature: HTTP
   Scenario: Execute a request mapped by the router to a recipe in a fiber
     Given I have DI initialized
     And I register a router
-    And The router can process the request "/foo/bar" to recipe "barFoo" in a fiber to return a "east" response
+    And The router can process the request "/foo/bar" to recipe "standard" in a fiber to return a "east" response
     When The server will receive the request "https://foo.com/foo/bar?test=barFoo"
     Then The client must accept a east response
     And I should get as response "barFoo"
 
+  Scenario: Execute a request mapped by the router with a psr 15 handler to a recipe
+    Given I have DI initialized
+    And I register a router
+    And The router can process the request "/foo/bar" to recipe "psr 15 handler" to return a "east" response
+    When The server will receive the request "https://foo.com/foo/bar?test=barFoo"
+    Then The client must accept a psr response
+    And I should get as response "PSR15 Handler barFoo"
+
+  Scenario: Execute a request mapped by the router with a psr 15 handler to a recipe in a fiber
+    Given I have DI initialized
+    And I register a router
+    And The router can process the request "/foo/bar" to recipe "psr 15 handler" in a fiber to return a "east" response
+    When The server will receive the request "https://foo.com/foo/bar?test=barFoo"
+    Then The client must accept a psr response
+    And I should get as response "PSR15 Handler barFoo"
+
+  Scenario: Execute a request mapped by the router with a psr 15 middleware to a recipe
+    Given I have DI initialized
+    And I register a router
+    And The router can process the request "/foo/bar" to recipe "psr 15 middleware" to return a "east" response
+    When The server will receive the request "https://foo.com/foo/bar?test=barFoo"
+    Then The client must accept a psr response
+    And I should get as response "PSR15 Middleware barFoo"
+
+  Scenario: Execute a request mapped by the router with a psr 15 middleware to a recipe in a fiber
+    Given I have DI initialized
+    And I register a router
+    And The router can process the request "/foo/bar" to recipe "psr 15 middleware" in a fiber to return a "east" response
+    When The server will receive the request "https://foo.com/foo/bar?test=barFoo"
+    Then The client must accept a psr response
+    And I should get as response "PSR15 Middleware barFoo"
+
   Scenario: Execute a request mapped by the router to a recipe
     Given I have DI initialized
     And I register a router
-    And The router can process the request "/foo/bar" to recipe "barFoo" to return a "json" response
+    And The router can process the request "/foo/bar" to recipe "standard" to return a "json" response
     When The server will receive the request "https://foo.com/foo/bar?test=barFoo"
     Then The client must accept a json response
     And I should get as response '{"foo": "barFoo"}'
@@ -61,7 +93,7 @@ Feature: HTTP
   Scenario: Execute a request mapped by the router to a recipe in a fiber
     Given I have DI initialized
     And I register a router
-    And The router can process the request "/foo/bar" to recipe "barFoo" in a fiber to return a "json" response
+    And The router can process the request "/foo/bar" to recipe "standard" in a fiber to return a "json" response
     When The server will receive the request "https://foo.com/foo/bar?test=barFoo"
     Then The client must accept a json response
     And I should get as response '{"foo": "barFoo"}'
@@ -70,7 +102,7 @@ Feature: HTTP
     Given I have DI initialized
     And client are configured to ignore missing response
     And I register a router
-    And The router can process the request "/foo/bar" to recipe "fooBar" to return a "psr" response
+    And The router can process the request "/foo/bar" to recipe "empty" to return a "psr" response
     When The server will receive the request "https://foo.com/foo/bar?test=barFoo"
     And I should get nothing
 
@@ -78,21 +110,21 @@ Feature: HTTP
     Given I have DI initialized
     And client are configured to ignore missing response
     And I register a router
-    And The router can process the request "/foo/bar" to recipe "fooBar" in a fiber to return a "psr" response
+    And The router can process the request "/foo/bar" to recipe "empty" in a fiber to return a "psr" response
     When The server will receive the request "https://foo.com/foo/bar?test=barFoo"
     And I should get nothing
 
   Scenario: Execute a request mapped by the router to a recipe, but not ignore the missing response
     Given I have DI initialized
     And I register a router
-    And The router can process the request "/foo/bar" to recipe "fooBar" to return a "psr" response
+    And The router can process the request "/foo/bar" to recipe "empty" to return a "psr" response
     When The server will receive the request "https://foo.com/foo/bar?test=barFoo"
     Then The client must throw an exception
 
   Scenario: Execute a request mapped by the router to a recipe in a fiber, but not ignore the missing response
     Given I have DI initialized
     And I register a router
-    And The router can process the request "/foo/bar" to recipe "fooBar" in a fiber to return a "psr" response
+    And The router can process the request "/foo/bar" to recipe "empty" in a fiber to return a "psr" response
     When The server will receive the request "https://foo.com/foo/bar?test=barFoo"
     Then The client must throw an exception
 

@@ -48,6 +48,7 @@
         "icanhazstring/composer-unused": "^0.8.10",
         "nikic/php-parser": "^4.16",
         "behat/behat": "^3.13",
+        "psr/http-server-middleware": "^1.0.2",
         "symfony/config": "^6.3",
         "symfony/console": "^6.3",
         "symfony/dependency-injection": "^6.3",
