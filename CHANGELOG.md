@@ -1,5 +1,10 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [7.3.0] - 2023-08-10
+### Stable Release
+- Add `Teknoo\East\Foundation\Normalizer\Object\GroupsTrait` to support groups serializations / normalizations.
+- Fix doctype in `EastNormalizer`.
+
 ## [7.2.0] - 2023-07-25
 ### Stable Release
 - Support `PSR-15` with add to new `Recipe Bowl` type :

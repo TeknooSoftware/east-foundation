@@ -39,7 +39,7 @@ use Teknoo\East\Foundation\Normalizer\EastNormalizerInterface;
 interface NormalizableInterface
 {
     /**
-     * @param array<string, mixed> $context
+     * @param array<string, string[]> $context
      */
     public function exportToMeData(EastNormalizerInterface $normalizer, array $context = []): NormalizableInterface;
 }

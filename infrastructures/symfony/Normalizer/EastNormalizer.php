@@ -80,7 +80,7 @@ class EastNormalizer implements EastNormalizerInterface, NormalizerInterface, No
     }
 
     /**
-     * @param array<string, mixed> $context
+     * @param array<string, string[]> $context
      * @return array<int|string, mixed>
      */
     public function normalize(mixed $object, ?string $format = null, array $context = []): array
