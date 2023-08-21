@@ -1,5 +1,10 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [7.3.1] - 2023-08-21
+### Stable Release
+- `SessionMiddleware` does not get Session object if the request as the attribute `_stateless` to avoid
+  session creation.
+
 ## [7.3.0] - 2023-08-10
 ### Stable Release
 - Add `Teknoo\East\Foundation\Normalizer\Object\GroupsTrait` to support groups serializations / normalizations.

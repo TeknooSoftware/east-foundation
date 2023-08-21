@@ -24,7 +24,9 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\FoundationBundle\Session;
 
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\MessageInterface;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Teknoo\East\Foundation\Session\SessionInterface;
 use Teknoo\East\FoundationBundle\Session\Session;
 use Teknoo\East\FoundationBundle\Session\SessionMiddleware;
@@ -42,7 +44,7 @@ use Teknoo\East\Foundation\Manager\ManagerInterface;
  * @author      Richard Déloge <richard@teknoo.software>
  * @covers \Teknoo\East\FoundationBundle\Session\SessionMiddleware
  */
-class SessionMiddlewareTest extends \PHPUnit\Framework\TestCase
+class SessionMiddlewareTest extends TestCase
 {
     public function buildMiddleware()
     {
@@ -90,6 +92,8 @@ class SessionMiddlewareTest extends \PHPUnit\Framework\TestCase
         $manager = $this->createMock(ManagerInterface::class);
 
         $sfRequest = $this->createMock(Request::class);
+        $sfRequest->attributes = new ParameterBag();
+
         $session = $this->createMock(\Symfony\Component\HttpFoundation\Session\SessionInterface::class);
         $sfRequest->expects(self::any())
             ->method('getSession')
@@ -99,6 +103,7 @@ class SessionMiddlewareTest extends \PHPUnit\Framework\TestCase
             ->method('getAttribute')
             ->with('request')
             ->willReturn($sfRequest);
+
 
         $request->expects(self::once())
             ->method('withAttribute')
@@ -118,6 +123,43 @@ class SessionMiddlewareTest extends \PHPUnit\Framework\TestCase
         $manager->expects(self::once())
             ->method('updateWorkPlan')
             ->willReturnSelf();
+
+        self::assertInstanceOf(
+            SessionMiddleware::class,
+            $this->buildMiddleware()->execute($client, $request, $manager)
+        );
+    }
+
+    public function testHasSymfonyRequestInStateless()
+    {
+        $request = $this->createMock(ServerRequestInterface::class);
+        $requestUpdated = $this->createMock(ServerRequestInterface::class);
+        $client = $this->createMock(ClientInterface::class);
+        $manager = $this->createMock(ManagerInterface::class);
+
+        $sfRequest = $this->createMock(Request::class);
+        $sfRequest->expects(self::never())
+            ->method('getSession');
+
+        $sfRequest->attributes = new ParameterBag();
+        $sfRequest->attributes->set('_stateless', true);
+
+        $request->expects(self::any())
+            ->method('getAttribute')
+            ->with('request')
+            ->willReturn($sfRequest);
+
+        $request->expects(self::never())
+            ->method('withAttribute');
+
+        $manager->expects(self::never())
+            ->method('continueExecution');
+
+        $manager->expects(self::never())
+            ->method('updateMessage');
+
+        $manager->expects(self::never())
+            ->method('updateWorkPlan');
 
         self::assertInstanceOf(
             SessionMiddleware::class,

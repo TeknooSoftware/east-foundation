@@ -55,6 +55,10 @@ class SessionMiddleware implements MiddlewareInterface
         }
 
         if (($requestSf = $message->getAttribute('request')) instanceof Request) {
+            if (true === $requestSf->attributes->get('_stateless', false)) {
+                return $this;
+            }
+
             $session = new Session($requestSf->getSession());
             $request = $message->withAttribute(SessionInterface::ATTRIBUTE_KEY, $session);
 
