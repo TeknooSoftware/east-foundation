@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace Teknoo\East\FoundationBundle\Normalizer;
 
+use SensitiveParameter;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Teknoo\East\Foundation\Normalizer\EastNormalizerInterface;
@@ -83,8 +84,11 @@ class EastNormalizer implements EastNormalizerInterface, NormalizerInterface, No
      * @param array<string, string[]> $context
      * @return array<int|string, mixed>
      */
-    public function normalize(mixed $object, ?string $format = null, array $context = []): array
-    {
+    public function normalize(
+        #[SensitiveParameter] mixed $object,
+        ?string $format = null,
+        array $context = [],
+    ): array {
         if (!$object instanceof NormalizableInterface) {
             throw new NotNormalizableException(
                 sprintf(
@@ -116,8 +120,11 @@ class EastNormalizer implements EastNormalizerInterface, NormalizerInterface, No
     /**
      * @param array<string, mixed> $context
      */
-    public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
-    {
+    public function supportsNormalization(
+        #[SensitiveParameter] mixed $data,
+        ?string $format = null,
+        array $context = [],
+    ): bool {
         return $data instanceof NormalizableInterface;
     }
 

@@ -25,6 +25,8 @@ declare(strict_types=1);
 
 namespace Teknoo\East\Foundation\Normalizer;
 
+use SensitiveParameter;
+
 /**
  * Interface to define normalizer, able to normalize via a serializer, like the Symfony's serializer, object following
  * the East philosophy and implementing Teknoo\East\Foundation\Normalizer\Object\NormalizableInterface.
@@ -39,5 +41,5 @@ interface EastNormalizerInterface
     /**
      * @param array<string, mixed> $data
      */
-    public function injectData(array $data): EastNormalizerInterface;
+    public function injectData(#[SensitiveParameter] array $data): EastNormalizerInterface;
 }
