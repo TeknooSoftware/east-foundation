@@ -26,6 +26,15 @@
             "url": "https://github.com/sponsors/TeknooSoftware"
         }
     ],
+    "config": {
+        "audit": {
+            "abandoned": "report"
+        },
+        "optimize-autoloader": true,
+        "allow-plugins": {
+            "composer/package-versions-deprecated": true
+        }
+    },
     "require": {
         "php": "^8.1",
         "ext-json": "*",
