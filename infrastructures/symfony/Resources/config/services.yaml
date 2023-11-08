@@ -55,6 +55,7 @@ services:
     #Messenger
     teknoo.east.foundation.symfony.manager:
         class: 'Teknoo\East\Foundation\Manager\Manager'
+        shared: false
 
     Teknoo\East\FoundationBundle\Messenger\Executor:
         class: 'Teknoo\East\FoundationBundle\Messenger\Executor'

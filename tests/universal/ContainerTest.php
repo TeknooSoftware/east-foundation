@@ -26,6 +26,7 @@ namespace Teknoo\Tests\East\Foundation;
 
 use DI\Container;
 use Psr\Log\LoggerInterface;
+use Teknoo\East\Foundation\Command\Executor;
 use Teknoo\East\Foundation\Liveness\PingService;
 use Teknoo\East\Foundation\Liveness\PingServiceInterface;
 use Teknoo\East\Foundation\Liveness\TimeoutService;
@@ -250,6 +251,15 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         self::assertInstanceOf(
             TimeoutServiceInterface::class,
             $container->get(TimeoutServiceInterface::class)
+        );
+    }
+
+    public function testExecutor()
+    {
+        $container = $this->buildContainer();
+        self::assertInstanceOf(
+            Executor::class,
+            $container->get(Executor::class)
         );
     }
 }

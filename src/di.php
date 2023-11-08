@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace Teknoo\East\Foundation;
 
 use Psr\Container\ContainerInterface;
+use Teknoo\East\Foundation\Command\Executor;
 use Teknoo\East\Foundation\Liveness\PingService;
 use Teknoo\East\Foundation\Liveness\PingServiceInterface;
 use Teknoo\East\Foundation\Liveness\TimeoutService;
@@ -120,5 +121,11 @@ return [
         }
 
         return new TimeoutService($timerService);
+    },
+
+    Executor::class => static function (): Executor {
+        return new Executor(
+            new Manager(),
+        );
     },
 ];

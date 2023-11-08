@@ -1,5 +1,11 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [7.3.2] - 2023-11-08
+### Stable Release
+- Add `#[SensitiveParameter]` to normalizer to prevent leaks
+- Update composer audit configuration
+- Fix `Teknoo\East\Foundation\Command\Executor` DI definition with a dedicated manager
+
 ## [7.3.1] - 2023-08-21
 ### Stable Release
 - `SessionMiddleware` does not get Session object if the request as the attribute `_stateless` to avoid
