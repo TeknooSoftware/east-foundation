@@ -1,5 +1,9 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [7.3.3] - 2023-11-09
+### Stable Release
+- Use last Recipe version
+
 ## [7.3.2] - 2023-11-08
 ### Stable Release
 - Add `#[SensitiveParameter]` to normalizer to prevent leaks
