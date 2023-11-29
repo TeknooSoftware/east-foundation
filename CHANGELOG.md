@@ -1,5 +1,10 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [7.3.4] - 2023-11-29
+### Stable Release
+- Update dev lib requirements
+- Support Symfony 7+
+
 ## [7.3.3] - 2023-11-09
 ### Stable Release
 - Use last Recipe version

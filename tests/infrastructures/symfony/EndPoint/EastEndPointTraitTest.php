@@ -542,7 +542,7 @@ class EastEndPointTraitTest extends \PHPUnit\Framework\TestCase
                 public function getSalt() {}
                 public function getUsername() {}
                 public function getRoles(): array {}
-                public function eraseCredentials() {}
+                public function eraseCredentials(): void {}
                 public function getUserIdentifier(): string {}
             });
 
