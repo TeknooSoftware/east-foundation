@@ -56,11 +56,9 @@ class EastNormalizer implements EastNormalizerInterface, NormalizerInterface, No
 
     private ?NormalizerInterface $normalizer = null;
 
-    public function setNormalizer(NormalizerInterface $normalizer): self
+    public function setNormalizer(NormalizerInterface $normalizer): void
     {
         $this->normalizer = $normalizer;
-
-        return $this;
     }
 
     /**
