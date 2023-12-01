@@ -65,7 +65,7 @@
         "symfony/http-kernel": "^6.3||^7.0",
         "symfony/http-foundation": "^6.3||^7.0",
         "symfony/messenger": "^6.3||^7.0",
-        "symfony/psr-http-message-bridge":"^2.3",
+        "symfony/psr-http-message-bridge": "^2.3.1||^6.4||^7.0",
         "symfony/routing": "^6.3||^7.0",
         "symfony/security-core": "^6.3||^7.0",
         "symfony/serializer": "^6.3||^7.0",
