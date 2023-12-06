@@ -47,6 +47,8 @@ use Teknoo\East\Foundation\Recipe\RecipeInterface;
 use Teknoo\East\Foundation\Router\RouterInterface;
 use Teknoo\East\Foundation\Time\DatesService;
 use Teknoo\East\Foundation\Time\Exception\PcntlNotAvailableException;
+use Teknoo\East\Foundation\Time\SleepService;
+use Teknoo\East\Foundation\Time\SleepServiceInterface;
 use Teknoo\East\Foundation\Time\TimerService;
 use Teknoo\East\Foundation\Time\TimerServiceInterface;
 
@@ -100,6 +102,11 @@ return [
         ),
 
     DatesService::class => create(),
+    SleepServiceInterface::class => get(SleepService::class),
+    SleepService::class => create()
+        ->constructor(
+            get(TimerServiceInterface::class),
+        ),
     TimerServiceInterface::class => get(TimerService::class),
     TimerService::class => static function (ContainerInterface $container): TimerService {
         if (!TimerService::isAvailable()) {

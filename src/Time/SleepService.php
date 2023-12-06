@@ -1,0 +1,86 @@
+<?php
+
+/*
+ * East Foundation.
+ *
+ * LICENSE
+ *
+ * This source file is subject to the MIT license
+ * it is available in LICENSE file at the root of this package
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to richard@teknoo.software so we can send you a copy immediately.
+ *
+ *
+ * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
+ * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
+ *
+ * @link        http://teknoo.software/east-foundation Project website
+ *
+ * @license     http://teknoo.software/license/mit         MIT License
+ * @author      Richard Déloge <richard@teknoo.software>
+ */
+
+declare(strict_types=1);
+
+namespace Teknoo\East\Foundation\Time;
+
+use Teknoo\East\Foundation\Time\Exception\PcntlNotAvailableException;
+
+use function function_exists;
+use function pcntl_signal_dispatch;
+use function uniqid;
+use function usleep;
+
+/**
+ * Service to perform sleeping operations to sleep without blocking other async events
+ *
+ * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
+ * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
+ * @license     http://teknoo.software/license/mit         MIT License
+ * @author      Richard Déloge <richard@teknoo.software>
+ */
+class SleepService implements SleepServiceInterface
+{
+    public function __construct(
+        private TimerServiceInterface $timer,
+        private int $usleeepTime = 1000,
+    ) {
+    }
+
+    private static function isAvailable(): bool
+    {
+        return function_exists('pcntl_signal_dispatch');
+    }
+
+    public function wait(int $seconds): SleepServiceInterface
+    {
+        if (!self::isAvailable()) {
+            // @codeCoverageIgnoreStart
+            throw new PcntlNotAvailableException('Pcntl extension is not available');
+            // @codeCoverageIgnoreEnd
+        }
+
+        $timerId = uniqid(
+            prefix: "timer-$seconds",
+            more_entropy: true,
+        );
+
+        $timerFinished = false;
+
+        $this->timer->register(
+            seconds: $seconds,
+            timerId: $timerId,
+            callback: static function () use (&$timerFinished): void {
+                $timerFinished = true;
+            },
+        );
+
+        while (!$timerFinished) {
+            usleep($this->usleeepTime);
+            pcntl_signal_dispatch();
+        }
+
+        return $this;
+    }
+}

@@ -3,6 +3,14 @@ Feature: Worker
   the #East programming philosophy, compatible with PHP PSRs and Composer and interoperable with a large panel of
   framework, like Symfony or Zend.
 
+  Scenario: Wait a few moments without blocking
+    Given I have DI initialized
+    And a cli agent
+    And a timer action to ping a message to a log each "2" seconds
+    When the agent sleeps "10" seconds
+    Then the main function has been paused for "10" seconds
+    And the logs have "5" lines
+
   Scenario: Task in time limit
     Given I have DI initialized
     And a cli agent

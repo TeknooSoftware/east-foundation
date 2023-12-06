@@ -1,5 +1,9 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [7.4.0] - 2023-12-01
+### Stable Release
+- Add a pseudo non blocking Sleep service, build on timer
+
 ## [7.3.6] - 2023-12-01
 ### Stable Release
 - Update dev lib requirements
