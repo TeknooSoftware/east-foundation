@@ -30,6 +30,8 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Teknoo\East\Foundation\Time\DatesService;
 use Teknoo\East\Foundation\Time\TimerService;
+use function pcntl_alarm;
+use function sleep;
 use function str_repeat;
 use function time;
 
@@ -90,6 +92,70 @@ class TimerServiceTest extends TestCase
             $x = str_repeat('x', 100000);
         }
         self::assertTrue($called);
+    }
+
+    public function testSimpleRegisterOneFunctionWithSleep()
+    {
+        if (defined('PCNTL_MOCKED')) {
+            self::markTestSkipped('PCNTL is not available');
+        }
+
+        $service = new TimerService(new DatesService());
+
+        $called = false;
+        $calledAt = null;
+        self::assertInstanceOf(
+            TimerService::class,
+            $service->register(
+                seconds: 1,
+                timerId: 'test1',
+                callback: function () use (&$called, &$calledAt): void {
+                    $called = true;
+                    $calledAt = time();
+                },
+            )
+        );
+
+        self::assertFalse($called);
+        $expectedTime = time() + 3;
+        sleep(3);
+        self::assertTrue($called);
+        self::assertLessThan($expectedTime, $calledAt);
+    }
+
+    public function testSimpleRegisterOneFunctionWithSignalCalledBefore()
+    {
+        if (defined('PCNTL_MOCKED')) {
+            self::markTestSkipped('PCNTL is not available');
+        }
+
+        $service = new TimerService(new DatesService());
+
+        $called = false;
+        $calledAt = null;
+        self::assertInstanceOf(
+            TimerService::class,
+            $service->register(
+                seconds: 3,
+                timerId: 'test1',
+                callback: function () use (&$called, &$calledAt): void {
+                    $called = true;
+                    $calledAt = time();
+                },
+            )
+        );
+
+        $mustBeCalledAt = time() + 3;
+        pcntl_alarm(2);
+
+        self::assertFalse($called);
+        $expectedTime = time() + 5;
+        sleep(5);
+        self::assertFalse($called);
+        sleep(5);
+        self::assertTrue($called);
+        self::assertGreaterThanOrEqual($mustBeCalledAt, $calledAt);
+        self::assertLessThan($expectedTime, $calledAt);
     }
 
     public function testSimpleRegisterOneFunctionThenUnregister()

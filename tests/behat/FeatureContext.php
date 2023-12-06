@@ -46,6 +46,8 @@ use Teknoo\East\Foundation\Http\Bowl\PSR15\MiddlewareBowl;
 use Teknoo\East\Foundation\Liveness\Exception\TimeLimitReachedException;
 use Teknoo\East\Foundation\Liveness\PingService;
 use Teknoo\East\Foundation\Liveness\TimeoutService;
+use Teknoo\East\Foundation\Time\SleepServiceInterface;
+use Teknoo\East\Foundation\Time\TimerServiceInterface;
 use Teknoo\Recipe\Bowl\FiberRecipeBowl;
 use Teknoo\East\Foundation\EndPoint\RecipeEndPoint;
 use Teknoo\East\Foundation\Recipe\CookbookInterface;
@@ -61,11 +63,16 @@ use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
 use Throwable;
 
 use function dirname;
+use function explode;
 use function file_put_contents;
 use function json_decode;
 use function parse_str;
 use function set_time_limit;
+use function sleep;
 use function time;
+
+use function trim;
+use const PHP_EOL;
 
 /**
  * Defines application features from the specific context.
@@ -87,6 +94,14 @@ class FeatureContext implements Context
 
     private ?string $pingFile = null;
 
+    private string $logEntry = 'test' . PHP_EOL;
+
+    private string $logOutput = '';
+
+    private bool $loggingEnabled = false;
+
+    private int $timeBeforeSleeping = 0;
+
     private ?Executor $executor = null;
 
     /**
@@ -98,6 +113,14 @@ class FeatureContext implements Context
      */
     public function __construct()
     {
+    }
+
+    /**
+     * @BeforeScenario
+     */
+    public function clean()
+    {
+        $this->loggingEnabled = false;
     }
 
     /**
@@ -575,10 +598,7 @@ class FeatureContext implements Context
                 ClientInterface $client,
             ): void {
                 $service->ping();
-                $expectedTime = time() + 2;
-                while (time() < $expectedTime) {
-                    $x = str_repeat('x', 100000);
-                }
+                sleep(2);
                 $service->ping();
                 $client->acceptResponse(
                    new class implements EastResponse {
@@ -602,6 +622,70 @@ class FeatureContext implements Context
         );
     }
 
+
+    /**
+     * @Given a timer action to ping a message to a log each :seconds seconds
+     */
+    public function aTimerActionToPingAMessageToALogEachSeconds(int $seconds)
+    {
+        $this->logOutput = '';
+        $this->loggingEnabled = true;
+        $timer = $this->container->get(TimerServiceInterface::class);
+
+        $log = null;
+        $log = function () use ($timer, $seconds, &$log): void {
+            $this->logOutput .= $this->logEntry;
+
+            if (true === $this->loggingEnabled) {
+                $timer->register(
+                    seconds: $seconds,
+                    timerId: 'logging',
+                    callback: $log,
+                );
+            }
+        };
+
+        $timer->register(
+            seconds: $seconds,
+            timerId: 'logging',
+            callback: $log,
+        );
+    }
+
+    /**
+     * @When the agent sleeps :seconds seconds
+     */
+    public function theAgentSleepsSeconds(int $seconds)
+    {
+        $sleepService = $this->container->get(SleepServiceInterface::class);
+        $this->timeBeforeSleeping = time();
+        $sleepService->wait($seconds);
+        $this->loggingEnabled = false;
+    }
+
+    /**
+     * @Then the main function has been paused for :exptectedSeconds seconds
+     */
+    public function theMainFunctionHasBeenPausedForSeconds(int $exptectedSeconds)
+    {
+        $actualSeconds = time() - $this->timeBeforeSleeping;
+        Assert::assertEquals(
+            $exptectedSeconds,
+            $actualSeconds,
+        );
+    }
+
+    /**
+     * @Then the logs have :count lines
+     */
+    public function theLogsHaveLines(int $count)
+    {
+        Assert::assertCount(
+            $count,
+            explode(PHP_EOL, trim($this->logOutput, PHP_EOL)),
+        );
+    }
+
     /**
      * @When the agent start a too long task
      */
@@ -614,10 +698,7 @@ class FeatureContext implements Context
                 ClientInterface $client,
             ): void {
                 $service->ping();
-                $expectedTime = time() + 60;
-                while (time() < $expectedTime) {
-                    $x = str_repeat('x', 100000);
-                }
+                sleep(60);
                 $service->ping();
                 $client->acceptResponse(
                     new class implements EastResponse {
