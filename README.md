@@ -8,12 +8,24 @@ Teknoo Software - East Foundation
 [![PHPStan](https://img.shields.io/badge/PHPStan-enabled-brightgreen.svg?style=flat)](https://github.com/phpstan/phpstan)
 
 East Foundation is a universal package to implement the [#east](http://blog.est.voyage/phpTour2015/) philosophy with 
-any framework supporting PSR-11 or with Symfony 6.3+ : All public method of objects must return `$this` or a new 
+any framework supporting PSR-11 or with Symfony 6.4+ : All public method of objects must return `$this` or a new 
 instance of `$this`.
 
 This bundle uses PSR7 requests and responses and do automatically the conversion from Symfony's requests and responses.
 So your controllers and services can be independent of Symfony. This bundle reuse internally Symfony's components
 to manage routes and find controller to call. It is also designed to be used with other framework.
+
+It can be also used for workers :
+* Triggering asynchronous tasks (thanks to pcntl) for timers.
+* Setting up a worker health check.
+* Provides non blocking sleep method.
+
+This library is built on the Recipe library, and redefine only some interfaces to be more comprehensive with HTTP 
+context :
+* Middleware are actions, but must implement a specific interface.
+* The HTTP workflow is defined into a Recipe, able to be extended.
+* Chef became a manager, to execute the workflow when a request is accepted.
+* Usable with any PSR-11 Framework, Symfony implementation is also provided.
 
 A complete documentation is available in [documentation/README.md](documentation/README.md)
 
@@ -51,9 +63,23 @@ This library requires :
     * Teknoo/Immutable.
     * Teknoo/States.
     * Teknoo/Recipe.
-    * Optional: Symfony 6.3+
+    * Optional: Symfony 6.4+
 
-News from Teknoo East Foundation 6.0
+News from Teknoo East Foundation 7.x
+------------------------------------
+This library requires PHP 8.1 or newer and it's only compatible with Symfony 6.3 or newer :
+- PHP-DI 7 or newer
+- Supports `PSR-20` with the `DatesService`.
+- Supports `PSR-15` with add to new `Recipe Bowl` type :
+  - `FiberHandlerBowl` (and `FiberMiddlewareBowl`) to support PSR 15 Requests handlers into a recipe.
+  - `MiddlewareBowl` (and `FiberMiddlewareBowl`) to support PSR 15 middleware into a recipe.
+- Add `Teknoo\East\Foundation\Normalizer\Object\GroupsTrait
+- Add a pseudo non blocking Sleep service, build on timer
+- Triggering asynchronous tasks (thanks to pcntl) for timers.
+- Setting up a worker health check.
+- Provides non blocking sleep method.
+
+News from Teknoo East Foundation 6.x
 ------------------------------------
 This library requires PHP 8.1 or newer and it's only compatible with Symfony 6.1 or newer :
 
@@ -63,7 +89,7 @@ This library requires PHP 8.1 or newer and it's only compatible with Symfony 6.1
   and `FiberRecipeBowl`.
 - Remove support of PHP 8.0 and Symfony 5.4 and below.
 
-News from Teknoo East Foundation 5.0
+News from Teknoo East Foundation 5.x
 ------------------------------------
 This library requires PHP 8.0 or newer and it's only compatible with Symfony 5.2 or newer :
 
@@ -84,7 +110,7 @@ This library requires PHP 8.0 or newer and it's only compatible with Symfony 5.2
 - All clients implementations adopts new client interfaces
 - Symfony Clients implementations supports `ResultInterface` and `JsonSerializable` responses
 
-News from Teknoo East Foundation 4.0
+News from Teknoo East Foundation 4.x
 ------------------------------------
 This library requires PHP 7.4 or newer and it's only compatible with Symfony 4.4 or newer :
 
@@ -99,7 +125,7 @@ This library requires PHP 7.4 or newer and it's only compatible with Symfony 4.4
 - Add Client dedicated to Symfony Messenger
 - Remove some public services
 
-News from Teknoo East Foundation 3.0
+News from Teknoo East Foundation 3.x
 ------------------------------------
 This library requires PHP 7.4 or newer and it's only compatible with Symfony 4.4 or newer :
 
@@ -113,7 +139,7 @@ This library requires PHP 7.4 or newer and it's only compatible with Symfony 4.4
 - Complete tests
 - Migrate universal folder in src to src's root and remove legacy support
 
-News from Teknoo East Foundation 2.0
+News from Teknoo East Foundation 2.x
 ------------------------------------
 This library requires PHP 7.4 or newer and it's only compatible with Symfony 4.4 or newer :
 
