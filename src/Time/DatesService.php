@@ -75,15 +75,29 @@ class DatesService implements ClockInterface
         return $this;
     }
 
-    public function since(string $period, callable $setter, bool $preferRealDate = false): self
+    private function modify(string $period, callable $setter, bool $preferRealDate = false): self
     {
         $this->passMeTheDate(
             setter: static function (DateTimeInterface $dateTime) use ($setter, $period): void {
                 $dateTime = DateTime::createFromInterface($dateTime);
-                $setter($dateTime->modify("-$period"));
+                $setter($dateTime->modify($period));
             },
             preferRealDate: $preferRealDate,
         );
+
+        return $this;
+    }
+
+    public function since(string $period, callable $setter, bool $preferRealDate = false): self
+    {
+        $this->modify("-$period", $setter, $preferRealDate);
+
+        return $this;
+    }
+
+    public function forward(string $period, callable $setter, bool $preferRealDate = false): self
+    {
+        $this->modify("+$period", $setter, $preferRealDate);
 
         return $this;
     }

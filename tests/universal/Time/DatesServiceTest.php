@@ -247,6 +247,38 @@ class DatesServiceTest extends TestCase
         self::assertEquals(new DateTime('2017-01-01'), $object->getDate());
     }
 
+    public function testForward()
+    {
+        $object = new class {
+            private $date;
+            public function getDate(): ?DateTimeInterface
+            {
+                return $this->date;
+            }
+            public function setDate(DateTimeInterface $date): self
+            {
+                $this->date = $date;
+
+                return $this;
+            }
+        };
+
+        $service = $this->buildService();
+        self::assertInstanceOf(
+            DatesService::class,
+            $service->passMeTheDate($object->setDate(...))
+        );
+
+        $date = new DateTime('2017-01-06');
+        self::assertInstanceOf(
+            DatesService::class,
+            $service->setCurrentDate($date)
+        );
+
+        $service->forward('5 days', $object->setDate(...));
+        self::assertEquals(new DateTime('2017-01-11'), $object->getDate());
+    }
+
     public function testSinceWithRealDate()
     {
 
@@ -268,6 +300,30 @@ class DatesServiceTest extends TestCase
         self::assertInstanceOf(
             DatesService::class,
             $service->since('5 days', $object->setDate(...), true)
+        );
+        self::assertInstanceOf(DateTimeInterface::class, $object->getDate());
+    }
+
+    public function testForwardWithRealDate()
+    {
+        $object = new class {
+            private $date;
+            public function getDate(): ?DateTimeInterface
+            {
+                return $this->date;
+            }
+            public function setDate(DateTimeInterface $date): self
+            {
+                $this->date = $date;
+                return $this;
+            }
+        };
+
+        $service = $this->buildService();
+
+        self::assertInstanceOf(
+            DatesService::class,
+            $service->forward('5 days', $object->setDate(...), true)
         );
         self::assertInstanceOf(DateTimeInterface::class, $object->getDate());
     }

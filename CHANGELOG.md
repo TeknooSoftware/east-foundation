@@ -1,5 +1,9 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [7.5.0] - 2024-01-25
+### Stable Release
+- Add `DatesService::forward` to get a date in the futur. Same behavior of `DateTime::modify`
+
 ## [7.4.0] - 2023-12-01
 ### Stable Release
 - Add a pseudo non blocking Sleep service, build on timer
