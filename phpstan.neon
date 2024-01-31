@@ -4,6 +4,9 @@ parameters:
         -
             message: '#mixed given#'
             path: src/di.php
+        -
+            message: '#clone mixed#'
+            path: src/di.php
 services:
     -
         class: Teknoo\States\PHPStan\MethodsClassExtension

@@ -1,5 +1,9 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [7.5.1] - 2024-01-31
+### Stable Release
+- `TimerService` clone the `DatesService` instance to avoid collusion when it use the real date. 
+
 ## [7.5.0] - 2024-01-25
 ### Stable Release
 - Add `DatesService::forward` to get a date in the futur. Same behavior of `DateTime::modify`

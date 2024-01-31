@@ -115,7 +115,7 @@ return [
             // @codeCoverageIgnoreEnd
         }
 
-        return new TimerService($container->get(DatesService::class));
+        return new TimerService(clone $container->get(DatesService::class));
     },
 
     PingServiceInterface::class => get(PingService::class),
