@@ -8,10 +8,10 @@ Teknoo Software - East Foundation
 [![PHPStan](https://img.shields.io/badge/PHPStan-enabled-brightgreen.svg?style=flat)](https://github.com/phpstan/phpstan)
 
 East Foundation is a universal package to implement the [#east](http://blog.est.voyage/phpTour2015/) philosophy with 
-any framework supporting PSR-11 or with Symfony 6.4+ : All public method of objects must return `$this` or a new 
-instance of `$this`.
+any framework supporting `PSR 11`, `PSR 7` or with Symfony 6.4+ : All public method of objects must return `$this` or a 
+new instance of `$this`.
 
-This bundle uses PSR7 requests and responses and do automatically the conversion from Symfony's requests and responses.
+This bundle uses `PSR 7` requests and responses and do automatically the conversion from Symfony's requests and responses.
 So your controllers and services can be independent of Symfony. This bundle reuse internally Symfony's components
 to manage routes and find controller to call. It is also designed to be used with other framework.
 
@@ -25,7 +25,9 @@ context :
 * Middleware are actions, but must implement a specific interface.
 * The HTTP workflow is defined into a Recipe, able to be extended.
 * Chef became a manager, to execute the workflow when a request is accepted.
-* Usable with any PSR-11 Framework, Symfony implementation is also provided.
+* Usable with any `PSR 11` Framework, Symfony implementation is also provided.
+* Supports `PSR 15` handler and middleware
+* Supports `PSR 20` and provides a PSR-20 implementation
 
 A complete documentation is available in [documentation/README.md](documentation/README.md)
 
@@ -71,8 +73,8 @@ This library requires PHP 8.1 or newer and it's only compatible with Symfony 6.3
 - PHP-DI 7 or newer
 - Supports `PSR-20` with the `DatesService`.
 - Supports `PSR-15` with add to new `Recipe Bowl` type :
-  - `FiberHandlerBowl` (and `FiberMiddlewareBowl`) to support PSR 15 Requests handlers into a recipe.
-  - `MiddlewareBowl` (and `FiberMiddlewareBowl`) to support PSR 15 middleware into a recipe.
+  - `FiberHandlerBowl` (and `FiberMiddlewareBowl`) to support `PSR 15` Requests handlers into a recipe.
+  - `MiddlewareBowl` (and `FiberMiddlewareBowl`) to support `PSR 15` middleware into a recipe.
 - Add `Teknoo\East\Foundation\Normalizer\Object\GroupsTrait
 - Add a pseudo non blocking Sleep service, build on timer
 - Triggering asynchronous tasks (thanks to pcntl) for timers.
@@ -118,7 +120,7 @@ This library requires PHP 7.4 or newer and it's only compatible with Symfony 4.4
 - Prepare library to be used in non HTTP context
 - Use MessageInterface instead of ServerRequestInterface
 - Cookbook and ProcessorCookbook use BaseCookbookTrait
-- Add PSR11 Message only implementation
+- Add `PSR 11` Message only implementation
 - Add MessageFactory
 - Update Client Interface to use MessageInterface instead of RequestInterface
 - Add Recipe executor dedicated to Symfony Messenger

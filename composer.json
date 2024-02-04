@@ -1,8 +1,8 @@
 {
     "name": "teknoo/east-foundation",
     "type": "library",
-    "description": "East Foundation is a universal package to implement the #east philosophy ( http://blog.est.voyage/phpTour2015/ ) with any framework supporting PSR-11 or with Symfony 4+.",
-    "keywords": ["east", "controller", "design"],
+    "description": "East Foundation is a universal package to implement the #east philosophy ( http://blog.est.voyage/phpTour2015/ ) with any framework supporting PSR-11, PSR-15 or with Symfony 4+.",
+    "keywords": ["east", "controller", "design", "psr15"],
     "homepage": "http://teknoo.software/east-foundation",
     "license": ["MIT"],
     "authors": [
@@ -45,7 +45,7 @@
         "php-di/php-di": "^7.0.6",
         "teknoo/immutable": "^3.0.17",
         "teknoo/states": "^6.1.5",
-        "teknoo/recipe": "^4.5.2"
+        "teknoo/recipe": "^4.6"
     },
     "require-dev": {
         "ext-pcntl": "*",

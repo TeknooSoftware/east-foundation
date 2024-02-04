@@ -1,5 +1,10 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [7.5.2] - 2024-02-04
+### Stable Release
+- Update documentation.
+- Require `Recipe` 4.6+ 
+
 ## [7.5.1] - 2024-01-31
 ### Stable Release
 - `TimerService` clone the `DatesService` instance to avoid collusion when it use the real date. 
