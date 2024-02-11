@@ -50,8 +50,9 @@ class GroupsTraitTest extends TestCase
             public function runFilter(
                 array $data,
                 array $groups,
+                bool $lazyData = false,
             ) {
-                return $this->filterExport($data, $groups);
+                return $this->filterExport($data, $groups, $lazyData);
             }
         };
     }
@@ -137,6 +138,82 @@ class GroupsTraitTest extends TestCase
                     'group3',
                     'group2',
                 ]
+            ),
+        );
+    }
+
+    public function testFilteringWithGroupsAndLasyData()
+    {
+
+        $object = $this->buildObject();
+
+        $object->setConfig(
+            [
+                'key1' => ['group2', 'group3'],
+                'key2' => ['group3'],
+                'key3' => ['group2'],
+                'key5' => ['group4'],
+            ]
+        );
+
+        self::assertEquals(
+            [
+                'key1' => 'foo',
+                'key2' => 123,
+                'key3' => ['foo', 'bar'],
+            ],
+            $object->runFilter(
+                [
+                    'key1' => fn () => 'foo',
+                    'key2' => 123,
+                    'key3' => fn () => ['foo', 'bar'],
+                    'key4' => fn () => new stdClass(),
+                    'key5' => fn () => 'bar',
+                ],
+                [
+                    'group1',
+                    'group3',
+                    'group2',
+                ],
+                true,
+            ),
+        );
+    }
+
+    public function testFilteringWithGroupsWithClosureButNotLazyData()
+    {
+
+        $object = $this->buildObject();
+
+        $object->setConfig(
+            [
+                'key1' => ['group2', 'group3'],
+                'key2' => ['group3'],
+                'key3' => ['group2'],
+                'key5' => ['group4'],
+            ]
+        );
+
+        self::assertEquals(
+            [
+                'key1' => fn () => 'foo',
+                'key2' => 123,
+                'key3' => fn () => ['foo', 'bar'],
+            ],
+            $object->runFilter(
+                [
+                    'key1' => fn () => 'foo',
+                    'key2' => 123,
+                    'key3' => fn () => ['foo', 'bar'],
+                    'key4' => fn () => new stdClass(),
+                    'key5' => fn () => 'bar',
+                ],
+                [
+                    'group1',
+                    'group3',
+                    'group2',
+                ],
+                false,
             ),
         );
     }

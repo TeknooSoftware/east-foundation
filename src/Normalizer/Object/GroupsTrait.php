@@ -29,6 +29,8 @@ use function array_flip;
 use function array_intersect_key;
 use function array_merge;
 use function array_values;
+use function array_walk;
+use function is_callable;
 
 /**
  * Trait to filter data to export according to a group of keys
@@ -86,10 +88,24 @@ trait GroupsTrait
     protected function filterExport(
         array &$data,
         array $groups,
+        bool $lazyData = false,
     ): array {
-        return array_intersect_key(
+        $dataFiltered = array_intersect_key(
             $data,
             $this->getAttributesForGroups($groups),
         );
+
+        if ($lazyData) {
+            array_walk(
+                $dataFiltered,
+                static function (mixed &$item): void {
+                    if (is_callable($item)) {
+                        $item = $item();
+                    }
+                }
+            );
+        }
+
+        return $dataFiltered;
     }
 }

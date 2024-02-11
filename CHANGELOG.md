@@ -1,5 +1,10 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [7.6.0] - 2024-02-11
+### Stable Release
+- GroupsTrait support lazy data to fetch collections only after filtering key. 
+  - Lazy Data must be passed in a closure called by `GroupsTrait::filterExport` if the arg `$lazyData` is at `true`.
+
 ## [7.5.2] - 2024-02-04
 ### Stable Release
 - Update documentation.
