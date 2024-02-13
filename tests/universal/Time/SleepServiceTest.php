@@ -100,4 +100,21 @@ class SleepServiceTest extends TestCase
             time(),
         );
     }
+
+    public function testWait0SecondsWithTimer()
+    {
+        if (defined('PCNTL_MOCKED')) {
+            self::markTestSkipped('PCNTL is not available');
+        }
+
+        $t = time();
+        self::assertInstanceOf(
+            SleepService::class,
+            (new SleepService(new TimerService(new DatesService())))->wait(0),
+        );
+        self::assertLessThanOrEqual(
+            $t + 1,
+            time(),
+        );
+    }
 }

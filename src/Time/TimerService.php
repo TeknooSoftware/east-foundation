@@ -147,6 +147,12 @@ class TimerService implements TimerServiceInterface
             // @codeCoverageIgnoreEnd
         }
 
+        if (0 === $seconds) {
+            $callback();
+
+            return $this;
+        }
+
         $next = null;
         if (!empty($this->pipes)) {
             reset($this->pipes);

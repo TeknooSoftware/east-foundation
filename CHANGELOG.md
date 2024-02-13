@@ -1,5 +1,9 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [7.6.1] - 2024-02-13
+### Stable Release
+- Prevent bug with `TimerService` and `SleepService` if `$seconds` is `0`
+
 ## [7.6.0] - 2024-02-11
 ### Stable Release
 - GroupsTrait support lazy data to fetch collections only after filtering key. 

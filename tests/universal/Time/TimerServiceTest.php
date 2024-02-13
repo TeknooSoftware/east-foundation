@@ -94,6 +94,29 @@ class TimerServiceTest extends TestCase
         self::assertTrue($called);
     }
 
+    public function testSimpleRegisterOneFunctionWith0Seconds()
+    {
+        if (defined('PCNTL_MOCKED')) {
+            self::markTestSkipped('PCNTL is not available');
+        }
+
+        $service = new TimerService(new DatesService());
+
+        $called = false;
+        self::assertInstanceOf(
+            TimerService::class,
+            $service->register(
+                seconds: 0,
+                timerId: 'test1',
+                callback: function () use (&$called): void {
+                    $called = true;
+                },
+            )
+        );
+
+        self::assertTrue($called);
+    }
+
     public function testSimpleRegisterOneFunctionWithSleep()
     {
         if (defined('PCNTL_MOCKED')) {
