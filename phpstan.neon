@@ -34,3 +34,4 @@ services:
             implicitThrows: %exceptions.implicitThrows%
             treatPhpDocTypesAsCertain: %treatPhpDocTypesAsCertain%
             detectDeadTypeInMultiCatch: %featureToggles.detectDeadTypeInMultiCatch%
+            paramOutType: %featureToggles.paramOutType%
