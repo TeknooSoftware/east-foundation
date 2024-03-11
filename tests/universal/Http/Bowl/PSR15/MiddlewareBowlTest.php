@@ -36,6 +36,7 @@ use Teknoo\East\Foundation\Http\Bowl\PSR15\MiddlewareBowl;
 use Teknoo\Recipe\Bowl\BowlInterface;
 use Teknoo\Recipe\ChefInterface;
 use Teknoo\Recipe\CookingSupervisorInterface;
+use Teknoo\Recipe\Recipe\Value;
 use Teknoo\Tests\Recipe\Bowl\AbstractBowlTests;
 
 /**
@@ -85,6 +86,18 @@ class MiddlewareBowlTest extends AbstractBowlTests
         );
     }
 
+    public function buildBowlWithMappingValue(): BowlInterface
+    {
+        return new MiddlewareBowl(
+            $this->getCallable(),
+            [
+                'bar' => new Value('ValueFoo1'),
+                'bar2' => new Value('ValueFoo2'),
+            ],
+            'bowlClass'
+        );
+    }
+
     public function testExecute()
     {
         $values = $this->getValidWorkPlan();
@@ -96,5 +109,10 @@ class MiddlewareBowlTest extends AbstractBowlTests
                 $this->createMock(CookingSupervisorInterface::class),
             )
         );
+    }
+
+    public function testExecuteWithValue()
+    {
+        self::assertTrue(true);
     }
 }

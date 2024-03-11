@@ -1,5 +1,10 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [7.6.2] - 2024-02-13
+### Stable Release
+- Use Recipe 5+
+- Improve SleepService to use new `Promise` feature
+
 ## [7.6.1] - 2024-02-13
 ### Stable Release
 - Prevent bug with `TimerService` and `SleepService` if `$seconds` is `0`

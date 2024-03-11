@@ -26,6 +26,8 @@ declare(strict_types=1);
 namespace Teknoo\East\Foundation\Time;
 
 use Teknoo\East\Foundation\Time\Exception\PcntlNotAvailableException;
+use Teknoo\Recipe\Promise\Promise;
+use Throwable;
 
 use function function_exists;
 use function pcntl_signal_dispatch;
@@ -66,17 +68,19 @@ class SleepService implements SleepServiceInterface
             more_entropy: true,
         );
 
-        $timerFinished = false;
+        $timerFinished = new Promise(
+            fn () => true,
+            fn (Throwable $error) => throw $error,
+        );
+        $timerFinished->setDefaultResult(false);
 
         $this->timer->register(
             seconds: $seconds,
             timerId: $timerId,
-            callback: static function () use (&$timerFinished): void {
-                $timerFinished = true;
-            },
+            callback: $timerFinished,
         );
 
-        while (!$timerFinished) {
+        while (!$timerFinished->fetchResult()) {
             usleep($this->usleeepTime);
             pcntl_signal_dispatch();
         }
