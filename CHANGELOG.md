@@ -1,6 +1,6 @@
 # Teknoo Software - East Foundation - Change Log
 
-## [7.6.2] - 2024-02-13
+## [7.6.2] - 2024-03-13
 ### Stable Release
 - Use Recipe 5+
 - Improve SleepService to use new `Promise` feature
