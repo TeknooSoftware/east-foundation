@@ -1,5 +1,10 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [7.6.3] - 2024-03-22
+### Stable Release
+- Fix support of last PHPStan 1.10.64
+- Use State 6.2
+
 ## [7.6.2] - 2024-03-13
 ### Stable Release
 - Use Recipe 5+
