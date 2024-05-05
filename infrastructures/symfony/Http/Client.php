@@ -33,6 +33,7 @@ use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Contracts\Service\ResetInterface;
 use Teknoo\East\Foundation\Client\ResponseInterface as EastResponse;
 use Teknoo\East\Foundation\Client\ClientInterface;
 use Teknoo\East\FoundationBundle\Http\Exception\NoRequestException;
@@ -55,7 +56,7 @@ use function json_encode;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
  */
-class Client implements ClientWithResponseEventInterface
+class Client implements ClientWithResponseEventInterface, ResetInterface
 {
     private EastResponse | MessageInterface | null $response = null;
 
@@ -71,6 +72,13 @@ class Client implements ClientWithResponseEventInterface
         if ($requestEvent instanceof RequestEvent) {
             $this->setRequestEvent($requestEvent);
         }
+    }
+
+    public function reset(): void
+    {
+        $this->requestEvent = null;
+        $this->inSilentlyMode = false;
+        $this->response = null;
     }
 
     public function setRequestEvent(RequestEvent $requestEvent): ClientWithResponseEventInterface

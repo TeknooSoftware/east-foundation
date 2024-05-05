@@ -29,6 +29,7 @@ use JsonSerializable;
 use Psr\Http\Message\MessageInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Contracts\Service\ResetInterface;
 use Teknoo\East\Foundation\Client\ClientInterface;
 use Teknoo\East\Foundation\Client\ResponseInterface;
 use Teknoo\East\FoundationBundle\Command\Exception\NoResponseException;
@@ -49,7 +50,7 @@ use function json_encode;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
  */
-class Client implements ClientInterface
+class Client implements ClientInterface, ResetInterface
 {
     private ?OutputInterface $output = null;
 
@@ -65,6 +66,15 @@ class Client implements ClientInterface
             $this->setOutput($output);
         }
     }
+
+    public function reset(): void
+    {
+        $this->response = null;
+        $this->inSilentlyMode = false;
+        $this->returnCode = 0;
+        $this->output = null;
+    }
+
 
     public function setOutput(?OutputInterface $output): self
     {

@@ -29,6 +29,7 @@ use Psr\Http\Message\MessageInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Contracts\Service\ResetInterface;
 use Teknoo\East\Foundation\Client\ClientInterface;
 use Teknoo\East\Foundation\Client\ResponseInterface;
 use Teknoo\East\FoundationBundle\Messenger\Exception\NoResponseException;
@@ -46,7 +47,7 @@ use Throwable;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
  */
-class Client implements ClientInterface
+class Client implements ClientInterface, ResetInterface
 {
     private ResponseInterface | MessageInterface | null $response = null;
 
@@ -56,6 +57,12 @@ class Client implements ClientInterface
         private readonly ?MessageBusInterface $bus,
         private readonly ?LoggerInterface $logger = null,
     ) {
+    }
+
+    public function reset(): void
+    {
+        $this->response = null;
+        $this->inSilentlyMode = false;
     }
 
     public function updateResponse(callable $modifier): ClientInterface

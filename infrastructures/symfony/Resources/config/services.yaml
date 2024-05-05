@@ -42,6 +42,7 @@ services:
         class: '%teknoo.east.symfony.normalizer.east_normalizer.class%'
         tags:
             - { name: 'serializer.normalizer', priority: 100 }
+            - { name: 'kernel.reset', method: 'reset' }
 
     #Laminas Support
     Teknoo\East\Diactoros\CallbackStreamFactory:
@@ -67,6 +68,8 @@ services:
         arguments:
             - '@?messenger.default_bus'
             - '@?logger'
+        tags:
+            - { name: 'kernel.reset', method: 'reset' }
 
     #HTTP
     Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory:
@@ -80,6 +83,8 @@ services:
             - '@Psr\Http\Message\StreamFactoryInterface'
             - null
             - '@?logger'
+        tags:
+            - { name: 'kernel.reset', method: 'reset' }
 
     #Twig Engine
     Teknoo\East\Foundation\Template\EngineInterface:

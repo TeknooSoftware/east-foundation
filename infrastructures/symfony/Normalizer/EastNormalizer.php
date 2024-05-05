@@ -28,6 +28,7 @@ namespace Teknoo\East\FoundationBundle\Normalizer;
 use SensitiveParameter;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Contracts\Service\ResetInterface;
 use Teknoo\East\Foundation\Normalizer\EastNormalizerInterface;
 use Teknoo\East\Foundation\Normalizer\Object\NormalizableInterface;
 use Teknoo\East\FoundationBundle\Normalizer\Exception\NotNormalizableException;
@@ -47,7 +48,7 @@ use function sprintf;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
  */
-class EastNormalizer implements EastNormalizerInterface, NormalizerInterface, NormalizerAwareInterface
+class EastNormalizer implements EastNormalizerInterface, NormalizerInterface, NormalizerAwareInterface, ResetInterface
 {
     /**
      * @var array<string, mixed>
@@ -55,6 +56,11 @@ class EastNormalizer implements EastNormalizerInterface, NormalizerInterface, No
     private array $data = [];
 
     private ?NormalizerInterface $normalizer = null;
+
+    public function reset(): void
+    {
+        $this->data = [];
+    }
 
     public function setNormalizer(NormalizerInterface $normalizer): void
     {

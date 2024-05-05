@@ -1,5 +1,9 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [7.6.4] - 2024-05-05
+### Stable Release
+- Add some resetable behavior on some symfony services.
+
 ## [7.6.3] - 2024-03-22
 ### Stable Release
 - Fix support of last PHPStan 1.10.64
