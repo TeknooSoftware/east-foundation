@@ -27,6 +27,7 @@ namespace Teknoo\East\FoundationBundle\Messenger;
 
 use Psr\Http\Message\MessageInterface;
 use Psr\Log\LoggerInterface;
+use SensitiveParameter;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Contracts\Service\ResetInterface;
@@ -108,7 +109,7 @@ class Client implements ClientInterface, ResetInterface
         return $this;
     }
 
-    public function errorInRequest(Throwable $throwable, bool $silently = false): ClientInterface
+    public function errorInRequest(#[SensitiveParameter] Throwable $throwable, bool $silently = false): ClientInterface
     {
         if ($this->logger instanceof LoggerInterface) {
             $this->logger->error($throwable->getMessage(), ['exception' => $throwable]);

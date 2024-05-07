@@ -27,6 +27,7 @@ namespace Teknoo\East\FoundationBundle\Command;
 
 use JsonSerializable;
 use Psr\Http\Message\MessageInterface;
+use SensitiveParameter;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Contracts\Service\ResetInterface;
@@ -141,7 +142,7 @@ class Client implements ClientInterface, ResetInterface
         return $this;
     }
 
-    public function errorInRequest(Throwable $throwable, bool $silently = false): ClientInterface
+    public function errorInRequest(#[SensitiveParameter] Throwable $throwable, bool $silently = false): ClientInterface
     {
         $this->getErrorOutput()->writeln($throwable->getMessage());
 

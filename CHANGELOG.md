@@ -1,5 +1,10 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [7.7.0] - 2024-05-07
+### Stable Release
+- Drop support of PHP 8.1
+- Add sensitive parameter attribute on methods catching throwable to prevent leak.
+
 ## [7.6.4] - 2024-05-05
 ### Stable Release
 - Add some resetable behavior on some symfony services.

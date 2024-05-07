@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace Teknoo\East\Foundation\Time;
 
+use SensitiveParameter;
 use Teknoo\East\Foundation\Time\Exception\PcntlNotAvailableException;
 use Teknoo\Recipe\Promise\Promise;
 use Throwable;
@@ -70,7 +71,7 @@ class SleepService implements SleepServiceInterface
 
         $timerFinished = new Promise(
             fn () => true,
-            fn (Throwable $error) => throw $error,
+            fn (#[SensitiveParameter] Throwable $error) => throw $error,
         );
         $timerFinished->setDefaultResult(false);
 

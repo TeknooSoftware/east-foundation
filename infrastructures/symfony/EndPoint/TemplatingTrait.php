@@ -27,6 +27,7 @@ namespace Teknoo\East\FoundationBundle\EndPoint;
 
 use Psr\Http\Message\StreamFactoryInterface;
 use RuntimeException;
+use SensitiveParameter;
 use Teknoo\East\Foundation\EndPoint\RenderingInterface;
 use Teknoo\East\Foundation\Http\Message\CallbackStreamInterface;
 use Teknoo\East\Foundation\Client\ClientInterface;
@@ -104,7 +105,7 @@ trait TemplatingTrait
 
                     $client->acceptResponse($response);
                 },
-                static function (Throwable $error) use ($client): void {
+                static function (#[SensitiveParameter] Throwable $error) use ($client): void {
                     $client->errorInRequest($error);
                 }
             ),

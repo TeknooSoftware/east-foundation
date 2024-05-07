@@ -27,6 +27,7 @@ namespace Teknoo\East\Foundation\Client;
 
 use Psr\Http\Message\MessageInterface;
 use RuntimeException;
+use SensitiveParameter;
 use Throwable;
 
 /**
@@ -75,7 +76,7 @@ interface ClientInterface
      *
      * @param bool $silently To ask client to not throw the exception (execute throw $throwable) or not. Default false
      */
-    public function errorInRequest(Throwable $throwable, bool $silently = false): ClientInterface;
+    public function errorInRequest(#[SensitiveParameter] Throwable $throwable, bool $silently = false): ClientInterface;
 
     /**
      * To set the client to be not silent, by default, when it will send a missing response and throw an exception

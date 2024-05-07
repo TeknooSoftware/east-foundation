@@ -31,6 +31,7 @@ use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
+use SensitiveParameter;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Contracts\Service\ResetInterface;
@@ -154,7 +155,7 @@ class Client implements ClientWithResponseEventInterface, ResetInterface
         return $this;
     }
 
-    public function errorInRequest(Throwable $throwable, bool $silently = false): ClientInterface
+    public function errorInRequest(#[SensitiveParameter] Throwable $throwable, bool $silently = false): ClientInterface
     {
         if ($this->logger instanceof LoggerInterface) {
             $this->logger->error($throwable->getMessage(), ['exception' => $throwable]);
