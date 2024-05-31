@@ -1,5 +1,10 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [7.7.1] - 2024-05-31
+### Stable Release
+- Fix deprecated : replace `Symfony\Component\HttpKernel\DependencyInjection\Extension`
+        by `Symfony\Component\DependencyInjection\Extension\Extension`
+
 ## [7.7.0] - 2024-05-07
 ### Stable Release
 - Drop support of PHP 8.1
