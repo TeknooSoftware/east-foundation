@@ -22,7 +22,7 @@
 
 declare(strict_types=1);
 
-namespace Teknoo\Tests\East\Foundation\DependencyInjection;
+namespace Teknoo\Tests\East\FoundationBundle\DependencyInjection;
 
 use Teknoo\East\FoundationBundle\DependencyInjection\Configuration;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
