@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\Foundation\Liveness;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Teknoo\East\Foundation\Liveness\Exception\TimeLimitReachedException;
@@ -33,8 +34,8 @@ use Teknoo\East\Foundation\Time\TimerService;
 /**
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
- * @covers \Teknoo\East\Foundation\Liveness\TimeoutService
  */
+#[CoversClass(TimeoutService::class)]
 class TimeoutServiceTest extends TestCase
 {
     private ?TimerService $timer = null;
@@ -79,7 +80,7 @@ class TimeoutServiceTest extends TestCase
         $this->seconds = null;
 
         $this->getTimerMock()
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('register')
             ->willReturnCallback(
                 function (int $seconds, string $timerId) {
@@ -115,7 +116,7 @@ class TimeoutServiceTest extends TestCase
         $service = $this->createService();
 
         $this->getTimerMock()
-            ->expects(self::atLeastOnce())
+            ->expects($this->atLeastOnce())
             ->method('unregister')
             ->willReturnCallback(
                 function (string $timerId) {

@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\Foundation\EndPoint;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -42,8 +43,8 @@ use Teknoo\Recipe\RecipeInterface;
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
- * @covers \Teknoo\East\Foundation\EndPoint\RecipeEndPoint
  */
+#[CoversClass(RecipeEndPoint::class)]
 class RecipeEndPointTest extends TestCase
 {
     /**
@@ -164,7 +165,7 @@ class RecipeEndPointTest extends TestCase
     {
         $managerMock = $this->createMock(ManagerInterface::class);
 
-        $this->getBowlMock()->expects(self::once())
+        $this->getBowlMock()->expects($this->once())
             ->method('execute')
             ->with($managerMock, [])
             ->willReturnSelf();
@@ -183,7 +184,7 @@ class RecipeEndPointTest extends TestCase
 
         $supervisor = $this->createMock(CookingSupervisorInterface::class);
 
-        $this->getBowlMock()->expects(self::once())
+        $this->getBowlMock()->expects($this->once())
             ->method('execute')
             ->with($managerMock, [], $supervisor)
             ->willReturnSelf();
@@ -205,11 +206,11 @@ class RecipeEndPointTest extends TestCase
         $managerMock = $this->createMock(ManagerInterface::class);
 
         $container = $this->createMock(ContainerInterface::class);
-        $container->expects(self::exactly(2))->method('has')->willReturn(true);
-        $container->expects(self::exactly(2))->method('get')->willReturn(new \stdClass());
+        $container->expects($this->exactly(2))->method('has')->willReturn(true);
+        $container->expects($this->exactly(2))->method('get')->willReturn(new \stdClass());
 
         $request = $this->createMock(ServerRequestInterface::class);
-        $request->expects(self::any())->method('getAttributes')->willReturn([
+        $request->expects($this->any())->method('getAttributes')->willReturn([
             'foo1' => 'bar',
             'bar1' => '@foo',
             'foo2' => new \stdClass(),
@@ -234,11 +235,11 @@ class RecipeEndPointTest extends TestCase
         $managerMock = $this->createMock(ManagerInterface::class);
 
         $container = $this->createMock(ContainerInterface::class);
-        $container->expects(self::exactly(2))->method('has')->willReturn(true);
-        $container->expects(self::exactly(2))->method('get')->willReturn(new \stdClass());
+        $container->expects($this->exactly(2))->method('has')->willReturn(true);
+        $container->expects($this->exactly(2))->method('get')->willReturn(new \stdClass());
 
         $request = $this->createMock(ServerRequestInterface::class);
-        $request->expects(self::any())->method('getAttributes')->willReturn([
+        $request->expects($this->any())->method('getAttributes')->willReturn([
             'foo1' => 'bar',
             'bar1' => '@foo',
             'foo2' => new \stdClass(),
@@ -263,7 +264,7 @@ class RecipeEndPointTest extends TestCase
         $managerMock = $this->createMock(ManagerInterface::class);
 
         $supervisor = $this->createMock(CookingSupervisorInterface::class);
-        $this->getBowlMock()->expects(self::once())
+        $this->getBowlMock()->expects($this->once())
             ->method('execute')
             ->with(
                 $managerMock,
@@ -277,11 +278,11 @@ class RecipeEndPointTest extends TestCase
             ->willReturnSelf();
 
         $container = $this->createMock(ContainerInterface::class);
-        $container->expects(self::exactly(2))->method('has')->willReturn(true);
-        $container->expects(self::exactly(2))->method('get')->willReturn(new \stdClass());
+        $container->expects($this->exactly(2))->method('has')->willReturn(true);
+        $container->expects($this->exactly(2))->method('get')->willReturn(new \stdClass());
 
         $request = $this->createMock(ServerRequestInterface::class);
-        $request->expects(self::any())->method('getAttributes')->willReturn([
+        $request->expects($this->any())->method('getAttributes')->willReturn([
             'foo1' => 'bar',
             'bar1' => '@foo',
             'foo2' => new \stdClass(),
@@ -302,7 +303,7 @@ class RecipeEndPointTest extends TestCase
         $managerMock = $this->createMock(ManagerInterface::class);
 
         $supervisor = $this->createMock(CookingSupervisorInterface::class);
-        $this->getBowlMock()->expects(self::once())
+        $this->getBowlMock()->expects($this->once())
             ->method('execute')
             ->with(
                 $managerMock,
@@ -316,11 +317,11 @@ class RecipeEndPointTest extends TestCase
             ->willReturnSelf();
 
         $container = $this->createMock(ContainerInterface::class);
-        $container->expects(self::exactly(2))->method('has')->willReturn(true);
-        $container->expects(self::exactly(2))->method('get')->willReturn(new \stdClass());
+        $container->expects($this->exactly(2))->method('has')->willReturn(true);
+        $container->expects($this->exactly(2))->method('get')->willReturn(new \stdClass());
 
         $request = $this->createMock(ServerRequestInterface::class);
-        $request->expects(self::any())->method('getAttributes')->willReturn([
+        $request->expects($this->any())->method('getAttributes')->willReturn([
             'foo1' => 'bar',
             'bar1' => '@foo',
             'foo2' => new \stdClass(),
@@ -345,7 +346,7 @@ class RecipeEndPointTest extends TestCase
         $managerMock = $this->createMock(ManagerInterface::class);
 
         $supervisor = $this->createMock(CookingSupervisorInterface::class);
-        $this->getBowlMock()->expects(self::once())
+        $this->getBowlMock()->expects($this->once())
             ->method('execute')
             ->with(
                 $managerMock,
@@ -360,11 +361,11 @@ class RecipeEndPointTest extends TestCase
             ->willReturnSelf();
 
         $container = $this->createMock(ContainerInterface::class);
-        $container->expects(self::exactly(2))->method('has')->willReturn(true);
-        $container->expects(self::exactly(2))->method('get')->willReturn(new \stdClass());
+        $container->expects($this->exactly(2))->method('has')->willReturn(true);
+        $container->expects($this->exactly(2))->method('get')->willReturn(new \stdClass());
 
         $request = $this->createMock(ServerRequestInterface::class);
-        $request->expects(self::any())->method('getAttributes')->willReturn([
+        $request->expects($this->any())->method('getAttributes')->willReturn([
             'foo1' => 'bar',
             'bar1' => '@foo',
             'foo2' => new \stdClass(),
@@ -389,10 +390,10 @@ class RecipeEndPointTest extends TestCase
         $managerMock = $this->createMock(ManagerInterface::class);
 
         $container = $this->createMock(ContainerInterface::class);
-        $container->expects(self::any())->method('has')->willReturn(false);
+        $container->expects($this->any())->method('has')->willReturn(false);
 
         $request = $this->createMock(ServerRequestInterface::class);
-        $request->expects(self::any())->method('getAttributes')->willReturn([
+        $request->expects($this->any())->method('getAttributes')->willReturn([
             'bar1' => '@foo',
         ]);
 
@@ -411,10 +412,10 @@ class RecipeEndPointTest extends TestCase
         $managerMock = $this->createMock(ManagerInterface::class);
 
         $container = $this->createMock(ContainerInterface::class);
-        $container->expects(self::any())->method('has')->willReturn(false);
+        $container->expects($this->any())->method('has')->willReturn(false);
 
         $request = $this->createMock(ServerRequestInterface::class);
-        $request->expects(self::any())->method('getAttributes')->willReturn([
+        $request->expects($this->any())->method('getAttributes')->willReturn([
             'bar1' => '@foo',
         ]);
 
@@ -433,14 +434,14 @@ class RecipeEndPointTest extends TestCase
         $managerMock = $this->createMock(ManagerInterface::class);
 
         $supervisor = $this->createMock(CookingSupervisorInterface::class);
-        $this->getBowlMock()->expects(self::never())
+        $this->getBowlMock()->expects($this->never())
             ->method('execute');
 
         $container = $this->createMock(ContainerInterface::class);
-        $container->expects(self::any())->method('has')->willReturn(false);
+        $container->expects($this->any())->method('has')->willReturn(false);
 
         $request = $this->createMock(ServerRequestInterface::class);
-        $request->expects(self::any())->method('getAttributes')->willReturn([
+        $request->expects($this->any())->method('getAttributes')->willReturn([
             'bar1' => '@foo',
         ]);
 

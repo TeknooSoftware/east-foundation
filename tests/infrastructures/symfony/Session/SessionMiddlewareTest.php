@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\FoundationBundle\Session;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\MessageInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -42,8 +43,8 @@ use Teknoo\East\Foundation\Manager\ManagerInterface;
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
- * @covers \Teknoo\East\FoundationBundle\Session\SessionMiddleware
  */
+#[CoversClass(SessionMiddleware::class)]
 class SessionMiddlewareTest extends TestCase
 {
     public function buildMiddleware()
@@ -57,10 +58,10 @@ class SessionMiddlewareTest extends TestCase
         $client = $this->createMock(ClientInterface::class);
         $manager = $this->createMock(ManagerInterface::class);
 
-        $manager->expects(self::never())
+        $manager->expects($this->never())
             ->method('continueExecution');
 
-        $request->expects(self::never())
+        $request->expects($this->never())
             ->method('withAttribute');
 
         self::assertInstanceOf(
@@ -75,7 +76,7 @@ class SessionMiddlewareTest extends TestCase
         $client = $this->createMock(ClientInterface::class);
         $manager = $this->createMock(ManagerInterface::class);
 
-        $manager->expects(self::never())
+        $manager->expects($this->never())
             ->method('continueExecution');
 
         self::assertInstanceOf(
@@ -95,32 +96,32 @@ class SessionMiddlewareTest extends TestCase
         $sfRequest->attributes = new ParameterBag();
 
         $session = $this->createMock(\Symfony\Component\HttpFoundation\Session\SessionInterface::class);
-        $sfRequest->expects(self::any())
+        $sfRequest->expects($this->any())
             ->method('getSession')
             ->willReturn($session);
 
-        $request->expects(self::any())
+        $request->expects($this->any())
             ->method('getAttribute')
             ->with('request')
             ->willReturn($sfRequest);
 
 
-        $request->expects(self::once())
+        $request->expects($this->once())
             ->method('withAttribute')
             ->with(SessionInterface::ATTRIBUTE_KEY, $this->callback(fn($object) => $object instanceof Session))
             ->willReturn($requestUpdated);
 
-        $manager->expects(self::any())
+        $manager->expects($this->any())
             ->method('continueExecution')
             ->with($client, $requestUpdated)
             ->willReturnSelf();
 
-        $manager->expects(self::once())
+        $manager->expects($this->once())
             ->method('updateMessage')
             ->with($requestUpdated)
             ->willReturnSelf();
 
-        $manager->expects(self::once())
+        $manager->expects($this->once())
             ->method('updateWorkPlan')
             ->willReturnSelf();
 
@@ -138,27 +139,27 @@ class SessionMiddlewareTest extends TestCase
         $manager = $this->createMock(ManagerInterface::class);
 
         $sfRequest = $this->createMock(Request::class);
-        $sfRequest->expects(self::never())
+        $sfRequest->expects($this->never())
             ->method('getSession');
 
         $sfRequest->attributes = new ParameterBag();
         $sfRequest->attributes->set('_stateless', true);
 
-        $request->expects(self::any())
+        $request->expects($this->any())
             ->method('getAttribute')
             ->with('request')
             ->willReturn($sfRequest);
 
-        $request->expects(self::never())
+        $request->expects($this->never())
             ->method('withAttribute');
 
-        $manager->expects(self::never())
+        $manager->expects($this->never())
             ->method('continueExecution');
 
-        $manager->expects(self::never())
+        $manager->expects($this->never())
             ->method('updateMessage');
 
-        $manager->expects(self::never())
+        $manager->expects($this->never())
             ->method('updateWorkPlan');
 
         self::assertInstanceOf(

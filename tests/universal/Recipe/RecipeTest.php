@@ -24,18 +24,18 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\Foundation\Recipe;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
 use Teknoo\East\Foundation\Recipe\Recipe;
 
 /**
- * @covers \Teknoo\East\Foundation\Recipe\Recipe
- *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
  */
+#[CoversClass(Recipe::class)]
 class RecipeTest extends TestCase
 {
     public function testRegisterMiddlewareBadMiddleware()

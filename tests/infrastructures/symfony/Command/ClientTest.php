@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\FoundationBundle\Command;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use Psr\Http\Message\ResponseInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
@@ -39,8 +40,8 @@ use Teknoo\East\FoundationBundle\Command\Client;
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
- * @covers \Teknoo\East\FoundationBundle\Command\Client
  */
+#[CoversClass(Client::class)]
 class ClientTest extends TestCase
 {
     /**
@@ -138,7 +139,7 @@ class ClientTest extends TestCase
 
 
         $this->getOutputMock()
-            ->expects(self::any())
+            ->expects($this->any())
             ->method('writeln');
 
         $client = $this->buildClient();
@@ -156,7 +157,7 @@ class ClientTest extends TestCase
         $response = $this->createMock(ResponseInterface::class);
         
         $this->getOutputMock()
-            ->expects(self::any())
+            ->expects($this->any())
             ->method('writeln');
 
         $client = $this->buildClient();
@@ -182,7 +183,7 @@ class ClientTest extends TestCase
         };
 
         $this->getOutputMock()
-            ->expects(self::any())
+            ->expects($this->any())
             ->method('writeln');
 
         $client = $this->buildClient();
@@ -197,7 +198,7 @@ class ClientTest extends TestCase
         $response = $this->createMock(EastResponse::class);
 
         $this->getOutputMock()
-            ->expects(self::any())
+            ->expects($this->any())
             ->method('writeln');
 
         $client = $this->buildClient();
@@ -225,7 +226,7 @@ class ClientTest extends TestCase
         $response = $this->createMock(ResponseInterface::class);
 
         $this->getOutputMock()
-            ->expects(self::any())
+            ->expects($this->any())
             ->method('writeln');
 
         $client = $this->buildClient();
@@ -243,7 +244,7 @@ class ClientTest extends TestCase
         $response = $this->createMock(ResponseInterface::class);
 
         $this->getOutputMock()
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('writeln');
 
         $client = $this->buildClient();
@@ -258,7 +259,7 @@ class ClientTest extends TestCase
         $response = $this->createMock(EastResponse::class);
 
         $this->getOutputMock()
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('writeln');
 
         $client = $this->buildClient();
@@ -284,7 +285,7 @@ class ClientTest extends TestCase
         };
 
         $this->getOutputMock()
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('writeln');
 
         $client = $this->buildClient();
@@ -302,13 +303,37 @@ class ClientTest extends TestCase
         $response = $this->createMock(ResponseInterface::class);
 
         $this->getOutputMock()
-            ->expects(self::any())
+            ->expects($this->any())
             ->method('writeln');
 
         $client = $this->buildClient();
         self::assertInstanceOf(
             $this->getClientClass(),
             $client->acceptResponse($response)->sendResponse(null, true)
+        );
+    }
+
+    public function testSendResponseAfterReset()
+    {
+        /**
+         * @var ResponseInterface
+         */
+        $response = $this->createMock(ResponseInterface::class);
+
+        $this->getOutputMock()
+            ->expects($this->any())
+            ->method('writeln');
+
+        $client = $this->buildClient();
+        self::assertInstanceOf(
+            $this->getClientClass(),
+            $client->acceptResponse($response)
+        );
+
+        $client->reset();
+        self::assertInstanceOf(
+            $this->getClientClass(),
+            $client->sendResponse(null, true)
         );
     }
 
@@ -363,7 +388,7 @@ class ClientTest extends TestCase
     public function testErrorInRequestWithStandardOutput()
     {
         $this->getOutputMock()
-            ->expects(self::any())
+            ->expects($this->any())
             ->method('writeln');
 
         $client = $this->buildClient();
@@ -376,11 +401,11 @@ class ClientTest extends TestCase
     public function testErrorInRequestWithConsoleOutput()
     {
         $this->getOutputMock()
-            ->expects(self::any())
+            ->expects($this->any())
             ->method('writeln');
 
         $output = $this->createMock(ConsoleOutputInterface::class);
-        $output->expects(self::any())
+        $output->expects($this->any())
             ->method('getErrorOutput')
             ->willReturn($this->getOutputMock());
 

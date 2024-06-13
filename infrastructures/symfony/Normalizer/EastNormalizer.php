@@ -79,7 +79,7 @@ class EastNormalizer implements EastNormalizerInterface, NormalizerInterface, No
 
     private function cleanData(): self
     {
-        $this->data = [];
+        $this->reset();
 
         return $this;
     }

@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\Foundation\Http\RequestHandler;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -37,9 +38,9 @@ use Teknoo\Recipe\ChefInterface;
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
- * @covers \Teknoo\East\Foundation\Http\RequestHandler\PSR15
- * @covers \Teknoo\East\Foundation\Http\RequestHandler\Exception\MissingResponseException
  */
+#[CoversClass(MissingResponseException::class)]
+#[CoversClass(PSR15::class)]
 class PSR15Test extends TestCase
 {
     public function testHandle()
@@ -48,7 +49,7 @@ class PSR15Test extends TestCase
         $client = $this->createMock(ClientInterface::class);
         $request = $this->createMock(ServerRequestInterface::class);
 
-        $client->expects(self::any())
+        $client->expects($this->any())
             ->method('updateResponse')
             ->willReturnCallback(
                 function (callable $callback) use ($client) {

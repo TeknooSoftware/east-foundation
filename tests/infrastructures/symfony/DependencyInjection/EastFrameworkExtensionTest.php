@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\FoundationBundle\DependencyInjection;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Teknoo\East\FoundationBundle\DependencyInjection\EastFoundationExtension;
@@ -35,8 +36,8 @@ use Teknoo\East\FoundationBundle\DependencyInjection\EastFoundationExtension;
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
- * @covers \Teknoo\East\FoundationBundle\DependencyInjection\EastFoundationExtension
  */
+#[CoversClass(EastFoundationExtension::class)]
 class EastFrameworkExtensionTest extends \PHPUnit\Framework\TestCase
 {
     /**

@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\Foundation\Processor;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\East\Foundation\Processor\LoopDetector;
@@ -37,8 +38,8 @@ use Teknoo\Recipe\Bowl\RecipeBowl;
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
- * @covers \Teknoo\East\Foundation\Processor\LoopDetector
  */
+#[CoversClass(LoopDetector::class)]
 class LoopDetectorTest extends TestCase
 {
     public function buildObject(): LoopDetector
@@ -51,10 +52,10 @@ class LoopDetectorTest extends TestCase
         $bowl = $this->createMock(RecipeBowl::class);
         $manager = $this->createMock(ManagerInterface::class);
 
-        $bowl->expects(self::once())
+        $bowl->expects($this->once())
             ->method('stopLooping');
 
-        $manager->expects(self::once())
+        $manager->expects($this->once())
             ->method('updateWorkPlan')
             ->with([ResultInterface::class => null]);
 
@@ -70,10 +71,10 @@ class LoopDetectorTest extends TestCase
         $manager = $this->createMock(ManagerInterface::class);
         $result = $this->createMock(ResultInterface::class);
 
-        $bowl->expects(self::once())
+        $bowl->expects($this->once())
             ->method('stopLooping');
 
-        $manager->expects(self::once())
+        $manager->expects($this->once())
             ->method('updateWorkPlan')
             ->with([ResultInterface::class => null]);
 
@@ -89,14 +90,14 @@ class LoopDetectorTest extends TestCase
         $manager = $this->createMock(ManagerInterface::class);
         $result = $this->createMock(ResultInterface::class);
         $next = $this->createMock(ResultInterface::class);
-        $result->expects(self::any())
+        $result->expects($this->any())
             ->method('getNext')
             ->willReturn($next);
 
-        $bowl->expects(self::never())
+        $bowl->expects($this->never())
             ->method('stopLooping');
 
-        $manager->expects(self::once())
+        $manager->expects($this->once())
             ->method('updateWorkPlan')
             ->with([ResultInterface::class => $next]);
 

@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\Foundation\Processor;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -40,8 +41,8 @@ use Teknoo\East\Foundation\Router\ResultInterface;
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
- * @covers \Teknoo\East\Foundation\Processor\Processor
  */
+#[CoversClass(Processor::class)]
 class ProcessorTest extends \PHPUnit\Framework\TestCase
 {
     /**
@@ -58,17 +59,17 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
          * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
-        $clientMock->expects(self::never())->method('mustSendAResponse');
-        $clientMock->expects(self::once())->method('sendAResponseIsOptional');
+        $clientMock->expects($this->never())->method('mustSendAResponse');
+        $clientMock->expects($this->once())->method('sendAResponseIsOptional');
 
         /**
          * @var ServerRequestInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $requestMock = $this->createMock(ServerRequestInterface::class);
-        $requestMock->expects(self::any())->method('getAttributes')->willReturn(['bar' => 456, 'foo' => 123]);
+        $requestMock->expects($this->any())->method('getAttributes')->willReturn(['bar' => 456, 'foo' => 123]);
 
         $manager = $this->createMock(ManagerInterface::class);
-        $manager->expects(self::never())->method('updateWorkPlan');
+        $manager->expects($this->never())->method('updateWorkPlan');
 
         self::assertInstanceOf(
             ProcessorInterface::class,
@@ -86,17 +87,17 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
          * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
-        $clientMock->expects(self::never())->method('mustSendAResponse');
-        $clientMock->expects(self::once())->method('sendAResponseIsOptional');
+        $clientMock->expects($this->never())->method('mustSendAResponse');
+        $clientMock->expects($this->once())->method('sendAResponseIsOptional');
 
         /**
          * @var ServerRequestInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $requestMock = $this->createMock(ServerRequestInterface::class);
-        $requestMock->expects(self::any())->method('getAttributes')->willReturn(['bar' => 456, 'foo' => 123]);
+        $requestMock->expects($this->any())->method('getAttributes')->willReturn(['bar' => 456, 'foo' => 123]);
 
         $manager = $this->createMock(ManagerInterface::class);
-        $manager->expects(self::never())->method('updateWorkPlan');
+        $manager->expects($this->never())->method('updateWorkPlan');
 
         self::assertInstanceOf(
             ProcessorInterface::class,
@@ -114,25 +115,25 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
          * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
-        $clientMock->expects(self::never())->method('mustSendAResponse');
-        $clientMock->expects(self::once())->method('sendAResponseIsOptional');
+        $clientMock->expects($this->never())->method('mustSendAResponse');
+        $clientMock->expects($this->once())->method('sendAResponseIsOptional');
 
         /**
          * @var ServerRequestInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $requestMock = $this->createMock(ServerRequestInterface::class);
-        $requestMock->expects(self::any())->method('getAttributes')->willReturn([
+        $requestMock->expects($this->any())->method('getAttributes')->willReturn([
             'bar' => 456,
             'foo' => 123,
             'request' => $this->createMock(Request::class)
         ]);
 
         $routerResult = $this->createMock(ResultInterface::class);
-        $routerResult->expects(self::any())->method('getController')->willReturn($controller = function () {
+        $routerResult->expects($this->any())->method('getController')->willReturn($controller = function () {
         });
 
         $manager = $this->createMock(ManagerInterface::class);
-        $manager->expects(self::once())
+        $manager->expects($this->once())
             ->method('updateWorkPlan')
             ->with([
                 'bar' => 456,
@@ -161,25 +162,25 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
          * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
-        $clientMock->expects(self::once())->method('mustSendAResponse');
-        $clientMock->expects(self::any())->method('sendAResponseIsOptional');
+        $clientMock->expects($this->once())->method('mustSendAResponse');
+        $clientMock->expects($this->any())->method('sendAResponseIsOptional');
 
         /**
          * @var ServerRequestInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $requestMock = $this->createMock(ServerRequestInterface::class);
-        $requestMock->expects(self::any())->method('getAttributes')->willReturn([
+        $requestMock->expects($this->any())->method('getAttributes')->willReturn([
             'bar' => 456,
             'foo' => 123,
             'request' => $this->createMock(Request::class)
         ]);
 
         $routerResult = $this->createMock(ResultInterface::class);
-        $routerResult->expects(self::any())->method('getController')->willReturn($controller = function () {
+        $routerResult->expects($this->any())->method('getController')->willReturn($controller = function () {
         });
 
         $manager = $this->createMock(ManagerInterface::class);
-        $manager->expects(self::once())
+        $manager->expects($this->once())
             ->method('updateWorkPlan')
             ->with([
                 'bar' => 456,
@@ -208,8 +209,8 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
          * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
-        $clientMock->expects(self::never())->method('mustSendAResponse');
-        $clientMock->expects(self::once())->method('sendAResponseIsOptional');
+        $clientMock->expects($this->never())->method('mustSendAResponse');
+        $clientMock->expects($this->once())->method('sendAResponseIsOptional');
 
         /**
          * @var MessageInterface|\PHPUnit\Framework\MockObject\MockObject
@@ -217,7 +218,7 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
         $messageMock = $this->createMock(MessageInterface::class);
 
         $manager = $this->createMock(ManagerInterface::class);
-        $manager->expects(self::never())->method('updateWorkPlan');
+        $manager->expects($this->never())->method('updateWorkPlan');
 
         self::assertInstanceOf(
             ProcessorInterface::class,
@@ -235,8 +236,8 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
          * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
-        $clientMock->expects(self::never())->method('mustSendAResponse');
-        $clientMock->expects(self::once())->method('sendAResponseIsOptional');
+        $clientMock->expects($this->never())->method('mustSendAResponse');
+        $clientMock->expects($this->once())->method('sendAResponseIsOptional');
 
         /**
          * @var MessageInterface|\PHPUnit\Framework\MockObject\MockObject
@@ -244,7 +245,7 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
         $messageMock = $this->createMock(MessageInterface::class);
 
         $manager = $this->createMock(ManagerInterface::class);
-        $manager->expects(self::never())->method('updateWorkPlan');
+        $manager->expects($this->never())->method('updateWorkPlan');
 
         self::assertInstanceOf(
             ProcessorInterface::class,

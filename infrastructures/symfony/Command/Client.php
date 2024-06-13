@@ -76,7 +76,6 @@ class Client implements ClientInterface, ResetInterface
         $this->output = null;
     }
 
-
     public function setOutput(?OutputInterface $output): self
     {
         $this->output = $output;

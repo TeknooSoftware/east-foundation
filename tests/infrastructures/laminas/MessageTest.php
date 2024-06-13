@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\Diactoros;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamInterface;
 use Teknoo\East\Diactoros\Message;
@@ -34,8 +35,8 @@ use Teknoo\East\Diactoros\Message;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
  *
- * @covers \Teknoo\East\Diactoros\Message
  */
+#[CoversClass(Message::class)]
 class MessageTest extends TestCase
 {
     public function testProtocolVersion()

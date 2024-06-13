@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\Twig\Template;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Teknoo\Recipe\Promise\PromiseInterface;
@@ -37,8 +38,8 @@ use Twig\Environment;
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
- * @covers \Teknoo\East\Twig\Template\Engine
  */
+#[CoversClass(Engine::class)]
 class EngineTest extends TestCase
 {
     private ?Environment $twig = null;
@@ -66,7 +67,7 @@ class EngineTest extends TestCase
         $parameters = ['foo' => 'bar'];
 
         $promise = $this->createMock(PromiseInterface::class);
-        $promise->expects(self::once())
+        $promise->expects($this->once())
             ->method('success')
             ->with(self::callback(fn($r) => $r instanceof ResultInterface));
 
@@ -86,13 +87,13 @@ class EngineTest extends TestCase
         $parameters = ['foo' => 'bar'];
 
         $this->getTwig()
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('render')
             ->with($view, $parameters)
             ->willReturn('bar');
 
         $promise = $this->createMock(PromiseInterface::class);
-        $promise->expects(self::once())
+        $promise->expects($this->once())
             ->method('success')
             ->willReturnCallback(
                 function (ResultInterface $result) use ($promise) {
@@ -118,10 +119,10 @@ class EngineTest extends TestCase
         $parameters = ['foo' => 'bar'];
 
         $promise = $this->createMock(PromiseInterface::class);
-        $promise->expects(self::once())
+        $promise->expects($this->once())
             ->method('success')
             ->willThrowException(new \RuntimeException('foo'));
-        $promise->expects(self::once())->method('fail');
+        $promise->expects($this->once())->method('fail');
 
         self::assertInstanceOf(
             EngineInterface::class,

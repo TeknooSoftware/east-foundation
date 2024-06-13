@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\FoundationBundle\Messenger;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
@@ -40,8 +41,8 @@ use Teknoo\East\FoundationBundle\Messenger\Client;
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
- * @covers \Teknoo\East\FoundationBundle\Messenger\Client
  */
+#[CoversClass(Client::class)]
 class ClientTest extends TestCase
 {
     /**
@@ -224,7 +225,7 @@ class ClientTest extends TestCase
         };
 
         $this->getMessageBusInterfaceMock()
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('dispatch')
             ->willReturn(new Envelope(new \stdClass));
 
@@ -243,7 +244,7 @@ class ClientTest extends TestCase
         $response = $this->createMock(ResponseInterface::class);
 
         $this->getMessageBusInterfaceMock()
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('dispatch')
             ->willReturn(new Envelope(new \stdClass));
 
@@ -259,7 +260,7 @@ class ClientTest extends TestCase
         $response = $this->createMock(EastResponse::class);
 
         $this->getMessageBusInterfaceMock()
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('dispatch')
             ->willReturn(new Envelope(new \stdClass));
 
@@ -291,7 +292,7 @@ class ClientTest extends TestCase
         $response = $this->createMock(ResponseInterface::class);
 
         $this->getMessageBusInterfaceMock()
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('dispatch')
             ->willReturn(new Envelope(new \stdClass));
 
@@ -300,6 +301,28 @@ class ClientTest extends TestCase
             $this->getClientClass(),
             $client->acceptResponse($response)->sendResponse()
         );
+    }
+
+    public function testSendResponseAfterReset()
+    {
+        /**
+         * @var ResponseInterface
+         */
+        $response = $this->createMock(ResponseInterface::class);
+
+        $this->getMessageBusInterfaceMock()
+            ->expects($this->never())
+            ->method('dispatch');
+
+        $client = $this->buildClient();
+        self::assertInstanceOf(
+            $this->getClientClass(),
+            $client->acceptResponse($response)
+        );
+
+        $client->reset();
+        $this->expectException(\RuntimeException::class);
+        $client->sendResponse();
     }
 
     public function testSendResponseWithoutResponse()
@@ -321,7 +344,7 @@ class ClientTest extends TestCase
         $response = $this->createMock(ResponseInterface::class);
 
         $this->getMessageBusInterfaceMock()
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('dispatch')
             ->willReturn(new Envelope(new \stdClass));
 
@@ -340,7 +363,7 @@ class ClientTest extends TestCase
         $response = $this->createMock(ResponseInterface::class);
 
         $this->getMessageBusInterfaceMock()
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('dispatch')
             ->willReturn(new Envelope(new \stdClass));
 
@@ -359,7 +382,7 @@ class ClientTest extends TestCase
         $response = $this->createMock(ResponseInterface::class);
 
         $this->getMessageBusInterfaceMock()
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('dispatch')
             ->willReturn(new Envelope(new \stdClass));
 
@@ -415,7 +438,7 @@ class ClientTest extends TestCase
     public function testErrorInRequestWithLogger()
     {
         $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects(self::once())->method('error');
+        $logger->expects($this->once())->method('error');
 
         $this->expectException(\Exception::class);
 
@@ -429,7 +452,7 @@ class ClientTest extends TestCase
     public function testErrorInRequestSilentlyWithLogger()
     {
         $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects(self::once())->method('error');
+        $logger->expects($this->once())->method('error');
 
         $client = $this->buildClient($logger);
         self::assertInstanceOf(

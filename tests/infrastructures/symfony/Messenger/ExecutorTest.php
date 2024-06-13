@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\FoundationBundle\Messenger;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\MessageInterface;
@@ -41,8 +42,8 @@ use Teknoo\Recipe\RecipeInterface;
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
- * @covers \Teknoo\East\FoundationBundle\Messenger\Executor
  */
+#[CoversClass(Executor::class)]
 class ExecutorTest extends TestCase
 {
     /**
@@ -128,7 +129,7 @@ class ExecutorTest extends TestCase
     {
         $executor = new Executor(new Manager());
         $recipe = $this->createMock(RecipeInterface::class);
-        $recipe->expects(self::any())->method('train')->willReturnCallback(
+        $recipe->expects($this->any())->method('train')->willReturnCallback(
             function (ChefInterface $chef) use ($recipe) {
                 $chef->followSteps([$this->createMock(BowlInterface::class)]);
 

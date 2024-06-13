@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\FoundationBundle\Session;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\HttpFoundation\Session\SessionInterface as SymfonySession;
 use Teknoo\Recipe\Promise\Promise;
 use Teknoo\Recipe\Promise\PromiseInterface;
@@ -36,8 +37,8 @@ use Teknoo\East\FoundationBundle\Session\Session;
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
- * @covers \Teknoo\East\FoundationBundle\Session\Session
  */
+#[CoversClass(Session::class)]
 class SessionTest extends \PHPUnit\Framework\TestCase
 {
     /**
@@ -74,7 +75,7 @@ class SessionTest extends \PHPUnit\Framework\TestCase
     public function testSet()
     {
         $this->getSymfonySession()
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('set')
             ->with('foo', 'bar');
 
@@ -100,11 +101,11 @@ class SessionTest extends \PHPUnit\Framework\TestCase
     public function testGetFound()
     {
         $promise = $this->createMock(PromiseInterface::class);
-        $promise->expects(self::once())
+        $promise->expects($this->once())
             ->method('success')
             ->with('bar')
             ->willReturnSelf();
-        $promise->expects(self::never())
+        $promise->expects($this->never())
             ->method('fail');
 
         $this->getSymfonySession()
@@ -128,9 +129,9 @@ class SessionTest extends \PHPUnit\Framework\TestCase
     public function testGetNotFound()
     {
         $promise = $this->createMock(PromiseInterface::class);
-        $promise->expects(self::never())
+        $promise->expects($this->never())
             ->method('success');
-        $promise->expects(self::once())
+        $promise->expects($this->once())
             ->method('fail');
 
         $this->getSymfonySession()
@@ -158,7 +159,7 @@ class SessionTest extends \PHPUnit\Framework\TestCase
     public function testRemove()
     {
         $this->getSymfonySession()
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('remove')
             ->with('foo');
 
@@ -171,7 +172,7 @@ class SessionTest extends \PHPUnit\Framework\TestCase
     public function testClear()
     {
         $this->getSymfonySession()
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('clear');
 
         self::assertInstanceOf(

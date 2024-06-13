@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\Diactoros;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Teknoo\East\Diactoros\CallbackStream;
 use Teknoo\East\Diactoros\CallbackStreamFactory;
@@ -34,8 +35,8 @@ use Teknoo\East\Diactoros\CallbackStreamFactory;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
  *
- * @covers \Teknoo\East\Diactoros\CallbackStreamFactory
  */
+#[CoversClass(CallbackStreamFactory::class)]
 class CallbackStreamFactoryTest extends TestCase
 {
     public function buildFactory(): CallbackStreamFactory

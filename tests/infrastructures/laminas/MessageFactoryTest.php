@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\Diactoros;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\MessageInterface;
 use Teknoo\East\Diactoros\MessageFactory;
@@ -34,8 +35,8 @@ use Teknoo\East\Diactoros\MessageFactory;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
  *
- * @covers \Teknoo\East\Diactoros\MessageFactory
  */
+#[CoversClass(MessageFactory::class)]
 class MessageFactoryTest extends TestCase
 {
     public function buildFactory(): MessageFactory

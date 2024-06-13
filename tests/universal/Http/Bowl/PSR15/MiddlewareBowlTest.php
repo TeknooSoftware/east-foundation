@@ -27,6 +27,7 @@ namespace Teknoo\Tests\East\Foundation\Http\Bowl\PSR15;
 use DateTime;
 use DateTimeInterface;
 use Laminas\Diactoros\Response\TextResponse;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -44,8 +45,8 @@ use Teknoo\Tests\Recipe\Bowl\AbstractBowlTests;
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
- * @covers \Teknoo\East\Foundation\Http\Bowl\PSR15\MiddlewareBowl
  */
+#[CoversClass(MiddlewareBowl::class)]
 class MiddlewareBowlTest extends AbstractBowlTests
 {
     protected function getCallable()

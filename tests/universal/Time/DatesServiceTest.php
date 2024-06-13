@@ -27,6 +27,7 @@ namespace Teknoo\Tests\East\Foundation\Time;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Clock\ClockInterface;
 use Teknoo\East\Foundation\Time\DatesService;
@@ -34,8 +35,8 @@ use Teknoo\East\Foundation\Time\DatesService;
 /**
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
- * @covers \Teknoo\East\Foundation\Time\DatesService
  */
+#[CoversClass(DatesService::class)]
 class DatesServiceTest extends TestCase
 {
     public function buildService()
@@ -124,7 +125,7 @@ class DatesServiceTest extends TestCase
         $service = $this->buildService();
 
         $clock = $this->createMock(ClockInterface::class);
-        $clock->expects(self::any())
+        $clock->expects($this->any())
             ->method('now')
             ->willReturn(DateTimeImmutable::createFromInterface($date));
 

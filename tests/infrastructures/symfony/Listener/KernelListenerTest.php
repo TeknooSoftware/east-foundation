@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\FoundationBundle\Listener;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
@@ -41,8 +42,8 @@ use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
- * @covers \Teknoo\East\FoundationBundle\Listener\KernelListener
  */
+#[CoversClass(KernelListener::class)]
 class KernelListenerTest extends TestCase
 {
     /**
@@ -107,24 +108,24 @@ class KernelListenerTest extends TestCase
     public function testOnKernelRequest()
     {
         $request = $this->createMock(RequestEvent::class);
-        $request->expects(self::any())->method('getRequest')->willReturn(new Request());
+        $request->expects($this->any())->method('getRequest')->willReturn(new Request());
 
         $psrRquest = $this->createMock(ServerRequestInterface::class);
-        $psrRquest->expects(self::any())->method('withAttribute')->willReturnSelf();
+        $psrRquest->expects($this->any())->method('withAttribute')->willReturnSelf();
 
         $this->getFactoryMock()
-            ->expects(self::any())
+            ->expects($this->any())
             ->method('createRequest')
             ->willReturn($psrRquest);
 
         $this->getClientWithResponseEventInterfaceMock()
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('setRequestEvent')
             ->with($request)
             ->willReturnSelf();
 
         $this->getClientWithResponseEventInterfaceMock()
-            ->expects(self::never())
+            ->expects($this->never())
             ->method('mustSendAResponse');
 
         self::assertInstanceOf(
@@ -140,19 +141,19 @@ class KernelListenerTest extends TestCase
         $symfonyRequest = new Request();
         $symfonyRequest->attributes->set('exception', new \Exception());
         $request = $this->createMock(RequestEvent::class);
-        $request->expects(self::any())->method('getRequest')->willReturn($symfonyRequest);
+        $request->expects($this->any())->method('getRequest')->willReturn($symfonyRequest);
 
         $this->getFactoryMock()
-            ->expects(self::any())
+            ->expects($this->any())
             ->method('createRequest')
             ->willReturn($this->createMock(ServerRequestInterface::class));
 
         $this->getClientWithResponseEventInterfaceMock()
-            ->expects(self::never())
+            ->expects($this->never())
             ->method('setRequestEvent');
 
         $this->getManagerMock()
-            ->expects(self::never())
+            ->expects($this->never())
             ->method('receiveRequest');
 
         self::assertInstanceOf(

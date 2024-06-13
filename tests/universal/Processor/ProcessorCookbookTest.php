@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\Foundation\Processor;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Teknoo\East\Foundation\Processor\ProcessorCookbook;
 use Teknoo\East\Foundation\Processor\ProcessorInterface;
@@ -37,8 +38,8 @@ use Teknoo\Recipe\RecipeInterface as OriginalRecipeInterface;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
  *
- * @covers \Teknoo\East\Foundation\Processor\ProcessorCookbook
  */
+#[CoversClass(ProcessorCookbook::class)]
 class ProcessorCookbookTest extends TestCase
 {
     private ?ProcessorRecipeInterface $recipe = null;
@@ -105,8 +106,8 @@ class ProcessorCookbookTest extends TestCase
 
     public function testTrain()
     {
-        $this->getRecipeMock()->expects(self::once())->method('registerMiddleware')->willReturnSelf();
-        $this->getRecipeMock()->expects(self::once())->method('cook')->willReturnSelf();
+        $this->getRecipeMock()->expects($this->once())->method('registerMiddleware')->willReturnSelf();
+        $this->getRecipeMock()->expects($this->once())->method('cook')->willReturnSelf();
 
         $cookbook = $this->buildCookbook();
         self::assertInstanceOf(
@@ -135,8 +136,8 @@ class ProcessorCookbookTest extends TestCase
 
     public function testPrepare()
     {
-        $this->getRecipeMock()->expects(self::once())->method('registerMiddleware')->willReturnSelf();
-        $this->getRecipeMock()->expects(self::once())->method('cook')->willReturnSelf();
+        $this->getRecipeMock()->expects($this->once())->method('registerMiddleware')->willReturnSelf();
+        $this->getRecipeMock()->expects($this->once())->method('cook')->willReturnSelf();
 
         $wp = [];
         self::assertInstanceOf(
@@ -147,8 +148,8 @@ class ProcessorCookbookTest extends TestCase
 
     public function testValidate()
     {
-        $this->getRecipeMock()->expects(self::once())->method('registerMiddleware')->willReturnSelf();
-        $this->getRecipeMock()->expects(self::once())->method('cook')->willReturnSelf();
+        $this->getRecipeMock()->expects($this->once())->method('registerMiddleware')->willReturnSelf();
+        $this->getRecipeMock()->expects($this->once())->method('cook')->willReturnSelf();
 
         self::assertInstanceOf(
             ProcessorCookbook::class,

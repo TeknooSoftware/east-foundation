@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\Foundation\Router;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use Teknoo\East\Foundation\Router\ParameterInterface;
 use Teknoo\East\Foundation\Router\Result;
 use Teknoo\East\Foundation\Router\ResultInterface;
@@ -35,8 +36,8 @@ use Teknoo\Immutable\Exception\ImmutableException;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
  *
- * @covers \Teknoo\East\Foundation\Router\Result
  */
+#[CoversClass(Result::class)]
 class ResultTest extends AbstractResultTests
 {
     public function buildResult(): ResultInterface

@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\FoundationBundle\DependencyInjection;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Teknoo\East\FoundationBundle\DependencyInjection\EastFoundationCompilerPass;
@@ -36,8 +37,8 @@ use Symfony\Component\DependencyInjection\Definition;
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
- * @covers \Teknoo\East\FoundationBundle\DependencyInjection\EastFoundationCompilerPass
  */
+#[CoversClass(EastFoundationCompilerPass::class)]
 class EastFrameworkCompilerPassTest extends \PHPUnit\Framework\TestCase
 {
     /**
@@ -73,12 +74,12 @@ class EastFrameworkCompilerPassTest extends \PHPUnit\Framework\TestCase
         $def->expects($this->exactly(2))->method('addMethodCall')->willReturnSelf();
 
         $this->getContainerBuilderMock()
-            ->expects(self::any())
+            ->expects($this->any())
             ->method('has')
             ->willReturn(true);
 
         $this->getContainerBuilderMock()
-            ->expects(self::any())
+            ->expects($this->any())
             ->method('findTaggedServiceIds')
             ->with('east.endpoint.template')
             ->willReturn([
@@ -114,12 +115,12 @@ class EastFrameworkCompilerPassTest extends \PHPUnit\Framework\TestCase
         $def->expects($this->exactly(0))->method('addMethodCall')->willReturnSelf();
 
         $this->getContainerBuilderMock()
-            ->expects(self::any())
+            ->expects($this->any())
             ->method('has')
             ->willReturnCallback(fn($value) => 'twig' != $value);
 
         $this->getContainerBuilderMock()
-            ->expects(self::any())
+            ->expects($this->any())
             ->method('findTaggedServiceIds')
             ->with('east.endpoint.template')
             ->willReturn([
@@ -128,7 +129,7 @@ class EastFrameworkCompilerPassTest extends \PHPUnit\Framework\TestCase
             ]);
 
         $this->getContainerBuilderMock()
-            ->expects(self::any())
+            ->expects($this->any())
             ->method('getDefinition')
             ->with(
                 $this->callback(

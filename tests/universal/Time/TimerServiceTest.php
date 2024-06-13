@@ -26,6 +26,7 @@ namespace Teknoo\Tests\East\Foundation\Time;
 
 use DateTime;
 use DateTimeInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Teknoo\East\Foundation\Time\DatesService;
@@ -38,8 +39,8 @@ use function time;
 /**
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
- * @covers \Teknoo\East\Foundation\Time\TimerService
  */
+#[CoversClass(TimerService::class)]
 class TimerServiceTest extends TestCase
 {
     private ?DatesService $datesService = null;

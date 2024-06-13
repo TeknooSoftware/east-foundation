@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\Foundation\Recipe;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Teknoo\East\Foundation\Processor\LoopDetectorInterface;
 use Teknoo\East\Foundation\Processor\ProcessorCookbookInterface;
@@ -35,13 +36,12 @@ use Teknoo\Recipe\ChefInterface;
 use Teknoo\Recipe\RecipeInterface as OriginalRecipeInterface;
 
 /**
- * @covers \Teknoo\East\Foundation\Recipe\Cookbook
- *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
  */
+#[CoversClass(Cookbook::class)]
 class CookbookTest extends TestCase
 {
     private ?RouterInterface $router = null;
@@ -138,8 +138,8 @@ class CookbookTest extends TestCase
 
     public function testTrain()
     {
-        $this->getRecipeMock()->expects(self::once())->method('registerMiddleware')->willReturnSelf();
-        $this->getRecipeMock()->expects(self::once())->method('execute')->willReturnSelf();
+        $this->getRecipeMock()->expects($this->once())->method('registerMiddleware')->willReturnSelf();
+        $this->getRecipeMock()->expects($this->once())->method('execute')->willReturnSelf();
 
         $cookbook = $this->buildCookbook();
         self::assertInstanceOf(
@@ -168,8 +168,8 @@ class CookbookTest extends TestCase
 
     public function testPrepare()
     {
-        $this->getRecipeMock()->expects(self::once())->method('registerMiddleware')->willReturnSelf();
-        $this->getRecipeMock()->expects(self::once())->method('execute')->willReturnSelf();
+        $this->getRecipeMock()->expects($this->once())->method('registerMiddleware')->willReturnSelf();
+        $this->getRecipeMock()->expects($this->once())->method('execute')->willReturnSelf();
 
         $wp = [];
         self::assertInstanceOf(
@@ -180,8 +180,8 @@ class CookbookTest extends TestCase
 
     public function testValidate()
     {
-        $this->getRecipeMock()->expects(self::once())->method('registerMiddleware')->willReturnSelf();
-        $this->getRecipeMock()->expects(self::once())->method('execute')->willReturnSelf();
+        $this->getRecipeMock()->expects($this->once())->method('registerMiddleware')->willReturnSelf();
+        $this->getRecipeMock()->expects($this->once())->method('execute')->willReturnSelf();
 
         self::assertInstanceOf(
             Cookbook::class,

@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\Foundation\Router;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use Teknoo\East\Foundation\Router\Parameter;
 use Teknoo\East\Foundation\Router\ParameterInterface;
 use Teknoo\Immutable\Exception\ImmutableException;
@@ -34,8 +35,8 @@ use Teknoo\Immutable\Exception\ImmutableException;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
  *
- * @covers \Teknoo\East\Foundation\Router\Parameter
  */
+#[CoversClass(Parameter::class)]
 class ParameterTest extends AbstractParameterTests
 {
     public function buildParameter(): ParameterInterface

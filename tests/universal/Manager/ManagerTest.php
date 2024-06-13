@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\Foundation\Manager;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Teknoo\East\Foundation\Client\ClientInterface;
@@ -43,8 +44,8 @@ use Teknoo\Tests\Recipe\AbstractChefTests;
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
- * @covers \Teknoo\East\Foundation\Manager\Manager
  */
+#[CoversClass(Manager::class)]
 class ManagerTest extends AbstractChefTests
 {
     /**
@@ -58,7 +59,7 @@ class ManagerTest extends AbstractChefTests
     public function testReadInConstructor()
     {
         $recipe = $this->createMock(RecipeInterface::class);
-        $recipe->expects(self::once())
+        $recipe->expects($this->once())
             ->method('train')
             ->willReturnSelf();
 
@@ -255,13 +256,13 @@ class ManagerTest extends AbstractChefTests
          * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $middleware1 = $this->createMock(MiddlewareInterface::class);
-        $middleware1->expects(self::once())->method('execute')->willReturnSelf();
+        $middleware1->expects($this->once())->method('execute')->willReturnSelf();
         /**
          * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $middleware2 = $this->createMock(MiddlewareInterface::class);
-        $middleware2->expects(self::once())->method('execute');
-        $middleware2->expects(self::once())->method('execute')->willReturnCallback(
+        $middleware2->expects($this->once())->method('execute');
+        $middleware2->expects($this->once())->method('execute')->willReturnCallback(
             function ($clientPassed, $requestPassed, $managerPassed) use ($clientMock, $serverRequestMock, $manager) {
                 self::assertEquals($clientPassed, $clientMock);
                 self::assertEquals($requestPassed, $serverRequestMock);
@@ -273,7 +274,7 @@ class ManagerTest extends AbstractChefTests
          * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $middleware3 = $this->createMock(MiddlewareInterface::class);
-        $middleware3->expects(self::never())->method('execute');
+        $middleware3->expects($this->never())->method('execute');
 
         $manager->read($this->createMock(RecipeInterface::class))
             ->followSteps(
@@ -307,13 +308,13 @@ class ManagerTest extends AbstractChefTests
          * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $middleware1 = $this->createMock(MiddlewareInterface::class);
-        $middleware1->expects(self::once())->method('execute')->willReturnSelf();
+        $middleware1->expects($this->once())->method('execute')->willReturnSelf();
         /**
          * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $middleware2 = $this->createMock(MiddlewareInterface::class);
-        $middleware2->expects(self::once())->method('execute');
-        $middleware2->expects(self::once())->method('execute')->willReturnCallback(
+        $middleware2->expects($this->once())->method('execute');
+        $middleware2->expects($this->once())->method('execute')->willReturnCallback(
             function ($clientPassed, $messagePassed, $managerPassed) use ($clientMock, $messageMock, $manager) {
                 self::assertEquals($clientPassed, $clientMock);
                 self::assertEquals($messagePassed, $messageMock);
@@ -325,7 +326,7 @@ class ManagerTest extends AbstractChefTests
          * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $middleware3 = $this->createMock(MiddlewareInterface::class);
-        $middleware3->expects(self::never())->method('execute');
+        $middleware3->expects($this->never())->method('execute');
 
         $manager->read($this->createMock(RecipeInterface::class))
             ->followSteps(
@@ -360,7 +361,7 @@ class ManagerTest extends AbstractChefTests
          */
         $middleware1 = $this->createMock(MiddlewareInterface::class);
         $callList = [];
-        $middleware1->expects(self::once())->method('execute')->willReturnCallback(
+        $middleware1->expects($this->once())->method('execute')->willReturnCallback(
             function ($clientPassed, $requestPassed, $managerPassed) use (&$callList, $middleware1) {
                 $callList[] = 'middleware1';
                 $managerPassed->stop();
@@ -372,8 +373,8 @@ class ManagerTest extends AbstractChefTests
          * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $middleware2 = $this->createMock(MiddlewareInterface::class);
-        $middleware2->expects(self::once())->method('execute');
-        $middleware2->expects(self::once())->method('execute')->willReturnCallback(
+        $middleware2->expects($this->once())->method('execute');
+        $middleware2->expects($this->once())->method('execute')->willReturnCallback(
             function ($clientPassed, $requestPassed, $managerPassed) use ($clientMock, $serverRequestMock, $manager, &$callList, $middleware2) {
                 self::assertEquals($clientPassed, $clientMock);
                 self::assertEquals($requestPassed, $serverRequestMock);
@@ -389,7 +390,7 @@ class ManagerTest extends AbstractChefTests
          * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $middleware3 = $this->createMock(MiddlewareInterface::class);
-        $middleware3->expects(self::never())->method('execute');
+        $middleware3->expects($this->never())->method('execute');
 
         $manager->read($this->createMock(RecipeInterface::class))
             ->followSteps([
@@ -424,7 +425,7 @@ class ManagerTest extends AbstractChefTests
          */
         $middleware1 = $this->createMock(MiddlewareInterface::class);
         $callList = [];
-        $middleware1->expects(self::once())->method('execute')->willReturnCallback(
+        $middleware1->expects($this->once())->method('execute')->willReturnCallback(
             function ($clientPassed, $messagePassed, $managerPassed) use (&$callList, $middleware1) {
                 $callList[] = 'middleware1';
                 $managerPassed->stop();
@@ -436,8 +437,8 @@ class ManagerTest extends AbstractChefTests
          * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $middleware2 = $this->createMock(MiddlewareInterface::class);
-        $middleware2->expects(self::once())->method('execute');
-        $middleware2->expects(self::once())->method('execute')->willReturnCallback(
+        $middleware2->expects($this->once())->method('execute');
+        $middleware2->expects($this->once())->method('execute')->willReturnCallback(
             function ($clientPassed, $messagePassed, $managerPassed) use ($clientMock, $messageMock, $manager, &$callList, $middleware2) {
                 self::assertEquals($clientPassed, $clientMock);
                 self::assertEquals($messagePassed, $messageMock);
@@ -453,7 +454,7 @@ class ManagerTest extends AbstractChefTests
          * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $middleware3 = $this->createMock(MiddlewareInterface::class);
-        $middleware3->expects(self::never())->method('execute');
+        $middleware3->expects($this->never())->method('execute');
 
         $manager->read($this->createMock(RecipeInterface::class))
             ->followSteps([
@@ -488,7 +489,7 @@ class ManagerTest extends AbstractChefTests
          */
         $middleware1 = $this->createMock(MiddlewareInterface::class);
         $callList = [];
-        $middleware1->expects(self::once())->method('execute')->willReturnCallback(
+        $middleware1->expects($this->once())->method('execute')->willReturnCallback(
             function ($clientPassed, $requestPassed, $managerPassed) use (&$callList, $middleware1) {
                 $callList[] = 'middleware1';
                 $managerPassed->stop();
@@ -500,8 +501,8 @@ class ManagerTest extends AbstractChefTests
          * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $middleware2 = $this->createMock(MiddlewareInterface::class);
-        $middleware2->expects(self::once())->method('execute');
-        $middleware2->expects(self::once())->method('execute')->willReturnCallback(
+        $middleware2->expects($this->once())->method('execute');
+        $middleware2->expects($this->once())->method('execute')->willReturnCallback(
             function ($clientPassed, $requestPassed, $managerPassed) use ($clientMock, $serverRequestMock, $manager, &$callList, $middleware2) {
                 self::assertEquals($clientPassed, $clientMock);
                 self::assertEquals($requestPassed, $serverRequestMock);
@@ -517,7 +518,7 @@ class ManagerTest extends AbstractChefTests
          * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $middleware3 = $this->createMock(MiddlewareInterface::class);
-        $middleware3->expects(self::never())->method('execute');
+        $middleware3->expects($this->never())->method('execute');
 
         $manager->read($this->createMock(RecipeInterface::class))
             ->followSteps([
@@ -552,7 +553,7 @@ class ManagerTest extends AbstractChefTests
          */
         $middleware1 = $this->createMock(MiddlewareInterface::class);
         $callList = [];
-        $middleware1->expects(self::once())->method('execute')->willReturnCallback(
+        $middleware1->expects($this->once())->method('execute')->willReturnCallback(
             function ($clientPassed, $messagePassed, $managerPassed) use (&$callList, $middleware1) {
                 $callList[] = 'middleware1';
                 $managerPassed->stop();
@@ -564,8 +565,8 @@ class ManagerTest extends AbstractChefTests
          * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $middleware2 = $this->createMock(MiddlewareInterface::class);
-        $middleware2->expects(self::once())->method('execute');
-        $middleware2->expects(self::once())->method('execute')->willReturnCallback(
+        $middleware2->expects($this->once())->method('execute');
+        $middleware2->expects($this->once())->method('execute')->willReturnCallback(
             function ($clientPassed, $messagePassed, $managerPassed) use ($clientMock, $messageMock, $manager, &$callList, $middleware2) {
                 self::assertEquals($clientPassed, $clientMock);
                 self::assertEquals($messagePassed, $messageMock);
@@ -581,7 +582,7 @@ class ManagerTest extends AbstractChefTests
          * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $middleware3 = $this->createMock(MiddlewareInterface::class);
-        $middleware3->expects(self::never())->method('execute');
+        $middleware3->expects($this->never())->method('execute');
 
         $manager->read($this->createMock(RecipeInterface::class))
             ->followSteps([
@@ -615,13 +616,13 @@ class ManagerTest extends AbstractChefTests
          * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $middleware1 = $this->createMock(MiddlewareInterface::class);
-        $middleware1->expects(self::exactly(2))->method('execute')->willReturnSelf();
+        $middleware1->expects($this->exactly(2))->method('execute')->willReturnSelf();
         /**
          * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $middleware2 = $this->createMock(MiddlewareInterface::class);
-        $middleware2->expects(self::exactly(2))->method('execute');
-        $middleware2->expects(self::exactly(2))->method('execute')->willReturnCallback(
+        $middleware2->expects($this->exactly(2))->method('execute');
+        $middleware2->expects($this->exactly(2))->method('execute')->willReturnCallback(
             function ($clientPassed, $requestPassed, $managerPassed) use ($clientMock, $serverRequestMock, $manager) {
                 self::assertEquals($clientPassed, $clientMock);
                 self::assertEquals($requestPassed, $serverRequestMock);
@@ -633,7 +634,7 @@ class ManagerTest extends AbstractChefTests
          * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $middleware3 = $this->createMock(MiddlewareInterface::class);
-        $middleware3->expects(self::never())->method('execute');
+        $middleware3->expects($this->never())->method('execute');
 
         $manager->read($this->createMock(RecipeInterface::class))
             ->followSteps([
@@ -671,13 +672,13 @@ class ManagerTest extends AbstractChefTests
          * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $middleware1 = $this->createMock(MiddlewareInterface::class);
-        $middleware1->expects(self::exactly(2))->method('execute')->willReturnSelf();
+        $middleware1->expects($this->exactly(2))->method('execute')->willReturnSelf();
         /**
          * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $middleware2 = $this->createMock(MiddlewareInterface::class);
-        $middleware2->expects(self::exactly(2))->method('execute');
-        $middleware2->expects(self::exactly(2))->method('execute')->willReturnCallback(
+        $middleware2->expects($this->exactly(2))->method('execute');
+        $middleware2->expects($this->exactly(2))->method('execute')->willReturnCallback(
             function ($clientPassed, $messagePassed, $managerPassed) use ($clientMock, $messageMock, $manager) {
                 self::assertEquals($clientPassed, $clientMock);
                 self::assertEquals($messagePassed, $messageMock);
@@ -689,7 +690,7 @@ class ManagerTest extends AbstractChefTests
          * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
          */
         $middleware3 = $this->createMock(MiddlewareInterface::class);
-        $middleware3->expects(self::never())->method('execute');
+        $middleware3->expects($this->never())->method('execute');
 
         $manager->read($this->createMock(RecipeInterface::class))
             ->followSteps([

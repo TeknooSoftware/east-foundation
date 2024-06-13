@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\FoundationBundle;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use Teknoo\East\FoundationBundle\EastFoundationBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -34,8 +35,8 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
- * @covers \Teknoo\East\FoundationBundle\EastFoundationBundle
  */
+#[CoversClass(EastFoundationBundle::class)]
 class EastFoundationBundleTest extends \PHPUnit\Framework\TestCase
 {
     /**
