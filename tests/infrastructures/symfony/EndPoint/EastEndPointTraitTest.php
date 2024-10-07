@@ -25,8 +25,6 @@ declare(strict_types=1);
 namespace Teknoo\Tests\East\FoundationBundle\EndPoint;
 
 use LogicException;
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\CoversTrait;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
@@ -62,12 +60,6 @@ use function strlen;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
  */
-#[CoversTrait(TemplatingTrait::class)]
-#[CoversTrait(RoutingTrait::class)]
-#[CoversTrait(ResponseFactoryTrait::class)]
-#[CoversTrait(ExceptionTrait::class)]
-#[CoversTrait(\Teknoo\East\FoundationBundle\EndPoint\EastEndPointTrait::class)]
-#[CoversTrait(AuthenticationTrait::class)]
 class EastEndPointTraitTest extends TestCase
 {
     public function testGenerateUrlMissingRouter()
