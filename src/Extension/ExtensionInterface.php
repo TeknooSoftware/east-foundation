@@ -23,37 +23,27 @@
 
 declare(strict_types=1);
 
-namespace Teknoo\East\Foundation\Recipe;
-
-use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
-use Teknoo\Recipe\Recipe as BaseRecipe;
+namespace Teknoo\East\Foundation\Extension;
 
 /**
- * Recipe implementation built on Teknoo/Recipe implementation to define middleware registration into a recipe like
- * a step of the recipe. The class name of the middleware is used as step's name.
- * The methode "execute" of the middleware is used as callable.
+ * Contract interface to create an extension for an application.
+ * Any extension must provide a static method to create an instance of self. It will be used by the
+ * extension manager. This instance will be keeped in memory by the manader.
+ *
+ * When the manager's method 'execute' is called, it will forward the call to each extension via the
+ * methode `executeFor`.
  *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
  */
-class Recipe extends BaseRecipe implements RecipeInterface
+interface ExtensionInterface
 {
-    public function registerMiddleware(
-        MiddlewareInterface $middleware,
-        int $priority = 10,
-        ?string $middlewareName = null
-    ): RecipeInterface {
-        if (empty($middlewareName)) {
-            $middlewareName = $middleware::class;
-        }
+    /**
+     * To create an instance of the extensionm, usable by the manager
+     */
+    public static function create(): ExtensionInterface;
 
-        return $this->cook(
-            $middleware->execute(...),
-            $middlewareName,
-            [],
-            $priority
-        );
-    }
+    public function executeFor(ModuleInterface $module): ExtensionInterface;
 }

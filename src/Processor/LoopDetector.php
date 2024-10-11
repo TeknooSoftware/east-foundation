@@ -43,7 +43,7 @@ class LoopDetector implements LoopDetectorInterface
     public function __invoke(
         AbstractRecipeBowl $bowl,
         ManagerInterface $manager,
-        ResultInterface $result = null
+        ?ResultInterface $result = null
     ): LoopDetectorInterface {
         if ($result instanceof ResultInterface) {
             //To manage when there are not result in the initial request

@@ -23,37 +23,27 @@
 
 declare(strict_types=1);
 
-namespace Teknoo\East\Foundation\Recipe;
-
-use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
-use Teknoo\Recipe\Recipe as BaseRecipe;
+namespace Teknoo\East\Foundation\Extension;
 
 /**
- * Recipe implementation built on Teknoo/Recipe implementation to define middleware registration into a recipe like
- * a step of the recipe. The class name of the middleware is used as step's name.
- * The methode "execute" of the middleware is used as callable.
+ * Trait to help developper to implement the `ExtensionInterface` and implements the create function
+ * to create or return the extension singelton (because DI is not always available at this step).
  *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
  */
-class Recipe extends BaseRecipe implements RecipeInterface
+trait ExtensionInitTrait
 {
-    public function registerMiddleware(
-        MiddlewareInterface $middleware,
-        int $priority = 10,
-        ?string $middlewareName = null
-    ): RecipeInterface {
-        if (empty($middlewareName)) {
-            $middlewareName = $middleware::class;
+    private static ?self $instance = null;
+
+    public static function create(): self
+    {
+        if (null === self::$instance) {
+            self::$instance = new static();
         }
 
-        return $this->cook(
-            $middleware->execute(...),
-            $middlewareName,
-            [],
-            $priority
-        );
+        return self::$instance;
     }
 }

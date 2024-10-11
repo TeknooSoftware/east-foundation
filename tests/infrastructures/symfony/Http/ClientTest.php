@@ -123,7 +123,7 @@ class ClientTest extends TestCase
     /**
      * @return Client
      */
-    private function buildClient(LoggerInterface $logger = null): Client
+    private function buildClient(?LoggerInterface $logger = null): Client
     {
         return new Client(
             $this->getHttpFoundationFactoryMock(),
@@ -150,7 +150,7 @@ class ClientTest extends TestCase
         $client = $this->buildClient();
         self::assertInstanceOf(
             $this->getClientClass(),
-            $client->updateResponse(function (ClientInterface $client, ResponseInterface $response=null) {
+            $client->updateResponse(function (ClientInterface $client, ?ResponseInterface $response=null) {
                 self::assertEmpty($response);
             })
         );
@@ -167,7 +167,7 @@ class ClientTest extends TestCase
         self::assertInstanceOf(
             $this->getClientClass(),
             $client->acceptResponse($response)->updateResponse(
-                function (ClientInterface $client, ResponseInterface $responsePassed=null) use ($response) {
+                function (ClientInterface $client, ?ResponseInterface $responsePassed=null) use ($response) {
                     self::assertEquals($response, $responsePassed);
                 }
             )
@@ -185,7 +185,7 @@ class ClientTest extends TestCase
         self::assertInstanceOf(
             $this->getClientClass(),
             $client->acceptResponse($response)->updateResponse(
-                function (ClientInterface $client, EastResponse $responsePassed=null) use ($response) {
+                function (ClientInterface $client, ?EastResponse $responsePassed=null) use ($response) {
                     self::assertEquals($response, $responsePassed);
                 }
             )
@@ -211,7 +211,7 @@ class ClientTest extends TestCase
         self::assertInstanceOf(
             $this->getClientClass(),
             $client->acceptResponse($response)->updateResponse(
-                function (ClientInterface $client, EastResponse $responsePassed=null) use ($response) {
+                function (ClientInterface $client, ?EastResponse $responsePassed=null) use ($response) {
                     self::assertEquals($response, $responsePassed);
                 }
             )

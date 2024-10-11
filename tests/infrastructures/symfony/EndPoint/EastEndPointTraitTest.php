@@ -25,8 +25,6 @@ declare(strict_types=1);
 namespace Teknoo\Tests\East\FoundationBundle\EndPoint;
 
 use LogicException;
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\CoversTrait;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
@@ -39,11 +37,6 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Teknoo\East\Foundation\EndPoint\EndPointInterface;
 use Teknoo\East\Foundation\Http\Message\CallbackStreamInterface;
-use Teknoo\East\FoundationBundle\EndPoint\AuthenticationTrait;
-use Teknoo\East\FoundationBundle\EndPoint\ExceptionTrait;
-use Teknoo\East\FoundationBundle\EndPoint\ResponseFactoryTrait;
-use Teknoo\East\FoundationBundle\EndPoint\RoutingTrait;
-use Teknoo\East\FoundationBundle\EndPoint\TemplatingTrait;
 use Teknoo\Recipe\Promise\PromiseInterface;
 use Teknoo\East\Foundation\Template\EngineInterface;
 use Teknoo\East\Foundation\Template\ResultInterface;
@@ -62,12 +55,6 @@ use function strlen;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
  */
-#[CoversTrait(TemplatingTrait::class)]
-#[CoversTrait(RoutingTrait::class)]
-#[CoversTrait(ResponseFactoryTrait::class)]
-#[CoversTrait(ExceptionTrait::class)]
-#[CoversTrait(\Teknoo\East\FoundationBundle\EndPoint\EastEndPointTrait::class)]
-#[CoversTrait(AuthenticationTrait::class)]
 class EastEndPointTraitTest extends TestCase
 {
     public function testGenerateUrlMissingRouter()

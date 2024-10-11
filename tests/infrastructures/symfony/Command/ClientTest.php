@@ -86,9 +86,14 @@ class ClientTest extends TestCase
         $client = $this->buildClient();
         self::assertInstanceOf(
             $this->getClientClass(),
-            $client->updateResponse(function (ClientInterface $client, ResponseInterface $response=null) {
-                self::assertEmpty($response);
-            })
+            $client->updateResponse(
+                function (
+                    ClientInterface $client,
+                    ?ResponseInterface $response=null
+                ) {
+                    self::assertEmpty($response);
+                }
+            )
         );
     }
 
@@ -103,7 +108,7 @@ class ClientTest extends TestCase
         self::assertInstanceOf(
             $this->getClientClass(),
             $client->acceptResponse($response)->updateResponse(
-                function (ClientInterface $client, ResponseInterface $responsePassed=null) use ($response) {
+                function (ClientInterface $client, ?ResponseInterface $responsePassed=null) use ($response) {
                     self::assertEquals($response, $responsePassed);
                 }
             )
