@@ -1,0 +1,72 @@
+<?php
+
+/*
+ * East Foundation.
+ *
+ * LICENSE
+ *
+ * This source file is subject to the MIT license
+ * it is available in LICENSE file at the root of this package
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to richard@teknoo.software so we can send you a copy immediately.
+ *
+ *
+ * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
+ * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
+ *
+ * @link        http://teknoo.software/east-foundation Project website
+ *
+ * @license     http://teknoo.software/license/mit         MIT License
+ * @author      Richard Déloge <richard@teknoo.software>
+ */
+
+declare(strict_types=1);
+
+namespace Teknoo\East\FoundationBundle\Extension;
+
+use Symfony\Component\Routing\Loader\Configurator\ImportConfigurator;
+use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
+use Teknoo\East\Foundation\Extension\Manager;
+use Teknoo\East\Foundation\Extension\ManagerInterface;
+use Teknoo\East\Foundation\Extension\ModuleInterface;
+
+/**
+ * Extension module, called in the kernel of your symfony app to extend, add path to import into
+ * the routing configurator to embed some route in your extension without references them in your symfony configuration
+ * This module works in class context with a static method, because DI is not already available at this execution step
+ *
+ * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
+ * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
+ * @license     http://teknoo.software/license/mit         MIT License
+ * @author      Richard Déloge <richard@teknoo.software>
+ *
+ * @phpstan-consistent-constructor
+ */
+class Routes implements ModuleInterface
+{
+    private function __construct(
+        private RoutingConfigurator $routes
+    ) {
+    }
+
+    /**
+     * @param string|array<string, mixed> $resource
+     * @param string|string[]|null $exclude Glob patterns to exclude from the import
+     */
+    public function import(
+        string|array $resource,
+        ?string $type = null,
+        bool $ignoreErrors = false,
+        string|array|null $exclude = null,
+    ): ImportConfigurator {
+        return $this->routes->import($resource, $type, $ignoreErrors, $exclude);
+    }
+
+    public static function extendsRoutes(RoutingConfigurator $routes, ?ManagerInterface $manager = null): void
+    {
+        $module = new static($routes);
+
+        ($manager ?? Manager::run())->execute($module);
+    }
+}

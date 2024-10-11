@@ -23,37 +23,30 @@
 
 declare(strict_types=1);
 
-namespace Teknoo\East\Foundation\Recipe;
-
-use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
-use Teknoo\Recipe\Recipe as BaseRecipe;
+namespace Teknoo\East\Foundation\Extension;
 
 /**
- * Recipe implementation built on Teknoo/Recipe implementation to define middleware registration into a recipe like
- * a step of the recipe. The class name of the middleware is used as step's name.
- * The methode "execute" of the middleware is used as callable.
+ * Contract to define a manager extension. The manager class must be able to return ots singleton when
+ * its static method 'run' is called.
+ * A singleton is provided because when extension are used because containers DI are often not available.
  *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
  */
-class Recipe extends BaseRecipe implements RecipeInterface
+interface ManagerInterface
 {
-    public function registerMiddleware(
-        MiddlewareInterface $middleware,
-        int $priority = 10,
-        ?string $middlewareName = null
-    ): RecipeInterface {
-        if (empty($middlewareName)) {
-            $middlewareName = $middleware::class;
-        }
+    public function __construct(?LoaderInterface $loader = null);
 
-        return $this->cook(
-            $middleware->execute(...),
-            $middlewareName,
-            [],
-            $priority
-        );
-    }
+    /**
+     * Return a manager singleton because when extension are used because containers DI are often not available.
+     */
+    public static function run(?LoaderInterface $loader = null): ManagerInterface;
+
+    /**
+     * Method called by modules to be forwarded to extensions to allow them to extend the application's capacity
+     * like reference new bundles, update the container di, add some routes, etc...
+     */
+    public function execute(ModuleInterface $module): ManagerInterface;
 }

@@ -1,6 +1,5 @@
 <?php
-
-/*
+/**
  * East Foundation.
  *
  * LICENSE
@@ -23,37 +22,39 @@
 
 declare(strict_types=1);
 
-namespace Teknoo\East\Foundation\Recipe;
+namespace Teknoo\Tests\East\Foundation\Extension;
 
-use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
-use Teknoo\Recipe\Recipe as BaseRecipe;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\TestCase;
+use Teknoo\East\Foundation\Extension\ComposerLoader;
+
+use Teknoo\Tests\East\Foundation\Extension\Support\ExtensionMock1;
+
+use Teknoo\Tests\East\Foundation\Extension\Support\ExtensionMock2;
+
+use function iterator_to_array;
 
 /**
- * Recipe implementation built on Teknoo/Recipe implementation to define middleware registration into a recipe like
- * a step of the recipe. The class name of the middleware is used as step's name.
- * The methode "execute" of the middleware is used as callable.
+ * Class RecipeEndPointTest.
  *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
  */
-class Recipe extends BaseRecipe implements RecipeInterface
+#[CoversClass(ComposerLoader::class)]
+class ComposerLoaderTest extends TestCase
 {
-    public function registerMiddleware(
-        MiddlewareInterface $middleware,
-        int $priority = 10,
-        ?string $middlewareName = null
-    ): RecipeInterface {
-        if (empty($middlewareName)) {
-            $middlewareName = $middleware::class;
-        }
+    public function testInvoke()
+    {
+        $loader = new ComposerLoader();
+        self::assertEquals(
+            [
 
-        return $this->cook(
-            $middleware->execute(...),
-            $middlewareName,
-            [],
-            $priority
+                ExtensionMock1::class,
+                ExtensionMock2::class,
+            ],
+            iterator_to_array($loader()),
         );
     }
 }

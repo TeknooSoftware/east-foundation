@@ -7,3 +7,6 @@ parameters:
         -
             message: '#clone mixed#'
             path: src/di.php
+        -
+            message: '#[a-zA-Z0-9\\_]+::findClasses\(\)#'
+            path: src/Extension/ComposerLoader.php

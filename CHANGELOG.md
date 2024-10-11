@@ -1,5 +1,48 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [7.8.0] - 2024-10-11
+### Stable Release
+- New feature to provide an extension behavior in your application, and symfony app to extend
+  them without update configuration of your application. Ideal to distribute your applications with
+  plugin or a marketplace.
+  There are three parts :
+    - Modules contracted thanks to `Teknoo\East\Foundation\Extension\ModuleInterface`. There are no methods defined,
+      each module has its own behavior
+    - `Teknoo\East\Foundation\Extension\ExtensionInterface` to implement in your extension (or plugin) to update the
+      application configuration according to modules passed
+    - An extension manager, contracted thanks to `Teknoo\East\Foundation\Extension\ManagerInterface` and
+      implemented by `Teknoo\East\Foundation\Extension\Manager`, to find and load extensions when a module is called.
+    - When the extension is called, it can ignore or update the configuration through the module passed.
+    - This feature does not use a DI, because theses operations are often performed during the initialization, so
+      singleton and static methods are used.
+    - Manager use loader, contracted by `Teknoo\East\Foundation\Extension\LoaderInterface` to detect and load extensions.
+      There are two embedded loader:
+        - `Teknoo\East\Foundation\Extension\FileLoader` to load all extensions declared into a json array in a file,
+          by default `extensions/enabled.json`, but it can be overrided by setting the env var
+          `TEKNOO_EAST_EXTENSION_FILE`.
+        - `Teknoo\East\Foundation\Extension\ComposerLoader` to load all extensions implementing the interface from the
+        classmap of Composer.
+        - By default, `FileLoader` is used but, the loader can be changed thanks to the env var
+          `TEKNOO_EAST_EXTENSION_LOADER` (need the full qualified classname of the desired loader).
+    - To disable this behavior, evan if module are loaded, you can set the env var `TEKNOO_EAST_EXTENSION_DISABLED`
+      (any value, must be only set and non empty)
+    - Three modules are provided :
+        - `Teknoo\East\FoundationBundle\Extension\Bundles` to use in your `bundles.php` file to extend the list of
+           Symfony Bundle to load.
+        - `Teknoo\East\FoundationBundle\Extension\Routes` to use in your `src/Kernel.php` file to complete the list of
+           routes.
+        - `Teknoo\East\FoundationBundle\Extension\PHPDI`, to extend the configuration of PHP-DI when the
+           `Teknoo PHP DI Bridge` is used. To enable it, add to your Symfony configuration :
+
+                   di_bridge:
+                       extensions:
+                           - { name: 'Teknoo\East\FoundationBundle\Extension\PHPDI', priority: 0 }
+
+- Fix some PSR4
+- Remove Composer unused in dev requirements
+- Update to PHPUnit 11 and devs libraries
+- Enable PHP8.4 in tests and fix deprecations
+
 ## [7.7.1] - 2024-05-31
 ### Stable Release
 - Fix deprecated : replace `Symfony\Component\HttpKernel\DependencyInjection\Extension`

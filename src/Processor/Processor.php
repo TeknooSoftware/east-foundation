@@ -56,7 +56,7 @@ class Processor implements ProcessorInterface, ImmutableInterface
         ClientInterface $client,
         MessageInterface $message,
         ManagerInterface $manager,
-        ResultInterface $result = null
+        ?ResultInterface $result = null
     ): MiddlewareInterface {
         $client->sendAResponseIsOptional();
 

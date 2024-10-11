@@ -23,37 +23,16 @@
 
 declare(strict_types=1);
 
-namespace Teknoo\East\Foundation\Recipe;
+namespace Teknoo\East\Foundation\Extension\Exception;
 
-use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
-use Teknoo\Recipe\Recipe as BaseRecipe;
+use RuntimeException;
 
 /**
- * Recipe implementation built on Teknoo/Recipe implementation to define middleware registration into a recipe like
- * a step of the recipe. The class name of the middleware is used as step's name.
- * The methode "execute" of the middleware is used as callable.
- *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
  */
-class Recipe extends BaseRecipe implements RecipeInterface
+class LoaderException extends RuntimeException
 {
-    public function registerMiddleware(
-        MiddlewareInterface $middleware,
-        int $priority = 10,
-        ?string $middlewareName = null
-    ): RecipeInterface {
-        if (empty($middlewareName)) {
-            $middlewareName = $middleware::class;
-        }
-
-        return $this->cook(
-            $middleware->execute(...),
-            $middlewareName,
-            [],
-            $priority
-        );
-    }
 }

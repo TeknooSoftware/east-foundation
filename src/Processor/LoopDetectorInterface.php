@@ -43,6 +43,6 @@ interface LoopDetectorInterface
     public function __invoke(
         AbstractRecipeBowl $bowl,
         ManagerInterface $manager,
-        ResultInterface $result = null
+        ?ResultInterface $result = null
     ): LoopDetectorInterface;
 }

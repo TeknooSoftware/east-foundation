@@ -24,7 +24,6 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\Foundation\Normalizer\Object;
 
-use PHPUnit\Framework\Attributes\CoversTrait;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 use Teknoo\East\Foundation\Normalizer\Object\GroupsTrait;
@@ -35,7 +34,6 @@ use Teknoo\East\Foundation\Normalizer\Object\GroupsTrait;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
  */
-#[CoversTrait(GroupsTrait::class)]
 class GroupsTraitTest extends TestCase
 {
     public function buildObject(): object
