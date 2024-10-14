@@ -1,5 +1,10 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [7.8.1] - 2024-10-14
+### Stable Release
+- Update requirements libs
+- Use `random_bytes` instead of `uniqid`
+
 ## [7.8.0] - 2024-10-11
 ### Stable Release
 - New feature to provide an extension behavior in your application, and symfony app to extend

@@ -25,14 +25,16 @@ declare(strict_types=1);
 
 namespace Teknoo\East\Foundation\Time;
 
+use Random\RandomException;
 use SensitiveParameter;
 use Teknoo\East\Foundation\Time\Exception\PcntlNotAvailableException;
 use Teknoo\Recipe\Promise\Promise;
 use Throwable;
 
+use function bin2hex;
 use function function_exists;
 use function pcntl_signal_dispatch;
-use function uniqid;
+use function random_bytes;
 use function usleep;
 
 /**
@@ -56,6 +58,9 @@ class SleepService implements SleepServiceInterface
         return function_exists('pcntl_signal_dispatch');
     }
 
+    /**
+     * @throws RandomException
+     */
     public function wait(int $seconds): SleepServiceInterface
     {
         if (!self::isAvailable()) {
@@ -64,10 +69,7 @@ class SleepService implements SleepServiceInterface
             // @codeCoverageIgnoreEnd
         }
 
-        $timerId = uniqid(
-            prefix: "timer-$seconds",
-            more_entropy: true,
-        );
+        $timerId = "timer-$seconds" . bin2hex(random_bytes(23));
 
         $timerFinished = new Promise(
             fn () => true,
