@@ -32,7 +32,6 @@ use Teknoo\East\Foundation\Extension\Manager;
 use Teknoo\East\Foundation\Extension\ManagerInterface;
 use Teknoo\East\Foundation\Extension\ModuleInterface;
 use Teknoo\East\FoundationBundle\Extension\Exception\MissingBuilderException;
-use Teknoo\East\FoundationBundle\Extension\Exception\MissingManagerException;
 
 /**
  * Extension module to extend PHPDI configuration in an extension
@@ -49,16 +48,25 @@ use Teknoo\East\FoundationBundle\Extension\Exception\MissingManagerException;
  */
 class PHPDI implements ModuleInterface, ExtensionInterface
 {
-    use ExtensionInitTrait;
-
     private ?BridgeBuilderInterface $builder = null;
 
     private ManagerInterface $manager;
+
+    private static ?self $instance = null;
 
     public function __construct(
         ?ManagerInterface $manager = null
     ) {
         $this->manager = $manager ?? Manager::run();
+    }
+
+    public static function create(?ManagerInterface $manager = null): self
+    {
+        if (null === self::$instance) {
+            self::$instance = new static($manager);
+        }
+
+        return self::$instance;
     }
 
     public function configure(BridgeBuilderInterface $builder): ExtensionInterface

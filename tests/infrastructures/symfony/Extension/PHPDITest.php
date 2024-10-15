@@ -41,6 +41,14 @@ use Teknoo\East\FoundationBundle\Extension\PHPDI;
 #[CoversClass(PHPDI::class)]
 class PHPDITest extends TestCase
 {
+    public function testCreate()
+    {
+        $module1 = PHPDI::create();
+        $module2 = PHPDI::create();
+
+        self::assertSame($module1, $module2);
+    }
+
     public function testConfigure()
     {
         $manager = $this->createMock(ManagerInterface::class);

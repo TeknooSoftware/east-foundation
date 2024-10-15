@@ -1,5 +1,11 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [7.8.2] - 2024-10-15
+### Stable Release
+- Complete services.yaml to create from container PHPDI module, but, by default, it's not used, because the container is
+  not ready when the PHP DI Bridge extension call it. The Symfony container is configured to call module's factory to
+  retrieve the singleton
+
 ## [7.8.1] - 2024-10-14
 ### Stable Release
 - Update requirements libs
