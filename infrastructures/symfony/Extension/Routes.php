@@ -46,7 +46,8 @@ use Teknoo\East\Foundation\Extension\ModuleInterface;
 class Routes implements ModuleInterface
 {
     private function __construct(
-        private RoutingConfigurator $routes
+        private RoutingConfigurator $routes,
+        private string $environment,
     ) {
     }
 
@@ -63,9 +64,17 @@ class Routes implements ModuleInterface
         return $this->routes->import($resource, $type, $ignoreErrors, $exclude);
     }
 
-    public static function extendsRoutes(RoutingConfigurator $routes, ?ManagerInterface $manager = null): void
+    public function getEnvironment(): string
     {
-        $module = new static($routes);
+        return $this->environment;
+    }
+
+    public static function extendsRoutes(
+        RoutingConfigurator $routes,
+        string $environment,
+        ?ManagerInterface $manager = null
+    ): void {
+        $module = new static($routes, $environment);
 
         ($manager ?? Manager::run())->execute($module);
     }

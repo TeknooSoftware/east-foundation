@@ -1,5 +1,9 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [7.8.3] - 2024-10-15
+### Stable Release
+- Pass also app env to Routes extension module
+
 ## [7.8.2] - 2024-10-15
 ### Stable Release
 - Complete services.yaml to create from container PHPDI module, but, by default, it's not used, because the container is

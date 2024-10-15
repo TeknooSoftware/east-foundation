@@ -50,6 +50,7 @@ class RoutesTest extends TestCase
                 function ($module) use ($manager) {
                     self::assertinstanceOf(Routes::class, $module);
 
+                    self::assertEquals('test', $module->getEnvironment());
                     $module->import('foo', 'bar', false, 'test');
 
                     return $manager;
@@ -65,6 +66,7 @@ class RoutesTest extends TestCase
 
         Routes::extendsRoutes(
             $configurator,
+            'test',
             $manager,
         );
     }
