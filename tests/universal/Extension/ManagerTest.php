@@ -172,4 +172,44 @@ class ManagerTest extends TestCase
         $m2->execute($module);
         self::assertNull($ext->module);
     }
+
+    public function testListLoadedExtensions()
+    {
+        $loader = $this->createMock(LoaderInterface::class);
+        Manager::reset();
+        $m1 = Manager::run($loader);
+
+        $loader->expects($this->once())
+            ->method('__invoke')
+            ->willReturn([
+                ExtensionMock1::class
+            ]);
+
+        self::assertEquals(
+            [
+                ExtensionMock1::class => 'test 1'
+            ],
+            \iterator_to_array($m1->listLoadedExtensions())
+        );
+    }
+
+    public function testListLoadedExtensionsDisabled()
+    {
+        $loader = $this->createMock(LoaderInterface::class);
+        $_ENV['TEKNOO_EAST_EXTENSION_DISABLED'] = 'true';
+
+        Manager::reset();
+        $m1 = Manager::run($loader);
+
+        $loader->expects($this->never())
+            ->method('__invoke')
+            ->willReturn([
+                ExtensionMock1::class
+            ]);
+
+        self::assertEquals(
+            [],
+            \iterator_to_array($m1->listLoadedExtensions())
+        );
+    }
 }

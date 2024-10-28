@@ -40,4 +40,9 @@ class ExtensionMock1 implements ExtensionInterface
 
         return $this;
     }
+
+    public function __toString(): string
+    {
+        return 'test 1';
+    }
 }

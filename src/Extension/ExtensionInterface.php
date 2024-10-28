@@ -46,4 +46,6 @@ interface ExtensionInterface
     public static function create(): ExtensionInterface;
 
     public function executeFor(ModuleInterface $module): ExtensionInterface;
+
+    public function __toString(): string;
 }

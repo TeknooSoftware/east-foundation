@@ -49,4 +49,9 @@ interface ManagerInterface
      * like reference new bundles, update the container di, add some routes, etc...
      */
     public function execute(ModuleInterface $module): ManagerInterface;
+
+    /**
+     * @return iterable<class-string<ExtensionInterface>, string>
+     */
+    public function listLoadedExtensions(): iterable;
 }

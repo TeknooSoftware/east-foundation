@@ -51,7 +51,7 @@ class Manager implements ManagerInterface
 
     private const KEY_DISABLED_ENV_NAME = 'TEKNOO_EAST_EXTENSION_DISABLED';
 
-    private static ?self $instance = null;
+    protected static ?self $instance = null;
 
     private readonly LoaderInterface $loader;
 
@@ -124,6 +124,20 @@ class Manager implements ManagerInterface
         if (empty($_ENV[self::KEY_DISABLED_ENV_NAME])) {
             foreach ($this->forExtensions() as $extension) {
                 $extension->executeFor($module);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return iterable<class-string<ExtensionInterface>, string>
+     */
+    public function listLoadedExtensions(): iterable
+    {
+        if (empty($_ENV[self::KEY_DISABLED_ENV_NAME])) {
+            foreach ($this->forExtensions() as $extension) {
+                yield $extension::class => (string) $extension;
             }
         }
 

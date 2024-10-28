@@ -36,4 +36,9 @@ class ExtensionMock2 implements ExtensionInterface
     {
         return $this;
     }
+
+    public function __toString(): string
+    {
+        return 'test 2';
+    }
 }

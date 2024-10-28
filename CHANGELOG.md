@@ -1,5 +1,11 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [7.9.0] - 2024-10-28
+### Stable Release
+- Add `ManagerInterface::listLoadedExtensions` to get the list of loaded extension
+- Add `__toString` method to `ExtensionInterface` to get an human-readable.
+- Set `Manager::instance` as protected to allow replacement by manager's inherited classes.
+
 ## [7.8.3] - 2024-10-15
 ### Stable Release
 - Pass also app env to Routes extension module
