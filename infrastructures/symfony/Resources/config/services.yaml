@@ -97,14 +97,6 @@ services:
             - '@twig'
         public: true
 
-    Teknoo\East\Foundation\Extension\ManagerInterface:
-        alias: 'Teknoo\East\Foundation\Extension\Manager'
-
-    Teknoo\East\Foundation\Extension\Manager:
-        class: 'Teknoo\East\Foundation\Extension\Manager'
-        factory: ['Teknoo\East\Foundation\Extension\Manager', 'run']
-        public: true
-
     Teknoo\East\FoundationBundle\Extension\PHPDI:
         class: 'Teknoo\East\FoundationBundle\Extension\PHPDI'
         factory: [ 'Teknoo\East\FoundationBundle\Extension\PHPDI', 'create']

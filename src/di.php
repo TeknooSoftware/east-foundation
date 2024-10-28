@@ -52,6 +52,7 @@ use Teknoo\East\Foundation\Time\SleepServiceInterface;
 use Teknoo\East\Foundation\Time\TimerService;
 use Teknoo\East\Foundation\Time\TimerServiceInterface;
 
+use function DI\factory;
 use function DI\get;
 use function DI\create;
 use function DI\value;
@@ -135,4 +136,7 @@ return [
             new Manager(),
         );
     },
+
+    Extension\ManagerInterface::class => get(Extension\Manager::class),
+    Extension\Manager::class => static fn () => Extension\Manager::run(),
 ];
