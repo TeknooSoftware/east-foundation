@@ -23,22 +23,19 @@
 
 declare(strict_types=1);
 
-namespace Teknoo\East\Foundation\Processor;
+namespace Teknoo\East\Foundation\Recipe;
+
+use Teknoo\Recipe\EditablePlanInterface as BaseInterface;
 
 /**
- * Base cookbook to execute the endpoint found by the manager in the main recipe for the current HTTP request thanks
- * to East Foundation with your framework.
- *
- * The cookbook need an instance of Teknoo\East\Foundation\Recipe\RecipeInterface to be execute. By default this recipe
- * is empty but be prefilled by the DI.
+ * Base plan interface to execute HTTP request thanks to East Foundation with your framework to allow developer
+ * to replace it.
  *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
- *
- * @deprecated Use `Teknoo\East\Foundation\Processor\ProcessorPlan` instead
  */
-class ProcessorCookbook extends ProcessorPlan
+interface PlanInterface extends BaseInterface
 {
 }

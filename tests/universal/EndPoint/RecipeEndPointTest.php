@@ -32,7 +32,7 @@ use Teknoo\East\Foundation\EndPoint\RecipeEndPoint;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\Recipe\BaseRecipeInterface;
 use Teknoo\Recipe\Bowl\BowlInterface;
-use Teknoo\Recipe\CookbookInterface;
+use Teknoo\Recipe\PlanInterface;
 use Teknoo\Recipe\CookingSupervisorInterface;
 use Teknoo\Recipe\RecipeInterface;
 
@@ -53,9 +53,9 @@ class RecipeEndPointTest extends TestCase
     private $recipe;
 
     /**
-     * @var CookbookInterface
+     * @var PlanInterface
      */
-    private $cookbook;
+    private $plan;
 
     /**
      * @var BowlInterface
@@ -75,15 +75,15 @@ class RecipeEndPointTest extends TestCase
     }
 
     /**
-     * @return CookbookInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @return PlanInterface|\PHPUnit\Framework\MockObject\MockObject
      */
-    private function getCookbookMock(): CookbookInterface
+    private function getPlanMock(): PlanInterface
     {
-        if (!$this->cookbook instanceof CookbookInterface) {
-            $this->cookbook = $this->createMock(CookbookInterface::class);
+        if (!$this->plan instanceof PlanInterface) {
+            $this->plan = $this->createMock(PlanInterface::class);
         }
 
-        return $this->cookbook;
+        return $this->plan;
     }
 
     /**
@@ -145,11 +145,11 @@ class RecipeEndPointTest extends TestCase
         );
     }
 
-    public function testInvokeWithCookBookWithSupervisor()
+    public function testInvokeWithPlanWithSupervisor()
     {
         $managerMock = $this->createMock(ManagerInterface::class);
 
-        $endPoint = new RecipeEndPoint($this->getCookbookMock());
+        $endPoint = new RecipeEndPoint($this->getPlanMock());
 
         self::assertInstanceOf(
             RecipeEndPoint::class,
@@ -230,7 +230,7 @@ class RecipeEndPointTest extends TestCase
         );
     }
 
-    public function testInvokeWithCookBookWithContainer()
+    public function testInvokeWithPlanWithContainer()
     {
         $managerMock = $this->createMock(ManagerInterface::class);
 
@@ -247,7 +247,7 @@ class RecipeEndPointTest extends TestCase
             'foo3' => '@bar',
         ]);
 
-        $endPoint = new RecipeEndPoint($this->getCookbookMock(), $container);
+        $endPoint = new RecipeEndPoint($this->getPlanMock(), $container);
 
         self::assertInstanceOf(
             RecipeEndPoint::class,
@@ -407,7 +407,7 @@ class RecipeEndPointTest extends TestCase
         );
     }
 
-    public function testInvokeWithCookBookWithContainerKeyNotFound()
+    public function testInvokeWithPlanWithContainerKeyNotFound()
     {
         $managerMock = $this->createMock(ManagerInterface::class);
 
@@ -419,7 +419,7 @@ class RecipeEndPointTest extends TestCase
             'bar1' => '@foo',
         ]);
 
-        $endPoint = new RecipeEndPoint($this->getCookbookMock(), $container);
+        $endPoint = new RecipeEndPoint($this->getPlanMock(), $container);
 
         $this->expectException(\DomainException::class);
         $endPoint(

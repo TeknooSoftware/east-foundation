@@ -1,5 +1,16 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [8.0.0] - 2024-11-01
+### Stable Release
+- Migrate to `Teknoo Recipe` 6.
+- Rename `Cookbook` to `Plan`.
+  - Old classes and interfaces are deprecated.
+- Migrate to `EditablePlan` all previous `Cookbook` / `Plan`.
+- Remove `registerMiddleware` in East Foundation Recipe.
+  - Remove `Recipe::registerMiddleware`.
+  - Replaced by usind directly cook or add method in the dedicated plan or recipe.
+- Migrate the decoration about the East Foundation Plan to register the `SessionMiddleware`.
+
 ## [7.9.0] - 2024-10-28
 ### Stable Release
 - Add `ManagerInterface::listLoadedExtensions` to get the list of loaded extension

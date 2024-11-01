@@ -27,9 +27,9 @@ namespace Teknoo\Tests\East\Foundation\Recipe;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Teknoo\East\Foundation\Processor\LoopDetectorInterface;
-use Teknoo\East\Foundation\Processor\ProcessorCookbookInterface;
+use Teknoo\East\Foundation\Processor\ProcessorPlanInterface;
 use Teknoo\East\Foundation\Processor\ProcessorRecipeInterface;
-use Teknoo\East\Foundation\Recipe\Cookbook;
+use Teknoo\East\Foundation\Recipe\Plan;
 use Teknoo\East\Foundation\Recipe\RecipeInterface;
 use Teknoo\East\Foundation\Router\RouterInterface;
 use Teknoo\Recipe\ChefInterface;
@@ -41,12 +41,12 @@ use Teknoo\Recipe\RecipeInterface as OriginalRecipeInterface;
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
  */
-#[CoversClass(Cookbook::class)]
-class CookbookTest extends TestCase
+#[CoversClass(Plan::class)]
+class PlanTest extends TestCase
 {
     private ?RouterInterface $router = null;
 
-    private ?ProcessorCookbookInterface $processorCookbook = null;
+    private ?ProcessorPlanInterface $processorPlan = null;
 
     private ?LoopDetectorInterface $loopDetector = null;
 
@@ -65,15 +65,15 @@ class CookbookTest extends TestCase
     }
 
     /**
-     * @return \PHPUnit\Framework\MockObject\MockObject|ProcessorCookbookInterface|null
+     * @return \PHPUnit\Framework\MockObject\MockObject|ProcessorPlanInterface|null
      */
-    public function getProcessorCookbookMock()
+    public function getProcessorPlanMock()
     {
-        if (!$this->processorCookbook instanceof ProcessorCookbookInterface) {
-            $this->processorCookbook = $this->createMock(ProcessorCookbookInterface::class);
+        if (!$this->processorPlan instanceof ProcessorPlanInterface) {
+            $this->processorPlan = $this->createMock(ProcessorPlanInterface::class);
         }
 
-        return $this->processorCookbook;
+        return $this->processorPlan;
     }
 
     /**
@@ -100,12 +100,12 @@ class CookbookTest extends TestCase
         return $this->recipe;
     }
 
-    public function buildCookbook(): Cookbook
+    public function buildPlan(): Plan
     {
-        return new Cookbook(
+        return new Plan(
             $this->getRecipeMock(),
             $this->getRouterMock(),
-            $this->getProcessorCookbookMock(),
+            $this->getProcessorPlanMock(),
             $this->getLoopDetectorMock()
         );
     }
@@ -113,42 +113,43 @@ class CookbookTest extends TestCase
     public function testFillWithWrongRecipe()
     {
         $this->expectException(\TypeError::class);
-        $this->buildCookbook()->fill(new \stdClass());
+        $this->buildPlan()->fill(new \stdClass());
     }
 
     public function testFillWithOriginalRecipe()
     {
         $this->expectException(\TypeError::class);
-        $this->buildCookbook()->fill($this->createMock(OriginalRecipeInterface::class));
+        $this->buildPlan()->fill($this->createMock(OriginalRecipeInterface::class));
     }
 
     public function testFill()
     {
         self::assertInstanceOf(
-            Cookbook::class,
-            $this->buildCookbook()->fill($this->createMock(ProcessorRecipeInterface::class))
+            Plan::class,
+            $this->buildPlan()->fill($this->createMock(ProcessorRecipeInterface::class))
         );
     }
 
     public function testTrainWithWrongChef()
     {
         $this->expectException(\TypeError::class);
-        $this->buildCookbook()->train(new \stdClass());
+        $this->buildPlan()->train(new \stdClass());
     }
 
     public function testTrain()
     {
-        $this->getRecipeMock()->expects($this->once())->method('registerMiddleware')->willReturnSelf();
+        $this->getRecipeMock()->expects($this->once())->method('cook')->willReturnSelf();
         $this->getRecipeMock()->expects($this->once())->method('execute')->willReturnSelf();
 
-        $cookbook = $this->buildCookbook();
+        $plan = $this->buildPlan();
         self::assertInstanceOf(
-            Cookbook::class,
-            $cookbook->train($this->createMock(ChefInterface::class))
+            Plan::class,
+            $plan->train($this->createMock(ChefInterface::class))
         );
+
         self::assertInstanceOf(
-            Cookbook::class,
-            $cookbook->train($this->createMock(ChefInterface::class))
+            Plan::class,
+            $plan->train($this->createMock(ChefInterface::class))
         );
     }
 
@@ -156,36 +157,36 @@ class CookbookTest extends TestCase
     {
         $this->expectException(\TypeError::class);
         $wp = new \stdClass();
-        $this->buildCookbook()->prepare($wp, $this->createMock(ChefInterface::class));
+        $this->buildPlan()->prepare($wp, $this->createMock(ChefInterface::class));
     }
 
     public function testPrepareWithWrongChef()
     {
         $this->expectException(\TypeError::class);
         $wp = [];
-        $this->buildCookbook()->prepare($wp, new \stdClass());
+        $this->buildPlan()->prepare($wp, new \stdClass());
     }
 
     public function testPrepare()
     {
-        $this->getRecipeMock()->expects($this->once())->method('registerMiddleware')->willReturnSelf();
+        $this->getRecipeMock()->expects($this->once())->method('cook')->willReturnSelf();
         $this->getRecipeMock()->expects($this->once())->method('execute')->willReturnSelf();
 
         $wp = [];
         self::assertInstanceOf(
-            Cookbook::class,
-            $this->buildCookbook()->prepare($wp, $this->createMock(ChefInterface::class))
+            Plan::class,
+            $this->buildPlan()->prepare($wp, $this->createMock(ChefInterface::class))
         );
     }
 
     public function testValidate()
     {
-        $this->getRecipeMock()->expects($this->once())->method('registerMiddleware')->willReturnSelf();
+        $this->getRecipeMock()->expects($this->once())->method('cook')->willReturnSelf();
         $this->getRecipeMock()->expects($this->once())->method('execute')->willReturnSelf();
 
         self::assertInstanceOf(
-            Cookbook::class,
-            $this->buildCookbook()->validate([])
+            Plan::class,
+            $this->buildPlan()->validate([])
         );
     }
 }

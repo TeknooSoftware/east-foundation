@@ -38,13 +38,13 @@ use Teknoo\East\Foundation\Manager\Queue\QueueInterface;
 use Teknoo\East\Foundation\Processor\LoopDetector;
 use Teknoo\East\Foundation\Processor\LoopDetectorInterface;
 use Teknoo\East\Foundation\Processor\Processor;
-use Teknoo\East\Foundation\Processor\ProcessorCookbook;
-use Teknoo\East\Foundation\Processor\ProcessorCookbookInterface;
+use Teknoo\East\Foundation\Processor\ProcessorPlan;
+use Teknoo\East\Foundation\Processor\ProcessorPlanInterface;
 use Teknoo\East\Foundation\Processor\ProcessorInterface;
 use Teknoo\East\Foundation\Processor\ProcessorRecipeInterface;
 use Teknoo\East\Foundation\Recipe\Recipe;
-use Teknoo\East\Foundation\Recipe\Cookbook;
-use Teknoo\East\Foundation\Recipe\CookbookInterface;
+use Teknoo\East\Foundation\Recipe\Plan;
+use Teknoo\East\Foundation\Recipe\PlanInterface;
 use Teknoo\East\Foundation\Recipe\RecipeInterface;
 use Teknoo\East\Foundation\Router\RouterInterface;
 use Teknoo\East\Foundation\Time\DatesService;
@@ -162,44 +162,44 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         self::assertSame($recipe1, $recipe2);
     }
 
-    public function testProcessorCookbook()
+    public function testProcessorPlan()
     {
         $container = $this->buildContainer();
-        $cookbook1 = $container->get(ProcessorCookbook::class);
-        $cookbook2 = $container->get(ProcessorCookbookInterface::class);
+        $plan1 = $container->get(ProcessorPlan::class);
+        $plan2 = $container->get(ProcessorPlanInterface::class);
 
         self::assertInstanceOf(
-            ProcessorCookbook::class,
-            $cookbook1
+            ProcessorPlan::class,
+            $plan1
         );
 
         self::assertInstanceOf(
-            ProcessorCookbook::class,
-            $cookbook2
+            ProcessorPlan::class,
+            $plan2
         );
 
-        self::assertSame($cookbook1, $cookbook2);
+        self::assertSame($plan1, $plan2);
     }
 
-    public function testRecipeCookbook()
+    public function testRecipePlan()
     {
         $container = $this->buildContainer();
         $container->set(LoggerInterface::class, $this->createMock(LoggerInterface::class));
         $container->set(RouterInterface::class, $this->createMock(RouterInterface::class));
-        $cookbook1 = $container->get(Cookbook::class);
-        $cookbook2 = $container->get(CookbookInterface::class);
+        $plan1 = $container->get(Plan::class);
+        $plan2 = $container->get(PlanInterface::class);
 
         self::assertInstanceOf(
-            Cookbook::class,
-            $cookbook1
+            Plan::class,
+            $plan1
         );
 
         self::assertInstanceOf(
-            Cookbook::class,
-            $cookbook2
+            Plan::class,
+            $plan2
         );
 
-        self::assertSame($cookbook1, $cookbook2);
+        self::assertSame($plan1, $plan2);
     }
 
     public function testDatesService()

@@ -37,12 +37,12 @@ use Teknoo\East\Foundation\Processor\Processor;
 use Teknoo\East\Foundation\Processor\ProcessorInterface;
 use Teknoo\East\Foundation\Processor\LoopDetector;
 use Teknoo\East\Foundation\Processor\LoopDetectorInterface;
-use Teknoo\East\Foundation\Processor\ProcessorCookbook;
-use Teknoo\East\Foundation\Processor\ProcessorCookbookInterface;
+use Teknoo\East\Foundation\Processor\ProcessorPlan;
+use Teknoo\East\Foundation\Processor\ProcessorPlanInterface;
 use Teknoo\East\Foundation\Processor\ProcessorRecipeInterface;
 use Teknoo\East\Foundation\Recipe\Recipe;
-use Teknoo\East\Foundation\Recipe\Cookbook;
-use Teknoo\East\Foundation\Recipe\CookbookInterface;
+use Teknoo\East\Foundation\Recipe\Plan;
+use Teknoo\East\Foundation\Recipe\PlanInterface;
 use Teknoo\East\Foundation\Recipe\RecipeInterface;
 use Teknoo\East\Foundation\Router\RouterInterface;
 use Teknoo\East\Foundation\Time\DatesService;
@@ -52,7 +52,6 @@ use Teknoo\East\Foundation\Time\SleepServiceInterface;
 use Teknoo\East\Foundation\Time\TimerService;
 use Teknoo\East\Foundation\Time\TimerServiceInterface;
 
-use function DI\factory;
 use function DI\get;
 use function DI\create;
 use function DI\value;
@@ -62,10 +61,10 @@ return [
 
     Manager::class => get(ManagerInterface::class),
     ManagerInterface::class => static function (
-        CookbookInterface $recipeCookbook
+        PlanInterface $recipePlan
     ): ManagerInterface {
         $manager = new Manager();
-        $manager->read($recipeCookbook);
+        $manager->read($recipePlan);
 
         return $manager;
     },
@@ -83,8 +82,8 @@ return [
         };
     },
 
-    ProcessorCookbookInterface::class => get(ProcessorCookbook::class),
-    ProcessorCookbook::class => create()
+    ProcessorPlanInterface::class => get(ProcessorPlan::class),
+    ProcessorPlan::class => create()
         ->constructor(
             get(ProcessorRecipeInterface::class),
             get(ProcessorInterface::class),
@@ -93,12 +92,12 @@ return [
     RecipeInterface::class => get(Recipe::class),
     Recipe::class => create(),
 
-    CookbookInterface::class => get(Cookbook::class),
-    Cookbook::class => create()
+    PlanInterface::class => get(Plan::class),
+    Plan::class => create()
         ->constructor(
             get(RecipeInterface::class),
             get(RouterInterface::class),
-            get(ProcessorCookbookInterface::class),
+            get(ProcessorPlanInterface::class),
             get(LoopDetectorInterface::class)
         ),
 
