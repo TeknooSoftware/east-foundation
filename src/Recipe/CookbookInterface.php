@@ -25,8 +25,6 @@ declare(strict_types=1);
 
 namespace Teknoo\East\Foundation\Recipe;
 
-use Teknoo\Recipe\CookbookInterface as BaseInterface;
-
 /**
  * Base cookbook interface to execute HTTP request thanks to East Foundation with your framework to allow developer
  * to replace it.
@@ -35,7 +33,9 @@ use Teknoo\Recipe\CookbookInterface as BaseInterface;
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
+ *
+ * @deprecated Use `Teknoo\East\Foundation\Recipe\PlanInterface` instead
  */
-interface CookbookInterface extends BaseInterface
+interface CookbookInterface extends PlanInterface
 {
 }

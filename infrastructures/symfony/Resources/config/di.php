@@ -28,7 +28,7 @@ namespace Teknoo\East\FoundationBundle\Resources\config;
 use Psr\Container\ContainerInterface;
 use Teknoo\East\Foundation\Client\ClientInterface as BaseClient;
 use Teknoo\East\Foundation\Http\ClientInterface as HttpClient;
-use Teknoo\East\Foundation\Recipe\RecipeInterface;
+use Teknoo\East\Foundation\Recipe\PlanInterface;
 use Teknoo\East\FoundationBundle\Http\Client;
 use Teknoo\East\FoundationBundle\Session\SessionMiddleware;
 
@@ -42,14 +42,14 @@ return [
     BaseClient::class => get(Client::class),
     HttpClient::class => get(Client::class),
 
-    RecipeInterface::class => decorate(static function ($previous, ContainerInterface $container) {
-        if ($previous instanceof RecipeInterface) {
-            $previous = $previous->registerMiddleware(
-                $container->get(SessionMiddleware::class),
-                SessionMiddleware::MIDDLEWARE_PRIORITY
-            );
-        }
+    PlanInterface::class => decorate(static function (PlanInterface $previous, ContainerInterface $container) {
+        /** @var SessionMiddleware $sessionMiddleware */
+        $sessionMiddleware = $container->get(SessionMiddleware::class);
+        $previous->add(
+            action: $sessionMiddleware->execute(...),
+            position: SessionMiddleware::MIDDLEWARE_PRIORITY,
+        );
 
         return $previous;
-    })
+    }),
 ];

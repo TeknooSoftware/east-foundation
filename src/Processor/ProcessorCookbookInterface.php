@@ -25,17 +25,17 @@ declare(strict_types=1);
 
 namespace Teknoo\East\Foundation\Processor;
 
-use Teknoo\Recipe\CookbookInterface;
-
 /**
- * Base cookbook interface to execute the endpoint found by the manager in the main recipe for the current
+ * Base Cookbook interface to execute the endpoint found by the manager in the main recipe for the current
  * HTTP request thanks to East Foundation with your framework.
  *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
  * @license     http://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
+ *
+ * @deprecated Use `Teknoo\East\Foundation\Processor\ProcessorPlanInterface` instead
  */
-interface ProcessorCookbookInterface extends CookbookInterface
+interface ProcessorCookbookInterface extends ProcessorPlanInterface
 {
 }

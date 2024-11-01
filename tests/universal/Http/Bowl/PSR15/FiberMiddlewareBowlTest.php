@@ -99,7 +99,7 @@ class FiberMiddlewareBowlTest extends AbstractBowlTests
         );
     }
 
-    public function testExecute()
+    public function testExecute(): void
     {
         $values = $this->getValidWorkPlan();
         self::assertInstanceOf(
@@ -112,7 +112,7 @@ class FiberMiddlewareBowlTest extends AbstractBowlTests
         );
     }
 
-    public function testExecuteWithValue()
+    public function testExecuteWithValue(): void
     {
         self::assertTrue(true);
     }

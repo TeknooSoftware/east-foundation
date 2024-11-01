@@ -50,7 +50,7 @@ use Teknoo\East\Foundation\Time\SleepServiceInterface;
 use Teknoo\East\Foundation\Time\TimerServiceInterface;
 use Teknoo\Recipe\Bowl\FiberRecipeBowl;
 use Teknoo\East\Foundation\EndPoint\RecipeEndPoint;
-use Teknoo\East\Foundation\Recipe\CookbookInterface;
+use Teknoo\East\Foundation\Recipe\PlanInterface;
 use Teknoo\East\Foundation\Recipe\Recipe;
 use Teknoo\East\Foundation\Router\RouterInterface;
 use Teknoo\East\Foundation\Client\ClientInterface;
@@ -411,7 +411,7 @@ class FeatureContext implements Context
      */
     public function theServerWillReceiveTheRequest($url)
     {
-        $manager = new Manager($this->container->get(CookbookInterface::class));
+        $manager = new Manager($this->container->get(PlanInterface::class));
 
         $this->response = null;
         $this->error = null;

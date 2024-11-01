@@ -1,6 +1,5 @@
 parameters:
     ignoreErrors:
-        - '#[a-zA-Z0-9\\_]+::registerMiddleware\(\)#'
         -
             message: '#mixed given#'
             path: src/di.php

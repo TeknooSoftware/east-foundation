@@ -40,20 +40,4 @@ use Teknoo\Recipe\Recipe as BaseRecipe;
  */
 class Recipe extends BaseRecipe implements RecipeInterface
 {
-    public function registerMiddleware(
-        MiddlewareInterface $middleware,
-        int $priority = 10,
-        ?string $middlewareName = null
-    ): RecipeInterface {
-        if (empty($middlewareName)) {
-            $middlewareName = $middleware::class;
-        }
-
-        return $this->cook(
-            $middleware->execute(...),
-            $middlewareName,
-            [],
-            $priority
-        );
-    }
 }

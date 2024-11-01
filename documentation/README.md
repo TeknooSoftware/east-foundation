@@ -34,8 +34,8 @@ It supports also :
 ![Architecture](architecture.png)
 
 The `Manager` is a specialization of a `Recipe Chef`, to manage executions of HTTP requests and other messages from 
-other channel. It's trained with the cookbook `Teknoo\East\Foundation\Recipe\Cookbook` and the default recipe 
-`Teknoo\East\Foundation\Recipe\Recipe`. This cookbook is described in the next section.
+other channel. It's trained with the plan `Teknoo\East\Foundation\Recipe\Plan` and the default recipe 
+`Teknoo\East\Foundation\Recipe\Recipe`. This plan is described in the next section.
 
 Messages and requests can be executed from
 - a request passed by the http server or php-fpm. (Default behavior).
@@ -56,7 +56,7 @@ notifications to a watchdog to prevent kills.
 
 PSR 15
 ------
-East Foundation supports `PSR-15` `RequestHandlerInterface` and `MiddlewareInterface` in a Recipe or a Cookbook via 
+East Foundation supports `PSR-15` `RequestHandlerInterface` and `MiddlewareInterface` in a Recipe or a Plan via 
 dedicated bowls :
 - `HandlerBowl`
 - `MiddlewareBowl`
@@ -67,20 +67,20 @@ Or, to run a request handler or a middleware in a fiber :
 If your framework supports `PSR-15` handler, East Foundation can be used even if no implementation is available for it,
 with the embedded `RequestHandler` : `Teknoo\East\Foundation\Http\RequestHandler\PSR15`.
 
-Cookbook
+Plan
 --------
 
-![Main cookbooks](recipe.png)
+![Main plans](recipe.png)
 
-The first Cookbook `Teknoo\East\Foundation\Recipe\Cookbook`, instantiated with an instance of 
+The first Plan `Teknoo\East\Foundation\Recipe\Plan`, instantiated with an instance of 
 `Teknoo\East\Foundation\Recipe\Recipe`. The recipe has only two steps and a loop and the second step :
 
 * the first step is dedicated to the request parsing with a router (by default the `Symfony Router`) to extract
   controllers corresponding to the request and parameters passed in it. The router must create a `Router/Result` 
   instance. This instance can recursively reference more results if several controllers corresponding to the request.
-* the second step execute a subcookbook `Teknoo\East\Foundation\Processor\ProcessorCookbook`. This step will be 
+* the second step execute a subplan `Teknoo\East\Foundation\Processor\ProcessorPlan`. This step will be 
   repeated as many times as there are results from the router.
-  * The first step in the `ProcessorCookbook` will extract the controller from the current result and put it into the
+  * The first step in the `ProcessorPlan` will extract the controller from the current result and put it into the
     workplan.
   * It will do the same with parameters from the request or message.
   * The second step of this subrecipe is a dynamic step, executing the dertemined controller fron the request.

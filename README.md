@@ -87,7 +87,7 @@ This library requires PHP 8.1 or newer and it's only compatible with Symfony 6.1
 
 - Constants are final in `SessionMiddleware`, processors, routers and sessions components.
 - Use readonly for immutables objects (`Processor` and routers' results).
-- Support Fibers in main `Cookbook` and `RecipeEndPoint`. `RecipeEndPoint` accepts also bowl
+- Support Fibers in main `Plan` and `RecipeEndPoint`. `RecipeEndPoint` accepts also bowl
   and `FiberRecipeBowl`.
 - Remove support of PHP 8.0 and Symfony 5.4 and below.
 
@@ -119,7 +119,7 @@ This library requires PHP 7.4 or newer and it's only compatible with Symfony 4.4
 - Switch to States 4.1.9 and PHPStan 0.12.79
 - Prepare library to be used in non HTTP context
 - Use MessageInterface instead of ServerRequestInterface
-- Cookbook and ProcessorCookbook use BaseCookbookTrait
+- Plan and ProcessorPlan use BasePlanTrait
 - Add `PSR 11` Message only implementation
 - Add MessageFactory
 - Update Client Interface to use MessageInterface instead of RequestInterface
