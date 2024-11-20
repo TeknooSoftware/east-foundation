@@ -1,5 +1,9 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [8.0.1] - 2024-11-20
+### Stable Release
+- `Teknoo\East\FoundationBundle\Command\Client` use constant for `returnCode` following POSIX return code.
+
 ## [8.0.0] - 2024-11-01
 ### Stable Release
 - Migrate to `Teknoo Recipe` 6.

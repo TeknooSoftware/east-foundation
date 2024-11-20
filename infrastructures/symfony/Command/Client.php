@@ -53,11 +53,16 @@ use function json_encode;
  */
 class Client implements ClientInterface, ResetInterface
 {
+    // see https://tldp.org/LDP/abs/html/exitcodes.html
+    public const SUCCESS = 0;
+    public const FAILURE = 1;
+    public const INVALID = 2;
+
     private ?OutputInterface $output = null;
 
     private ResponseInterface | MessageInterface | null $response = null;
 
-    public int $returnCode = 0;
+    public int $returnCode = self::SUCCESS;
 
     private bool $inSilentlyMode = false;
 
