@@ -1,5 +1,9 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [8.0.2] - 2024-11-25
+### Stable Release
+- Fix deprecation into test with PHP 8.4
+
 ## [8.0.1] - 2024-11-20
 ### Stable Release
 - `Teknoo\East\FoundationBundle\Command\Client` use constant for `returnCode` following POSIX return code.
