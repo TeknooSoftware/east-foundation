@@ -1,5 +1,9 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [8.0.3] - 2024-11-25
+### Stable Release
+- Fix issue with PHP8.4 and compiled container
+
 ## [8.0.2] - 2024-11-25
 ### Stable Release
 - Fix deprecation into test with PHP 8.4

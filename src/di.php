@@ -27,6 +27,8 @@ namespace Teknoo\East\Foundation;
 
 use Psr\Container\ContainerInterface;
 use Teknoo\East\Foundation\Command\Executor;
+use Teknoo\East\Foundation\Extension\Manager as ExtensionManager;
+use Teknoo\East\Foundation\Extension\ManagerInterface as ExtensionManagerInterface;
 use Teknoo\East\Foundation\Liveness\PingService;
 use Teknoo\East\Foundation\Liveness\PingServiceInterface;
 use Teknoo\East\Foundation\Liveness\TimeoutService;
@@ -136,6 +138,6 @@ return [
         );
     },
 
-    Extension\ManagerInterface::class => get(Extension\Manager::class),
-    Extension\Manager::class => static fn () => Extension\Manager::run(),
+    ExtensionManagerInterface::class => get(ExtensionManager::class),
+    ExtensionManager::class => static fn () => ExtensionManager::run(),
 ];

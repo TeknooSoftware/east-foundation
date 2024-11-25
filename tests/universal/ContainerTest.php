@@ -27,14 +27,14 @@ namespace Teknoo\Tests\East\Foundation;
 use DI\Container;
 use Psr\Log\LoggerInterface;
 use Teknoo\East\Foundation\Command\Executor;
+use Teknoo\East\Foundation\Extension\Manager as ExtensionManager;
+use Teknoo\East\Foundation\Extension\ManagerInterface as ExtensionManagerInterface;
 use Teknoo\East\Foundation\Liveness\PingService;
 use Teknoo\East\Foundation\Liveness\PingServiceInterface;
 use Teknoo\East\Foundation\Liveness\TimeoutService;
 use Teknoo\East\Foundation\Liveness\TimeoutServiceInterface;
 use Teknoo\East\Foundation\Manager\Manager;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
-use Teknoo\East\Foundation\Manager\Queue\Queue;
-use Teknoo\East\Foundation\Manager\Queue\QueueInterface;
 use Teknoo\East\Foundation\Processor\LoopDetector;
 use Teknoo\East\Foundation\Processor\LoopDetectorInterface;
 use Teknoo\East\Foundation\Processor\Processor;
@@ -50,6 +50,7 @@ use Teknoo\East\Foundation\Router\RouterInterface;
 use Teknoo\East\Foundation\Time\DatesService;
 use Teknoo\East\Foundation\Time\TimerService;
 use Teknoo\East\Foundation\Time\TimerServiceInterface;
+
 use function defined;
 
 /**
@@ -260,6 +261,24 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         self::assertInstanceOf(
             Executor::class,
             $container->get(Executor::class)
+        );
+    }
+
+    public function testExtensionManagerInterface()
+    {
+        $container = $this->buildContainer();
+        self::assertInstanceOf(
+            ExtensionManagerInterface::class,
+            $container->get(ExtensionManagerInterface::class)
+        );
+    }
+
+    public function testExtensionManager()
+    {
+        $container = $this->buildContainer();
+        self::assertInstanceOf(
+            ExtensionManager::class,
+            $container->get(ExtensionManager::class)
         );
     }
 }
