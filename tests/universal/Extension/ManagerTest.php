@@ -25,9 +25,11 @@ declare(strict_types=1);
 namespace Teknoo\Tests\East\Foundation\Extension;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversTrait;
 use PHPUnit\Framework\TestCase;
 use Teknoo\East\Foundation\Extension\ComposerLoader;
 use Teknoo\East\Foundation\Extension\Exception\LoaderException;
+use Teknoo\East\Foundation\Extension\ExtensionInitTrait;
 use Teknoo\East\Foundation\Extension\LoaderInterface;
 use Teknoo\East\Foundation\Extension\Manager;
 use Teknoo\East\Foundation\Extension\ModuleInterface;
@@ -42,7 +44,7 @@ use Teknoo\Tests\East\Foundation\Extension\Support\ExtensionMock1;
  * @author      Richard Déloge <richard@teknoo.software>
  */
 #[CoversClass(Manager::class)]
-#[CoversClass(ExtensionMock1::class)]
+#[CoversTrait(ExtensionInitTrait::class)]
 class ManagerTest extends TestCase
 {
     private ?string $previousLoaderEnvValue = null;
