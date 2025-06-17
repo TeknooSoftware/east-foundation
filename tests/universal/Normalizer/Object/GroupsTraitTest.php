@@ -181,6 +181,8 @@ class GroupsTraitTest extends TestCase
 
     public function testFilteringWithGroupsWithClosureButNotLazyData()
     {
+        $toCall1 = fn () => 'foo';
+        $toCall2 = fn () => ['foo', 'bar'];
 
         $object = $this->buildObject();
 
@@ -195,15 +197,15 @@ class GroupsTraitTest extends TestCase
 
         self::assertEquals(
             [
-                'key1' => fn () => 'foo',
+                'key1' => $toCall1,
                 'key2' => 123,
-                'key3' => fn () => ['foo', 'bar'],
+                'key3' => $toCall2,
             ],
             $object->runFilter(
                 [
-                    'key1' => fn () => 'foo',
+                    'key1' => $toCall1,
                     'key2' => 123,
-                    'key3' => fn () => ['foo', 'bar'],
+                    'key3' => $toCall2,
                     'key4' => fn () => new stdClass(),
                     'key5' => fn () => 'bar',
                 ],

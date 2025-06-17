@@ -1,5 +1,9 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [8.0.5] - 2025-06-17
+### Stable Release
+- Fix issue with last phpunit updates.
+
 ## [8.0.4] - 2025-02-07
 ### Stable Release
 - Update dev lib requirements
