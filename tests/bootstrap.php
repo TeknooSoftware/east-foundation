@@ -31,7 +31,7 @@ require_once __DIR__.'/../vendor/autoload.php';
 
 date_default_timezone_set('UTC');
 
-error_reporting(E_ALL | E_STRICT);
+error_reporting(E_ALL);
 
 if (!\function_exists('pcntl_async_signals')) {
     define('PCNTL_MOCKED', true);
