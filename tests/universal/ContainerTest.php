@@ -79,17 +79,17 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $manager1 = $container->get(Manager::class);
         $manager2 = $container->get(ManagerInterface::class);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Manager::class,
             $manager1
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Manager::class,
             $manager2
         );
 
-        self::assertSame($manager1, $manager2);
+        $this->assertSame($manager1, $manager2);
     }
 
     public function testCreateProcessor()
@@ -101,17 +101,17 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $processor1 = $container->get(ProcessorInterface::class);
         $processor2 = $container->get(Processor::class);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Processor::class,
             $processor1
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Processor::class,
             $processor2
         );
 
-        self::assertSame($processor1, $processor2);
+        $this->assertSame($processor1, $processor2);
     }
 
     public function testLoopDetector()
@@ -120,17 +120,17 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $loopDetector1 = $container->get(LoopDetectorInterface::class);
         $loopDetector2 = $container->get(LoopDetector::class);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             LoopDetector::class,
             $loopDetector1
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             LoopDetector::class,
             $loopDetector2
         );
 
-        self::assertSame($loopDetector1, $loopDetector2);
+        $this->assertSame($loopDetector1, $loopDetector2);
     }
 
     public function testProcessorRecipe()
@@ -138,7 +138,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $container = $this->buildContainer();
         $recipe = $container->get(ProcessorRecipeInterface::class);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             ProcessorRecipeInterface::class,
             $recipe
         );
@@ -150,17 +150,17 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $recipe1 = $container->get(Recipe::class);
         $recipe2 = $container->get(RecipeInterface::class);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Recipe::class,
             $recipe1
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Recipe::class,
             $recipe2
         );
 
-        self::assertSame($recipe1, $recipe2);
+        $this->assertSame($recipe1, $recipe2);
     }
 
     public function testProcessorPlan()
@@ -169,17 +169,17 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $plan1 = $container->get(ProcessorPlan::class);
         $plan2 = $container->get(ProcessorPlanInterface::class);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             ProcessorPlan::class,
             $plan1
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             ProcessorPlan::class,
             $plan2
         );
 
-        self::assertSame($plan1, $plan2);
+        $this->assertSame($plan1, $plan2);
     }
 
     public function testRecipePlan()
@@ -190,23 +190,23 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $plan1 = $container->get(Plan::class);
         $plan2 = $container->get(PlanInterface::class);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Plan::class,
             $plan1
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Plan::class,
             $plan2
         );
 
-        self::assertSame($plan1, $plan2);
+        $this->assertSame($plan1, $plan2);
     }
 
     public function testDatesService()
     {
         $container = $this->buildContainer();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             DatesService::class,
             $container->get(DatesService::class)
         );
@@ -219,11 +219,11 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         }
 
         $container = $this->buildContainer();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimerService::class,
             $container->get(TimerService::class)
         );
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimerServiceInterface::class,
             $container->get(TimerServiceInterface::class)
         );
@@ -232,11 +232,11 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
     public function testPingService()
     {
         $container = $this->buildContainer();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             PingService::class,
             $container->get(PingService::class)
         );
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             PingServiceInterface::class,
             $container->get(PingServiceInterface::class)
         );
@@ -245,11 +245,11 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
     public function testTimeoutService()
     {
         $container = $this->buildContainer();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimeoutService::class,
             $container->get(TimeoutService::class)
         );
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimeoutServiceInterface::class,
             $container->get(TimeoutServiceInterface::class)
         );
@@ -258,7 +258,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
     public function testExecutor()
     {
         $container = $this->buildContainer();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Executor::class,
             $container->get(Executor::class)
         );
@@ -267,7 +267,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
     public function testExtensionManagerInterface()
     {
         $container = $this->buildContainer();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             ExtensionManagerInterface::class,
             $container->get(ExtensionManagerInterface::class)
         );
@@ -276,7 +276,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
     public function testExtensionManager()
     {
         $container = $this->buildContainer();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             ExtensionManager::class,
             $container->get(ExtensionManager::class)
         );

@@ -70,39 +70,39 @@ abstract class AbstractParameterTests extends \PHPUnit\Framework\TestCase
 
     public function testGetName()
     {
-        self::assertIsString($this->buildParameter()->getName());
-        self::assertEquals('foo', $this->buildParameter()->getName());
+        $this->assertIsString($this->buildParameter()->getName());
+        $this->assertEquals('foo', $this->buildParameter()->getName());
     }
 
     public function testHasDefaultValue()
     {
-        self::assertIsBool($this->buildParameter()->hasDefaultValue());
-        self::assertFalse($this->buildParameter()->hasDefaultValue());
-        self::assertTrue($this->buildParameterWithDefaultValue()->hasDefaultValue());
+        $this->assertIsBool($this->buildParameter()->hasDefaultValue());
+        $this->assertFalse($this->buildParameter()->hasDefaultValue());
+        $this->assertTrue($this->buildParameterWithDefaultValue()->hasDefaultValue());
     }
 
     public function testGetDefaultValue()
     {
-        self::assertEmpty($this->buildParameter()->getDefaultValue());
-        self::assertEquals('bar', $this->buildParameterWithDefaultValue()->getDefaultValue());
+        $this->assertEmpty($this->buildParameter()->getDefaultValue());
+        $this->assertEquals('bar', $this->buildParameterWithDefaultValue()->getDefaultValue());
     }
 
     public function testHasClass()
     {
-        self::assertIsBool($this->buildParameter()->hasClass());
-        self::assertFalse($this->buildParameter()->hasClass());
-        self::assertTrue($this->buildParameterWithClass()->hasClass());
+        $this->assertIsBool($this->buildParameter()->hasClass());
+        $this->assertFalse($this->buildParameter()->hasClass());
+        $this->assertTrue($this->buildParameterWithClass()->hasClass());
     }
 
 
     public function testGetClass()
     {
-        self::assertInstanceOf(\ReflectionClass::class, $this->buildParameterWithClass()->getClass());
+        $this->assertInstanceOf(\ReflectionClass::class, $this->buildParameterWithClass()->getClass());
     }
 
     public function testGetClassNotDefined()
     {
         $this->expectException(\RuntimeException::class);
-        self::assertInstanceOf(\ReflectionClass::class, $this->buildParameter()->getClass());
+        $this->assertInstanceOf(\ReflectionClass::class, $this->buildParameter()->getClass());
     }
 }

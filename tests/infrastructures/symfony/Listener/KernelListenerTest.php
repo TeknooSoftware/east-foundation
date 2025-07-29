@@ -108,13 +108,13 @@ class KernelListenerTest extends TestCase
     public function testOnKernelRequest()
     {
         $request = $this->createMock(RequestEvent::class);
-        $request->expects($this->any())->method('getRequest')->willReturn(new Request());
+        $request->method('getRequest')->willReturn(new Request());
 
         $psrRquest = $this->createMock(ServerRequestInterface::class);
-        $psrRquest->expects($this->any())->method('withAttribute')->willReturnSelf();
+        $psrRquest->method('withAttribute')->willReturnSelf();
 
         $this->getFactoryMock()
-            ->expects($this->any())
+            
             ->method('createRequest')
             ->willReturn($psrRquest);
 
@@ -128,7 +128,7 @@ class KernelListenerTest extends TestCase
             ->expects($this->never())
             ->method('mustSendAResponse');
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getKernelListenerClass(),
             $this->buildKernelListener()->onKernelRequest(
                 $request
@@ -141,10 +141,10 @@ class KernelListenerTest extends TestCase
         $symfonyRequest = new Request();
         $symfonyRequest->attributes->set('exception', new \Exception());
         $request = $this->createMock(RequestEvent::class);
-        $request->expects($this->any())->method('getRequest')->willReturn($symfonyRequest);
+        $request->method('getRequest')->willReturn($symfonyRequest);
 
         $this->getFactoryMock()
-            ->expects($this->any())
+            
             ->method('createRequest')
             ->willReturn($this->createMock(ServerRequestInterface::class));
 
@@ -156,7 +156,7 @@ class KernelListenerTest extends TestCase
             ->expects($this->never())
             ->method('receiveRequest');
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getKernelListenerClass(),
             $this->buildKernelListener()->onKernelRequest(
                 $request

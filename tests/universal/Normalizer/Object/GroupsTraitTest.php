@@ -60,7 +60,7 @@ class GroupsTraitTest extends TestCase
     {
         $object = $this->buildObject();
 
-        self::assertEquals(
+        $this->assertEquals(
             [],
             $object->runFilter(
                 [
@@ -88,7 +88,7 @@ class GroupsTraitTest extends TestCase
             ]
         );
 
-        self::assertEquals(
+        $this->assertEquals(
             [],
             $object->runFilter(
                 [
@@ -118,7 +118,7 @@ class GroupsTraitTest extends TestCase
             ]
         );
 
-        self::assertEquals(
+        $this->assertEquals(
             [
                 'key1' => 'foo',
                 'key2' => 123,
@@ -155,7 +155,7 @@ class GroupsTraitTest extends TestCase
             ]
         );
 
-        self::assertEquals(
+        $this->assertEquals(
             [
                 'key1' => 'foo',
                 'key2' => 123,
@@ -195,7 +195,7 @@ class GroupsTraitTest extends TestCase
             ]
         );
 
-        self::assertEquals(
+        $this->assertEquals(
             [
                 'key1' => $toCall1,
                 'key2' => 123,

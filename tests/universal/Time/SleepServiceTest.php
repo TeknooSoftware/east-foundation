@@ -75,11 +75,11 @@ class SleepServiceTest extends TestCase
             );
 
         $t = time();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             SleepService::class,
             (new SleepService($this->getTimerServiceMock()))->wait(2),
         );
-        self::assertEquals(
+        $this->assertEquals(
             $t + 2,
             time(),
         );
@@ -92,11 +92,11 @@ class SleepServiceTest extends TestCase
         }
 
         $t = time();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             SleepService::class,
             (new SleepService(new TimerService(new DatesService())))->wait(2),
         );
-        self::assertEquals(
+        $this->assertEquals(
             $t + 2,
             time(),
         );
@@ -109,11 +109,11 @@ class SleepServiceTest extends TestCase
         }
 
         $t = time();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             SleepService::class,
             (new SleepService(new TimerService(new DatesService())))->wait(0),
         );
-        self::assertLessThanOrEqual(
+        $this->assertLessThanOrEqual(
             $t + 1,
             time(),
         );

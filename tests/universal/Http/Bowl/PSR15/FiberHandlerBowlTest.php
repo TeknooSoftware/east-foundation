@@ -99,7 +99,7 @@ class FiberHandlerBowlTest extends AbstractBowlTests
     public function testExecute(): void
     {
         $values = $this->getValidWorkPlan();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             BowlInterface::class,
             $this->buildBowl()->execute(
                 $this->createMock(ChefInterface::class),
@@ -111,6 +111,6 @@ class FiberHandlerBowlTest extends AbstractBowlTests
 
     public function testExecuteWithValue(): void
     {
-        self::assertTrue(true);
+        $this->assertTrue(true);
     }
 }

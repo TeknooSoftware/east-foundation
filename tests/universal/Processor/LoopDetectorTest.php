@@ -59,7 +59,7 @@ class LoopDetectorTest extends TestCase
             ->method('updateWorkPlan')
             ->with([ResultInterface::class => null]);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             LoopDetector::class,
             $this->buildObject()($bowl, $manager)
         );
@@ -78,7 +78,7 @@ class LoopDetectorTest extends TestCase
             ->method('updateWorkPlan')
             ->with([ResultInterface::class => null]);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             LoopDetector::class,
             $this->buildObject()($bowl, $manager, $result)
         );
@@ -90,7 +90,7 @@ class LoopDetectorTest extends TestCase
         $manager = $this->createMock(ManagerInterface::class);
         $result = $this->createMock(ResultInterface::class);
         $next = $this->createMock(ResultInterface::class);
-        $result->expects($this->any())
+        $result
             ->method('getNext')
             ->willReturn($next);
 
@@ -101,7 +101,7 @@ class LoopDetectorTest extends TestCase
             ->method('updateWorkPlan')
             ->with([ResultInterface::class => $next]);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             LoopDetector::class,
             $this->buildObject()->__invoke($bowl, $manager, $result)
         );

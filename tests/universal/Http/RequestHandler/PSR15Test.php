@@ -49,7 +49,7 @@ class PSR15Test extends TestCase
         $client = $this->createMock(ClientInterface::class);
         $request = $this->createMock(ServerRequestInterface::class);
 
-        $client->expects($this->any())
+        $client
             ->method('updateResponse')
             ->willReturnCallback(
                 function (callable $callback) use ($client) {
@@ -61,7 +61,7 @@ class PSR15Test extends TestCase
 
         $handler = new PSR15($chef, $client);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             ResponseInterface::class,
             $handler->handle($request),
         );

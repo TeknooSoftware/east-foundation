@@ -65,7 +65,7 @@ class LaminasContainerTest extends \PHPUnit\Framework\TestCase
     {
         $container = $this->buildContainer();
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
           ServerRequestFactory::class,
             $container->get(ServerRequestFactory::class)
         );
@@ -75,7 +75,7 @@ class LaminasContainerTest extends \PHPUnit\Framework\TestCase
     {
         $container = $this->buildContainer();
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
           ServerRequestFactoryInterface::class,
             $container->get(ServerRequestFactoryInterface::class)
         );
@@ -85,7 +85,7 @@ class LaminasContainerTest extends \PHPUnit\Framework\TestCase
     {
         $container = $this->buildContainer();
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
           UploadedFileFactory::class,
             $container->get(UploadedFileFactory::class)
         );
@@ -95,7 +95,7 @@ class LaminasContainerTest extends \PHPUnit\Framework\TestCase
     {
         $container = $this->buildContainer();
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
           UploadedFileFactoryInterface::class,
             $container->get(UploadedFileFactoryInterface::class)
         );
@@ -105,7 +105,7 @@ class LaminasContainerTest extends \PHPUnit\Framework\TestCase
     {
         $container = $this->buildContainer();
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
           ResponseFactory::class,
             $container->get(ResponseFactory::class)
         );
@@ -115,7 +115,7 @@ class LaminasContainerTest extends \PHPUnit\Framework\TestCase
     {
         $container = $this->buildContainer();
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
           ResponseFactoryInterface::class,
             $container->get(ResponseFactoryInterface::class)
         );
@@ -125,7 +125,7 @@ class LaminasContainerTest extends \PHPUnit\Framework\TestCase
     {
         $container = $this->buildContainer();
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
           StreamFactory::class,
             $container->get(StreamFactory::class)
         );
@@ -135,7 +135,7 @@ class LaminasContainerTest extends \PHPUnit\Framework\TestCase
     {
         $container = $this->buildContainer();
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
           StreamFactoryInterface::class,
             $container->get(StreamFactoryInterface::class)
         );
@@ -145,7 +145,7 @@ class LaminasContainerTest extends \PHPUnit\Framework\TestCase
     {
         $container = $this->buildContainer();
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
           MessageFactory::class,
             $container->get(MessageFactory::class)
         );
@@ -155,7 +155,7 @@ class LaminasContainerTest extends \PHPUnit\Framework\TestCase
     {
         $container = $this->buildContainer();
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             ResponseMessageFactory::class,
             $container->get(ResponseMessageFactory::class)
         );

@@ -64,16 +64,16 @@ abstract class AbstractResultTests extends \PHPUnit\Framework\TestCase
 
     public function testGetController()
     {
-        self::assertIsCallable($this->buildResult()->getController());
+        $this->assertIsCallable($this->buildResult()->getController());
     }
 
     public function testGetNextWithNoNext()
     {
-        self::assertNull($this->buildResult()->getNext());
+        $this->assertNull($this->buildResult()->getNext());
     }
 
     public function testGetNext()
     {
-        self::assertInstanceOf(ResultInterface::class, $this->buildResultWithNext()->getNext());
+        $this->assertInstanceOf(ResultInterface::class, $this->buildResultWithNext()->getNext());
     }
 }

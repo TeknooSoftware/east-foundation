@@ -46,7 +46,7 @@ class PHPDITest extends TestCase
         $module1 = PHPDI::create();
         $module2 = PHPDI::create();
 
-        self::assertSame($module1, $module2);
+        $this->assertSame($module1, $module2);
     }
 
     public function testConfigure()
@@ -60,7 +60,7 @@ class PHPDITest extends TestCase
 
         $builder = $this->createMock(BridgeBuilderInterface::class);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             ExtensionInterface::class,
             $module->configure($builder)
         );
@@ -73,7 +73,7 @@ class PHPDITest extends TestCase
             ->method('execute')
             ->willReturnCallback(
                 function ($module) use ($manager) {
-                    self::assertInstanceOf(PHPDI::class, $module);
+                    $this->assertInstanceOf(PHPDI::class, $module);
 
                     $module->prepareCompilation('foo');
                     return $manager;
@@ -87,7 +87,7 @@ class PHPDITest extends TestCase
             ->method('prepareCompilation')
             ->with('foo');
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             ExtensionInterface::class,
             $module->configure($builder)
         );
@@ -109,7 +109,7 @@ class PHPDITest extends TestCase
             ->method('execute')
             ->willReturnCallback(
                 function ($module) use ($manager) {
-                    self::assertInstanceOf(PHPDI::class, $module);
+                    $this->assertInstanceOf(PHPDI::class, $module);
 
                     $module->enableCache(true);
                     return $manager;
@@ -123,7 +123,7 @@ class PHPDITest extends TestCase
             ->method('enableCache')
             ->with(true);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             ExtensionInterface::class,
             $module->configure($builder)
         );
@@ -145,7 +145,7 @@ class PHPDITest extends TestCase
             ->method('execute')
             ->willReturnCallback(
                 function ($module) use ($manager) {
-                    self::assertInstanceOf(PHPDI::class, $module);
+                    $this->assertInstanceOf(PHPDI::class, $module);
 
                     $module->loadDefinition(['foo']);
                     return $manager;
@@ -159,7 +159,7 @@ class PHPDITest extends TestCase
             ->method('loadDefinition')
             ->with(['foo']);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             ExtensionInterface::class,
             $module->configure($builder)
         );
@@ -181,7 +181,7 @@ class PHPDITest extends TestCase
             ->method('execute')
             ->willReturnCallback(
                 function ($module) use ($manager) {
-                    self::assertInstanceOf(PHPDI::class, $module);
+                    $this->assertInstanceOf(PHPDI::class, $module);
 
                     $module->import('foo', 'bar');
                     return $manager;
@@ -195,7 +195,7 @@ class PHPDITest extends TestCase
             ->method('import')
             ->with('foo', 'bar');
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             ExtensionInterface::class,
             $module->configure($builder)
         );

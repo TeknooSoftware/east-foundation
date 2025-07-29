@@ -114,7 +114,7 @@ class ExecutorTest extends TestCase
     public function testExecute()
     {
         $executor = $this->buildExecutor();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Executor::class,
             $executor->execute(
                 $this->createMock(BaseRecipeInterface::class),
@@ -129,7 +129,7 @@ class ExecutorTest extends TestCase
     {
         $executor = new Executor(new Manager());
         $recipe = $this->createMock(RecipeInterface::class);
-        $recipe->expects($this->any())->method('train')->willReturnCallback(
+        $recipe->method('train')->willReturnCallback(
             function (ChefInterface $chef) use ($recipe) {
                 $chef->followSteps([$this->createMock(BowlInterface::class)]);
 
@@ -137,7 +137,7 @@ class ExecutorTest extends TestCase
             }
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Executor::class,
             $executor->execute(
                 $recipe,
@@ -147,7 +147,7 @@ class ExecutorTest extends TestCase
             )
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Executor::class,
             $executor->execute(
                 $recipe,

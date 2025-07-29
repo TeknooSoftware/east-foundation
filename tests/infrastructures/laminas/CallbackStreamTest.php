@@ -40,7 +40,7 @@ class CallbackStreamTest extends TestCase
 {
     public function testBind()
     {
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             CallbackStream::class,
             (new CallbackStream(function () {}))->bind(function () {})
         );
@@ -48,7 +48,7 @@ class CallbackStreamTest extends TestCase
 
     public function testUnbind()
     {
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             CallbackStream::class,
             (new CallbackStream(function () {}))->unbind()
         );

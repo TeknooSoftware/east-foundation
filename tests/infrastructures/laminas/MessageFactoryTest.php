@@ -46,12 +46,12 @@ class MessageFactoryTest extends TestCase
 
     public function testCreateMessage()
     {
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             MessageInterface::class,
             $message = $this->buildFactory()->createMessage('1.1')
         );
 
-        self::assertEquals(
+        $this->assertEquals(
             '1.1',
             $message->getProtocolVersion()
         );

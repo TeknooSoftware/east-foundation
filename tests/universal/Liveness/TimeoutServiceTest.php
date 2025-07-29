@@ -84,18 +84,18 @@ class TimeoutServiceTest extends TestCase
             ->method('register')
             ->willReturnCallback(
                 function (int $seconds, string $timerId) {
-                    self::assertEquals(10, $seconds);
-                    self::assertEquals(TimeoutService::class, $timerId);
+                    $this->assertEquals(10, $seconds);
+                    $this->assertEquals(TimeoutService::class, $timerId);
                     return $this->getTimerMock();
                 }
             );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimeoutService::class,
             $service->enable(10),
         );
 
-        self::assertEquals(15, $this->seconds);
+        $this->assertEquals(15, $this->seconds);
     }
 
     public function testEnableWithoutTimer()
@@ -103,12 +103,12 @@ class TimeoutServiceTest extends TestCase
         $service = $this->createService(false);
         $this->seconds = null;
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimeoutService::class,
             $service->enable(10),
         );
 
-        self::assertEquals(15, $this->seconds);
+        $this->assertEquals(15, $this->seconds);
     }
 
     public function testDisable()
@@ -120,12 +120,12 @@ class TimeoutServiceTest extends TestCase
             ->method('unregister')
             ->willReturnCallback(
                 function (string $timerId) {
-                    self::assertEquals(TimeoutService::class, $timerId);
+                    $this->assertEquals(TimeoutService::class, $timerId);
                     return $this->getTimerMock();
                 }
             );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimeoutService::class,
             $service->disable(),
         );
@@ -135,7 +135,7 @@ class TimeoutServiceTest extends TestCase
     {
         $service = $this->createService(false);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimeoutService::class,
             $service->disable(),
         );

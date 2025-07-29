@@ -92,7 +92,7 @@ class ProcessorPlanTest extends TestCase
 
     public function testFill()
     {
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             ProcessorPlan::class,
             $this->buildPlan()->fill($this->createMock(ProcessorRecipeInterface::class))
         );
@@ -109,11 +109,11 @@ class ProcessorPlanTest extends TestCase
         $this->getRecipeMock()->expects($this->exactly(2))->method('cook')->willReturnSelf();
 
         $plan = $this->buildPlan();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             ProcessorPlan::class,
             $plan->train($this->createMock(ChefInterface::class))
         );
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             ProcessorPlan::class,
             $plan->train($this->createMock(ChefInterface::class))
         );
@@ -138,7 +138,7 @@ class ProcessorPlanTest extends TestCase
         $this->getRecipeMock()->expects($this->exactly(2))->method('cook')->willReturnSelf();
 
         $wp = [];
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             ProcessorPlan::class,
             $this->buildPlan()->prepare($wp, $this->createMock(ChefInterface::class))
         );
@@ -148,7 +148,7 @@ class ProcessorPlanTest extends TestCase
     {
         $this->getRecipeMock()->expects($this->exactly(2))->method('cook')->willReturnSelf();
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             ProcessorPlan::class,
             $this->buildPlan()->validate([])
         );

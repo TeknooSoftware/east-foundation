@@ -74,12 +74,12 @@ class EastFrameworkCompilerPassTest extends \PHPUnit\Framework\TestCase
         $def->expects($this->exactly(2))->method('addMethodCall')->willReturnSelf();
 
         $this->getContainerBuilderMock()
-            ->expects($this->any())
+            
             ->method('has')
             ->willReturn(true);
 
         $this->getContainerBuilderMock()
-            ->expects($this->any())
+            
             ->method('findTaggedServiceIds')
             ->with('east.endpoint.template')
             ->willReturn([
@@ -101,7 +101,7 @@ class EastFrameworkCompilerPassTest extends \PHPUnit\Framework\TestCase
             )
             ->willReturn($def);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getCompilerPassClass(),
             $this->buildCompilerPass()->process(
                 $this->getContainerBuilderMock()
@@ -115,12 +115,12 @@ class EastFrameworkCompilerPassTest extends \PHPUnit\Framework\TestCase
         $def->expects($this->exactly(0))->method('addMethodCall')->willReturnSelf();
 
         $this->getContainerBuilderMock()
-            ->expects($this->any())
+            
             ->method('has')
             ->willReturnCallback(fn($value) => 'twig' != $value);
 
         $this->getContainerBuilderMock()
-            ->expects($this->any())
+            
             ->method('findTaggedServiceIds')
             ->with('east.endpoint.template')
             ->willReturn([
@@ -129,7 +129,7 @@ class EastFrameworkCompilerPassTest extends \PHPUnit\Framework\TestCase
             ]);
 
         $this->getContainerBuilderMock()
-            ->expects($this->any())
+            
             ->method('getDefinition')
             ->with(
                 $this->callback(
@@ -142,7 +142,7 @@ class EastFrameworkCompilerPassTest extends \PHPUnit\Framework\TestCase
             )
             ->willReturn($def);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getCompilerPassClass(),
             $this->buildCompilerPass()->process(
                 $this->getContainerBuilderMock()

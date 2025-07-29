@@ -47,7 +47,7 @@ class BundlesTest extends TestCase
             ->method('execute')
             ->willReturnCallback(
                 function ($module) use ($manager) {
-                    self::assertinstanceOf(Bundles::class, $module);
+                    $this->assertinstanceOf(Bundles::class, $module);
 
                     $module->register(
                         DateTimeInterface::class,
@@ -67,7 +67,7 @@ class BundlesTest extends TestCase
             $manager,
         );
 
-        self::assertEquals(
+        $this->assertEquals(
             [
                 stdClass::class => ['dev' => true],
                 DateTimeInterface::class => ['test' => true]

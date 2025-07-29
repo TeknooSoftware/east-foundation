@@ -67,7 +67,7 @@ class FileLoaderTest extends TestCase
     public function testInvokeExceptionWhenFileNotFound()
     {
         $_ENV['TEKNOO_EAST_EXTENSION_FILE'] = 'not-found';
-        self::assertEmpty(iterator_to_array((new FileLoader())()));
+        $this->assertEmpty(iterator_to_array((new FileLoader())()));
     }
 
     public function testInvokeExceptionWhenFileEmpty()
@@ -103,14 +103,14 @@ class FileLoaderTest extends TestCase
         $_ENV['TEKNOO_EAST_EXTENSION_FILE'] = __DIR__ . '/Support/good.json';
         $loader = new FileLoader();
 
-        self::assertEquals(
+        $this->assertEquals(
             [
                 ExtensionMock2::class
             ],
             iterator_to_array($loader())
         );
 
-        self::assertEquals(
+        $this->assertEquals(
             [
                 ExtensionMock2::class
             ],

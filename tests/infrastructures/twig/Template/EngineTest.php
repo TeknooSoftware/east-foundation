@@ -71,7 +71,7 @@ class EngineTest extends TestCase
             ->method('success')
             ->with(self::callback(fn($r) => $r instanceof ResultInterface));
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             EngineInterface::class,
             $this->buildEngine()->render(
                 $promise,
@@ -97,13 +97,13 @@ class EngineTest extends TestCase
             ->method('success')
             ->willReturnCallback(
                 function (ResultInterface $result) use ($promise) {
-                    self::assertEquals('bar', (string) $result);
+                    $this->assertEquals('bar', (string) $result);
 
                     return $promise;
                 }
             );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             EngineInterface::class,
             $this->buildEngine()->render(
                 $promise,
@@ -124,7 +124,7 @@ class EngineTest extends TestCase
             ->willThrowException(new \RuntimeException('foo'));
         $promise->expects($this->once())->method('fail');
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             EngineInterface::class,
             $this->buildEngine()->render(
                 $promise,

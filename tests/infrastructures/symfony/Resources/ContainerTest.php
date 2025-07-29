@@ -64,17 +64,17 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $manager1 = $container->get(Manager::class);
         $manager2 = $container->get(ManagerInterface::class);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Manager::class,
             $manager1
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Manager::class,
             $manager2
         );
 
-        self::assertSame($manager1, $manager2);
+        $this->assertSame($manager1, $manager2);
     }
 
     public function testCreateProcessor()
@@ -86,17 +86,17 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $processor1 = $container->get(ProcessorInterface::class);
         $processor2 = $container->get(Processor::class);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Processor::class,
             $processor1
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Processor::class,
             $processor2
         );
 
-        self::assertSame($processor1, $processor2);
+        $this->assertSame($processor1, $processor2);
     }
 
     public function testCreateClient()
@@ -111,30 +111,30 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $client2 = $container->get(HttpClient::class);
         $client3 = $container->get(Client::class);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Client::class,
             $client1
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Client::class,
             $client2
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Client::class,
             $client3
         );
 
-        self::assertSame($client1, $client3);
-        self::assertSame($client2, $client3);
+        $this->assertSame($client1, $client3);
+        $this->assertSame($client2, $client3);
     }
 
     public function testCreateSessionMiddleware()
     {
         $container = $this->buildContainer();
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             SessionMiddleware::class,
             $container->get(SessionMiddleware::class)
         );

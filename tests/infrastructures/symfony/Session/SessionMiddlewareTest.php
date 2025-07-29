@@ -64,7 +64,7 @@ class SessionMiddlewareTest extends TestCase
         $request->expects($this->never())
             ->method('withAttribute');
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             SessionMiddleware::class,
             $this->buildMiddleware()->execute($client, $request, $manager)
         );
@@ -79,7 +79,7 @@ class SessionMiddlewareTest extends TestCase
         $manager->expects($this->never())
             ->method('continueExecution');
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             SessionMiddleware::class,
             $this->buildMiddleware()->execute($client, $message, $manager)
         );
@@ -96,11 +96,11 @@ class SessionMiddlewareTest extends TestCase
         $sfRequest->attributes = new ParameterBag();
 
         $session = $this->createMock(\Symfony\Component\HttpFoundation\Session\SessionInterface::class);
-        $sfRequest->expects($this->any())
+        $sfRequest
             ->method('getSession')
             ->willReturn($session);
 
-        $request->expects($this->any())
+        $request
             ->method('getAttribute')
             ->with('request')
             ->willReturn($sfRequest);
@@ -111,7 +111,7 @@ class SessionMiddlewareTest extends TestCase
             ->with(SessionInterface::ATTRIBUTE_KEY, $this->callback(fn($object) => $object instanceof Session))
             ->willReturn($requestUpdated);
 
-        $manager->expects($this->any())
+        $manager
             ->method('continueExecution')
             ->with($client, $requestUpdated)
             ->willReturnSelf();
@@ -125,7 +125,7 @@ class SessionMiddlewareTest extends TestCase
             ->method('updateWorkPlan')
             ->willReturnSelf();
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             SessionMiddleware::class,
             $this->buildMiddleware()->execute($client, $request, $manager)
         );
@@ -145,7 +145,7 @@ class SessionMiddlewareTest extends TestCase
         $sfRequest->attributes = new ParameterBag();
         $sfRequest->attributes->set('_stateless', true);
 
-        $request->expects($this->any())
+        $request
             ->method('getAttribute')
             ->with('request')
             ->willReturn($sfRequest);
@@ -162,7 +162,7 @@ class SessionMiddlewareTest extends TestCase
         $manager->expects($this->never())
             ->method('updateWorkPlan');
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             SessionMiddleware::class,
             $this->buildMiddleware()->execute($client, $request, $manager)
         );

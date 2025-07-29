@@ -53,7 +53,7 @@ use Teknoo\East\FoundationBundle\Normalizer\EastNormalizer;
 
     public function testInjectData()
     {
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             EastNormalizer::class,
             $this->buildNormalizer()->injectData(['foo' => 'bar'])
         );
@@ -61,15 +61,15 @@ use Teknoo\East\FoundationBundle\Normalizer\EastNormalizer;
 
     public function testSupportsNormalization()
     {
-        self::assertFalse($this->buildNormalizer()->supportsNormalization(new \stdClass()));
-        self::assertTrue($this->buildNormalizer()->supportsNormalization(
+        $this->assertFalse($this->buildNormalizer()->supportsNormalization(new \stdClass()));
+        $this->assertTrue($this->buildNormalizer()->supportsNormalization(
             $this->createMock(NormalizableInterface::class)
         ));
     }
 
     public function testGetSupportedTypes()
     {
-        self::assertIsArray($this->buildNormalizer()->getSupportedTypes('array'));
+        $this->assertIsArray($this->buildNormalizer()->getSupportedTypes('array'));
     }
 
     public function testNormalizeBadObject()
@@ -89,16 +89,16 @@ use Teknoo\East\FoundationBundle\Normalizer\EastNormalizer;
         $object->expects($this->once())
             ->method('exportToMeData')
             ->willReturnCallback(function ($nrmlz, $ctxt) use ($normalizer, $object, $context, $returnValue) {
-                self::assertInstanceOf(EastNormalizer::class, $nrmlz);
-                self::assertNotSame($normalizer, $nrmlz);
-                self::assertEquals($context, $ctxt);
+                $this->assertInstanceOf(EastNormalizer::class, $nrmlz);
+                $this->assertNotSame($normalizer, $nrmlz);
+                $this->assertEquals($context, $ctxt);
 
                 $nrmlz->injectData($returnValue);
 
                 return $object;
             });
 
-        self::assertEquals(
+        $this->assertEquals(
             $returnValue,
             $normalizer->normalize($object, 'json', $context)
         );
@@ -115,9 +115,9 @@ use Teknoo\East\FoundationBundle\Normalizer\EastNormalizer;
         $object->expects($this->once())
             ->method('exportToMeData')
             ->willReturnCallback(function ($nrmlz, $ctxt) use ($normalizer, $object, $context, $returnValue) {
-                self::assertInstanceOf(EastNormalizer::class, $nrmlz);
-                self::assertNotSame($normalizer, $nrmlz);
-                self::assertEquals($context, $ctxt);
+                $this->assertInstanceOf(EastNormalizer::class, $nrmlz);
+                $this->assertNotSame($normalizer, $nrmlz);
+                $this->assertEquals($context, $ctxt);
 
                 $nrmlz->injectData($returnValue);
 
@@ -130,7 +130,7 @@ use Teknoo\East\FoundationBundle\Normalizer\EastNormalizer;
 
         $normalizer->setNormalizer($normalizer2);
 
-        self::assertEquals(
+        $this->assertEquals(
             $returnValue,
             $normalizer->normalize($object, 'json', $context)
         );
@@ -148,9 +148,9 @@ use Teknoo\East\FoundationBundle\Normalizer\EastNormalizer;
         $object->expects($this->once())
             ->method('exportToMeData')
             ->willReturnCallback(function ($nrmlz, $ctxt) use ($normalizer, $object, $context, $returnValue) {
-                self::assertInstanceOf(EastNormalizer::class, $nrmlz);
-                self::assertNotSame($normalizer, $nrmlz);
-                self::assertEquals($context, $ctxt);
+                $this->assertInstanceOf(EastNormalizer::class, $nrmlz);
+                $this->assertNotSame($normalizer, $nrmlz);
+                $this->assertEquals($context, $ctxt);
 
                 $nrmlz->injectData($returnValue);
 
@@ -165,7 +165,7 @@ use Teknoo\East\FoundationBundle\Normalizer\EastNormalizer;
 
         $normalizer->setNormalizer($normalizer2);
 
-        self::assertEquals(
+        $this->assertEquals(
             $returnValue2,
             $normalizer->normalize($object, 'json', $context)
         );

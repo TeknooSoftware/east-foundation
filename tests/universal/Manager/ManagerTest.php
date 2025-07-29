@@ -35,6 +35,8 @@ use Teknoo\East\Foundation\Recipe\RecipeInterface;
 use Teknoo\Recipe\Bowl\Bowl;
 use Teknoo\Recipe\Bowl\BowlInterface;
 use Teknoo\Recipe\ChefInterface;
+use Teknoo\Recipe\CookingSupervisor;
+use Teknoo\Recipe\CookingSupervisorInterface;
 use Teknoo\Tests\Recipe\AbstractChefTests;
 
 /**
@@ -49,11 +51,12 @@ use Teknoo\Tests\Recipe\AbstractChefTests;
 class ManagerTest extends AbstractChefTests
 {
     /**
+     * @param CookingSupervisorInterface|null $cookingSupervisor
      * @return ChefInterface|ManagerInterface
      */
-    public function buildChef(): ChefInterface
+    public function buildChef(?CookingSupervisorInterface $cookingSupervisor = null): ChefInterface
     {
-        return new Manager();
+        return new Manager(cookingSupervisor: $cookingSupervisor ?? new CookingSupervisor());
     }
 
     public function testReadInConstructor()
@@ -63,7 +66,7 @@ class ManagerTest extends AbstractChefTests
             ->method('train')
             ->willReturnSelf();
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             ManagerInterface::class,
             new Manager($recipe)
         );
@@ -79,7 +82,7 @@ class ManagerTest extends AbstractChefTests
 
     public function testReceiveRequest()
     {
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getManagerClass(),
             $this->buildChef()->read($this->createMock(RecipeInterface::class))
                 ->followSteps([$this->createMock(BowlInterface::class)])
@@ -92,7 +95,7 @@ class ManagerTest extends AbstractChefTests
 
     public function testReceiveMessage()
     {
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getManagerClass(),
             $this->buildChef()->read($this->createMock(RecipeInterface::class))
                 ->followSteps([$this->createMock(BowlInterface::class)])
@@ -264,8 +267,8 @@ class ManagerTest extends AbstractChefTests
         $middleware2->expects($this->once())->method('execute');
         $middleware2->expects($this->once())->method('execute')->willReturnCallback(
             function ($clientPassed, $requestPassed, $managerPassed) use ($clientMock, $serverRequestMock, $manager) {
-                self::assertEquals($clientPassed, $clientMock);
-                self::assertEquals($requestPassed, $serverRequestMock);
+                $this->assertEquals($clientPassed, $clientMock);
+                $this->assertEquals($requestPassed, $serverRequestMock);
                 $managerPassed->stop();
             }
         );
@@ -284,7 +287,7 @@ class ManagerTest extends AbstractChefTests
                     new Bowl([$middleware3, 'execute'], [])
                 ]
             );
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getManagerClass(),
             $manager->receiveRequest($clientMock, $serverRequestMock)
         );
@@ -316,8 +319,8 @@ class ManagerTest extends AbstractChefTests
         $middleware2->expects($this->once())->method('execute');
         $middleware2->expects($this->once())->method('execute')->willReturnCallback(
             function ($clientPassed, $messagePassed, $managerPassed) use ($clientMock, $messageMock, $manager) {
-                self::assertEquals($clientPassed, $clientMock);
-                self::assertEquals($messagePassed, $messageMock);
+                $this->assertEquals($clientPassed, $clientMock);
+                $this->assertEquals($messagePassed, $messageMock);
                 $managerPassed->stop();
             }
         );
@@ -336,7 +339,7 @@ class ManagerTest extends AbstractChefTests
                     new Bowl([$middleware3, 'execute'], [])
                 ]
             );
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getManagerClass(),
             $manager->receiveRequest($clientMock, $messageMock)
         );
@@ -376,8 +379,8 @@ class ManagerTest extends AbstractChefTests
         $middleware2->expects($this->once())->method('execute');
         $middleware2->expects($this->once())->method('execute')->willReturnCallback(
             function ($clientPassed, $requestPassed, $managerPassed) use ($clientMock, $serverRequestMock, $manager, &$callList, $middleware2) {
-                self::assertEquals($clientPassed, $clientMock);
-                self::assertEquals($requestPassed, $serverRequestMock);
+                $this->assertEquals($clientPassed, $clientMock);
+                $this->assertEquals($requestPassed, $serverRequestMock);
                 $callList[] = 'middleware2';
 
                 $managerPassed->continueExecution($clientPassed, $serverRequestMock);
@@ -398,12 +401,12 @@ class ManagerTest extends AbstractChefTests
                 new Bowl([$middleware1, 'execute'], []),
                 new Bowl([$middleware3, 'execute'], [])
             ]);
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getManagerClass(),
             $manager->receiveRequest($clientMock, $serverRequestMock)
         );
 
-        self::assertEquals(['middleware2','middleware1'], $callList);
+        $this->assertEquals(['middleware2','middleware1'], $callList);
     }
 
     public function testBehaviorReceiveMessageAndContinueExecution()
@@ -440,8 +443,8 @@ class ManagerTest extends AbstractChefTests
         $middleware2->expects($this->once())->method('execute');
         $middleware2->expects($this->once())->method('execute')->willReturnCallback(
             function ($clientPassed, $messagePassed, $managerPassed) use ($clientMock, $messageMock, $manager, &$callList, $middleware2) {
-                self::assertEquals($clientPassed, $clientMock);
-                self::assertEquals($messagePassed, $messageMock);
+                $this->assertEquals($clientPassed, $clientMock);
+                $this->assertEquals($messagePassed, $messageMock);
                 $callList[] = 'middleware2';
 
                 $managerPassed->continueExecution($clientPassed, $messageMock);
@@ -462,12 +465,12 @@ class ManagerTest extends AbstractChefTests
                 new Bowl([$middleware1, 'execute'], []),
                 new Bowl([$middleware3, 'execute'], [])
             ]);
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getManagerClass(),
             $manager->receiveRequest($clientMock, $messageMock)
         );
 
-        self::assertEquals(['middleware2','middleware1'], $callList);
+        $this->assertEquals(['middleware2','middleware1'], $callList);
     }
 
     public function testBehaviorReceiveRequestAndUpdateMessage()
@@ -504,8 +507,8 @@ class ManagerTest extends AbstractChefTests
         $middleware2->expects($this->once())->method('execute');
         $middleware2->expects($this->once())->method('execute')->willReturnCallback(
             function ($clientPassed, $requestPassed, $managerPassed) use ($clientMock, $serverRequestMock, $manager, &$callList, $middleware2) {
-                self::assertEquals($clientPassed, $clientMock);
-                self::assertEquals($requestPassed, $serverRequestMock);
+                $this->assertEquals($clientPassed, $clientMock);
+                $this->assertEquals($requestPassed, $serverRequestMock);
                 $callList[] = 'middleware2';
 
                 $managerPassed->updateMessage($serverRequestMock);
@@ -526,12 +529,12 @@ class ManagerTest extends AbstractChefTests
                 new Bowl([$middleware1, 'execute'], []),
                 new Bowl([$middleware3, 'execute'], [])
             ]);
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getManagerClass(),
             $manager->receiveRequest($clientMock, $serverRequestMock)
         );
 
-        self::assertEquals(['middleware2','middleware1'], $callList);
+        $this->assertEquals(['middleware2','middleware1'], $callList);
     }
 
     public function testBehaviorReceiveMessageAndUpdateMessage()
@@ -568,8 +571,8 @@ class ManagerTest extends AbstractChefTests
         $middleware2->expects($this->once())->method('execute');
         $middleware2->expects($this->once())->method('execute')->willReturnCallback(
             function ($clientPassed, $messagePassed, $managerPassed) use ($clientMock, $messageMock, $manager, &$callList, $middleware2) {
-                self::assertEquals($clientPassed, $clientMock);
-                self::assertEquals($messagePassed, $messageMock);
+                $this->assertEquals($clientPassed, $clientMock);
+                $this->assertEquals($messagePassed, $messageMock);
                 $callList[] = 'middleware2';
 
                 $managerPassed->updateMessage($messageMock);
@@ -590,12 +593,12 @@ class ManagerTest extends AbstractChefTests
                 new Bowl([$middleware1, 'execute'], []),
                 new Bowl([$middleware3, 'execute'], [])
             ]);
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getManagerClass(),
             $manager->receiveRequest($clientMock, $messageMock)
         );
 
-        self::assertEquals(['middleware2','middleware1'], $callList);
+        $this->assertEquals(['middleware2','middleware1'], $callList);
     }
 
     public function testBehaviorMultipleReceiveRequest()
@@ -624,8 +627,8 @@ class ManagerTest extends AbstractChefTests
         $middleware2->expects($this->exactly(2))->method('execute');
         $middleware2->expects($this->exactly(2))->method('execute')->willReturnCallback(
             function ($clientPassed, $requestPassed, $managerPassed) use ($clientMock, $serverRequestMock, $manager) {
-                self::assertEquals($clientPassed, $clientMock);
-                self::assertEquals($requestPassed, $serverRequestMock);
+                $this->assertEquals($clientPassed, $clientMock);
+                $this->assertEquals($requestPassed, $serverRequestMock);
                 $managerPassed->stop();
             }
         );
@@ -643,12 +646,12 @@ class ManagerTest extends AbstractChefTests
                 new Bowl([$middleware3, 'execute'], [])
             ]);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getManagerClass(),
             $manager->receiveRequest($clientMock, $serverRequestMock)
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getManagerClass(),
             $manager->receiveRequest($clientMock, $serverRequestMock)
         );
@@ -680,8 +683,8 @@ class ManagerTest extends AbstractChefTests
         $middleware2->expects($this->exactly(2))->method('execute');
         $middleware2->expects($this->exactly(2))->method('execute')->willReturnCallback(
             function ($clientPassed, $messagePassed, $managerPassed) use ($clientMock, $messageMock, $manager) {
-                self::assertEquals($clientPassed, $clientMock);
-                self::assertEquals($messagePassed, $messageMock);
+                $this->assertEquals($clientPassed, $clientMock);
+                $this->assertEquals($messagePassed, $messageMock);
                 $managerPassed->stop();
             }
         );
@@ -699,12 +702,12 @@ class ManagerTest extends AbstractChefTests
                 new Bowl([$middleware3, 'execute'], [])
             ]);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getManagerClass(),
             $manager->receiveRequest($clientMock, $messageMock)
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getManagerClass(),
             $manager->receiveRequest($clientMock, $messageMock)
         );

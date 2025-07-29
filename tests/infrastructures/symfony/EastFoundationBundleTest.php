@@ -54,7 +54,7 @@ class EastFoundationBundleTest extends \PHPUnit\Framework\TestCase
 
     public function testBuild()
     {
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getBundleClass(),
             $this->buildBundle()->build(
                 $this->createMock(ContainerBuilder::class)

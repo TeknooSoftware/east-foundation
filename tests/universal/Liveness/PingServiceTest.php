@@ -37,7 +37,7 @@ class PingServiceTest extends TestCase
 {
     public function testRegister()
     {
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             PingService::class,
             (new PingService())->register('foo', function () {}),
         );
@@ -45,7 +45,7 @@ class PingServiceTest extends TestCase
 
     public function testUnregisterNotRegistered()
     {
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             PingService::class,
             (new PingService())->unregister('foo'),
         );
@@ -53,7 +53,7 @@ class PingServiceTest extends TestCase
 
     public function testUnregister()
     {
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             PingService::class,
             (new PingService())
                 ->register('foo', function () {})
@@ -76,22 +76,22 @@ class PingServiceTest extends TestCase
         $service->register('f1', $f1);
         $service->register('f2', $f2);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             PingService::class,
             $service->ping()
         );
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             PingService::class,
             $service->ping()
         );
 
         $service->unregister('f1');
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             PingService::class,
             $service->ping()
         );
 
-        self::assertEquals(2, $call1);
-        self::assertEquals(3, $call2);
+        $this->assertEquals(2, $call1);
+        $this->assertEquals(3, $call2);
     }
 }

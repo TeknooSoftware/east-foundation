@@ -84,14 +84,14 @@ class ClientTest extends TestCase
     public function testUpdateResponse()
     {
         $client = $this->buildClient();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getClientClass(),
             $client->updateResponse(
                 function (
                     ClientInterface $client,
                     ?ResponseInterface $response=null
                 ) {
-                    self::assertEmpty($response);
+                    $this->assertEmpty($response);
                 }
             )
         );
@@ -105,11 +105,11 @@ class ClientTest extends TestCase
         $response = $this->createMock(ResponseInterface::class);
 
         $client = $this->buildClient();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getClientClass(),
             $client->acceptResponse($response)->updateResponse(
                 function (ClientInterface $client, ?ResponseInterface $responsePassed=null) use ($response) {
-                    self::assertEquals($response, $responsePassed);
+                    $this->assertEquals($response, $responsePassed);
                 }
             )
         );
@@ -129,7 +129,7 @@ class ClientTest extends TestCase
         $response = $this->createMock(ResponseInterface::class);
 
         $client = $this->buildClient();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getClientClass(),
             $client->acceptResponse($response)
         );
@@ -144,11 +144,11 @@ class ClientTest extends TestCase
 
 
         $this->getOutputMock()
-            ->expects($this->any())
+            
             ->method('writeln');
 
         $client = $this->buildClient();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getClientClass(),
             $client->sendResponse($response)
         );
@@ -162,11 +162,11 @@ class ClientTest extends TestCase
         $response = $this->createMock(ResponseInterface::class);
         
         $this->getOutputMock()
-            ->expects($this->any())
+            
             ->method('writeln');
 
         $client = $this->buildClient();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getClientClass(),
             $client->acceptResponse($response)->sendResponse()
         );
@@ -188,11 +188,11 @@ class ClientTest extends TestCase
         };
 
         $this->getOutputMock()
-            ->expects($this->any())
+            
             ->method('writeln');
 
         $client = $this->buildClient();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getClientClass(),
             $client->acceptResponse($response)->sendResponse()
         );
@@ -203,11 +203,11 @@ class ClientTest extends TestCase
         $response = $this->createMock(EastResponse::class);
 
         $this->getOutputMock()
-            ->expects($this->any())
+            
             ->method('writeln');
 
         $client = $this->buildClient();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getClientClass(),
             $client->acceptResponse($response)->sendResponse()
         );
@@ -217,7 +217,7 @@ class ClientTest extends TestCase
     {
         $client = $this->buildClient();
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getClientClass(),
             $client->sendResponse()
         );
@@ -231,11 +231,11 @@ class ClientTest extends TestCase
         $response = $this->createMock(ResponseInterface::class);
 
         $this->getOutputMock()
-            ->expects($this->any())
+            
             ->method('writeln');
 
         $client = $this->buildClient();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getClientClass(),
             $client->sendResponse($response, true)
         );
@@ -253,7 +253,7 @@ class ClientTest extends TestCase
             ->method('writeln');
 
         $client = $this->buildClient();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getClientClass(),
             $client->sendResponse($response, true)->sendResponse(null, true)
         );
@@ -268,7 +268,7 @@ class ClientTest extends TestCase
             ->method('writeln');
 
         $client = $this->buildClient();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getClientClass(),
             $client->sendResponse($response, true)->sendResponse(null, true)
         );
@@ -294,7 +294,7 @@ class ClientTest extends TestCase
             ->method('writeln');
 
         $client = $this->buildClient();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getClientClass(),
             $client->sendResponse($response, true)->sendResponse(null, true)
         );
@@ -308,11 +308,11 @@ class ClientTest extends TestCase
         $response = $this->createMock(ResponseInterface::class);
 
         $this->getOutputMock()
-            ->expects($this->any())
+            
             ->method('writeln');
 
         $client = $this->buildClient();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getClientClass(),
             $client->acceptResponse($response)->sendResponse(null, true)
         );
@@ -326,17 +326,17 @@ class ClientTest extends TestCase
         $response = $this->createMock(ResponseInterface::class);
 
         $this->getOutputMock()
-            ->expects($this->any())
+            
             ->method('writeln');
 
         $client = $this->buildClient();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getClientClass(),
             $client->acceptResponse($response)
         );
 
         $client->reset();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getClientClass(),
             $client->sendResponse(null, true)
         );
@@ -352,7 +352,7 @@ class ClientTest extends TestCase
         $response = $this->createMock(ResponseInterface::class);
 
         $client = new Client();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getClientClass(),
             $client->acceptResponse($response)->sendResponse(null, true)
         );
@@ -361,7 +361,7 @@ class ClientTest extends TestCase
     public function testSendResponseWithoutResponseSilently()
     {
         $client = $this->buildClient();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getClientClass(),
             $client->sendResponse(null, true)
         );
@@ -384,7 +384,7 @@ class ClientTest extends TestCase
         $this->expectException(\RuntimeException::class);
 
         $client = new Client();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getClientClass(),
             $client->errorInRequest(new \Exception('fooBar'))
         );
@@ -393,11 +393,11 @@ class ClientTest extends TestCase
     public function testErrorInRequestWithStandardOutput()
     {
         $this->getOutputMock()
-            ->expects($this->any())
+            
             ->method('writeln');
 
         $client = $this->buildClient();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getClientClass(),
             $client->errorInRequest(new \Exception('fooBar'))
         );
@@ -406,16 +406,16 @@ class ClientTest extends TestCase
     public function testErrorInRequestWithConsoleOutput()
     {
         $this->getOutputMock()
-            ->expects($this->any())
+            
             ->method('writeln');
 
         $output = $this->createMock(ConsoleOutputInterface::class);
-        $output->expects($this->any())
+        $output
             ->method('getErrorOutput')
             ->willReturn($this->getOutputMock());
 
         $client = new Client($output);
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getClientClass(),
             $client->errorInRequest(new \Exception('fooBar'))
         );
@@ -432,13 +432,13 @@ class ClientTest extends TestCase
         $client = $this->buildClient();
         $clonedClient = clone $client;
 
-        self::assertInstanceOf(Client::class, $clonedClient);
+        $this->assertInstanceOf(Client::class, $clonedClient);
     }
 
     public function testSetOutput()
     {
         $client = $this->buildClient();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getClientClass(),
             $client->setOutput($this->createMock(OutputInterface::class))
         );
@@ -454,13 +454,13 @@ class ClientTest extends TestCase
     {
         $client = $this->buildClient();
 
-        self::assertInstanceOf(Client::class, $client->mustSendAResponse());
+        $this->assertInstanceOf(Client::class, $client->mustSendAResponse());
     }
 
     public function testSendAResponseIsOptional()
     {
         $client = $this->buildClient();
 
-        self::assertInstanceOf(Client::class, $client->sendAResponseIsOptional());
+        $this->assertInstanceOf(Client::class, $client->sendAResponseIsOptional());
     }
 }

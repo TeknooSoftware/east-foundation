@@ -60,7 +60,7 @@ class EastEndPointTraitTest extends TestCase
     public function testGenerateUrlMissingRouter()
     {
         $this->expectException(LogicException::class);
-        self::assertEquals(
+        $this->assertEquals(
             '/foo/bar',
             (new class() implements EndPointInterface {
                 use EastEndPointTrait;
@@ -76,12 +76,12 @@ class EastEndPointTraitTest extends TestCase
     public function testGenerateUrl()
     {
         $router = $this->createMock(RouterInterface::class);
-        $router->expects($this->any())
+        $router
             ->method('generate')
             ->with('routeName', ['foo' => 'bar'])
             ->willReturn('/foo/bar');
 
-        self::assertEquals(
+        $this->assertEquals(
             '/foo/bar',
             (new class() {
                 use EastEndPointTrait;
@@ -98,8 +98,8 @@ class EastEndPointTraitTest extends TestCase
     {
         $responseFactory = $this->createMock(ResponseFactoryInterface::class);
         $response = $this->createMock(ResponseInterface::class);
-        $response->expects($this->any())->method('withHeader')->willReturnSelf();
-        $responseFactory->expects($this->any())->method('createResponse')->willReturn($response);
+        $response->method('withHeader')->willReturnSelf();
+        $responseFactory->method('createResponse')->willReturn($response);
 
         $client = $this->createMock(ClientInterface::class);
         $client->expects($this->once())
@@ -115,7 +115,7 @@ class EastEndPointTraitTest extends TestCase
             }
         });
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $controller::class,
             $controller->setResponseFactory($responseFactory)->getRedirect($client)
         );
@@ -125,11 +125,11 @@ class EastEndPointTraitTest extends TestCase
     {
         $responseFactory = $this->createMock(ResponseFactoryInterface::class);
         $response = $this->createMock(ResponseInterface::class);
-        $response->expects($this->any())->method('withHeader')->willReturnSelf();
-        $responseFactory->expects($this->any())->method('createResponse')->willReturn($response);
+        $response->method('withHeader')->willReturnSelf();
+        $responseFactory->method('createResponse')->willReturn($response);
 
         $router = $this->createMock(RouterInterface::class);
-        $router->expects($this->any())
+        $router
             ->method('generate')
             ->with('routeName', ['foo' => 'bar'])
             ->willReturn('/foo/bar');
@@ -149,7 +149,7 @@ class EastEndPointTraitTest extends TestCase
             }
         });
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $controller::class,
             $controller->setResponseFactory($responseFactory)->setRouter($router)->getRedirect($client)
         );
@@ -159,36 +159,36 @@ class EastEndPointTraitTest extends TestCase
     {
         $responseFactory = $this->createMock(ResponseFactoryInterface::class);
         $response = $this->createMock(ResponseInterface::class);
-        $response->expects($this->any())->method('withHeader')->willReturnSelf();
+        $response->method('withHeader')->willReturnSelf();
         $inStream = null;
-        $response->expects($this->any())->method('withBody')->willReturnCallback(
+        $response->method('withBody')->willReturnCallback(
             function ($value) use (&$inStream, $response) {
                 $inStream = $value;
                 return $response;
             }
         );
-        $response->expects($this->any())->method('getBody')->willReturnCallback(
+        $response->method('getBody')->willReturnCallback(
             function () use (&$inStream) {
                 return $inStream;
             }
         );
-        $responseFactory->expects($this->any())->method('createResponse')->willReturn($response);
+        $responseFactory->method('createResponse')->willReturn($response);
 
         $stream = $this->createMock(StreamInterface::class);
         $body = null;
-        $stream->expects($this->any())->method('write')->willReturnCallback(
+        $stream->method('write')->willReturnCallback(
             function ($value) use (&$body) {
                 $body = $value;
                 return strlen((string) $body);
             }
         );
-        $stream->expects($this->any())->method('getContents')->willReturnCallback(
+        $stream->method('getContents')->willReturnCallback(
             function () use (&$body) {
                 return $body;
             }
         );
         $streamFactory = $this->createMock(StreamFactoryInterface::class);
-        $streamFactory->expects($this->any())->method('createStream')->willReturn($stream);
+        $streamFactory->method('createStream')->willReturn($stream);
 
         $client = $this->createMock(ClientInterface::class);
         $client->expects($this->once())
@@ -197,7 +197,7 @@ class EastEndPointTraitTest extends TestCase
             ->willReturnSelf();
 
         $result = $this->createMock(ResultInterface::class);
-        $result->expects($this->any())->method('__toString')->willReturn('fooBar');
+        $result->method('__toString')->willReturn('fooBar');
 
         $templateEngine = $this->createMock(EngineInterface::class);
         $templateEngine->expects($this->once())->method('render')->willReturnCallback(
@@ -216,7 +216,7 @@ class EastEndPointTraitTest extends TestCase
             }
         });
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $controller::class,
             $controller
                 ->setStreamFactory($streamFactory)
@@ -230,37 +230,37 @@ class EastEndPointTraitTest extends TestCase
     {
         $stream = $this->createMock(CallbackStreamInterface::class);
         $callBack = null;
-        $stream->expects($this->any())->method('bind')->willReturnCallback(
+        $stream->method('bind')->willReturnCallback(
             function ($value) use (&$callBack, $stream) {
                 $callBack = $value;
 
                 return $stream;
             }
         );
-        $stream->expects($this->any())->method('getContents')->willReturnCallback(
+        $stream->method('getContents')->willReturnCallback(
             function () use (&$callBack) {
                 return $callBack();
             }
         );
         $streamFactory = $this->createMock(StreamFactoryInterface::class);
-        $streamFactory->expects($this->any())->method('createStream')->willReturn($stream);
+        $streamFactory->method('createStream')->willReturn($stream);
 
         $responseFactory = $this->createMock(ResponseFactoryInterface::class);
         $response = $this->createMock(ResponseInterface::class);
-        $response->expects($this->any())->method('withHeader')->willReturnSelf();
+        $response->method('withHeader')->willReturnSelf();
         $inStream = null;
-        $response->expects($this->any())->method('withBody')->willReturnCallback(
+        $response->method('withBody')->willReturnCallback(
             function ($value) use (&$inStream, $response) {
                 $inStream = $value;
                 return $response;
             }
         );
-        $response->expects($this->any())->method('getBody')->willReturnCallback(
+        $response->method('getBody')->willReturnCallback(
             function () use (&$inStream) {
                 return $inStream;
             }
         );
-        $responseFactory->expects($this->any())->method('createResponse')->willReturn($response);
+        $responseFactory->method('createResponse')->willReturn($response);
 
         $client = $this->createMock(ClientInterface::class);
         $client->expects($this->once())
@@ -269,7 +269,7 @@ class EastEndPointTraitTest extends TestCase
             ->willReturnSelf();
 
         $result = $this->createMock(ResultInterface::class);
-        $result->expects($this->any())->method('__toString')->willReturn('fooBar');
+        $result->method('__toString')->willReturn('fooBar');
 
         $templateEngine = $this->createMock(EngineInterface::class);
         $templateEngine->expects($this->once())->method('render')->willReturnCallback(
@@ -288,7 +288,7 @@ class EastEndPointTraitTest extends TestCase
             }
         });
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $controller::class,
             $controller
                 ->setStreamFactory($streamFactory)
@@ -302,19 +302,19 @@ class EastEndPointTraitTest extends TestCase
     {
         $responseFactory = $this->createMock(ResponseFactoryInterface::class);
         $response = $this->createMock(ResponseInterface::class);
-        $response->expects($this->any())->method('withHeader')->willReturnSelf();
-        $responseFactory->expects($this->any())->method('createResponse')->willReturn($response);
+        $response->method('withHeader')->willReturnSelf();
+        $responseFactory->method('createResponse')->willReturn($response);
 
         $stream = $this->createMock(StreamInterface::class);
         $streamFactory = $this->createMock(StreamFactoryInterface::class);
-        $streamFactory->expects($this->any())->method('createStream')->willReturn($stream);
+        $streamFactory->method('createStream')->willReturn($stream);
 
         $client = $this->createMock(ClientInterface::class);
         $client->expects($this->once())
             ->method('errorInRequest');
 
         $result = $this->createMock(ResultInterface::class);
-        $result->expects($this->any())->method('__toString')->willReturn('fooBar');
+        $result->method('__toString')->willReturn('fooBar');
 
         $templateEngine = $this->createMock(EngineInterface::class);
         $templateEngine->expects($this->once())->method('render')->willReturnCallback(
@@ -333,7 +333,7 @@ class EastEndPointTraitTest extends TestCase
             }
         });
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $controller::class,
             $controller
                 ->setStreamFactory($streamFactory)
@@ -347,24 +347,24 @@ class EastEndPointTraitTest extends TestCase
     {
         $stream = $this->createMock(StreamInterface::class);
         $streamFactory = $this->createMock(StreamFactoryInterface::class);
-        $streamFactory->expects($this->any())->method('createStream')->willReturn($stream);
+        $streamFactory->method('createStream')->willReturn($stream);
 
         $responseFactory = $this->createMock(ResponseFactoryInterface::class);
         $response = $this->createMock(ResponseInterface::class);
-        $response->expects($this->any())->method('withHeader')->willReturnSelf();
+        $response->method('withHeader')->willReturnSelf();
         $inStream = null;
-        $response->expects($this->any())->method('withBody')->willReturnCallback(
+        $response->method('withBody')->willReturnCallback(
             function ($value) use (&$inStream, $response) {
                 $inStream = $value;
                 return $response;
             }
         );
-        $response->expects($this->any())->method('getBody')->willReturnCallback(
+        $response->method('getBody')->willReturnCallback(
             function () use (&$inStream) {
                 return $inStream;
             }
         );
-        $responseFactory->expects($this->any())->method('createResponse')->willReturn($response);
+        $responseFactory->method('createResponse')->willReturn($response);
 
         $client = $this->createMock(ClientInterface::class);
         $client->expects($this->never())
@@ -388,37 +388,37 @@ class EastEndPointTraitTest extends TestCase
     {
         $stream = $this->createMock(CallbackStreamInterface::class);
         $callBack = null;
-        $stream->expects($this->any())->method('bind')->willReturnCallback(
+        $stream->method('bind')->willReturnCallback(
             function ($value) use (&$callBack, $stream) {
                 $callBack = $value;
 
                 return $stream;
             }
         );
-        $stream->expects($this->any())->method('getContents')->willReturnCallback(
+        $stream->method('getContents')->willReturnCallback(
             function () use (&$callBack) {
                 return $callBack();
             }
         );
         $streamFactory = $this->createMock(StreamFactoryInterface::class);
-        $streamFactory->expects($this->any())->method('createStream')->willReturn($stream);
+        $streamFactory->method('createStream')->willReturn($stream);
 
         $responseFactory = $this->createMock(ResponseFactoryInterface::class);
         $response = $this->createMock(ResponseInterface::class);
-        $response->expects($this->any())->method('withHeader')->willReturnSelf();
+        $response->method('withHeader')->willReturnSelf();
         $inStream = null;
-        $response->expects($this->any())->method('withBody')->willReturnCallback(
+        $response->method('withBody')->willReturnCallback(
             function ($value) use (&$inStream, $response) {
                 $inStream = $value;
                 return $response;
             }
         );
-        $response->expects($this->any())->method('getBody')->willReturnCallback(
+        $response->method('getBody')->willReturnCallback(
             function () use (&$inStream) {
                 return $inStream;
             }
         );
-        $responseFactory->expects($this->any())->method('createResponse')->willReturn($response);
+        $responseFactory->method('createResponse')->willReturn($response);
 
         $client = $this->createMock(ClientInterface::class);
 
@@ -443,8 +443,8 @@ class EastEndPointTraitTest extends TestCase
 
         $responseFactory = $this->createMock(ResponseFactoryInterface::class);
         $response = $this->createMock(ResponseInterface::class);
-        $response->expects($this->any())->method('withHeader')->willReturnSelf();
-        $responseFactory->expects($this->any())->method('createResponse')->willReturn($response);
+        $response->method('withHeader')->willReturnSelf();
+        $responseFactory->method('createResponse')->willReturn($response);
 
         (new class() implements EndPointInterface {
             use EastEndPointTrait;
@@ -461,8 +461,8 @@ class EastEndPointTraitTest extends TestCase
     {
         $responseFactory = $this->createMock(ResponseFactoryInterface::class);
         $response = $this->createMock(ResponseInterface::class);
-        $response->expects($this->any())->method('withHeader')->willReturnSelf();
-        $responseFactory->expects($this->any())->method('createResponse')->willReturn($response);
+        $response->method('withHeader')->willReturnSelf();
+        $responseFactory->method('createResponse')->willReturn($response);
 
         $this->expectException(AccessDeniedHttpException::class);
         (new class() implements EndPointInterface {
@@ -482,8 +482,8 @@ class EastEndPointTraitTest extends TestCase
 
         $responseFactory = $this->createMock(ResponseFactoryInterface::class);
         $response = $this->createMock(ResponseInterface::class);
-        $response->expects($this->any())->method('withHeader')->willReturnSelf();
-        $responseFactory->expects($this->any())->method('createResponse')->willReturn($response);
+        $response->method('withHeader')->willReturnSelf();
+        $responseFactory->method('createResponse')->willReturn($response);
 
         (new class() implements EndPointInterface {
             use EastEndPointTrait;
@@ -500,7 +500,7 @@ class EastEndPointTraitTest extends TestCase
     {
         $storage = $this->createMock(TokenStorageInterface::class, [], [], '', false);
 
-        self::assertEmpty(
+        $this->assertEmpty(
             (new class() implements EndPointInterface {
                 use EastEndPointTrait;
 
@@ -515,11 +515,11 @@ class EastEndPointTraitTest extends TestCase
     public function testGetUserBadToken()
     {
         $storage = $this->createMock(TokenStorageInterface::class, [], [], '', false);
-        $storage->expects($this->any())
+        $storage
             ->method('getToken')
             ->willReturn($this->createMock(TokenInterface::class));
 
-        self::assertEmpty(
+        $this->assertEmpty(
             (new class() implements EndPointInterface {
                 use EastEndPointTrait;
 
@@ -534,7 +534,7 @@ class EastEndPointTraitTest extends TestCase
     public function testGetUserUser()
     {
         $token = $this->createMock(TokenInterface::class);
-        $token->expects($this->any())
+        $token
             ->method('getUser')
             ->willReturnCallback(fn() => new class() implements UserInterface {
                 public function getPassword() {}
@@ -546,11 +546,11 @@ class EastEndPointTraitTest extends TestCase
             });
 
         $storage = $this->createMock(TokenStorageInterface::class, [], [], '', false);
-        $storage->expects($this->any())
+        $storage
             ->method('getToken')
             ->willReturn($token);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             UserInterface::class,
             (new class() implements EndPointInterface {
                 use EastEndPointTrait;

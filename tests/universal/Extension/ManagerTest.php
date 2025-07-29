@@ -82,8 +82,8 @@ class ManagerTest extends TestCase
         $m1 = Manager::run($loader);
         $m2 = Manager::run($loader);
 
-        self::assertInstanceOf(Manager::class, $m1);
-        self::assertSame($m1, $m2);
+        $this->assertInstanceOf(Manager::class, $m1);
+        $this->assertSame($m1, $m2);
     }
 
     public function testRunWithoutLoader()
@@ -92,8 +92,8 @@ class ManagerTest extends TestCase
         $m1 = Manager::run();
         $m2 = Manager::run();
 
-        self::assertInstanceOf(Manager::class, $m1);
-        self::assertSame($m1, $m2);
+        $this->assertInstanceOf(Manager::class, $m1);
+        $this->assertSame($m1, $m2);
     }
 
     public function testRunWithLoaderClassInEnvReferencingUnknownClass()
@@ -119,8 +119,8 @@ class ManagerTest extends TestCase
         $m1 = Manager::run();
         $m2 = Manager::run();
 
-        self::assertInstanceOf(Manager::class, $m1);
-        self::assertSame($m1, $m2);
+        $this->assertInstanceOf(Manager::class, $m1);
+        $this->assertSame($m1, $m2);
     }
 
     public function testExecute()
@@ -141,12 +141,12 @@ class ManagerTest extends TestCase
         $module = $this->createMock(ModuleInterface::class);
         $m1->execute($module);
 
-        self::assertSame($module, $ext->module);
+        $this->assertSame($module, $ext->module);
         $ext->module = null;
 
         $m2->execute($module);
 
-        self::assertSame($module, $ext->module);
+        $this->assertSame($module, $ext->module);
         $ext->module = null;
     }
 
@@ -169,10 +169,10 @@ class ManagerTest extends TestCase
 
         $module = $this->createMock(ModuleInterface::class);
         $m1->execute($module);
-        self::assertNull($ext->module);
+        $this->assertNull($ext->module);
 
         $m2->execute($module);
-        self::assertNull($ext->module);
+        $this->assertNull($ext->module);
     }
 
     public function testListLoadedExtensions()
@@ -187,7 +187,7 @@ class ManagerTest extends TestCase
                 ExtensionMock1::class
             ]);
 
-        self::assertEquals(
+        $this->assertEquals(
             [
                 ExtensionMock1::class => 'test 1'
             ],
@@ -209,7 +209,7 @@ class ManagerTest extends TestCase
                 ExtensionMock1::class
             ]);
 
-        self::assertEquals(
+        $this->assertEquals(
             [],
             \iterator_to_array($m1->listLoadedExtensions())
         );

@@ -46,12 +46,12 @@ class CallbackStreamFactoryTest extends TestCase
 
     public function testCreateStream()
     {
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             CallbackStream::class,
             $stream = $this->buildFactory()->createStream('foo')
         );
 
-        self::assertEquals(
+        $this->assertEquals(
             'foo',
             $stream->getContents()
         );
@@ -59,12 +59,12 @@ class CallbackStreamFactoryTest extends TestCase
 
     public function testCreateStreamFromFile()
     {
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             CallbackStream::class,
             $stream = $this->buildFactory()->createStreamFromFile('php://memory', 'r')
         );
 
-        self::assertEquals(
+        $this->assertEquals(
             '',
             $stream->getContents()
         );
@@ -72,7 +72,7 @@ class CallbackStreamFactoryTest extends TestCase
 
     public function testCreateStreamFromFileNotReadable()
     {
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             CallbackStream::class,
             $stream = $this->buildFactory()->createStreamFromFile('/aaaaa', 'r')
         );
@@ -87,12 +87,12 @@ class CallbackStreamFactoryTest extends TestCase
         fwrite($hf, 'fooBarContent');
         \fseek($hf, 0);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             CallbackStream::class,
             $stream = $this->buildFactory()->createStreamFromResource($hf)
         );
 
-        self::assertEquals(
+        $this->assertEquals(
             'fooBarContent',
             $stream->getContents($hf)
         );

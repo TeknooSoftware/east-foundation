@@ -48,9 +48,9 @@ class RoutesTest extends TestCase
             ->method('execute')
             ->willReturnCallback(
                 function ($module) use ($manager) {
-                    self::assertinstanceOf(Routes::class, $module);
+                    $this->assertinstanceOf(Routes::class, $module);
 
-                    self::assertEquals('test', $module->getEnvironment());
+                    $this->assertEquals('test', $module->getEnvironment());
                     $module->import('foo', 'bar', false, 'test');
 
                     return $manager;

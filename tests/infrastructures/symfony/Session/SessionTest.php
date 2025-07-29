@@ -79,7 +79,7 @@ class SessionTest extends \PHPUnit\Framework\TestCase
             ->method('set')
             ->with('foo', 'bar');
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Session::class,
             $this->buildSession()->set('foo', 'bar')
         );
@@ -120,7 +120,7 @@ class SessionTest extends \PHPUnit\Framework\TestCase
             ->with('foo')
             ->willReturn('bar');
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Session::class,
             $this->buildSession()->get('foo', $promise)
         );
@@ -144,7 +144,7 @@ class SessionTest extends \PHPUnit\Framework\TestCase
             ->expects($this->never())
             ->method('get');
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Session::class,
             $this->buildSession()->get('foo', $promise)
         );
@@ -163,7 +163,7 @@ class SessionTest extends \PHPUnit\Framework\TestCase
             ->method('remove')
             ->with('foo');
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Session::class,
             $this->buildSession()->remove('foo')
         );
@@ -175,7 +175,7 @@ class SessionTest extends \PHPUnit\Framework\TestCase
             ->expects($this->once())
             ->method('clear');
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Session::class,
             $this->buildSession()->clear()
         );

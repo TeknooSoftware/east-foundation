@@ -48,7 +48,7 @@ class ComposerLoaderTest extends TestCase
     public function testInvoke()
     {
         $loader = new ComposerLoader();
-        self::assertEquals(
+        $this->assertEquals(
             [
 
                 ExtensionMock1::class,

@@ -44,12 +44,12 @@ class MessageTest extends TestCase
         $message = new Message();
         $newMessage = $message->withProtocolVersion('1.1');
 
-        self::assertNotSame(
+        $this->assertNotSame(
             $message,
             $newMessage
         );
 
-        self::assertEquals(
+        $this->assertEquals(
             '1.1',
             $newMessage->getProtocolVersion()
         );
@@ -59,38 +59,38 @@ class MessageTest extends TestCase
     {
         $message = new Message();
 
-        self::assertFalse(
+        $this->assertFalse(
             $message->hasHeader('foo')
         );
 
         $newMessage = $message->withHeader('foo', 'bar');
 
-        self::assertNotSame(
+        $this->assertNotSame(
             $message,
             $newMessage
         );
 
-        self::assertFalse(
+        $this->assertFalse(
             $message->hasHeader('foo')
         );
 
-        self::assertTrue(
+        $this->assertTrue(
             $newMessage->hasHeader('foo')
         );
 
-        self::assertEquals(
+        $this->assertEquals(
             ['foo' => ['bar']],
             $newMessage->getHeaders()
         );
 
-        self::assertEquals(
+        $this->assertEquals(
             ['bar'],
             $newMessage->getHeader('foo')
         );
 
         $newMessage = $newMessage->withAddedHeader('foo', 'bar2');
 
-        self::assertEquals(
+        $this->assertEquals(
             ['bar', 'bar2'],
             $newMessage->getHeader('foo')
         );
@@ -101,12 +101,12 @@ class MessageTest extends TestCase
         $message = new Message();
         $newMessage = $message->withBody($this->createMock(StreamInterface::class));
 
-        self::assertNotSame(
+        $this->assertNotSame(
             $message,
             $newMessage
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             StreamInterface::class,
             $newMessage->getBody()
         );

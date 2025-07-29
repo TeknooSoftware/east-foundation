@@ -51,7 +51,7 @@ class ConfigurationTest extends \PHPUnit\Framework\TestCase
     {
         $treeBuilder = $this->buildConfiguration()->getConfigTreeBuilder();
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TreeBuilder::class,
             $treeBuilder
         );
