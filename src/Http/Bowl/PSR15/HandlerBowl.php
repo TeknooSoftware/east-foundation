@@ -53,7 +53,7 @@ class HandlerBowl extends Bowl
             callable: static function (
                 ServerRequestInterface $request,
                 ClientInterface $client,
-            ) use ($handler) {
+            ) use ($handler): void {
                 $response = $handler->handle(
                     request: $request
                 );

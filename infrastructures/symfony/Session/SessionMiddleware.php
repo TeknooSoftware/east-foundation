@@ -43,7 +43,7 @@ use Teknoo\East\Foundation\Session\SessionInterface;
  */
 class SessionMiddleware implements MiddlewareInterface
 {
-    final public const MIDDLEWARE_PRIORITY = 5;
+    final public const int MIDDLEWARE_PRIORITY = 5;
 
     public function execute(
         ClientInterface $client,

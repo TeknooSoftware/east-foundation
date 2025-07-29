@@ -48,7 +48,7 @@ class TimeoutService implements TimeoutServiceInterface
     private $setTimeoutCallable;
 
     public function __construct(
-        private ?TimerService $timer = null,
+        private readonly ?TimerService $timer = null,
     ) {
         $this->setTimeoutCallable = set_time_limit(...);
     }

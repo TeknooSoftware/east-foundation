@@ -42,7 +42,7 @@ return [
     BaseClient::class => get(Client::class),
     HttpClient::class => get(Client::class),
 
-    PlanInterface::class => decorate(static function (PlanInterface $previous, ContainerInterface $container) {
+    PlanInterface::class => decorate(static function (PlanInterface $previous, ContainerInterface $container): \Teknoo\East\Foundation\Recipe\PlanInterface {
         /** @var SessionMiddleware $sessionMiddleware */
         $sessionMiddleware = $container->get(SessionMiddleware::class);
         $previous->add(

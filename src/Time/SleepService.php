@@ -48,8 +48,8 @@ use function usleep;
 class SleepService implements SleepServiceInterface
 {
     public function __construct(
-        private TimerServiceInterface $timer,
-        private int $usleeepTime = 1000,
+        private readonly TimerServiceInterface $timer,
+        private readonly int $usleeepTime = 1000,
     ) {
     }
 
@@ -72,7 +72,7 @@ class SleepService implements SleepServiceInterface
         $timerId = "timer-$seconds" . bin2hex(random_bytes(23));
 
         $timerFinished = new Promise(
-            fn () => true,
+            fn (): true => true,
             fn (#[SensitiveParameter] Throwable $error) => throw $error,
         );
         $timerFinished->setDefaultResult(false);

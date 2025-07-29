@@ -59,7 +59,7 @@ class FiberMiddlewareBowl extends FiberBowl
                 ServerRequestInterface $request,
                 ChefInterface $chef,
                 ClientInterface $client,
-            ) use ($middleware) {
+            ) use ($middleware): void {
                 $response = $middleware->process(
                     request: $request,
                     handler: new PSR15(

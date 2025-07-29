@@ -52,9 +52,9 @@ use const JSON_THROW_ON_ERROR;
  */
 class FileLoader implements LoaderInterface
 {
-    private const ENV_FILE_NAME = 'TEKNOO_EAST_EXTENSION_FILE';
+    private const string ENV_FILE_NAME = 'TEKNOO_EAST_EXTENSION_FILE';
 
-    private const DEFAULT_FILE_NAME = 'extensions/enabled.json';
+    private const string DEFAULT_FILE_NAME = 'extensions/enabled.json';
 
     /**
      * @var array<class-string<ExtensionInterface>>

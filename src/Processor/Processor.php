@@ -92,8 +92,8 @@ class Processor implements ProcessorInterface, ImmutableInterface
      */
     private function getParameters(ServerRequestInterface $request): array
     {
-        return (array) $request->getAttributes()
+        return $request->getAttributes()
             + (array) $request->getParsedBody()
-            + (array) $request->getQueryParams();
+            + $request->getQueryParams();
     }
 }

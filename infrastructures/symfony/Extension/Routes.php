@@ -46,8 +46,8 @@ use Teknoo\East\Foundation\Extension\ModuleInterface;
 class Routes implements ModuleInterface
 {
     private function __construct(
-        private RoutingConfigurator $routes,
-        private string $environment,
+        private readonly RoutingConfigurator $routes,
+        private readonly string $environment,
     ) {
     }
 

@@ -55,7 +55,9 @@ class Client implements ClientInterface, ResetInterface
 {
     // see https://tldp.org/LDP/abs/html/exitcodes.html
     public const SUCCESS = 0;
+
     public const FAILURE = 1;
+
     public const INVALID = 2;
 
     private ?OutputInterface $output = null;

@@ -173,9 +173,7 @@ class Client implements ClientWithResponseEventInterface, ResetInterface
      */
     public function __clone()
     {
-        if (null !== $this->factory) {
-            $this->factory = clone $this->factory;
-        }
+        $this->factory = clone $this->factory;
 
         if (null !== $this->requestEvent) {
             $this->requestEvent = clone $this->requestEvent;

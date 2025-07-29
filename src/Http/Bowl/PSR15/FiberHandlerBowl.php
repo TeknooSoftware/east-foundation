@@ -54,7 +54,7 @@ class FiberHandlerBowl extends FiberBowl
             callable: static function (
                 ServerRequestInterface $request,
                 ClientInterface $client,
-            ) use ($handler) {
+            ) use ($handler): void {
                 $response = $handler->handle(
                     request: $request
                 );

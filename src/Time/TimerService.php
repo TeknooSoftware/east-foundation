@@ -64,7 +64,7 @@ class TimerService implements TimerServiceInterface
     private array $pipes = [];
 
     public function __construct(
-        private DatesService $datesService,
+        private readonly DatesService $datesService,
     ) {
         pcntl_async_signals(true);
     }
@@ -155,8 +155,7 @@ class TimerService implements TimerServiceInterface
 
         $next = null;
         if (!empty($this->pipes)) {
-            reset($this->pipes);
-            $next = key($this->pipes);
+            $next = array_key_first($this->pipes);
         }
 
         if (isset($this->callbacks[$timerId])) {

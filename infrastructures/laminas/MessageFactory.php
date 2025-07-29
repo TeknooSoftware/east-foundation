@@ -40,6 +40,6 @@ class MessageFactory implements MessageFactoryInterface
 {
     public function createMessage(string $protocolVersion): MessageInterface
     {
-        return (new Message())->withProtocolVersion($protocolVersion);
+        return new Message()->withProtocolVersion($protocolVersion);
     }
 }

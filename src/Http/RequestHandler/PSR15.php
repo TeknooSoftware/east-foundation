@@ -47,8 +47,8 @@ class PSR15 implements RequestHandlerInterface
     private ?ResponseInterface $extractedResponse = null;
 
     public function __construct(
-        private ChefInterface $chef,
-        private ClientInterface $client,
+        private readonly ChefInterface $chef,
+        private readonly ClientInterface $client,
     ) {
     }
 
@@ -57,7 +57,7 @@ class PSR15 implements RequestHandlerInterface
         $this->chef->continue();
 
         $this->client->updateResponse(
-            function (ClientInterface $client, $response) {
+            function (ClientInterface $client, $response): void {
                 if ($response instanceof ResponseInterface) {
                     $this->extractedResponse = $response;
                 }

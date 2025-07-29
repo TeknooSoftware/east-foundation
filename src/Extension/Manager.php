@@ -47,9 +47,9 @@ use function is_a;
  */
 class Manager implements ManagerInterface
 {
-    private const KEY_LOADER_ENV_NAME = 'TEKNOO_EAST_EXTENSION_LOADER';
+    private const string KEY_LOADER_ENV_NAME = 'TEKNOO_EAST_EXTENSION_LOADER';
 
-    private const KEY_DISABLED_ENV_NAME = 'TEKNOO_EAST_EXTENSION_DISABLED';
+    private const string KEY_DISABLED_ENV_NAME = 'TEKNOO_EAST_EXTENSION_DISABLED';
 
     protected static ?self $instance = null;
 

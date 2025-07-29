@@ -105,7 +105,7 @@ class Router implements RouterInterface
     {
         $parameters = [];
         $path = $this->cleanSymfonyHandler(
-            (string) $request->getUri()->getPath()
+            $request->getUri()->getPath()
         );
 
         if (null !== $this->excludePathsRegex && preg_match($this->excludePathsRegex, $path)) {
