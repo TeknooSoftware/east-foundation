@@ -4,7 +4,7 @@
     "description": "East Foundation is a universal package to implement the #east philosophy ( http://blog.est.voyage/phpTour2015/ ) with any framework supporting PSR-11, PSR-15 or with Symfony 4+.",
     "keywords": ["east", "controller", "design", "psr15"],
     "homepage": "https://teknoo.software/east-collection/foundation",
-    "license": ["MIT"],
+    "license": ["BSD-3-Clause"],
     "authors": [
         {
             "name": "Richard Déloge",
