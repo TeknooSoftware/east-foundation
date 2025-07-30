@@ -1,4 +1,5 @@
 <?php
+
 /**
  * East Foundation.
  *
@@ -33,6 +34,7 @@ use Teknoo\East\Foundation\Time\DatesService;
 use Teknoo\East\Foundation\Time\SleepService;
 use Teknoo\East\Foundation\Time\TimerService;
 use Teknoo\East\Foundation\Time\TimerServiceInterface;
+
 use function pcntl_alarm;
 use function sleep;
 use function str_repeat;

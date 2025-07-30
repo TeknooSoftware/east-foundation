@@ -1,4 +1,5 @@
 <?php
+
 /**
  * East Foundation.
  *
@@ -51,7 +52,7 @@ class MiddlewareBowlTest extends AbstractBowlTests
 {
     protected function getCallable(): \Psr\Http\Server\MiddlewareInterface
     {
-        return new class implements MiddlewareInterface {
+        return new class () implements MiddlewareInterface {
             public function process(
                 ServerRequestInterface $request,
                 RequestHandlerInterface $handler

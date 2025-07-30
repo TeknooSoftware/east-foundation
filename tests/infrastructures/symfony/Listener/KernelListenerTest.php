@@ -1,4 +1,5 @@
 <?php
+
 /**
  * East Foundation.
  *
@@ -107,7 +108,7 @@ class KernelListenerTest extends TestCase
         $psrRquest->method('withAttribute')->willReturnSelf();
 
         $this->getFactoryMock()
-            
+
             ->method('createRequest')
             ->willReturn($psrRquest);
 

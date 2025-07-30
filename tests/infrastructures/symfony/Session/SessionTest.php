@@ -1,4 +1,5 @@
 <?php
+
 /**
  * East Foundation.
  *
@@ -65,7 +66,7 @@ class SessionTest extends TestCase
         $this->expectException(TypeError::class);
         $this->buildSession()->set(new stdClass(), '');
     }
-    
+
     public function testSet(): void
     {
         $this->getSymfonySession()
@@ -91,7 +92,7 @@ class SessionTest extends TestCase
         $this->expectException(TypeError::class);
         $this->buildSession()->get('foo', new stdClass());
     }
-    
+
     public function testGetFound(): void
     {
         $promise = $this->createMock(PromiseInterface::class);

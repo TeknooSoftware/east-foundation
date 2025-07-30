@@ -1,4 +1,5 @@
 <?php
+
 /**
  * East Foundation.
  *
@@ -51,7 +52,7 @@ class ResponseMessageFactoryTest extends TestCase
             MessageInterface::class,
             $message = $this->buildFactory()->createMessage('1.1')
         );
-        
+
         $this->assertInstanceOf(
             ResponseInterface::class,
             $message

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * East Foundation.
  *
@@ -49,7 +50,7 @@ use Teknoo\East\FoundationBundle\Session\SessionMiddleware;
  */
 class ContainerTest extends TestCase
 {
-    protected function buildContainer() : Container
+    protected function buildContainer(): Container
     {
         return include __DIR__.'/../../../../infrastructures/symfony/generator.php';
     }

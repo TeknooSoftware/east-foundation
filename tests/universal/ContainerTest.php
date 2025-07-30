@@ -1,4 +1,5 @@
 <?php
+
 /**
  * East Foundation.
  *
@@ -64,7 +65,7 @@ use function defined;
  */
 class ContainerTest extends TestCase
 {
-    protected function buildContainer() : Container
+    protected function buildContainer(): Container
     {
         return include __DIR__ . '/../../src/generator.php';
     }

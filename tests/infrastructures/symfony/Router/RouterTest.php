@@ -1,4 +1,5 @@
 <?php
+
 /**
  * East Foundation.
  *
@@ -345,7 +346,7 @@ class RouterTest extends TestCase
                 return $manager;
             });
 
-        $class = new class {
+        $class = new class () {
             public static function action(): void
             {
             }
@@ -381,7 +382,7 @@ class RouterTest extends TestCase
         $manager = $this->createMock(ManagerInterface::class);
         $manager->expects($this->never())->method('updateWorkPlan');
 
-        $class = new class {
+        $class = new class () {
             public function action(): void
             {
             }
@@ -416,7 +417,7 @@ class RouterTest extends TestCase
         $manager = $this->createMock(ManagerInterface::class);
         $manager->expects($this->never())->method('updateWorkPlan');
 
-        $class = new class {
+        $class = new class () {
             public function action(): void
             {
             }
@@ -451,7 +452,7 @@ class RouterTest extends TestCase
         $manager = $this->createMock(ManagerInterface::class);
         $manager->expects($this->never())->method('updateWorkPlan');
 
-        $class = new class extends SymfonyAbstractController {
+        $class = new class () extends SymfonyAbstractController {
             public static function action(): void
             {
             }
@@ -528,7 +529,7 @@ class RouterTest extends TestCase
 
         $this->getContainerMock()->method('has')->with('fooBar')->willReturn(true);
         $this->getContainerMock()->method('get')->with('fooBar')->willReturn(
-            new class extends SymfonyAbstractController {
+            new class () extends SymfonyAbstractController {
             }
         );
 

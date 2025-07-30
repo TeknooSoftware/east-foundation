@@ -1,4 +1,5 @@
 <?php
+
 /**
  * East Foundation.
  *
@@ -74,7 +75,7 @@ class ClientTest extends TestCase
         $this->expectException(TypeError::class);
         $this->buildClient()->updateResponse(new stdClass());
     }
-    
+
     public function testUpdateResponse(): void
     {
         $client = $this->buildClient();
@@ -83,7 +84,7 @@ class ClientTest extends TestCase
             $client->updateResponse(
                 function (
                     ClientInterface $client,
-                    ?ResponseInterface $response=null
+                    ?ResponseInterface $response = null
                 ) {
                     $this->assertEmpty($response);
                 }
@@ -102,7 +103,7 @@ class ClientTest extends TestCase
         $this->assertInstanceOf(
             $this->getClientClass(),
             $client->acceptResponse($response)->updateResponse(
-                function (ClientInterface $client, ?ResponseInterface $responsePassed=null) use ($response): void {
+                function (ClientInterface $client, ?ResponseInterface $responsePassed = null) use ($response): void {
                     $this->assertEquals($response, $responsePassed);
                 }
             )
@@ -114,7 +115,7 @@ class ClientTest extends TestCase
         $this->expectException(TypeError::class);
         $this->buildClient()->acceptResponse(new stdClass());
     }
-    
+
     public function testAcceptResponse(): void
     {
         /**
@@ -128,7 +129,7 @@ class ClientTest extends TestCase
             $client->acceptResponse($response)
         );
     }
-    
+
     public function testSendResponse(): void
     {
         /**
@@ -153,7 +154,7 @@ class ClientTest extends TestCase
          * @var ResponseInterface
          */
         $response = $this->createMock(ResponseInterface::class);
-        
+
         $this->getOutputMock()
             ->method('writeln');
 
@@ -166,8 +167,7 @@ class ClientTest extends TestCase
 
     public function testSendJsonWithAccept(): void
     {
-        $response = new class implements EastResponse, \JsonSerializable
-        {
+        $response = new class () implements EastResponse, \JsonSerializable {
             public function __toString(): string
             {
                 return 'foo';
@@ -265,8 +265,7 @@ class ClientTest extends TestCase
 
     public function testSendResponseCleanJson(): void
     {
-        $response = new class implements EastResponse, \JsonSerializable
-        {
+        $response = new class () implements EastResponse, \JsonSerializable {
             public function __toString(): string
             {
                 return 'foo';

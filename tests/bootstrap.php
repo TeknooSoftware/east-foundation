@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -50,7 +51,8 @@ if (!\function_exists('pcntl_signal')) {
 }
 
 if (!\function_exists('pcntl_alarm')) {
-    function pcntl_alarm(int $seconds): void {
+    function pcntl_alarm(int $seconds): void
+    {
 
     }
 }

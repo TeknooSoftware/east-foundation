@@ -1,4 +1,5 @@
 <?php
+
 /**
  * East Foundation.
  *
@@ -50,7 +51,7 @@ class HandlerBowlTest extends AbstractBowlTests
 {
     protected function getCallable(): \Psr\Http\Server\RequestHandlerInterface
     {
-        return new class implements RequestHandlerInterface {
+        return new class () implements RequestHandlerInterface {
             public function handle(ServerRequestInterface $request): ResponseInterface
             {
                 return new TextResponse('foo-bar');

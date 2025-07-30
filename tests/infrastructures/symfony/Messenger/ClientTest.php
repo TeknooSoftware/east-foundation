@@ -1,4 +1,5 @@
 <?php
+
 /**
  * East Foundation.
  *
@@ -79,13 +80,13 @@ class ClientTest extends TestCase
         $this->expectException(TypeError::class);
         $this->buildClient()->updateResponse(new stdClass());
     }
-    
+
     public function testUpdateResponse(): void
     {
         $client = $this->buildClient();
         $this->assertInstanceOf(
             $this->getClientClass(),
-            $client->updateResponse(function (ClientInterface $client, ?ResponseInterface $response=null): void {
+            $client->updateResponse(function (ClientInterface $client, ?ResponseInterface $response = null): void {
                 $this->assertNotInstanceOf(\Psr\Http\Message\ResponseInterface::class, $response);
             })
         );
@@ -102,7 +103,7 @@ class ClientTest extends TestCase
         $this->assertInstanceOf(
             $this->getClientClass(),
             $client->acceptResponse($response)->updateResponse(
-                function (ClientInterface $client, ?ResponseInterface $responsePassed=null) use ($response): void {
+                function (ClientInterface $client, ?ResponseInterface $responsePassed = null) use ($response): void {
                     $this->assertEquals($response, $responsePassed);
                 }
             )
@@ -117,7 +118,7 @@ class ClientTest extends TestCase
         $this->assertInstanceOf(
             $this->getClientClass(),
             $client->acceptResponse($response)->updateResponse(
-                function (ClientInterface $client, ?EastResponse $responsePassed=null) use ($response): void {
+                function (ClientInterface $client, ?EastResponse $responsePassed = null) use ($response): void {
                     $this->assertEquals($response, $responsePassed);
                 }
             )
@@ -127,8 +128,7 @@ class ClientTest extends TestCase
     public function testUpdateResponseWithJsonResponse(): void
     {
 
-        $response = new class implements EastResponse, \JsonSerializable
-        {
+        $response = new class () implements EastResponse, \JsonSerializable {
             public function __toString(): string
             {
                 return 'foo';
@@ -144,7 +144,7 @@ class ClientTest extends TestCase
         $this->assertInstanceOf(
             $this->getClientClass(),
             $client->acceptResponse($response)->updateResponse(
-                function (ClientInterface $client, ?EastResponse $responsePassed=null) use ($response): void {
+                function (ClientInterface $client, ?EastResponse $responsePassed = null) use ($response): void {
                     $this->assertEquals($response, $responsePassed);
                 }
             )
@@ -156,7 +156,7 @@ class ClientTest extends TestCase
         $this->expectException(TypeError::class);
         $this->buildClient()->acceptResponse(new stdClass());
     }
-    
+
     public function testAcceptPSRResponse(): void
     {
         /**
@@ -184,8 +184,7 @@ class ClientTest extends TestCase
 
     public function testAcceptJsonResponse(): void
     {
-        $response = new class implements EastResponse, \JsonSerializable
-        {
+        $response = new class () implements EastResponse, \JsonSerializable {
             public function __toString(): string
             {
                 return 'foo';
@@ -203,12 +202,11 @@ class ClientTest extends TestCase
             $client->acceptResponse($response)
         );
     }
-    
+
     public function testSendJsonResponse(): void
     {
 
-        $response = new class implements EastResponse, \JsonSerializable
-        {
+        $response = new class () implements EastResponse, \JsonSerializable {
             public function __toString(): string
             {
                 return 'foo';
@@ -223,7 +221,7 @@ class ClientTest extends TestCase
         $this->getMessageBusInterfaceMock()
             ->expects($this->once())
             ->method('dispatch')
-            ->willReturn(new Envelope(new stdClass));
+            ->willReturn(new Envelope(new stdClass()));
 
         $client = $this->buildClient();
         $this->assertInstanceOf(
@@ -242,7 +240,7 @@ class ClientTest extends TestCase
         $this->getMessageBusInterfaceMock()
             ->expects($this->once())
             ->method('dispatch')
-            ->willReturn(new Envelope(new stdClass));
+            ->willReturn(new Envelope(new stdClass()));
 
         $client = $this->buildClient();
         $this->assertInstanceOf(
@@ -258,7 +256,7 @@ class ClientTest extends TestCase
         $this->getMessageBusInterfaceMock()
             ->expects($this->once())
             ->method('dispatch')
-            ->willReturn(new Envelope(new stdClass));
+            ->willReturn(new Envelope(new stdClass()));
 
         $client = $this->buildClient();
         $this->assertInstanceOf(
@@ -290,7 +288,7 @@ class ClientTest extends TestCase
         $this->getMessageBusInterfaceMock()
             ->expects($this->once())
             ->method('dispatch')
-            ->willReturn(new Envelope(new stdClass));
+            ->willReturn(new Envelope(new stdClass()));
 
         $client = $this->buildClient();
         $this->assertInstanceOf(
@@ -342,7 +340,7 @@ class ClientTest extends TestCase
         $this->getMessageBusInterfaceMock()
             ->expects($this->once())
             ->method('dispatch')
-            ->willReturn(new Envelope(new stdClass));
+            ->willReturn(new Envelope(new stdClass()));
 
         $client = $this->buildClient();
         $this->assertInstanceOf(
@@ -361,7 +359,7 @@ class ClientTest extends TestCase
         $this->getMessageBusInterfaceMock()
             ->expects($this->once())
             ->method('dispatch')
-            ->willReturn(new Envelope(new stdClass));
+            ->willReturn(new Envelope(new stdClass()));
 
         $client = $this->buildClient();
         $this->assertInstanceOf(
@@ -380,7 +378,7 @@ class ClientTest extends TestCase
         $this->getMessageBusInterfaceMock()
             ->expects($this->once())
             ->method('dispatch')
-            ->willReturn(new Envelope(new stdClass));
+            ->willReturn(new Envelope(new stdClass()));
 
         $client = $this->buildClient();
         $this->assertInstanceOf(

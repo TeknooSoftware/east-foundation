@@ -1,4 +1,5 @@
 <?php
+
 /**
  * East Foundation.
  *
@@ -38,7 +39,7 @@ class GroupsTraitTest extends TestCase
 {
     public function buildObject(): object
     {
-        return new class {
+        return new class () {
             use GroupsTrait;
 
             public function setConfig(array $configurations): void

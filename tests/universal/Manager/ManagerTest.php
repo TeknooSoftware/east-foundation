@@ -1,4 +1,5 @@
 <?php
+
 /**
  * East Foundation.
  *
@@ -152,7 +153,7 @@ class ManagerTest extends AbstractChefTests
 
     public function testStopWithRequest(): void
     {
-        $middleware = new readonly class($this) implements MiddlewareInterface {
+        $middleware = new readonly class ($this) implements MiddlewareInterface {
             private \Teknoo\Tests\East\Foundation\Manager\ManagerTest $testSuite;
 
             public function __construct(ManagerTest $that)
@@ -192,7 +193,7 @@ class ManagerTest extends AbstractChefTests
 
     public function testStopWithMessage(): void
     {
-        $middleware = new readonly class($this) implements MiddlewareInterface {
+        $middleware = new readonly class ($this) implements MiddlewareInterface {
             private \Teknoo\Tests\East\Foundation\Manager\ManagerTest $testSuite;
 
             public function __construct(ManagerTest $that)
@@ -645,7 +646,7 @@ class ManagerTest extends AbstractChefTests
             $manager->receiveRequest($clientMock, $serverRequestMock)
         );
     }
-    
+
     public function testBehaviorMultipleReceiveMessage(): void
     {
         $manager = $this->buildChef();

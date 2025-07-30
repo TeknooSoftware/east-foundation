@@ -1,4 +1,5 @@
 <?php
+
 /**
  * East Foundation.
  *
@@ -48,7 +49,6 @@ use Teknoo\Recipe\RecipeInterface;
 #[CoversClass(Executor::class)]
 class ExecutorTest extends TestCase
 {
-
     private ?ManagerInterface $manager = null;
 
     private function getManagerMock(): ManagerInterface&MockObject

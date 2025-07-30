@@ -1,4 +1,5 @@
 <?php
+
 /**
  * East Foundation.
  *
@@ -108,7 +109,7 @@ class SessionMiddlewareTest extends TestCase
 
         $request->expects($this->once())
             ->method('withAttribute')
-            ->with(SessionInterface::ATTRIBUTE_KEY, $this->callback(fn($object): bool => $object instanceof Session))
+            ->with(SessionInterface::ATTRIBUTE_KEY, $this->callback(fn ($object): bool => $object instanceof Session))
             ->willReturn($requestUpdated);
 
         $manager

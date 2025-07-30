@@ -1,4 +1,5 @@
 <?php
+
 /**
  * East Foundation.
  *
@@ -114,7 +115,7 @@ class EastFrameworkCompilerPassTest extends TestCase
 
         $this->getContainerBuilderMock()
             ->method('has')
-            ->willReturnCallback(fn(string $value): bool => 'twig' != $value);
+            ->willReturnCallback(fn (string $value): bool => 'twig' != $value);
 
         $this->getContainerBuilderMock()
             ->method('findTaggedServiceIds')
@@ -144,7 +145,7 @@ class EastFrameworkCompilerPassTest extends TestCase
             )
         );
     }
-    
+
     public function testProcessError(): void
     {
         $this->expectException(TypeError::class);

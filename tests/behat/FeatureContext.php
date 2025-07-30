@@ -70,8 +70,8 @@ use function parse_str;
 use function set_time_limit;
 use function sleep;
 use function time;
-
 use function trim;
+
 use const PHP_EOL;
 
 /**
@@ -129,7 +129,7 @@ class FeatureContext implements Context
     #[\Behat\Step\Given('I register a router')]
     public function iRegisterARouter(): void
     {
-        $this->router = new class implements RouterInterface {
+        $this->router = new class () implements RouterInterface {
             private array $routes = [];
 
             public function registerRoute(string $route, callable $controller): self
@@ -191,7 +191,7 @@ class FeatureContext implements Context
     private function createRecipeToReturnResponse(string $url, string $controllerName, string $type, bool $inFiber): void
     {
         $controller = $controllerName;
-        $recipe = new Recipe;
+        $recipe = new Recipe();
 
         if ('standard' === $controllerName) {
             $recipe = $recipe->cook(
@@ -202,7 +202,7 @@ class FeatureContext implements Context
                         );
                     } elseif ('east' === $type) {
                         $client->acceptResponse(
-                            new readonly class($test) implements EastResponse {
+                            new readonly class ($test) implements EastResponse {
                                 public function __construct(
                                     private string $value,
                                 ) {
@@ -214,9 +214,10 @@ class FeatureContext implements Context
                                 }
                             }
                         );
-                    }elseif ('json' === $type) {
+                    } elseif ('json' === $type) {
                         $client->acceptResponse(
-                            new readonly class($test) implements EastResponse, JsonSerializable {
+                            new readonly class ($test) implements EastResponse,
+                                JsonSerializable {
                                 public function __construct(
                                     private string $value,
                                 ) {
@@ -240,7 +241,7 @@ class FeatureContext implements Context
         }
 
         if ('psr 15 handler' === $controller) {
-            $handler = new class implements RequestHandlerInterface {
+            $handler = new class () implements RequestHandlerInterface {
                 public function handle(ServerRequestInterface $request): ResponseInterface
                 {
                     return new TextResponse('PSR15 Handler ' . $request->getQueryParams()['test']);
@@ -253,11 +254,11 @@ class FeatureContext implements Context
                 $bowl = new FiberHandlerBowl($handler, []);
             }
 
-            $recipe = $recipe->cook($bowl,'body',);
+            $recipe = $recipe->cook($bowl, 'body', );
         }
 
         if ('psr 15 middleware' === $controller) {
-            $middleware = new class implements PsrMiddleware {
+            $middleware = new class () implements PsrMiddleware {
                 public function process(
                     ServerRequestInterface $request,
                     RequestHandlerInterface $handler
@@ -276,7 +277,7 @@ class FeatureContext implements Context
 
             $recipe = $recipe->cook($bowl, 'body1');
             $recipe = $recipe->cook(
-                function (ClientInterface $client, ServerRequest $request): void  {
+                function (ClientInterface $client, ServerRequest $request): void {
                     $client->acceptResponse(
                         new TextResponse($request->getQueryParams()['test'])
                     );
@@ -317,7 +318,7 @@ class FeatureContext implements Context
 
     private function createClient(): void
     {
-        $this->client = new class($this) implements ClientInterface {
+        $this->client = new class ($this) implements ClientInterface {
             private readonly FeatureContext $context;
 
             private bool $inSilentlyMode = false;
@@ -389,7 +390,8 @@ class FeatureContext implements Context
         $this->response = null;
         $this->error = null;
 
-        $this->createClient();;
+        $this->createClient();
+        ;
 
         $request = new ServerRequest();
         $request = $request->withUri(new \Laminas\Diactoros\Uri($url));
@@ -432,7 +434,7 @@ class FeatureContext implements Context
     }
 
     #[\Behat\Step\Then('I should get as response :value')]
-    public function iShouldGetAsResponse ($value): void
+    public function iShouldGetAsResponse($value): void
     {
         if ($this->response instanceof ResponseInterface) {
             Assert::assertEquals($value, (string) $this->response->getBody());
@@ -548,12 +550,12 @@ class FeatureContext implements Context
                 sleep(2);
                 $service->ping();
                 $client->acceptResponse(
-                   new class implements EastResponse {
-                       public function __toString(): string
-                       {
-                           return 'ok';
-                       }
-                   }
+                    new class () implements EastResponse {
+                        public function __toString(): string
+                        {
+                            return 'ok';
+                        }
+                    }
                 );
             },
             name: 'shortTask'
@@ -638,7 +640,7 @@ class FeatureContext implements Context
                 sleep(60);
                 $service->ping();
                 $client->acceptResponse(
-                    new class implements EastResponse {
+                    new class () implements EastResponse {
                         public function __toString(): string
                         {
                             return 'ok';

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * East Foundation.
  *
@@ -27,9 +28,7 @@ namespace Teknoo\Tests\East\Foundation\Extension;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Teknoo\East\Foundation\Extension\ComposerLoader;
-
 use Teknoo\Tests\East\Foundation\Extension\Support\ExtensionMock1;
-
 use Teknoo\Tests\East\Foundation\Extension\Support\ExtensionMock2;
 
 use function iterator_to_array;

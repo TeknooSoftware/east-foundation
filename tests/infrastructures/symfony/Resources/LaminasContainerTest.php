@@ -1,4 +1,5 @@
 <?php
+
 /**
  * East Foundation.
  *
@@ -49,11 +50,11 @@ use Teknoo\East\Foundation\Http\Message\MessageFactoryInterface;
  */
 class LaminasContainerTest extends TestCase
 {
-    protected function buildContainer() : Container
+    protected function buildContainer(): Container
     {
         $containerDefinition = new ContainerBuilder();
         $containerDefinition->addDefinitions(
-        __DIR__.'/../../../../infrastructures/symfony/Resources/config/laminas_di.php'
+            __DIR__.'/../../../../infrastructures/symfony/Resources/config/laminas_di.php'
         );
 
         return $containerDefinition->build();
@@ -64,7 +65,7 @@ class LaminasContainerTest extends TestCase
         $container = $this->buildContainer();
 
         $this->assertInstanceOf(
-          ServerRequestFactory::class,
+            ServerRequestFactory::class,
             $container->get(ServerRequestFactory::class)
         );
     }
@@ -74,7 +75,7 @@ class LaminasContainerTest extends TestCase
         $container = $this->buildContainer();
 
         $this->assertInstanceOf(
-          ServerRequestFactoryInterface::class,
+            ServerRequestFactoryInterface::class,
             $container->get(ServerRequestFactoryInterface::class)
         );
     }
@@ -84,7 +85,7 @@ class LaminasContainerTest extends TestCase
         $container = $this->buildContainer();
 
         $this->assertInstanceOf(
-          UploadedFileFactory::class,
+            UploadedFileFactory::class,
             $container->get(UploadedFileFactory::class)
         );
     }
@@ -94,7 +95,7 @@ class LaminasContainerTest extends TestCase
         $container = $this->buildContainer();
 
         $this->assertInstanceOf(
-          UploadedFileFactoryInterface::class,
+            UploadedFileFactoryInterface::class,
             $container->get(UploadedFileFactoryInterface::class)
         );
     }
@@ -104,7 +105,7 @@ class LaminasContainerTest extends TestCase
         $container = $this->buildContainer();
 
         $this->assertInstanceOf(
-          ResponseFactory::class,
+            ResponseFactory::class,
             $container->get(ResponseFactory::class)
         );
     }
@@ -114,7 +115,7 @@ class LaminasContainerTest extends TestCase
         $container = $this->buildContainer();
 
         $this->assertInstanceOf(
-          ResponseFactoryInterface::class,
+            ResponseFactoryInterface::class,
             $container->get(ResponseFactoryInterface::class)
         );
     }
@@ -124,7 +125,7 @@ class LaminasContainerTest extends TestCase
         $container = $this->buildContainer();
 
         $this->assertInstanceOf(
-          StreamFactory::class,
+            StreamFactory::class,
             $container->get(StreamFactory::class)
         );
     }
@@ -134,7 +135,7 @@ class LaminasContainerTest extends TestCase
         $container = $this->buildContainer();
 
         $this->assertInstanceOf(
-          StreamFactoryInterface::class,
+            StreamFactoryInterface::class,
             $container->get(StreamFactoryInterface::class)
         );
     }
@@ -144,7 +145,7 @@ class LaminasContainerTest extends TestCase
         $container = $this->buildContainer();
 
         $this->assertInstanceOf(
-          MessageFactory::class,
+            MessageFactory::class,
             $container->get(MessageFactory::class)
         );
     }

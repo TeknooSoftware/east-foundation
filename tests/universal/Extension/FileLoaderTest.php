@@ -1,4 +1,5 @@
 <?php
+
 /**
  * East Foundation.
  *
@@ -43,7 +44,6 @@ use function iterator_to_array;
 #[CoversClass(FileLoader::class)]
 class FileLoaderTest extends TestCase
 {
-
     private ?string $previousEnvValue = null;
 
     protected function setUp(): void
@@ -63,7 +63,7 @@ class FileLoaderTest extends TestCase
 
         parent::tearDown();
     }
-    
+
     public function testInvokeExceptionWhenFileNotFound(): void
     {
         $_ENV['TEKNOO_EAST_EXTENSION_FILE'] = 'not-found';

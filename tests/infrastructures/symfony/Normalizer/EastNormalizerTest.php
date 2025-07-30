@@ -1,4 +1,5 @@
 <?php
+
 /**
  * East Foundation.
  *
@@ -42,7 +43,7 @@ use Teknoo\East\FoundationBundle\Normalizer\EastNormalizer;
  * @author      Richard Déloge <richard@teknoo.software>
  */
 #[CoversClass(EastNormalizer::class)]
- class EastNormalizerTest extends TestCase
+class EastNormalizerTest extends TestCase
 {
     public function buildNormalizer(): EastNormalizer
     {

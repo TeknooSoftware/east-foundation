@@ -1,4 +1,5 @@
 <?php
+
 /**
  * East Foundation.
  *
@@ -46,7 +47,7 @@ class DatesServiceTest extends TestCase
 
     public function testPassMeTheDateWithNoDefinedDate(): void
     {
-        $object = new class {
+        $object = new class () {
             private ?\DateTimeInterface $date = null;
 
             public function getDate(): ?DateTimeInterface
@@ -79,7 +80,7 @@ class DatesServiceTest extends TestCase
     {
         $date = new DateTime('2017-01-01');
 
-        $object = new class {
+        $object = new class () {
             private ?\DateTimeInterface $date = null;
 
             public function getDate(): ?DateTimeInterface
@@ -113,7 +114,7 @@ class DatesServiceTest extends TestCase
     {
         $date = new DateTime('2017-01-01');
 
-        $object = new class {
+        $object = new class () {
             private ?\DateTimeInterface $date = null;
 
             public function getDate(): ?DateTimeInterface
@@ -152,7 +153,7 @@ class DatesServiceTest extends TestCase
     {
         $date = new DateTime('2017-01-01');
 
-        $object = new class {
+        $object = new class () {
             private ?\DateTimeInterface $date = null;
 
             public function getDate(): ?DateTimeInterface
@@ -186,7 +187,7 @@ class DatesServiceTest extends TestCase
     {
         $date = new DateTime('2017-01-01');
 
-        $object = new class {
+        $object = new class () {
             private ?\DateTimeInterface $date = null;
 
             public function getDate(): ?DateTimeInterface
@@ -228,7 +229,7 @@ class DatesServiceTest extends TestCase
 
     public function testSince(): void
     {
-        $object = new class {
+        $object = new class () {
             private ?\DateTimeInterface $date = null;
 
             public function getDate(): ?DateTimeInterface
@@ -262,7 +263,7 @@ class DatesServiceTest extends TestCase
 
     public function testForward(): void
     {
-        $object = new class {
+        $object = new class () {
             private ?\DateTimeInterface $date = null;
 
             public function getDate(): ?DateTimeInterface
@@ -297,7 +298,7 @@ class DatesServiceTest extends TestCase
     public function testSinceWithRealDate(): void
     {
 
-        $object = new class {
+        $object = new class () {
             private ?\DateTimeInterface $date = null;
 
             public function getDate(): ?DateTimeInterface
@@ -323,7 +324,7 @@ class DatesServiceTest extends TestCase
 
     public function testForwardWithRealDate(): void
     {
-        $object = new class {
+        $object = new class () {
             private ?\DateTimeInterface $date = null;
 
             public function getDate(): ?DateTimeInterface

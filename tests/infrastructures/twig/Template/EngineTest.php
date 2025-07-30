@@ -1,4 +1,5 @@
 <?php
+
 /**
  * East Foundation.
  *
@@ -69,7 +70,7 @@ class EngineTest extends TestCase
         $promise = $this->createMock(PromiseInterface::class);
         $promise->expects($this->once())
             ->method('success')
-            ->with(self::callback(fn($r): bool => $r instanceof ResultInterface));
+            ->with(self::callback(fn ($r): bool => $r instanceof ResultInterface));
 
         $this->assertInstanceOf(
             EngineInterface::class,

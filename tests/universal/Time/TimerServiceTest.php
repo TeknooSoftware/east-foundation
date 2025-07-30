@@ -1,4 +1,5 @@
 <?php
+
 /**
  * East Foundation.
  *
@@ -31,6 +32,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Teknoo\East\Foundation\Time\DatesService;
 use Teknoo\East\Foundation\Time\TimerService;
+
 use function pcntl_alarm;
 use function sleep;
 use function str_repeat;
