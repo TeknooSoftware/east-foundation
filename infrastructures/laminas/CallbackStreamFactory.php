@@ -47,7 +47,7 @@ class CallbackStreamFactory implements StreamFactoryInterface, CallbackStreamFac
     public function createStream(string $content = ''): StreamInterface
     {
         return new CallbackStream(
-            static fn(): string => $content
+            static fn (): string => $content
         );
     }
 
@@ -74,7 +74,7 @@ class CallbackStreamFactory implements StreamFactoryInterface, CallbackStreamFac
     public function createStreamFromResource($resource): StreamInterface
     {
         return new CallbackStream(
-            static fn(): string => (string) stream_get_contents($resource)
+            static fn (): string => (string) stream_get_contents($resource)
         );
     }
 }

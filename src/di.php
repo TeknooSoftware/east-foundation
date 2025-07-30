@@ -80,7 +80,7 @@ return [
     },
 
     ProcessorRecipeInterface::class => static function (): ProcessorRecipeInterface {
-        return new class extends Recipe implements ProcessorRecipeInterface {
+        return new class () extends Recipe implements ProcessorRecipeInterface {
         };
     },
 
