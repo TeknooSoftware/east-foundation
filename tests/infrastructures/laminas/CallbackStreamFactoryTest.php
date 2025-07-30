@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\Diactoros;
 
+use RuntimeException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Teknoo\East\Diactoros\CallbackStream;
@@ -77,7 +78,7 @@ class CallbackStreamFactoryTest extends TestCase
             $stream = $this->buildFactory()->createStreamFromFile('/aaaaa', 'r')
         );
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $stream->getContents();
     }
 

@@ -24,6 +24,9 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\FoundationBundle;
 
+use PHPUnit\Framework\TestCase;
+use TypeError;
+use stdClass;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Teknoo\East\FoundationBundle\EastFoundationBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -37,7 +40,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  * @author      Richard Déloge <richard@teknoo.software>
  */
 #[CoversClass(EastFoundationBundle::class)]
-class EastFoundationBundleTest extends \PHPUnit\Framework\TestCase
+class EastFoundationBundleTest extends TestCase
 {
     private function buildBundle(): EastFoundationBundle
     {
@@ -61,7 +64,7 @@ class EastFoundationBundleTest extends \PHPUnit\Framework\TestCase
 
     public function testBuildErrorContainer(): void
     {
-        $this->expectException(\TypeError::class);
-        $this->buildBundle()->build(new \stdClass());
+        $this->expectException(TypeError::class);
+        $this->buildBundle()->build(new stdClass());
     }
 }

@@ -24,6 +24,8 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\Foundation\Manager;
 
+use TypeError;
+use stdClass;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -101,50 +103,50 @@ class ManagerTest extends AbstractChefTests
 
     public function testReceiveRequestErrorClient(): void
     {
-        $this->expectException(\TypeError::class);
+        $this->expectException(TypeError::class);
         $this->buildChef()->followSteps([$this->createMock(BowlInterface::class)])
             ->receiveRequest(
-                new \stdClass(),
+                new stdClass(),
                 $this->createMock(ServerRequestInterface::class)
             );
     }
 
     public function testReceiveRequestErrorRequest(): void
     {
-        $this->expectException(\TypeError::class);
+        $this->expectException(TypeError::class);
         $this->buildChef()->followSteps([$this->createMock(BowlInterface::class)])
             ->receiveRequest(
                 $this->createMock(ClientInterface::class),
-                new \stdClass()
+                new stdClass()
             );
     }
 
     public function testContinueExecutionErrorClient(): void
     {
-        $this->expectException(\TypeError::class);
+        $this->expectException(TypeError::class);
         $this->buildChef()->followSteps([$this->createMock(BowlInterface::class)])
             ->continueExecution(
-                new \stdClass(),
+                new stdClass(),
                 $this->createMock(ServerRequestInterface::class)
             );
     }
 
     public function testContinueExecutionErrorRequest(): void
     {
-        $this->expectException(\TypeError::class);
+        $this->expectException(TypeError::class);
         $this->buildChef()->followSteps([$this->createMock(BowlInterface::class)])
             ->continueExecution(
                 $this->createMock(ClientInterface::class),
-                new \stdClass()
+                new stdClass()
             );
     }
 
     public function testUpdateMessageExecutionErrorRequest(): void
     {
-        $this->expectException(\TypeError::class);
+        $this->expectException(TypeError::class);
         $this->buildChef()->followSteps([$this->createMock(BowlInterface::class)])
             ->updateWorkPlan(
-                new \stdClass()
+                new stdClass()
             );
     }
 
@@ -173,12 +175,12 @@ class ManagerTest extends AbstractChefTests
         };
 
         /**
-         * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var ClientInterface|MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
 
         /**
-         * @var ServerRequestInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var ServerRequestInterface|MockObject
          */
         $serverRequestMock = $this->createMock(ServerRequestInterface::class);
 
@@ -213,12 +215,12 @@ class ManagerTest extends AbstractChefTests
         };
 
         /**
-         * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var ClientInterface|MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
 
         /**
-         * @var MessageInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var MessageInterface|MockObject
          */
         $messageMock = $this->createMock(MessageInterface::class);
 
@@ -233,22 +235,22 @@ class ManagerTest extends AbstractChefTests
         $manager = $this->buildChef();
 
         /**
-         * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var ClientInterface|MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
 
         /**
-         * @var ServerRequestInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var ServerRequestInterface|MockObject
          */
         $serverRequestMock = $this->createMock(ServerRequestInterface::class);
 
         /**
-         * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var MiddlewareInterface|MockObject
          */
         $middleware1 = $this->createMock(MiddlewareInterface::class);
         $middleware1->expects($this->once())->method('execute')->willReturnSelf();
         /**
-         * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var MiddlewareInterface|MockObject
          */
         $middleware2 = $this->createMock(MiddlewareInterface::class);
         $middleware2->expects($this->once())->method('execute');
@@ -261,7 +263,7 @@ class ManagerTest extends AbstractChefTests
         );
 
         /**
-         * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var MiddlewareInterface|MockObject
          */
         $middleware3 = $this->createMock(MiddlewareInterface::class);
         $middleware3->expects($this->never())->method('execute');
@@ -285,22 +287,22 @@ class ManagerTest extends AbstractChefTests
         $manager = $this->buildChef();
 
         /**
-         * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var ClientInterface|MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
 
         /**
-         * @var MessageInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var MessageInterface|MockObject
          */
         $messageMock = $this->createMock(MessageInterface::class);
 
         /**
-         * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var MiddlewareInterface|MockObject
          */
         $middleware1 = $this->createMock(MiddlewareInterface::class);
         $middleware1->expects($this->once())->method('execute')->willReturnSelf();
         /**
-         * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var MiddlewareInterface|MockObject
          */
         $middleware2 = $this->createMock(MiddlewareInterface::class);
         $middleware2->expects($this->once())->method('execute');
@@ -313,7 +315,7 @@ class ManagerTest extends AbstractChefTests
         );
 
         /**
-         * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var MiddlewareInterface|MockObject
          */
         $middleware3 = $this->createMock(MiddlewareInterface::class);
         $middleware3->expects($this->never())->method('execute');
@@ -337,17 +339,17 @@ class ManagerTest extends AbstractChefTests
         $manager = $this->buildChef();
 
         /**
-         * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var ClientInterface|MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
 
         /**
-         * @var ServerRequestInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var ServerRequestInterface|MockObject
          */
         $serverRequestMock = $this->createMock(ServerRequestInterface::class);
 
         /**
-         * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var MiddlewareInterface|MockObject
          */
         $middleware1 = $this->createMock(MiddlewareInterface::class);
         $callList = [];
@@ -360,7 +362,7 @@ class ManagerTest extends AbstractChefTests
             }
         );
         /**
-         * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var MiddlewareInterface|MockObject
          */
         $middleware2 = $this->createMock(MiddlewareInterface::class);
         $middleware2->expects($this->once())->method('execute');
@@ -377,7 +379,7 @@ class ManagerTest extends AbstractChefTests
         );
 
         /**
-         * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var MiddlewareInterface|MockObject
          */
         $middleware3 = $this->createMock(MiddlewareInterface::class);
         $middleware3->expects($this->never())->method('execute');
@@ -401,17 +403,17 @@ class ManagerTest extends AbstractChefTests
         $manager = $this->buildChef();
 
         /**
-         * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var ClientInterface|MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
 
         /**
-         * @var MessageInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var MessageInterface|MockObject
          */
         $messageMock = $this->createMock(MessageInterface::class);
 
         /**
-         * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var MiddlewareInterface|MockObject
          */
         $middleware1 = $this->createMock(MiddlewareInterface::class);
         $callList = [];
@@ -424,7 +426,7 @@ class ManagerTest extends AbstractChefTests
             }
         );
         /**
-         * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var MiddlewareInterface|MockObject
          */
         $middleware2 = $this->createMock(MiddlewareInterface::class);
         $middleware2->expects($this->once())->method('execute');
@@ -441,7 +443,7 @@ class ManagerTest extends AbstractChefTests
         );
 
         /**
-         * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var MiddlewareInterface|MockObject
          */
         $middleware3 = $this->createMock(MiddlewareInterface::class);
         $middleware3->expects($this->never())->method('execute');
@@ -465,17 +467,17 @@ class ManagerTest extends AbstractChefTests
         $manager = $this->buildChef();
 
         /**
-         * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var ClientInterface|MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
 
         /**
-         * @var ServerRequestInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var ServerRequestInterface|MockObject
          */
         $serverRequestMock = $this->createMock(ServerRequestInterface::class);
 
         /**
-         * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var MiddlewareInterface|MockObject
          */
         $middleware1 = $this->createMock(MiddlewareInterface::class);
         $callList = [];
@@ -488,7 +490,7 @@ class ManagerTest extends AbstractChefTests
             }
         );
         /**
-         * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var MiddlewareInterface|MockObject
          */
         $middleware2 = $this->createMock(MiddlewareInterface::class);
         $middleware2->expects($this->once())->method('execute');
@@ -505,7 +507,7 @@ class ManagerTest extends AbstractChefTests
         );
 
         /**
-         * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var MiddlewareInterface|MockObject
          */
         $middleware3 = $this->createMock(MiddlewareInterface::class);
         $middleware3->expects($this->never())->method('execute');
@@ -529,17 +531,17 @@ class ManagerTest extends AbstractChefTests
         $manager = $this->buildChef();
 
         /**
-         * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var ClientInterface|MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
 
         /**
-         * @var MessageInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var MessageInterface|MockObject
          */
         $messageMock = $this->createMock(MessageInterface::class);
 
         /**
-         * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var MiddlewareInterface|MockObject
          */
         $middleware1 = $this->createMock(MiddlewareInterface::class);
         $callList = [];
@@ -552,7 +554,7 @@ class ManagerTest extends AbstractChefTests
             }
         );
         /**
-         * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var MiddlewareInterface|MockObject
          */
         $middleware2 = $this->createMock(MiddlewareInterface::class);
         $middleware2->expects($this->once())->method('execute');
@@ -569,7 +571,7 @@ class ManagerTest extends AbstractChefTests
         );
 
         /**
-         * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var MiddlewareInterface|MockObject
          */
         $middleware3 = $this->createMock(MiddlewareInterface::class);
         $middleware3->expects($this->never())->method('execute');
@@ -593,22 +595,22 @@ class ManagerTest extends AbstractChefTests
         $manager = $this->buildChef();
 
         /**
-         * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var ClientInterface|MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
 
         /**
-         * @var ServerRequestInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var ServerRequestInterface|MockObject
          */
         $serverRequestMock = $this->createMock(ServerRequestInterface::class);
 
         /**
-         * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var MiddlewareInterface|MockObject
          */
         $middleware1 = $this->createMock(MiddlewareInterface::class);
         $middleware1->expects($this->exactly(2))->method('execute')->willReturnSelf();
         /**
-         * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var MiddlewareInterface|MockObject
          */
         $middleware2 = $this->createMock(MiddlewareInterface::class);
         $middleware2->expects($this->exactly(2))->method('execute');
@@ -621,7 +623,7 @@ class ManagerTest extends AbstractChefTests
         );
 
         /**
-         * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var MiddlewareInterface|MockObject
          */
         $middleware3 = $this->createMock(MiddlewareInterface::class);
         $middleware3->expects($this->never())->method('execute');
@@ -649,22 +651,22 @@ class ManagerTest extends AbstractChefTests
         $manager = $this->buildChef();
 
         /**
-         * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var ClientInterface|MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
 
         /**
-         * @var MessageInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var MessageInterface|MockObject
          */
         $messageMock = $this->createMock(MessageInterface::class);
 
         /**
-         * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var MiddlewareInterface|MockObject
          */
         $middleware1 = $this->createMock(MiddlewareInterface::class);
         $middleware1->expects($this->exactly(2))->method('execute')->willReturnSelf();
         /**
-         * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var MiddlewareInterface|MockObject
          */
         $middleware2 = $this->createMock(MiddlewareInterface::class);
         $middleware2->expects($this->exactly(2))->method('execute');
@@ -677,7 +679,7 @@ class ManagerTest extends AbstractChefTests
         );
 
         /**
-         * @var MiddlewareInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var MiddlewareInterface|MockObject
          */
         $middleware3 = $this->createMock(MiddlewareInterface::class);
         $middleware3->expects($this->never())->method('execute');

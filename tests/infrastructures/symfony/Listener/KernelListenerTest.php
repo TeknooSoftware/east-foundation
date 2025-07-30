@@ -24,6 +24,8 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\FoundationBundle\Listener;
 
+use TypeError;
+use stdClass;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -156,7 +158,7 @@ class KernelListenerTest extends TestCase
 
     public function testOnKernelRequestError(): void
     {
-        $this->expectException(\TypeError::class);
-        $this->buildKernelListener()->onKernelRequest(new \stdClass());
+        $this->expectException(TypeError::class);
+        $this->buildKernelListener()->onKernelRequest(new stdClass());
     }
 }

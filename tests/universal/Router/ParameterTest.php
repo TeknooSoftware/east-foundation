@@ -24,6 +24,8 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\Foundation\Router;
 
+use Error;
+use TypeError;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Teknoo\East\Foundation\Router\Parameter;
 use Teknoo\East\Foundation\Router\ParameterInterface;
@@ -57,13 +59,13 @@ class ParameterTest extends AbstractParameterTests
     #[\Override]
     public function testValueObjectBehaviorConstructor(): void
     {
-        $this->expectException(\Error::class);
+        $this->expectException(Error::class);
         $this->buildParameter()->__construct('foo', false, null, null);
     }
 
     public function testConstructBadClass(): void
     {
-        $this->expectException(\TypeError::class);
+        $this->expectException(TypeError::class);
         new Parameter('foo', false, null, new \DateTime());
     }
 }

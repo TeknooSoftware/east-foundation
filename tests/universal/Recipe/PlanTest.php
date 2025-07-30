@@ -24,6 +24,8 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\Foundation\Recipe;
 
+use TypeError;
+use stdClass;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Teknoo\East\Foundation\Processor\LoopDetectorInterface;
@@ -52,7 +54,7 @@ class PlanTest extends TestCase
 
     private ?RecipeInterface $recipe = null;
 
-    public function getRouterMock(): \Teknoo\East\Foundation\Router\RouterInterface|\PHPUnit\Framework\MockObject\MockObject
+    public function getRouterMock(): RouterInterface|MockObject
     {
         if (!$this->router instanceof RouterInterface) {
             $this->router = $this->createMock(RouterInterface::class);
@@ -61,7 +63,7 @@ class PlanTest extends TestCase
         return $this->router;
     }
 
-    public function getProcessorPlanMock(): \Teknoo\East\Foundation\Processor\ProcessorPlanInterface|\PHPUnit\Framework\MockObject\MockObject
+    public function getProcessorPlanMock(): ProcessorPlanInterface|MockObject
     {
         if (!$this->processorPlan instanceof ProcessorPlanInterface) {
             $this->processorPlan = $this->createMock(ProcessorPlanInterface::class);
@@ -70,7 +72,7 @@ class PlanTest extends TestCase
         return $this->processorPlan;
     }
 
-    public function getLoopDetectorMock(): \Teknoo\East\Foundation\Processor\LoopDetectorInterface|\PHPUnit\Framework\MockObject\MockObject
+    public function getLoopDetectorMock(): LoopDetectorInterface|MockObject
     {
         if (!$this->loopDetector instanceof LoopDetectorInterface) {
             $this->loopDetector = $this->createMock(LoopDetectorInterface::class);
@@ -79,7 +81,7 @@ class PlanTest extends TestCase
         return $this->loopDetector;
     }
 
-    public function getRecipeMock(): \Teknoo\East\Foundation\Recipe\RecipeInterface|\PHPUnit\Framework\MockObject\MockObject
+    public function getRecipeMock(): RecipeInterface|MockObject
     {
         if (!$this->recipe instanceof RecipeInterface) {
             $this->recipe = $this->createMock(RecipeInterface::class);
@@ -100,13 +102,13 @@ class PlanTest extends TestCase
 
     public function testFillWithWrongRecipe(): void
     {
-        $this->expectException(\TypeError::class);
-        $this->buildPlan()->fill(new \stdClass());
+        $this->expectException(TypeError::class);
+        $this->buildPlan()->fill(new stdClass());
     }
 
     public function testFillWithOriginalRecipe(): void
     {
-        $this->expectException(\TypeError::class);
+        $this->expectException(TypeError::class);
         $this->buildPlan()->fill($this->createMock(OriginalRecipeInterface::class));
     }
 
@@ -120,8 +122,8 @@ class PlanTest extends TestCase
 
     public function testTrainWithWrongChef(): void
     {
-        $this->expectException(\TypeError::class);
-        $this->buildPlan()->train(new \stdClass());
+        $this->expectException(TypeError::class);
+        $this->buildPlan()->train(new stdClass());
     }
 
     public function testTrain(): void
@@ -143,16 +145,16 @@ class PlanTest extends TestCase
 
     public function testPrepareWithWrongWorkplan(): void
     {
-        $this->expectException(\TypeError::class);
-        $wp = new \stdClass();
+        $this->expectException(TypeError::class);
+        $wp = new stdClass();
         $this->buildPlan()->prepare($wp, $this->createMock(ChefInterface::class));
     }
 
     public function testPrepareWithWrongChef(): void
     {
-        $this->expectException(\TypeError::class);
+        $this->expectException(TypeError::class);
         $wp = [];
-        $this->buildPlan()->prepare($wp, new \stdClass());
+        $this->buildPlan()->prepare($wp, new stdClass());
     }
 
     public function testPrepare(): void

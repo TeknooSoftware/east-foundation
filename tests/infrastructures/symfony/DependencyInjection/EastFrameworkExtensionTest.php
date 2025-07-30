@@ -24,6 +24,9 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\FoundationBundle\DependencyInjection;
 
+use PHPUnit\Framework\TestCase;
+use TypeError;
+use stdClass;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -38,7 +41,7 @@ use Teknoo\East\FoundationBundle\DependencyInjection\EastFoundationExtension;
  * @author      Richard Déloge <richard@teknoo.software>
  */
 #[CoversClass(EastFoundationExtension::class)]
-class EastFrameworkExtensionTest extends \PHPUnit\Framework\TestCase
+class EastFrameworkExtensionTest extends TestCase
 {
     private ?ContainerBuilder $container = null;
 
@@ -74,13 +77,13 @@ class EastFrameworkExtensionTest extends \PHPUnit\Framework\TestCase
 
     public function testLoadErrorContainer(): void
     {
-        $this->expectException(\TypeError::class);
-        $this->buildExtension()->load([], new \stdClass());
+        $this->expectException(TypeError::class);
+        $this->buildExtension()->load([], new stdClass());
     }
 
     public function testLoadErrorConfig(): void
     {
-        $this->expectException(\TypeError::class);
-        $this->buildExtension()->load(new \stdClass(), $this->getContainerBuilderMock());
+        $this->expectException(TypeError::class);
+        $this->buildExtension()->load(new stdClass(), $this->getContainerBuilderMock());
     }
 }

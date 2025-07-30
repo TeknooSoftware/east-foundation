@@ -24,6 +24,10 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\FoundationBundle\Messenger;
 
+use Exception;
+use TypeError;
+use stdClass;
+use RuntimeException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -72,8 +76,8 @@ class ClientTest extends TestCase
 
     public function testUpdateResponseError(): void
     {
-        $this->expectException(\TypeError::class);
-        $this->buildClient()->updateResponse(new \stdClass());
+        $this->expectException(TypeError::class);
+        $this->buildClient()->updateResponse(new stdClass());
     }
     
     public function testUpdateResponse(): void
@@ -149,8 +153,8 @@ class ClientTest extends TestCase
 
     public function testAcceptResponseError(): void
     {
-        $this->expectException(\TypeError::class);
-        $this->buildClient()->acceptResponse(new \stdClass());
+        $this->expectException(TypeError::class);
+        $this->buildClient()->acceptResponse(new stdClass());
     }
     
     public function testAcceptPSRResponse(): void
@@ -219,7 +223,7 @@ class ClientTest extends TestCase
         $this->getMessageBusInterfaceMock()
             ->expects($this->once())
             ->method('dispatch')
-            ->willReturn(new Envelope(new \stdClass));
+            ->willReturn(new Envelope(new stdClass));
 
         $client = $this->buildClient();
         $this->assertInstanceOf(
@@ -238,7 +242,7 @@ class ClientTest extends TestCase
         $this->getMessageBusInterfaceMock()
             ->expects($this->once())
             ->method('dispatch')
-            ->willReturn(new Envelope(new \stdClass));
+            ->willReturn(new Envelope(new stdClass));
 
         $client = $this->buildClient();
         $this->assertInstanceOf(
@@ -254,7 +258,7 @@ class ClientTest extends TestCase
         $this->getMessageBusInterfaceMock()
             ->expects($this->once())
             ->method('dispatch')
-            ->willReturn(new Envelope(new \stdClass));
+            ->willReturn(new Envelope(new stdClass));
 
         $client = $this->buildClient();
         $this->assertInstanceOf(
@@ -286,7 +290,7 @@ class ClientTest extends TestCase
         $this->getMessageBusInterfaceMock()
             ->expects($this->once())
             ->method('dispatch')
-            ->willReturn(new Envelope(new \stdClass));
+            ->willReturn(new Envelope(new stdClass));
 
         $client = $this->buildClient();
         $this->assertInstanceOf(
@@ -313,13 +317,13 @@ class ClientTest extends TestCase
         );
 
         $client->reset();
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $client->sendResponse();
     }
 
     public function testSendResponseWithoutResponse(): void
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $client = $this->buildClient();
 
         $this->assertInstanceOf(
@@ -338,7 +342,7 @@ class ClientTest extends TestCase
         $this->getMessageBusInterfaceMock()
             ->expects($this->once())
             ->method('dispatch')
-            ->willReturn(new Envelope(new \stdClass));
+            ->willReturn(new Envelope(new stdClass));
 
         $client = $this->buildClient();
         $this->assertInstanceOf(
@@ -357,7 +361,7 @@ class ClientTest extends TestCase
         $this->getMessageBusInterfaceMock()
             ->expects($this->once())
             ->method('dispatch')
-            ->willReturn(new Envelope(new \stdClass));
+            ->willReturn(new Envelope(new stdClass));
 
         $client = $this->buildClient();
         $this->assertInstanceOf(
@@ -376,7 +380,7 @@ class ClientTest extends TestCase
         $this->getMessageBusInterfaceMock()
             ->expects($this->once())
             ->method('dispatch')
-            ->willReturn(new Envelope(new \stdClass));
+            ->willReturn(new Envelope(new stdClass));
 
         $client = $this->buildClient();
         $this->assertInstanceOf(
@@ -397,19 +401,19 @@ class ClientTest extends TestCase
 
     public function testSendResponseError(): void
     {
-        $this->expectException(\TypeError::class);
-        $this->buildClient()->sendResponse(new \stdClass());
+        $this->expectException(TypeError::class);
+        $this->buildClient()->sendResponse(new stdClass());
     }
 
     public function testSendResponseError2(): void
     {
-        $this->expectException(\TypeError::class);
-        $this->buildClient()->sendResponse(null, new \stdClass());
+        $this->expectException(TypeError::class);
+        $this->buildClient()->sendResponse(null, new stdClass());
     }
 
     public function testErrorInRequest(): void
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
 
         $client = $this->buildClient();
         $this->assertInstanceOf(
@@ -432,7 +436,7 @@ class ClientTest extends TestCase
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects($this->once())->method('error');
 
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
 
         $client = $this->buildClient($logger);
         $this->assertInstanceOf(
@@ -455,8 +459,8 @@ class ClientTest extends TestCase
 
     public function testErrorInRequestError(): void
     {
-        $this->expectException(\TypeError::class);
-        $this->buildClient()->errorInRequest(new \stdClass());
+        $this->expectException(TypeError::class);
+        $this->buildClient()->errorInRequest(new stdClass());
     }
 
     public function testMustSendAResponse(): void

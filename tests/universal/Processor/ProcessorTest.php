@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\Foundation\Processor;
 
+use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -43,7 +44,7 @@ use Teknoo\East\Foundation\Router\ResultInterface;
  * @author      Richard Déloge <richard@teknoo.software>
  */
 #[CoversClass(Processor::class)]
-class ProcessorTest extends \PHPUnit\Framework\TestCase
+class ProcessorTest extends TestCase
 {
     private function buildProcessor(bool $inSilentMode = false): \Teknoo\East\Foundation\Processor\Processor
     {
@@ -53,14 +54,14 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
     public function testExecuteRequestWithNoResultClientInSilentMode(): void
     {
         /**
-         * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var ClientInterface|MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
         $clientMock->expects($this->never())->method('mustSendAResponse');
         $clientMock->expects($this->once())->method('sendAResponseIsOptional');
 
         /**
-         * @var ServerRequestInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var ServerRequestInterface|MockObject
          */
         $requestMock = $this->createMock(ServerRequestInterface::class);
         $requestMock->method('getAttributes')->willReturn(['bar' => 456, 'foo' => 123]);
@@ -81,14 +82,14 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
     public function testExecuteRequestWithNoResultClientNotInSilentMode(): void
     {
         /**
-         * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var ClientInterface|MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
         $clientMock->expects($this->never())->method('mustSendAResponse');
         $clientMock->expects($this->once())->method('sendAResponseIsOptional');
 
         /**
-         * @var ServerRequestInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var ServerRequestInterface|MockObject
          */
         $requestMock = $this->createMock(ServerRequestInterface::class);
         $requestMock->method('getAttributes')->willReturn(['bar' => 456, 'foo' => 123]);
@@ -109,14 +110,14 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
     public function testExecuteRequestAndPreventionOfVarRequestAndClientVarOverwrittingInSilentMode(): void
     {
         /**
-         * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var ClientInterface|MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
         $clientMock->expects($this->never())->method('mustSendAResponse');
         $clientMock->expects($this->once())->method('sendAResponseIsOptional');
 
         /**
-         * @var ServerRequestInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var ServerRequestInterface|MockObject
          */
         $requestMock = $this->createMock(ServerRequestInterface::class);
         $requestMock->method('getAttributes')->willReturn([
@@ -156,14 +157,14 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
     public function testExecuteRequestAndPreventionOfVarRequestAndClientVarOverwrittingNotInSilentMode(): void
     {
         /**
-         * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var ClientInterface|MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
         $clientMock->expects($this->once())->method('mustSendAResponse');
         $clientMock->method('sendAResponseIsOptional');
 
         /**
-         * @var ServerRequestInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var ServerRequestInterface|MockObject
          */
         $requestMock = $this->createMock(ServerRequestInterface::class);
         $requestMock->method('getAttributes')->willReturn([
@@ -203,14 +204,14 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
     public function testExecuteMessageWithNoResultInSilentMode(): void
     {
         /**
-         * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var ClientInterface|MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
         $clientMock->expects($this->never())->method('mustSendAResponse');
         $clientMock->expects($this->once())->method('sendAResponseIsOptional');
 
         /**
-         * @var MessageInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var MessageInterface|MockObject
          */
         $messageMock = $this->createMock(MessageInterface::class);
 
@@ -230,14 +231,14 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
     public function testExecuteMessageWithNoResultNotInSilentMode(): void
     {
         /**
-         * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var ClientInterface|MockObject
          */
         $clientMock = $this->createMock(ClientInterface::class);
         $clientMock->expects($this->never())->method('mustSendAResponse');
         $clientMock->expects($this->once())->method('sendAResponseIsOptional');
 
         /**
-         * @var MessageInterface|\PHPUnit\Framework\MockObject\MockObject
+         * @var MessageInterface|MockObject
          */
         $messageMock = $this->createMock(MessageInterface::class);
 

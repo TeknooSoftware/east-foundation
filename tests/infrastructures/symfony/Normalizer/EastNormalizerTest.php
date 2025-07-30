@@ -24,6 +24,10 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\FoundationBundle\Normalizer;
 
+use PHPUnit\Framework\TestCase;
+use TypeError;
+use stdClass;
+use RuntimeException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Teknoo\East\Foundation\Normalizer\Object\NormalizableInterface;
@@ -38,7 +42,7 @@ use Teknoo\East\FoundationBundle\Normalizer\EastNormalizer;
  * @author      Richard Déloge <richard@teknoo.software>
  */
 #[CoversClass(EastNormalizer::class)]
- class EastNormalizerTest extends \PHPUnit\Framework\TestCase
+ class EastNormalizerTest extends TestCase
 {
     public function buildNormalizer(): EastNormalizer
     {
@@ -47,8 +51,8 @@ use Teknoo\East\FoundationBundle\Normalizer\EastNormalizer;
 
     public function testInjectDataBadArray(): void
     {
-        $this->expectException(\TypeError::class);
-        $this->buildNormalizer()->injectData(new \stdClass());
+        $this->expectException(TypeError::class);
+        $this->buildNormalizer()->injectData(new stdClass());
     }
 
     public function testInjectData(): void
@@ -61,7 +65,7 @@ use Teknoo\East\FoundationBundle\Normalizer\EastNormalizer;
 
     public function testSupportsNormalization(): void
     {
-        $this->assertFalse($this->buildNormalizer()->supportsNormalization(new \stdClass()));
+        $this->assertFalse($this->buildNormalizer()->supportsNormalization(new stdClass()));
         $this->assertTrue($this->buildNormalizer()->supportsNormalization(
             $this->createMock(NormalizableInterface::class)
         ));
@@ -74,8 +78,8 @@ use Teknoo\East\FoundationBundle\Normalizer\EastNormalizer;
 
     public function testNormalizeBadObject(): void
     {
-        $this->expectException(\RuntimeException::class);
-        $this->buildNormalizer()->normalize(new \stdClass());
+        $this->expectException(RuntimeException::class);
+        $this->buildNormalizer()->normalize(new stdClass());
     }
 
     public function testNormalize(): void

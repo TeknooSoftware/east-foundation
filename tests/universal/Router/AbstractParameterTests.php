@@ -24,6 +24,8 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\Foundation\Router;
 
+use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Teknoo\East\Foundation\Router\ParameterInterface;
 use Teknoo\Immutable\Exception\ImmutableException;
 
@@ -33,7 +35,7 @@ use Teknoo\Immutable\Exception\ImmutableException;
  * @license     https://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
  */
-abstract class AbstractParameterTests extends \PHPUnit\Framework\TestCase
+abstract class AbstractParameterTests extends TestCase
 {
     abstract public function buildParameter(): ParameterInterface;
 
@@ -93,7 +95,7 @@ abstract class AbstractParameterTests extends \PHPUnit\Framework\TestCase
 
     public function testGetClassNotDefined(): void
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->assertInstanceOf(\ReflectionClass::class, $this->buildParameter()->getClass());
     }
 }

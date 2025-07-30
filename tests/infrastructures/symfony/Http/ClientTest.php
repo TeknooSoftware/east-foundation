@@ -24,6 +24,11 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\FoundationBundle\Http;
 
+use Exception;
+use PHPUnit\Framework\MockObject\MockObject;
+use TypeError;
+use stdClass;
+use RuntimeException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\MessageInterface;
@@ -58,10 +63,7 @@ class ClientTest extends TestCase
 
     private ?StreamFactoryInterface $streamFactory = null;
 
-    /**
-     * @return RequestEvent|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private function getRequestEventMock(): RequestEvent
+    private function getRequestEventMock(): RequestEvent&MockObject
     {
         if (!$this->requestEvent instanceof RequestEvent) {
             $this->requestEvent = $this->createMock(RequestEvent::class);
@@ -70,10 +72,7 @@ class ClientTest extends TestCase
         return $this->requestEvent;
     }
 
-    /**
-     * @return HttpFoundationFactory|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private function getHttpFoundationFactoryMock(): HttpFoundationFactory
+    private function getHttpFoundationFactoryMock(): HttpFoundationFactory&MockObject
     {
         if (!$this->httpFoundationFactory instanceof HttpFoundationFactory) {
             $this->httpFoundationFactory = $this->createMock(HttpFoundationFactory::class);
@@ -82,10 +81,7 @@ class ClientTest extends TestCase
         return $this->httpFoundationFactory;
     }
 
-    /**
-     * @return ResponseFactoryInterface|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private function getResponseFactoryMock(): ResponseFactoryInterface
+    private function getResponseFactoryMock(): ResponseFactoryInterface&MockObject
     {
         if (!$this->responseFactory instanceof ResponseFactoryInterface) {
             $this->responseFactory = $this->createMock(ResponseFactoryInterface::class);
@@ -102,10 +98,7 @@ class ClientTest extends TestCase
         return $this->responseFactory;
     }
 
-    /**
-     * @return StreamFactoryInterface|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private function getStreamFactoryMock(): StreamFactoryInterface
+    private function getStreamFactoryMock(): StreamFactoryInterface&MockObject
     {
         if (!$this->streamFactory instanceof StreamFactoryInterface) {
             $this->streamFactory = $this->createMock(StreamFactoryInterface::class);
@@ -132,8 +125,8 @@ class ClientTest extends TestCase
 
     public function testUpdateResponseError(): void
     {
-        $this->expectException(\TypeError::class);
-        $this->buildClient()->updateResponse(new \stdClass());
+        $this->expectException(TypeError::class);
+        $this->buildClient()->updateResponse(new stdClass());
     }
     
     public function testUpdateResponse(): void
@@ -211,8 +204,8 @@ class ClientTest extends TestCase
 
     public function testAcceptResponseError(): void
     {
-        $this->expectException(\TypeError::class);
-        $this->buildClient()->acceptResponse(new \stdClass());
+        $this->expectException(TypeError::class);
+        $this->buildClient()->acceptResponse(new stdClass());
     }
     
     public function testAcceptPSRResponse(): void
@@ -507,13 +500,13 @@ class ClientTest extends TestCase
         );
 
         $client->reset();
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $client->sendResponse();
     }
 
     public function testSendResponseWithoutResponse(): void
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $client = $this->buildClient();
 
         $this->assertInstanceOf(
@@ -524,7 +517,7 @@ class ClientTest extends TestCase
 
     public function testSendResponseWithoutRequestEvent(): void
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         /**
          * @var ResponseInterface
          */
@@ -627,7 +620,7 @@ class ClientTest extends TestCase
 
     public function testSendResponseWithoutRequestEventSilently(): void
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         /**
          * @var ResponseInterface
          */
@@ -646,19 +639,19 @@ class ClientTest extends TestCase
 
     public function testSendResponseError(): void
     {
-        $this->expectException(\TypeError::class);
-        $this->buildClient()->sendResponse(new \stdClass());
+        $this->expectException(TypeError::class);
+        $this->buildClient()->sendResponse(new stdClass());
     }
 
     public function testSendResponseError2(): void
     {
-        $this->expectException(\TypeError::class);
-        $this->buildClient()->sendResponse(null, new \stdClass());
+        $this->expectException(TypeError::class);
+        $this->buildClient()->sendResponse(null, new stdClass());
     }
 
     public function testErrorInRequest(): void
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
 
         $client = $this->buildClient();
         $this->assertInstanceOf(
@@ -681,7 +674,7 @@ class ClientTest extends TestCase
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects($this->once())->method('error');
 
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
 
         $client = $this->buildClient($logger);
         $this->assertInstanceOf(
@@ -704,7 +697,7 @@ class ClientTest extends TestCase
 
     public function testErrorInRequestWithoutRequestEvent(): void
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $client = new Client(
             $this->getHttpFoundationFactoryMock(),
             $this->getResponseFactoryMock(),
@@ -718,8 +711,8 @@ class ClientTest extends TestCase
 
     public function testErrorInRequestError(): void
     {
-        $this->expectException(\TypeError::class);
-        $this->buildClient()->errorInRequest(new \stdClass());
+        $this->expectException(TypeError::class);
+        $this->buildClient()->errorInRequest(new stdClass());
     }
 
     public function testSetRequestEvent(): void
@@ -733,8 +726,8 @@ class ClientTest extends TestCase
 
     public function testSetRequestEventError(): void
     {
-        $this->expectException(\TypeError::class);
-        $this->buildClient()->setRequestEvent(new \stdClass());
+        $this->expectException(TypeError::class);
+        $this->buildClient()->setRequestEvent(new stdClass());
     }
 
     public function testClone(): void

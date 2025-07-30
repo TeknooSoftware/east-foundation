@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\FoundationBundle\Resources;
 
+use PHPUnit\Framework\TestCase;
 use DI\Container;
 use DI\ContainerBuilder;
 use Laminas\Diactoros\ResponseFactory;
@@ -46,7 +47,7 @@ use Teknoo\East\Foundation\Http\Message\MessageFactoryInterface;
  * @license     https://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
  */
-class LaminasContainerTest extends \PHPUnit\Framework\TestCase
+class LaminasContainerTest extends TestCase
 {
     protected function buildContainer() : Container
     {

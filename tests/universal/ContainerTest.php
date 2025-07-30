@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\Foundation;
 
+use PHPUnit\Framework\TestCase;
 use DI\Container;
 use Psr\Log\LoggerInterface;
 use Teknoo\East\Foundation\Command\Executor;
@@ -61,7 +62,7 @@ use function defined;
  * @license     https://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
  */
-class ContainerTest extends \PHPUnit\Framework\TestCase
+class ContainerTest extends TestCase
 {
     protected function buildContainer() : Container
     {

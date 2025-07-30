@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\Foundation\Router;
 
+use PHPUnit\Framework\TestCase;
 use Teknoo\East\Foundation\Router\ResultInterface;
 use Teknoo\Immutable\Exception\ImmutableException;
 
@@ -33,7 +34,7 @@ use Teknoo\Immutable\Exception\ImmutableException;
  * @license     https://teknoo.software/license/mit         MIT License
  * @author      Richard Déloge <richard@teknoo.software>
  */
-abstract class AbstractResultTests extends \PHPUnit\Framework\TestCase
+abstract class AbstractResultTests extends TestCase
 {
     abstract public function buildResult(): ResultInterface;
 

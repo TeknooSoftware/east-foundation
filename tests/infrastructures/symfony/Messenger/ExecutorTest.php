@@ -24,6 +24,8 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\FoundationBundle\Messenger;
 
+use TypeError;
+use stdClass;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -67,9 +69,9 @@ class ExecutorTest extends TestCase
 
     public function testExecuteBadRecipe(): void
     {
-        $this->expectException(\TypeError::class);
+        $this->expectException(TypeError::class);
         $this->buildExecutor()->execute(
-            new \stdClass(),
+            new stdClass(),
             $this->createMock(MessageInterface::class),
             $this->createMock(ClientInterface::class),
             [],
@@ -78,21 +80,21 @@ class ExecutorTest extends TestCase
 
     public function testExecuteBadWorkPlan(): void
     {
-        $this->expectException(\TypeError::class);
+        $this->expectException(TypeError::class);
         $this->buildExecutor()->execute(
             $this->createMock(BaseRecipeInterface::class),
             $this->createMock(MessageInterface::class),
             $this->createMock(ClientInterface::class),
-            new \stdClass(),
+            new stdClass(),
         );
     }
 
     public function testExecuteBadMessage(): void
     {
-        $this->expectException(\TypeError::class);
+        $this->expectException(TypeError::class);
         $this->buildExecutor()->execute(
             $this->createMock(BaseRecipeInterface::class),
-            new \stdClass(),
+            new stdClass(),
             $this->createMock(ClientInterface::class),
             [],
         );
@@ -100,11 +102,11 @@ class ExecutorTest extends TestCase
 
     public function testExecuteBadClient(): void
     {
-        $this->expectException(\TypeError::class);
+        $this->expectException(TypeError::class);
         $this->buildExecutor()->execute(
             $this->createMock(BaseRecipeInterface::class),
             $this->createMock(ClientInterface::class),
-            new \stdClass(),
+            new stdClass(),
             [],
         );
     }

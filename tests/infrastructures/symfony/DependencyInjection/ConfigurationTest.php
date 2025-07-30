@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\FoundationBundle\DependencyInjection;
 
+use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Teknoo\East\FoundationBundle\DependencyInjection\Configuration;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -37,7 +38,7 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
  * @author      Richard Déloge <richard@teknoo.software>
  */
 #[CoversClass(Configuration::class)]
-class ConfigurationTest extends \PHPUnit\Framework\TestCase
+class ConfigurationTest extends TestCase
 {
     private function buildConfiguration(): Configuration
     {

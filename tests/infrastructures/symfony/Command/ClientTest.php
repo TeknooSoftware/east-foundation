@@ -24,6 +24,9 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\FoundationBundle\Command;
 
+use TypeError;
+use stdClass;
+use RuntimeException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Http\Message\ResponseInterface;
@@ -68,8 +71,8 @@ class ClientTest extends TestCase
 
     public function testUpdateResponseError(): void
     {
-        $this->expectException(\TypeError::class);
-        $this->buildClient()->updateResponse(new \stdClass());
+        $this->expectException(TypeError::class);
+        $this->buildClient()->updateResponse(new stdClass());
     }
     
     public function testUpdateResponse(): void
@@ -108,8 +111,8 @@ class ClientTest extends TestCase
 
     public function testAcceptResponseError(): void
     {
-        $this->expectException(\TypeError::class);
-        $this->buildClient()->acceptResponse(new \stdClass());
+        $this->expectException(TypeError::class);
+        $this->buildClient()->acceptResponse(new stdClass());
     }
     
     public function testAcceptResponse(): void
@@ -328,7 +331,7 @@ class ClientTest extends TestCase
 
     public function testSendResponseWithoutOutput(): void
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
 
         /**
          * @var ResponseInterface
@@ -353,19 +356,19 @@ class ClientTest extends TestCase
 
     public function testSendResponseError(): void
     {
-        $this->expectException(\TypeError::class);
-        $this->buildClient()->sendResponse(new \stdClass());
+        $this->expectException(TypeError::class);
+        $this->buildClient()->sendResponse(new stdClass());
     }
 
     public function testSendResponseError2(): void
     {
-        $this->expectException(\TypeError::class);
-        $this->buildClient()->sendResponse(null, new \stdClass());
+        $this->expectException(TypeError::class);
+        $this->buildClient()->sendResponse(null, new stdClass());
     }
 
     public function testErrorInRequestWithoutOutput(): void
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
 
         $client = new Client();
         $this->assertInstanceOf(
@@ -405,8 +408,8 @@ class ClientTest extends TestCase
 
     public function testErrorInRequestError(): void
     {
-        $this->expectException(\TypeError::class);
-        $this->buildClient()->errorInRequest(new \stdClass());
+        $this->expectException(TypeError::class);
+        $this->buildClient()->errorInRequest(new stdClass());
     }
 
     public function testClone(): void
@@ -428,8 +431,8 @@ class ClientTest extends TestCase
 
     public function testSetOutputError(): void
     {
-        $this->expectException(\TypeError::class);
-        $this->buildClient()->setOutput(new \stdClass());
+        $this->expectException(TypeError::class);
+        $this->buildClient()->setOutput(new stdClass());
     }
 
     public function testMustSendAResponse(): void

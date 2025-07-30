@@ -24,6 +24,9 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\FoundationBundle\DependencyInjection;
 
+use PHPUnit\Framework\TestCase;
+use TypeError;
+use stdClass;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -39,7 +42,7 @@ use Symfony\Component\DependencyInjection\Definition;
  * @author      Richard Déloge <richard@teknoo.software>
  */
 #[CoversClass(EastFoundationCompilerPass::class)]
-class EastFrameworkCompilerPassTest extends \PHPUnit\Framework\TestCase
+class EastFrameworkCompilerPassTest extends TestCase
 {
     private ?ContainerBuilder $container = null;
 
@@ -144,7 +147,7 @@ class EastFrameworkCompilerPassTest extends \PHPUnit\Framework\TestCase
     
     public function testProcessError(): void
     {
-        $this->expectException(\TypeError::class);
-        $this->buildCompilerPass()->process(new \stdClass());
+        $this->expectException(TypeError::class);
+        $this->buildCompilerPass()->process(new stdClass());
     }
 }
