@@ -25,6 +25,7 @@ declare(strict_types=1);
 namespace Teknoo\Tests\East\FoundationBundle\Session;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\HttpFoundation\Session\SessionInterface as SymfonySession;
 use Teknoo\Recipe\Promise\Promise;
 use Teknoo\Recipe\Promise\PromiseInterface;
@@ -41,15 +42,9 @@ use Teknoo\East\FoundationBundle\Session\Session;
 #[CoversClass(Session::class)]
 class SessionTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var SymfonySession
-     */
-    private $symfonySession;
+    private ?SymfonySession $symfonySession = null;
 
-    /**
-     * @return SymfonySession|\PHPUnit\Framework\MockObject\MockObject
-     */
-    public function getSymfonySession(): SymfonySession
+    public function getSymfonySession(): SymfonySession&MockObject
     {
         if (!$this->symfonySession instanceof SymfonySession) {
             $this->symfonySession = $this->createMock(SymfonySession::class);

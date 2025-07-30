@@ -104,17 +104,13 @@ class FeatureContext implements Context
 
     private ?Executor $executor = null;
 
-    /**
-     * @BeforeScenario
-     */
+    #[\Behat\Hook\BeforeScenario]
     public function clean(): void
     {
         $this->loggingEnabled = false;
     }
 
-    /**
-     * @Given I have DI initialized
-     */
+    #[\Behat\Step\Given('I have DI initialized')]
     public function iHaveDiInitialized(): void
     {
         set_time_limit(0);
@@ -124,17 +120,13 @@ class FeatureContext implements Context
         $this->container->set('teknoo.east.client.must_send_response', true);
     }
 
-    /**
-     * @Given client are configured to ignore missing response
-     */
+    #[\Behat\Step\Given('client are configured to ignore missing response')]
     public function clientAreConfiguredToIgnoreMissingResponse(): void
     {
         $this->container->set('teknoo.east.client.must_send_response', false);
     }
 
-    /**
-     * @Given I register a router
-     */
+    #[\Behat\Step\Given('I register a router')]
     public function iRegisterARouter(): void
     {
         $this->router = new class implements RouterInterface {
@@ -175,9 +167,7 @@ class FeatureContext implements Context
         $this->container->set(RouterInterface::class, $this->router);
     }
 
-    /**
-     * @Given The router can process the request :url to controller :controllerName
-     */
+    #[\Behat\Step\Given('The router can process the request :url to controller :controllerName')]
     public function theRouterCanProcessTheRequestToController($url, $controllerName): void
     {
         $controller = $controllerName;
@@ -313,17 +303,13 @@ class FeatureContext implements Context
         $this->router->registerRoute($url, $controller);
     }
 
-    /**
-     * @Given The router can process the request :url to recipe :controllerName to return a :type response
-     */
+    #[\Behat\Step\Given('The router can process the request :url to recipe :controllerName to return a :type response')]
     public function theRouterCanProcessTheRequestToRecipeToReturnResponse(string $url, string $controllerName, string $type): void
     {
         $this->createRecipeToReturnResponse($url, $controllerName, $type, false);
     }
 
-    /**
-     * @Given The router can process the request :url to recipe :controllerName in a fiber to return a :type response
-     */
+    #[\Behat\Step\Given('The router can process the request :url to recipe :controllerName in a fiber to return a :type response')]
     public function theRouterCanProcessTheRequestToRecipeInAFiberToReturnResponse(string $url, string $controllerName, string $type): void
     {
         $this->createRecipeToReturnResponse($url, $controllerName, $type, true);
@@ -395,9 +381,7 @@ class FeatureContext implements Context
         };
     }
 
-    /**
-     * @When The server will receive the request :url
-     */
+    #[\Behat\Step\When('The server will receive the request :url')]
     public function theServerWillReceiveTheRequest($url): void
     {
         $manager = new Manager($this->container->get(PlanInterface::class));
@@ -419,45 +403,35 @@ class FeatureContext implements Context
         );
     }
 
-    /**
-     * @Then The client must not accept a response.
-     */
+    #[\Behat\Step\Then('The client must not accept a response.')]
     public function theClientMustNotAcceptAResponse(): void
     {
         Assert::assertNull($this->response);
         Assert::assertNull($this->error);
     }
 
-    /**
-     * @Then The client must accept a psr response
-     */
+    #[\Behat\Step\Then('The client must accept a psr response')]
     public function theClientMustAcceptAPSRResponse(): void
     {
         Assert::assertInstanceOf(ResponseInterface::class, $this->response);
         Assert::assertNull($this->error);
     }
 
-    /**
-     * @Then The client must accept a east response
-     */
+    #[\Behat\Step\Then('The client must accept a east response')]
     public function theClientMustAcceptAEastResponse(): void
     {
         Assert::assertInstanceOf(EastResponse::class, $this->response);
         Assert::assertNull($this->error);
     }
 
-    /**
-     * @Then The client must accept a json response
-     */
+    #[\Behat\Step\Then('The client must accept a json response')]
     public function theClientMustAcceptAJsonResponse(): void
     {
         Assert::assertInstanceOf(JsonSerializable::class, $this->response);
         Assert::assertNull($this->error);
     }
 
-    /**
-     * @Then I should get as response :value
-     */
+    #[\Behat\Step\Then('I should get as response :value')]
     public function iShouldGetAsResponse ($value): void
     {
         if ($this->response instanceof ResponseInterface) {
@@ -484,27 +458,21 @@ class FeatureContext implements Context
         throw new RuntimeException('Response not managed');
     }
 
-    /**
-     * @Then I should get nothing
-     */
+    #[\Behat\Step\Then('I should get nothing')]
     public function iShouldGetNothing(): void
     {
         $this->client->sendResponse();
         Assert::assertNull($this->response);
     }
 
-    /**
-     * @Then The client must accept an error
-     */
+    #[\Behat\Step\Then('The client must accept an error')]
     public function theClientMustAcceptAnError(): void
     {
         Assert::assertNull($this->response);
         Assert::assertInstanceOf(Throwable::class, $this->error);
     }
 
-    /**
-     * @Then The client must throw an exception
-     */
+    #[\Behat\Step\Then('The client must throw an exception')]
     public function theClientMustThrowAnException(): void
     {
         $errorCatched = false;
@@ -518,9 +486,7 @@ class FeatureContext implements Context
         Assert::assertNull($this->response);
     }
 
-    /**
-     * @Given a cli agent
-     */
+    #[\Behat\Step\Given('a cli agent')]
     public function aCliAgent(): void
     {
         $this->response = null;
@@ -533,12 +499,11 @@ class FeatureContext implements Context
         $this->createClient();
     }
 
-    /**
-     * @Given a liveness behavior build on event on a file :fileName
-     */
+    #[\Behat\Step\Given('a liveness behavior build on event on a file :fileName')]
     public function aLivenessBehaviorBuildOnEventOnAFile(string $fileName): void
     {
-        $filePath = $this->pingFile = dirname(__DIR__, 1) . "/var/$fileName";
+        $filePath = dirname(__DIR__, 1) . ('/var/' . $fileName);
+        $this->pingFile = dirname(__DIR__, 1) . ('/var/' . $fileName);
         $this->container
             ->get(PingService::class)
             ->register(
@@ -547,9 +512,7 @@ class FeatureContext implements Context
             );
     }
 
-    /**
-     * @Given each task must be limited in time of :value seconds and killed when they exceed it.
-     */
+    #[\Behat\Step\Given('each task must be limited in time of :value seconds and killed when they exceed it.')]
     public function eachTaskMustBeLimitedInTimeOfSecondsAndKilledWhenTheyExceedIt(int $value): void
     {
         $this->container
@@ -557,9 +520,7 @@ class FeatureContext implements Context
             ->enable($value);
     }
 
-    /**
-     * @Then task must be finished
-     */
+    #[\Behat\Step\Then('task must be finished')]
     public function taskMustBeFinished(): void
     {
         Assert::assertInstanceOf(
@@ -568,17 +529,13 @@ class FeatureContext implements Context
         );
     }
 
-    /**
-     * @Then no exception must be throwed
-     */
+    #[\Behat\Step\Then('no exception must be throwed')]
     public function noExceptionMustBeThrowed(): void
     {
         Assert::assertNull($this->error);
     }
 
-    /**
-     * @When the agent start a short task
-     */
+    #[\Behat\Step\When('the agent start a short task')]
     public function theAgentStartAShortTask(): void
     {
         $recipe = new Recipe();
@@ -613,9 +570,7 @@ class FeatureContext implements Context
     }
 
 
-    /**
-     * @Given a timer action to ping a message to a log each :seconds seconds
-     */
+    #[\Behat\Step\Given('a timer action to ping a message to a log each :seconds seconds')]
     public function aTimerActionToPingAMessageToALogEachSeconds(int $seconds): void
     {
         $this->logOutput = '';
@@ -642,9 +597,7 @@ class FeatureContext implements Context
         );
     }
 
-    /**
-     * @When the agent sleeps :seconds seconds
-     */
+    #[\Behat\Step\When('the agent sleeps :seconds seconds')]
     public function theAgentSleepsSeconds(int $seconds): void
     {
         $sleepService = $this->container->get(SleepServiceInterface::class);
@@ -653,9 +606,7 @@ class FeatureContext implements Context
         $this->loggingEnabled = false;
     }
 
-    /**
-     * @Then the main function has been paused for :exptectedSeconds seconds
-     */
+    #[\Behat\Step\Then('the main function has been paused for :exptectedSeconds seconds')]
     public function theMainFunctionHasBeenPausedForSeconds(int $exptectedSeconds): void
     {
         $actualSeconds = time() - $this->timeBeforeSleeping;
@@ -665,9 +616,7 @@ class FeatureContext implements Context
         );
     }
 
-    /**
-     * @Then the logs have :count lines
-     */
+    #[\Behat\Step\Then('the logs have :count lines')]
     public function theLogsHaveLines(int $count): void
     {
         Assert::assertCount(
@@ -676,9 +625,7 @@ class FeatureContext implements Context
         );
     }
 
-    /**
-     * @When the agent start a too long task
-     */
+    #[\Behat\Step\When('the agent start a too long task')]
     public function theAgentStartATooLongTask(): void
     {
         $recipe = new Recipe();
@@ -712,9 +659,7 @@ class FeatureContext implements Context
         );
     }
 
-    /**
-     * @Then An exception must be catched
-     */
+    #[\Behat\Step\Then('An exception must be catched')]
     public function anExceptionMustBeCatched(): void
     {
         Assert::assertInstanceOf(
@@ -723,9 +668,7 @@ class FeatureContext implements Context
         );
     }
 
-    /**
-     * @Then the task must be not finished
-     */
+    #[\Behat\Step\Then('the task must be not finished')]
     public function theTaskMustBeNotFinished(): void
     {
         Assert::assertNull($this->response);

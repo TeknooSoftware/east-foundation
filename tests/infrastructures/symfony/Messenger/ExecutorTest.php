@@ -46,10 +46,8 @@ use Teknoo\Recipe\RecipeInterface;
 #[CoversClass(Executor::class)]
 class ExecutorTest extends TestCase
 {
-    /**
-     * @var ManagerInterface
-     */
-    private $manager;
+
+    private ?ManagerInterface $manager = null;
 
     private function getManagerMock(): ManagerInterface&MockObject
     {

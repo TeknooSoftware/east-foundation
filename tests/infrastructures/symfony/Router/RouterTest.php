@@ -25,6 +25,7 @@ declare(strict_types=1);
 namespace Teknoo\Tests\East\FoundationBundle\Router;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
@@ -49,20 +50,11 @@ use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 #[CoversClass(Router::class)]
 class RouterTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var UrlMatcherInterface
-     */
-    private $matcher;
+    private ?UrlMatcherInterface $matcher = null;
 
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
+    private ?ContainerInterface $container = null;
 
-    /**
-     * @return UrlMatcherInterface|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private function getUrlMatcherMock(): UrlMatcherInterface
+    private function getUrlMatcherMock(): UrlMatcherInterface&MockObject
     {
         if (!$this->matcher instanceof UrlMatcherInterface) {
             $this->matcher = $this->createMock(UrlMatcherInterface::class);
@@ -71,10 +63,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         return $this->matcher;
     }
 
-    /**
-     * @return ContainerInterface|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private function getContainerMock(): ContainerInterface
+    private function getContainerMock(): ContainerInterface&MockObject
     {
         if (!$this->container instanceof ContainerInterface) {
             $this->container = $this->createMock(ContainerInterface::class);

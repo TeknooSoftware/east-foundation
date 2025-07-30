@@ -57,9 +57,6 @@ class ClientTest extends TestCase
         return $this->messageBusInterface;
     }
 
-    /**
-     * @return Client
-     */
     private function buildClient(?LoggerInterface $logger = null): Client
     {
         return new Client(
