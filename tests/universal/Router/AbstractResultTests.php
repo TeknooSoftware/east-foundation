@@ -35,44 +35,39 @@ use Teknoo\Immutable\Exception\ImmutableException;
  */
 abstract class AbstractResultTests extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @return ResultInterface
-     */
     abstract public function buildResult(): ResultInterface;
-    /**
-     * @return ResultInterface
-     */
+
     abstract public function buildResultWithNext(): ResultInterface;
 
-    public function testValueObjectBehaviorSetException()
+    public function testValueObjectBehaviorSetException(): void
     {
         $this->expectException(ImmutableException::class);
         $this->buildResult()->foo = 'bar';
     }
 
-    public function testValueObjectBehaviorUnsetException()
+    public function testValueObjectBehaviorUnsetException(): void
     {
         $this->expectException(ImmutableException::class);
         unset($this->buildResult()->foo);
     }
 
-    public function testValueObjectBehaviorConstructor()
+    public function testValueObjectBehaviorConstructor(): void
     {
         $this->expectException(ImmutableException::class);
         $this->buildResult()->__construct();
     }
 
-    public function testGetController()
+    public function testGetController(): void
     {
         $this->assertIsCallable($this->buildResult()->getController());
     }
 
-    public function testGetNextWithNoNext()
+    public function testGetNextWithNoNext(): void
     {
         $this->assertNull($this->buildResult()->getNext());
     }
 
-    public function testGetNext()
+    public function testGetNext(): void
     {
         $this->assertInstanceOf(ResultInterface::class, $this->buildResultWithNext()->getNext());
     }

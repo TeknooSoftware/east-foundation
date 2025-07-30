@@ -58,21 +58,18 @@ class SessionTest extends \PHPUnit\Framework\TestCase
         return $this->symfonySession;
     }
 
-    /**
-     * @return Session
-     */
     public function buildSession(): Session
     {
         return new Session($this->getSymfonySession());
     }
 
-    public function testSetBadArgument()
+    public function testSetBadArgument(): void
     {
         $this->expectException(\TypeError::class);
         $this->buildSession()->set(new \stdClass(), '');
     }
     
-    public function testSet()
+    public function testSet(): void
     {
         $this->getSymfonySession()
             ->expects($this->once())
@@ -85,20 +82,20 @@ class SessionTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testGetBadArgument()
+    public function testGetBadArgument(): void
     {
         $this->expectException(\TypeError::class);
         $promise = $this->createMock(PromiseInterface::class);
         $this->buildSession()->get(new \stdClass(), $promise);
     }
 
-    public function testGetBadArgumentPromise()
+    public function testGetBadArgumentPromise(): void
     {
         $this->expectException(\TypeError::class);
         $this->buildSession()->get('foo', new \stdClass());
     }
     
-    public function testGetFound()
+    public function testGetFound(): void
     {
         $promise = $this->createMock(PromiseInterface::class);
         $promise->expects($this->once())
@@ -126,7 +123,7 @@ class SessionTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testGetNotFound()
+    public function testGetNotFound(): void
     {
         $promise = $this->createMock(PromiseInterface::class);
         $promise->expects($this->never())
@@ -150,13 +147,13 @@ class SessionTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testRemoveBadArgument()
+    public function testRemoveBadArgument(): void
     {
         $this->expectException(\TypeError::class);
         $this->buildSession()->remove(new \stdClass());
     }
 
-    public function testRemove()
+    public function testRemove(): void
     {
         $this->getSymfonySession()
             ->expects($this->once())
@@ -169,7 +166,7 @@ class SessionTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testClear()
+    public function testClear(): void
     {
         $this->getSymfonySession()
             ->expects($this->once())

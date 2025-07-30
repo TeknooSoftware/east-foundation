@@ -50,13 +50,13 @@ class GroupsTraitTest extends TestCase
                 array $data,
                 array $groups,
                 bool $lazyData = false,
-            ) {
+            ): array {
                 return $this->filterExport($data, $groups, $lazyData);
             }
         };
     }
 
-    public function testFilteringWithoutsGroupsDefined()
+    public function testFilteringWithoutsGroupsDefined(): void
     {
         $object = $this->buildObject();
 
@@ -76,7 +76,7 @@ class GroupsTraitTest extends TestCase
         );
     }
 
-    public function testFilteringWithGroupNotFound()
+    public function testFilteringWithGroupNotFound(): void
     {
         $object = $this->buildObject();
 
@@ -104,7 +104,7 @@ class GroupsTraitTest extends TestCase
         );
     }
 
-    public function testFilteringWithGroups()
+    public function testFilteringWithGroups(): void
     {
 
         $object = $this->buildObject();
@@ -141,7 +141,7 @@ class GroupsTraitTest extends TestCase
         );
     }
 
-    public function testFilteringWithGroupsAndLasyData()
+    public function testFilteringWithGroupsAndLasyData(): void
     {
 
         $object = $this->buildObject();
@@ -163,11 +163,11 @@ class GroupsTraitTest extends TestCase
             ],
             $object->runFilter(
                 [
-                    'key1' => fn () => 'foo',
+                    'key1' => fn (): string => 'foo',
                     'key2' => 123,
-                    'key3' => fn () => ['foo', 'bar'],
-                    'key4' => fn () => new stdClass(),
-                    'key5' => fn () => 'bar',
+                    'key3' => fn (): array => ['foo', 'bar'],
+                    'key4' => fn (): \stdClass => new stdClass(),
+                    'key5' => fn (): string => 'bar',
                 ],
                 [
                     'group1',
@@ -179,10 +179,10 @@ class GroupsTraitTest extends TestCase
         );
     }
 
-    public function testFilteringWithGroupsWithClosureButNotLazyData()
+    public function testFilteringWithGroupsWithClosureButNotLazyData(): void
     {
-        $toCall1 = fn () => 'foo';
-        $toCall2 = fn () => ['foo', 'bar'];
+        $toCall1 = fn (): string => 'foo';
+        $toCall2 = fn (): array => ['foo', 'bar'];
 
         $object = $this->buildObject();
 
@@ -206,8 +206,8 @@ class GroupsTraitTest extends TestCase
                     'key1' => $toCall1,
                     'key2' => 123,
                     'key3' => $toCall2,
-                    'key4' => fn () => new stdClass(),
-                    'key5' => fn () => 'bar',
+                    'key4' => fn (): \stdClass => new stdClass(),
+                    'key5' => fn (): string => 'bar',
                 ],
                 [
                     'group1',

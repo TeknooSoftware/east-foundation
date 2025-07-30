@@ -50,16 +50,12 @@ use Teknoo\Tests\Recipe\AbstractChefTests;
 #[CoversClass(Manager::class)]
 class ManagerTest extends AbstractChefTests
 {
-    /**
-     * @param CookingSupervisorInterface|null $cookingSupervisor
-     * @return ChefInterface|ManagerInterface
-     */
     public function buildChef(?CookingSupervisorInterface $cookingSupervisor = null): ChefInterface
     {
         return new Manager(cookingSupervisor: $cookingSupervisor ?? new CookingSupervisor());
     }
 
-    public function testReadInConstructor()
+    public function testReadInConstructor(): void
     {
         $recipe = $this->createMock(RecipeInterface::class);
         $recipe->expects($this->once())
@@ -72,15 +68,12 @@ class ManagerTest extends AbstractChefTests
         );
     }
 
-    /**
-     * @return string
-     */
     public function getManagerClass(): string
     {
         return Manager::class;
     }
 
-    public function testReceiveRequest()
+    public function testReceiveRequest(): void
     {
         $this->assertInstanceOf(
             $this->getManagerClass(),
@@ -93,7 +86,7 @@ class ManagerTest extends AbstractChefTests
         );
     }
 
-    public function testReceiveMessage()
+    public function testReceiveMessage(): void
     {
         $this->assertInstanceOf(
             $this->getManagerClass(),
@@ -106,7 +99,7 @@ class ManagerTest extends AbstractChefTests
         );
     }
 
-    public function testReceiveRequestErrorClient()
+    public function testReceiveRequestErrorClient(): void
     {
         $this->expectException(\TypeError::class);
         $this->buildChef()->followSteps([$this->createMock(BowlInterface::class)])
@@ -116,7 +109,7 @@ class ManagerTest extends AbstractChefTests
             );
     }
 
-    public function testReceiveRequestErrorRequest()
+    public function testReceiveRequestErrorRequest(): void
     {
         $this->expectException(\TypeError::class);
         $this->buildChef()->followSteps([$this->createMock(BowlInterface::class)])
@@ -126,7 +119,7 @@ class ManagerTest extends AbstractChefTests
             );
     }
 
-    public function testContinueExecutionErrorClient()
+    public function testContinueExecutionErrorClient(): void
     {
         $this->expectException(\TypeError::class);
         $this->buildChef()->followSteps([$this->createMock(BowlInterface::class)])
@@ -136,7 +129,7 @@ class ManagerTest extends AbstractChefTests
             );
     }
 
-    public function testContinueExecutionErrorRequest()
+    public function testContinueExecutionErrorRequest(): void
     {
         $this->expectException(\TypeError::class);
         $this->buildChef()->followSteps([$this->createMock(BowlInterface::class)])
@@ -146,7 +139,7 @@ class ManagerTest extends AbstractChefTests
             );
     }
 
-    public function testUpdateMessageExecutionErrorRequest()
+    public function testUpdateMessageExecutionErrorRequest(): void
     {
         $this->expectException(\TypeError::class);
         $this->buildChef()->followSteps([$this->createMock(BowlInterface::class)])
@@ -155,13 +148,10 @@ class ManagerTest extends AbstractChefTests
             );
     }
 
-    public function testStopWithRequest()
+    public function testStopWithRequest(): void
     {
-        $middleware = new class($this) implements MiddlewareInterface {
-            /**
-             * @var ManagerTest
-             */
-            private $testSuite;
+        $middleware = new readonly class($this) implements MiddlewareInterface {
+            private \Teknoo\Tests\East\Foundation\Manager\ManagerTest $testSuite;
 
             public function __construct(ManagerTest $that)
             {
@@ -194,17 +184,14 @@ class ManagerTest extends AbstractChefTests
 
         $manager = $this->buildChef();
         $manager->read($this->createMock(RecipeInterface::class));
-        $manager->followSteps([new Bowl([$middleware, 'execute'], [])]);
+        $manager->followSteps([new Bowl($middleware->execute(...), [])]);
         $manager->receiveRequest($clientMock, $serverRequestMock);
     }
 
-    public function testStopWithMessage()
+    public function testStopWithMessage(): void
     {
-        $middleware = new class($this) implements MiddlewareInterface {
-            /**
-             * @var ManagerTest
-             */
-            private $testSuite;
+        $middleware = new readonly class($this) implements MiddlewareInterface {
+            private \Teknoo\Tests\East\Foundation\Manager\ManagerTest $testSuite;
 
             public function __construct(ManagerTest $that)
             {
@@ -237,11 +224,11 @@ class ManagerTest extends AbstractChefTests
 
         $manager = $this->buildChef();
         $manager->read($this->createMock(RecipeInterface::class));
-        $manager->followSteps([new Bowl([$middleware, 'execute'], [])]);
+        $manager->followSteps([new Bowl($middleware->execute(...), [])]);
         $manager->receiveRequest($clientMock, $messageMock);
     }
 
-    public function testBehaviorReceiveRequest()
+    public function testBehaviorReceiveRequest(): void
     {
         $manager = $this->buildChef();
 
@@ -266,7 +253,7 @@ class ManagerTest extends AbstractChefTests
         $middleware2 = $this->createMock(MiddlewareInterface::class);
         $middleware2->expects($this->once())->method('execute');
         $middleware2->expects($this->once())->method('execute')->willReturnCallback(
-            function ($clientPassed, $requestPassed, $managerPassed) use ($clientMock, $serverRequestMock, $manager) {
+            function ($clientPassed, $requestPassed, $managerPassed) use ($clientMock, $serverRequestMock, $manager): void {
                 $this->assertEquals($clientPassed, $clientMock);
                 $this->assertEquals($requestPassed, $serverRequestMock);
                 $managerPassed->stop();
@@ -293,7 +280,7 @@ class ManagerTest extends AbstractChefTests
         );
     }
 
-    public function testBehaviorReceiveMessage()
+    public function testBehaviorReceiveMessage(): void
     {
         $manager = $this->buildChef();
 
@@ -318,7 +305,7 @@ class ManagerTest extends AbstractChefTests
         $middleware2 = $this->createMock(MiddlewareInterface::class);
         $middleware2->expects($this->once())->method('execute');
         $middleware2->expects($this->once())->method('execute')->willReturnCallback(
-            function ($clientPassed, $messagePassed, $managerPassed) use ($clientMock, $messageMock, $manager) {
+            function ($clientPassed, $messagePassed, $managerPassed) use ($clientMock, $messageMock, $manager): void {
                 $this->assertEquals($clientPassed, $clientMock);
                 $this->assertEquals($messagePassed, $messageMock);
                 $managerPassed->stop();
@@ -345,7 +332,7 @@ class ManagerTest extends AbstractChefTests
         );
     }
 
-    public function testBehaviorReceiveRequestAndContinueExecution()
+    public function testBehaviorReceiveRequestAndContinueExecution(): void
     {
         $manager = $this->buildChef();
 
@@ -406,10 +393,10 @@ class ManagerTest extends AbstractChefTests
             $manager->receiveRequest($clientMock, $serverRequestMock)
         );
 
-        $this->assertEquals(['middleware2','middleware1'], $callList);
+        $this->assertSame(['middleware2','middleware1'], $callList);
     }
 
-    public function testBehaviorReceiveMessageAndContinueExecution()
+    public function testBehaviorReceiveMessageAndContinueExecution(): void
     {
         $manager = $this->buildChef();
 
@@ -470,10 +457,10 @@ class ManagerTest extends AbstractChefTests
             $manager->receiveRequest($clientMock, $messageMock)
         );
 
-        $this->assertEquals(['middleware2','middleware1'], $callList);
+        $this->assertSame(['middleware2','middleware1'], $callList);
     }
 
-    public function testBehaviorReceiveRequestAndUpdateMessage()
+    public function testBehaviorReceiveRequestAndUpdateMessage(): void
     {
         $manager = $this->buildChef();
 
@@ -534,10 +521,10 @@ class ManagerTest extends AbstractChefTests
             $manager->receiveRequest($clientMock, $serverRequestMock)
         );
 
-        $this->assertEquals(['middleware2','middleware1'], $callList);
+        $this->assertSame(['middleware2','middleware1'], $callList);
     }
 
-    public function testBehaviorReceiveMessageAndUpdateMessage()
+    public function testBehaviorReceiveMessageAndUpdateMessage(): void
     {
         $manager = $this->buildChef();
 
@@ -598,10 +585,10 @@ class ManagerTest extends AbstractChefTests
             $manager->receiveRequest($clientMock, $messageMock)
         );
 
-        $this->assertEquals(['middleware2','middleware1'], $callList);
+        $this->assertSame(['middleware2','middleware1'], $callList);
     }
 
-    public function testBehaviorMultipleReceiveRequest()
+    public function testBehaviorMultipleReceiveRequest(): void
     {
         $manager = $this->buildChef();
 
@@ -626,7 +613,7 @@ class ManagerTest extends AbstractChefTests
         $middleware2 = $this->createMock(MiddlewareInterface::class);
         $middleware2->expects($this->exactly(2))->method('execute');
         $middleware2->expects($this->exactly(2))->method('execute')->willReturnCallback(
-            function ($clientPassed, $requestPassed, $managerPassed) use ($clientMock, $serverRequestMock, $manager) {
+            function ($clientPassed, $requestPassed, $managerPassed) use ($clientMock, $serverRequestMock, $manager): void {
                 $this->assertEquals($clientPassed, $clientMock);
                 $this->assertEquals($requestPassed, $serverRequestMock);
                 $managerPassed->stop();
@@ -657,7 +644,7 @@ class ManagerTest extends AbstractChefTests
         );
     }
     
-    public function testBehaviorMultipleReceiveMessage()
+    public function testBehaviorMultipleReceiveMessage(): void
     {
         $manager = $this->buildChef();
 
@@ -682,7 +669,7 @@ class ManagerTest extends AbstractChefTests
         $middleware2 = $this->createMock(MiddlewareInterface::class);
         $middleware2->expects($this->exactly(2))->method('execute');
         $middleware2->expects($this->exactly(2))->method('execute')->willReturnCallback(
-            function ($clientPassed, $messagePassed, $managerPassed) use ($clientMock, $messageMock, $manager) {
+            function ($clientPassed, $messagePassed, $managerPassed) use ($clientMock, $messageMock, $manager): void {
                 $this->assertEquals($clientPassed, $clientMock);
                 $this->assertEquals($messagePassed, $messageMock);
                 $managerPassed->stop();

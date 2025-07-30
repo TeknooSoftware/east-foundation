@@ -47,7 +47,7 @@ class LoopDetectorTest extends TestCase
         return new LoopDetector();
     }
 
-    public function testInvokeNoResult()
+    public function testInvokeNoResult(): void
     {
         $bowl = $this->createMock(RecipeBowl::class);
         $manager = $this->createMock(ManagerInterface::class);
@@ -65,7 +65,7 @@ class LoopDetectorTest extends TestCase
         );
     }
 
-    public function testInvokeResultNoNext()
+    public function testInvokeResultNoNext(): void
     {
         $bowl = $this->createMock(RecipeBowl::class);
         $manager = $this->createMock(ManagerInterface::class);
@@ -84,7 +84,7 @@ class LoopDetectorTest extends TestCase
         );
     }
 
-    public function testInvokeResultNext()
+    public function testInvokeResultNext(): void
     {
         $bowl = $this->createMock(RecipeBowl::class);
         $manager = $this->createMock(ManagerInterface::class);

@@ -46,20 +46,11 @@ use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 #[CoversClass(KernelListener::class)]
 class KernelListenerTest extends TestCase
 {
-    /**
-     * @var ManagerInterface
-     */
-    private $manager;
+    private ?ManagerInterface $manager = null;
 
-    /**
-     * @var ClientWithResponseEventInterface
-     */
-    private $clientWithResponseEventInterface;
+    private ?ClientWithResponseEventInterface $clientWithResponseEventInterface = null;
 
-    /**
-     * @var HttpMessageFactoryInterface
-     */
-    private $factory;
+    private ?HttpMessageFactoryInterface $factory = null;
 
     private function getManagerMock(): ManagerInterface&MockObject
     {
@@ -105,7 +96,7 @@ class KernelListenerTest extends TestCase
         return KernelListener::class;
     }
 
-    public function testOnKernelRequest()
+    public function testOnKernelRequest(): void
     {
         $request = $this->createMock(RequestEvent::class);
         $request->method('getRequest')->willReturn(new Request());
@@ -136,7 +127,7 @@ class KernelListenerTest extends TestCase
         );
     }
 
-    public function testOnKernelRequestErrorLoopFromSymfony()
+    public function testOnKernelRequestErrorLoopFromSymfony(): void
     {
         $symfonyRequest = new Request();
         $symfonyRequest->attributes->set('exception', new \Exception());
@@ -144,7 +135,6 @@ class KernelListenerTest extends TestCase
         $request->method('getRequest')->willReturn($symfonyRequest);
 
         $this->getFactoryMock()
-            
             ->method('createRequest')
             ->willReturn($this->createMock(ServerRequestInterface::class));
 
@@ -164,7 +154,7 @@ class KernelListenerTest extends TestCase
         );
     }
 
-    public function testOnKernelRequestError()
+    public function testOnKernelRequestError(): void
     {
         $this->expectException(\TypeError::class);
         $this->buildKernelListener()->onKernelRequest(new \stdClass());

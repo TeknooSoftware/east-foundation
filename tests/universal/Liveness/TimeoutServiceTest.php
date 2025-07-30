@@ -61,20 +61,20 @@ class TimeoutServiceTest extends TestCase
 
         $rp = new \ReflectionProperty(TimeoutService::class, 'setTimeoutCallable');
         $rp->setAccessible(true);
-        $rp->setValue($service, function (int $seconds) {
+        $rp->setValue($service, function (int $seconds): void {
             $this->seconds = $seconds;
         });
 
         return $service;
     }
 
-    public function testThrowException()
+    public function testThrowException(): void
     {
         $this->expectException(TimeLimitReachedException::class);
         TimeoutService::throwException();
     }
 
-    public function testEnable()
+    public function testEnable(): void
     {
         $service = $this->createService();
         $this->seconds = null;
@@ -98,7 +98,7 @@ class TimeoutServiceTest extends TestCase
         $this->assertEquals(15, $this->seconds);
     }
 
-    public function testEnableWithoutTimer()
+    public function testEnableWithoutTimer(): void
     {
         $service = $this->createService(false);
         $this->seconds = null;
@@ -111,7 +111,7 @@ class TimeoutServiceTest extends TestCase
         $this->assertEquals(15, $this->seconds);
     }
 
-    public function testDisable()
+    public function testDisable(): void
     {
         $service = $this->createService();
 
@@ -131,7 +131,7 @@ class TimeoutServiceTest extends TestCase
         );
     }
 
-    public function testDisableWithoutTimer()
+    public function testDisableWithoutTimer(): void
     {
         $service = $this->createService(false);
 

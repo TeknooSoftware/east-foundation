@@ -49,14 +49,14 @@ class SleepServiceTest extends TestCase
 
     public function getTimerServiceMock(): TimerServiceInterface&MockObject
     {
-        if (null === $this->timerService) {
+        if (!$this->timerService instanceof \Teknoo\East\Foundation\Time\TimerServiceInterface) {
             $this->timerService = $this->createMock(TimerServiceInterface::class);
         }
 
         return $this->timerService;
     }
 
-    public function testWaitWithMock()
+    public function testWaitWithMock(): void
     {
         if (defined('PCNTL_MOCKED')) {
             self::markTestSkipped('PCNTL is not available');
@@ -66,7 +66,7 @@ class SleepServiceTest extends TestCase
             ->expects($this->once())
             ->method('register')
             ->willReturnCallback(
-                function (int $seconds, string $timerId, callable $callback) {
+                function (int $seconds, string $timerId, callable $callback): \Teknoo\East\Foundation\Time\TimerServiceInterface&\PHPUnit\Framework\MockObject\MockObject {
                     sleep($seconds);
                     $callback();
 
@@ -77,15 +77,15 @@ class SleepServiceTest extends TestCase
         $t = time();
         $this->assertInstanceOf(
             SleepService::class,
-            (new SleepService($this->getTimerServiceMock()))->wait(2),
+            new SleepService($this->getTimerServiceMock())->wait(2),
         );
-        $this->assertEquals(
+        $this->assertSame(
             $t + 2,
             time(),
         );
     }
 
-    public function testWaitWithTimer()
+    public function testWaitWithTimer(): void
     {
         if (defined('PCNTL_MOCKED')) {
             self::markTestSkipped('PCNTL is not available');
@@ -94,15 +94,15 @@ class SleepServiceTest extends TestCase
         $t = time();
         $this->assertInstanceOf(
             SleepService::class,
-            (new SleepService(new TimerService(new DatesService())))->wait(2),
+            new SleepService(new TimerService(new DatesService()))->wait(2),
         );
-        $this->assertEquals(
+        $this->assertSame(
             $t + 2,
             time(),
         );
     }
 
-    public function testWait0SecondsWithTimer()
+    public function testWait0SecondsWithTimer(): void
     {
         if (defined('PCNTL_MOCKED')) {
             self::markTestSkipped('PCNTL is not available');
@@ -111,7 +111,7 @@ class SleepServiceTest extends TestCase
         $t = time();
         $this->assertInstanceOf(
             SleepService::class,
-            (new SleepService(new TimerService(new DatesService())))->wait(0),
+            new SleepService(new TimerService(new DatesService()))->wait(0),
         );
         $this->assertLessThanOrEqual(
             $t + 1,

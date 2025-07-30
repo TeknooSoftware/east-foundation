@@ -41,13 +41,13 @@ use Teknoo\East\FoundationBundle\Extension\Routes;
 #[CoversClass(Routes::class)]
 class RoutesTest extends TestCase
 {
-    public function testExtendsBundles()
+    public function testExtendsBundles(): void
     {
         $manager = $this->createMock(ManagerInterface::class);
         $manager->expects($this->once())
             ->method('execute')
             ->willReturnCallback(
-                function ($module) use ($manager) {
+                function ($module) use ($manager): \PHPUnit\Framework\MockObject\MockObject {
                     $this->assertinstanceOf(Routes::class, $module);
 
                     $this->assertEquals('test', $module->getEnvironment());

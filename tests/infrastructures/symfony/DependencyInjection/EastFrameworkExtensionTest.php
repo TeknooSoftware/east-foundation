@@ -40,10 +40,7 @@ use Teknoo\East\FoundationBundle\DependencyInjection\EastFoundationExtension;
 #[CoversClass(EastFoundationExtension::class)]
 class EastFrameworkExtensionTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var ContainerBuilder
-     */
-    private $container;
+    private ?ContainerBuilder $container = null;
 
     private function getContainerBuilderMock(): ContainerBuilder&MockObject
     {
@@ -67,7 +64,7 @@ class EastFrameworkExtensionTest extends \PHPUnit\Framework\TestCase
         return EastFoundationExtension::class;
     }
 
-    public function testLoad()
+    public function testLoad(): void
     {
         $this->assertInstanceOf(
             $this->getExtensionClass(),
@@ -75,13 +72,13 @@ class EastFrameworkExtensionTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testLoadErrorContainer()
+    public function testLoadErrorContainer(): void
     {
         $this->expectException(\TypeError::class);
         $this->buildExtension()->load([], new \stdClass());
     }
 
-    public function testLoadErrorConfig()
+    public function testLoadErrorConfig(): void
     {
         $this->expectException(\TypeError::class);
         $this->buildExtension()->load(new \stdClass(), $this->getContainerBuilderMock());

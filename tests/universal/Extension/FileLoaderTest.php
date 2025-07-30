@@ -64,41 +64,41 @@ class FileLoaderTest extends TestCase
         parent::tearDown();
     }
     
-    public function testInvokeExceptionWhenFileNotFound()
+    public function testInvokeExceptionWhenFileNotFound(): void
     {
         $_ENV['TEKNOO_EAST_EXTENSION_FILE'] = 'not-found';
         $this->assertEmpty(iterator_to_array((new FileLoader())()));
     }
 
-    public function testInvokeExceptionWhenFileEmpty()
+    public function testInvokeExceptionWhenFileEmpty(): void
     {
         $this->expectException(LoaderException::class);
         $_ENV['TEKNOO_EAST_EXTENSION_FILE'] = __DIR__ . '/Support/emptyfile';
         iterator_to_array((new FileLoader())());
     }
 
-    public function testInvokeExceptionWhenFileNotValidJson()
+    public function testInvokeExceptionWhenFileNotValidJson(): void
     {
         $this->expectException(LoaderException::class);
         $_ENV['TEKNOO_EAST_EXTENSION_FILE'] = __DIR__ . '/Support/invalid.json';
         iterator_to_array((new FileLoader())());
     }
 
-    public function testInvokeExceptionWhenFileNotArrayJson()
+    public function testInvokeExceptionWhenFileNotArrayJson(): void
     {
         $this->expectException(LoaderException::class);
         $_ENV['TEKNOO_EAST_EXTENSION_FILE'] = __DIR__ . '/Support/string.json';
         iterator_to_array((new FileLoader())());
     }
 
-    public function testInvokeReferencedClassIsNotExtension()
+    public function testInvokeReferencedClassIsNotExtension(): void
     {
         $this->expectException(LoaderException::class);
         $_ENV['TEKNOO_EAST_EXTENSION_FILE'] = __DIR__ . '/Support/badclass.json';
         iterator_to_array((new FileLoader())());
     }
 
-    public function testInvoke()
+    public function testInvoke(): void
     {
         $_ENV['TEKNOO_EAST_EXTENSION_FILE'] = __DIR__ . '/Support/good.json';
         $loader = new FileLoader();

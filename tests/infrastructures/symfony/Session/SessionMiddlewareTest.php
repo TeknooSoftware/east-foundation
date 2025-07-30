@@ -47,12 +47,12 @@ use Teknoo\East\Foundation\Manager\ManagerInterface;
 #[CoversClass(SessionMiddleware::class)]
 class SessionMiddlewareTest extends TestCase
 {
-    public function buildMiddleware()
+    public function buildMiddleware(): \Teknoo\East\FoundationBundle\Session\SessionMiddleware
     {
         return new SessionMiddleware();
     }
 
-    public function testHasNoSymfonyRequest()
+    public function testHasNoSymfonyRequest(): void
     {
         $request = $this->createMock(ServerRequestInterface::class);
         $client = $this->createMock(ClientInterface::class);
@@ -70,7 +70,7 @@ class SessionMiddlewareTest extends TestCase
         );
     }
 
-    public function testHasMessage()
+    public function testHasMessage(): void
     {
         $message = $this->createMock(MessageInterface::class);
         $client = $this->createMock(ClientInterface::class);
@@ -85,7 +85,7 @@ class SessionMiddlewareTest extends TestCase
         );
     }
 
-    public function testHasSymfonyRequest()
+    public function testHasSymfonyRequest(): void
     {
         $request = $this->createMock(ServerRequestInterface::class);
         $requestUpdated = $this->createMock(ServerRequestInterface::class);
@@ -108,7 +108,7 @@ class SessionMiddlewareTest extends TestCase
 
         $request->expects($this->once())
             ->method('withAttribute')
-            ->with(SessionInterface::ATTRIBUTE_KEY, $this->callback(fn($object) => $object instanceof Session))
+            ->with(SessionInterface::ATTRIBUTE_KEY, $this->callback(fn($object): bool => $object instanceof Session))
             ->willReturn($requestUpdated);
 
         $manager
@@ -131,10 +131,9 @@ class SessionMiddlewareTest extends TestCase
         );
     }
 
-    public function testHasSymfonyRequestInStateless()
+    public function testHasSymfonyRequestInStateless(): void
     {
         $request = $this->createMock(ServerRequestInterface::class);
-        $requestUpdated = $this->createMock(ServerRequestInterface::class);
         $client = $this->createMock(ClientInterface::class);
         $manager = $this->createMock(ManagerInterface::class);
 

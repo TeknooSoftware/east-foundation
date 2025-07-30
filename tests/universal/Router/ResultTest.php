@@ -42,31 +42,32 @@ class ResultTest extends AbstractResultTests
 {
     public function buildResult(): ResultInterface
     {
-        return new Result(function (int $a, string $b, \DateTime $d, $test = 'foo') {
+        return new Result(function (int $a, string $b, \DateTime $d, $test = 'foo'): void {
         }, null);
     }
 
     public function buildResultWithNext(): ResultInterface
     {
         return new Result(
-            function () {
+            function (): void {
             },
-            new Result(function (int $a, string $b, \DateTime $d, $test = 'foo') {
+            new Result(function (int $a, string $b, \DateTime $d, $test = 'foo'): void {
             })
         );
     }
 
-    public function testValueObjectBehaviorConstructor()
+    #[\Override]
+    public function testValueObjectBehaviorConstructor(): void
     {
         $this->expectException(\Error::class);
-        $this->buildResult()->__construct(function (int $a, string $b, \DateTime $d, $test = 'foo') {
+        $this->buildResult()->__construct(function (int $a, string $b, \DateTime $d, $test = 'foo'): void {
         }, null);
     }
 
-    public function testConstructBadNext()
+    public function testConstructBadNext(): void
     {
         $this->expectException(\TypeError::class);
-        new Result(function () {
+        new Result(function (): void {
         }, new \DateTime());
     }
 }

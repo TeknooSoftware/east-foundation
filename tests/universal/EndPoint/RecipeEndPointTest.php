@@ -47,20 +47,11 @@ use Teknoo\Recipe\RecipeInterface;
 #[CoversClass(RecipeEndPoint::class)]
 class RecipeEndPointTest extends TestCase
 {
-    /**
-     * @var RecipeInterface
-     */
-    private $recipe;
+    private ?RecipeInterface $recipe = null;
 
-    /**
-     * @var PlanInterface
-     */
-    private $plan;
+    private ?PlanInterface $plan = null;
 
-    /**
-     * @var BowlInterface
-     */
-    private $bowl;
+    private ?BowlInterface $bowl = null;
 
     /**
      * @return RecipeInterface|\PHPUnit\Framework\MockObject\MockObject
@@ -104,20 +95,20 @@ class RecipeEndPointTest extends TestCase
         new RecipeEndPoint(new \stdClass());
     }
 
-    public function testConstructorWithBadContainer()
+    public function testConstructorWithBadContainer(): void
     {
         $this->expectException(\TypeError::class);
         new RecipeEndPoint($this->createMock(BaseRecipeInterface::class), new \stdClass());
     }
 
-    public function testInvokeBadManager()
+    public function testInvokeBadManager(): void
     {
         $this->expectException(\TypeError::class);
         $endPoint = new RecipeEndPoint($this->getRecipeMock());
         $endPoint($this->createMock(ServerRequestInterface::class), new \stdClass());
     }
 
-    public function testInvokeWithRecipe()
+    public function testInvokeWithRecipe(): void
     {
         $managerMock = $this->createMock(ManagerInterface::class);
 
@@ -129,7 +120,7 @@ class RecipeEndPointTest extends TestCase
         );
     }
 
-    public function testInvokeWithRecipeAndSupervisor()
+    public function testInvokeWithRecipeAndSupervisor(): void
     {
         $managerMock = $this->createMock(ManagerInterface::class);
 
@@ -145,7 +136,7 @@ class RecipeEndPointTest extends TestCase
         );
     }
 
-    public function testInvokeWithPlanWithSupervisor()
+    public function testInvokeWithPlanWithSupervisor(): void
     {
         $managerMock = $this->createMock(ManagerInterface::class);
 
@@ -161,7 +152,7 @@ class RecipeEndPointTest extends TestCase
         );
     }
 
-    public function testInvokeWithBowl()
+    public function testInvokeWithBowl(): void
     {
         $managerMock = $this->createMock(ManagerInterface::class);
 
@@ -178,7 +169,7 @@ class RecipeEndPointTest extends TestCase
         );
     }
 
-    public function testInvokeWithBowlWithSupervisor()
+    public function testInvokeWithBowlWithSupervisor(): void
     {
         $managerMock = $this->createMock(ManagerInterface::class);
 
@@ -201,7 +192,7 @@ class RecipeEndPointTest extends TestCase
         );
     }
 
-    public function testInvokeWithRecipeWithContainer()
+    public function testInvokeWithRecipeWithContainer(): void
     {
         $managerMock = $this->createMock(ManagerInterface::class);
 
@@ -230,7 +221,7 @@ class RecipeEndPointTest extends TestCase
         );
     }
 
-    public function testInvokeWithPlanWithContainer()
+    public function testInvokeWithPlanWithContainer(): void
     {
         $managerMock = $this->createMock(ManagerInterface::class);
 
@@ -259,7 +250,7 @@ class RecipeEndPointTest extends TestCase
         );
     }
 
-    public function testInvokeWithBowlWithContainer()
+    public function testInvokeWithBowlWithContainer(): void
     {
         $managerMock = $this->createMock(ManagerInterface::class);
 
@@ -298,7 +289,7 @@ class RecipeEndPointTest extends TestCase
         );
     }
 
-    public function testInvokeWithBowlWithContainerAndDuplicateKeyIntoWorkPlan()
+    public function testInvokeWithBowlWithContainerAndDuplicateKeyIntoWorkPlan(): void
     {
         $managerMock = $this->createMock(ManagerInterface::class);
 
@@ -329,7 +320,7 @@ class RecipeEndPointTest extends TestCase
             'foo3' => '@bar',
         ]);
 
-        $endPoint = new RecipeEndPoint($this->getBowlMock(), $container, ['bar1' => new \stdClass()]);
+        $endPoint = new RecipeEndPoint($this->bowl, $container, ['bar1' => new \stdClass()]);
 
         $this->assertInstanceOf(
             RecipeEndPoint::class,
@@ -341,7 +332,7 @@ class RecipeEndPointTest extends TestCase
         );
     }
 
-    public function testInvokeWithBowlWithContainerAndInitializedWorkPlan()
+    public function testInvokeWithBowlWithContainerAndInitializedWorkPlan(): void
     {
         $managerMock = $this->createMock(ManagerInterface::class);
 
@@ -385,7 +376,7 @@ class RecipeEndPointTest extends TestCase
         );
     }
 
-    public function testInvokeWithRecipeWithContainerKeyNotFound()
+    public function testInvokeWithRecipeWithContainerKeyNotFound(): void
     {
         $managerMock = $this->createMock(ManagerInterface::class);
 
@@ -407,7 +398,7 @@ class RecipeEndPointTest extends TestCase
         );
     }
 
-    public function testInvokeWithPlanWithContainerKeyNotFound()
+    public function testInvokeWithPlanWithContainerKeyNotFound(): void
     {
         $managerMock = $this->createMock(ManagerInterface::class);
 
@@ -429,7 +420,7 @@ class RecipeEndPointTest extends TestCase
         );
     }
 
-    public function testInvokeWithBowlWithContainerKeyNotFound()
+    public function testInvokeWithBowlWithContainerKeyNotFound(): void
     {
         $managerMock = $this->createMock(ManagerInterface::class);
 

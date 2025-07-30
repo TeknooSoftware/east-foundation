@@ -48,15 +48,12 @@ use Teknoo\East\FoundationBundle\Session\SessionMiddleware;
  */
 class ContainerTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @return Container
-     */
     protected function buildContainer() : Container
     {
         return include __DIR__.'/../../../../infrastructures/symfony/generator.php';
     }
 
-    public function testCreateManager()
+    public function testCreateManager(): void
     {
         $container = $this->buildContainer();
         $container->set(LoggerInterface::class, $this->createMock(LoggerInterface::class));
@@ -77,7 +74,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($manager1, $manager2);
     }
 
-    public function testCreateProcessor()
+    public function testCreateProcessor(): void
     {
         $container = $this->buildContainer();
         $container->set(LoggerInterface::class, $this->createMock(LoggerInterface::class));
@@ -99,7 +96,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($processor1, $processor2);
     }
 
-    public function testCreateClient()
+    public function testCreateClient(): void
     {
         $container = $this->buildContainer();
         $container->set(LoggerInterface::class, $this->createMock(LoggerInterface::class));
@@ -130,7 +127,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($client2, $client3);
     }
 
-    public function testCreateSessionMiddleware()
+    public function testCreateSessionMiddleware(): void
     {
         $container = $this->buildContainer();
 

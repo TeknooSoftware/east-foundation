@@ -49,7 +49,7 @@ use Teknoo\Tests\Recipe\Bowl\AbstractBowlTests;
 #[CoversClass(MiddlewareBowl::class)]
 class MiddlewareBowlTest extends AbstractBowlTests
 {
-    protected function getCallable()
+    protected function getCallable(): \Psr\Http\Server\MiddlewareInterface
     {
         return new class implements MiddlewareInterface {
             public function process(
@@ -61,6 +61,7 @@ class MiddlewareBowlTest extends AbstractBowlTests
         };
     }
 
+    #[\Override]
     protected function getValidWorkPlan(): array
     {
         return [
@@ -73,7 +74,7 @@ class MiddlewareBowlTest extends AbstractBowlTests
         ];
     }
 
-    protected function getMapping()
+    protected function getMapping(): array
     {
         return ['bar' => 'foo', 'bar2' => ['bar', 'foo']];
     }
@@ -99,6 +100,7 @@ class MiddlewareBowlTest extends AbstractBowlTests
         );
     }
 
+    #[\Override]
     public function testExecute(): void
     {
         $values = $this->getValidWorkPlan();
@@ -112,6 +114,7 @@ class MiddlewareBowlTest extends AbstractBowlTests
         );
     }
 
+    #[\Override]
     public function testExecuteWithValue(): void
     {
         $this->assertTrue(true);

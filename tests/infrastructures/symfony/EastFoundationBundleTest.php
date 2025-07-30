@@ -39,9 +39,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 #[CoversClass(EastFoundationBundle::class)]
 class EastFoundationBundleTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @return EastFoundationBundle
-     */
     private function buildBundle(): EastFoundationBundle
     {
         return new EastFoundationBundle();
@@ -52,7 +49,7 @@ class EastFoundationBundleTest extends \PHPUnit\Framework\TestCase
         return EastFoundationBundle::class;
     }
 
-    public function testBuild()
+    public function testBuild(): void
     {
         $this->assertInstanceOf(
             $this->getBundleClass(),
@@ -62,7 +59,7 @@ class EastFoundationBundleTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testBuildErrorContainer()
+    public function testBuildErrorContainer(): void
     {
         $this->expectException(\TypeError::class);
         $this->buildBundle()->build(new \stdClass());

@@ -74,6 +74,7 @@ class ComposerLoader implements LoaderInterface
         if (!class_exists(ClassLoader::class)) {
             throw new LoaderException('This loader require the composer autoloader');
         }
+
         // @codeCoverageIgnoreEnd
 
         $final = [];

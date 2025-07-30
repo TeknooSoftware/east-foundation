@@ -63,15 +63,12 @@ use function defined;
  */
 class ContainerTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @return Container
-     */
     protected function buildContainer() : Container
     {
         return include __DIR__ . '/../../src/generator.php';
     }
 
-    public function testCreateManager()
+    public function testCreateManager(): void
     {
         $container = $this->buildContainer();
         $container->set(LoggerInterface::class, $this->createMock(LoggerInterface::class));
@@ -92,7 +89,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($manager1, $manager2);
     }
 
-    public function testCreateProcessor()
+    public function testCreateProcessor(): void
     {
         $container = $this->buildContainer();
         $container->set(LoggerInterface::class, $this->createMock(LoggerInterface::class));
@@ -114,7 +111,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($processor1, $processor2);
     }
 
-    public function testLoopDetector()
+    public function testLoopDetector(): void
     {
         $container = $this->buildContainer();
         $loopDetector1 = $container->get(LoopDetectorInterface::class);
@@ -133,7 +130,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($loopDetector1, $loopDetector2);
     }
 
-    public function testProcessorRecipe()
+    public function testProcessorRecipe(): void
     {
         $container = $this->buildContainer();
         $recipe = $container->get(ProcessorRecipeInterface::class);
@@ -144,7 +141,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testRecipe()
+    public function testRecipe(): void
     {
         $container = $this->buildContainer();
         $recipe1 = $container->get(Recipe::class);
@@ -163,7 +160,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($recipe1, $recipe2);
     }
 
-    public function testProcessorPlan()
+    public function testProcessorPlan(): void
     {
         $container = $this->buildContainer();
         $plan1 = $container->get(ProcessorPlan::class);
@@ -182,7 +179,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($plan1, $plan2);
     }
 
-    public function testRecipePlan()
+    public function testRecipePlan(): void
     {
         $container = $this->buildContainer();
         $container->set(LoggerInterface::class, $this->createMock(LoggerInterface::class));
@@ -203,7 +200,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($plan1, $plan2);
     }
 
-    public function testDatesService()
+    public function testDatesService(): void
     {
         $container = $this->buildContainer();
         $this->assertInstanceOf(
@@ -212,7 +209,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testTimerService()
+    public function testTimerService(): void
     {
         if (defined('PCNTL_MOCKED')) {
             self::markTestSkipped('PCNTL is not available');
@@ -229,7 +226,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testPingService()
+    public function testPingService(): void
     {
         $container = $this->buildContainer();
         $this->assertInstanceOf(
@@ -242,7 +239,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testTimeoutService()
+    public function testTimeoutService(): void
     {
         $container = $this->buildContainer();
         $this->assertInstanceOf(
@@ -255,7 +252,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testExecutor()
+    public function testExecutor(): void
     {
         $container = $this->buildContainer();
         $this->assertInstanceOf(
@@ -264,7 +261,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testExtensionManagerInterface()
+    public function testExtensionManagerInterface(): void
     {
         $container = $this->buildContainer();
         $this->assertInstanceOf(
@@ -273,7 +270,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testExtensionManager()
+    public function testExtensionManager(): void
     {
         $container = $this->buildContainer();
         $this->assertInstanceOf(

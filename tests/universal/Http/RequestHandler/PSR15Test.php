@@ -43,7 +43,7 @@ use Teknoo\Recipe\ChefInterface;
 #[CoversClass(PSR15::class)]
 class PSR15Test extends TestCase
 {
-    public function testHandle()
+    public function testHandle(): void
     {
         $chef = $this->createMock(ChefInterface::class);
         $client = $this->createMock(ClientInterface::class);
@@ -52,7 +52,7 @@ class PSR15Test extends TestCase
         $client
             ->method('updateResponse')
             ->willReturnCallback(
-                function (callable $callback) use ($client) {
+                function (callable $callback) use ($client): \Teknoo\East\Foundation\Client\ClientInterface {
                     $callback($client, $this->createMock(ResponseInterface::class));
 
                     return $client;
@@ -67,7 +67,7 @@ class PSR15Test extends TestCase
         );
     }
 
-    public function testErrorHandleWithoutResponse()
+    public function testErrorHandleWithoutResponse(): void
     {
         $chef = $this->createMock(ChefInterface::class);
         $client = $this->createMock(ClientInterface::class);

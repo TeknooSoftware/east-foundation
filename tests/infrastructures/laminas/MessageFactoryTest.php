@@ -44,7 +44,7 @@ class MessageFactoryTest extends TestCase
         return new MessageFactory();
     }
 
-    public function testCreateMessage()
+    public function testCreateMessage(): void
     {
         $this->assertInstanceOf(
             MessageInterface::class,

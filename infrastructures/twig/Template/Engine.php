@@ -54,14 +54,14 @@ class Engine implements EngineInterface
     {
         try {
             $promise->success(
-                new class ($this->twig, $view, $parameters) implements ResultInterface {
+                new readonly class ($this->twig, $view, $parameters) implements ResultInterface {
                     /**
                      * @param array<string, mixed> $parameters
                      */
                     public function __construct(
-                        private readonly Environment $twig,
-                        private readonly string $view,
-                        private readonly array $parameters,
+                        private Environment $twig,
+                        private string $view,
+                        private array $parameters,
                     ) {
                     }
 

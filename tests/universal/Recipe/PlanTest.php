@@ -52,10 +52,7 @@ class PlanTest extends TestCase
 
     private ?RecipeInterface $recipe = null;
 
-    /**
-     * @return \PHPUnit\Framework\MockObject\MockObject|RouterInterface|null
-     */
-    public function getRouterMock()
+    public function getRouterMock(): \Teknoo\East\Foundation\Router\RouterInterface|\PHPUnit\Framework\MockObject\MockObject
     {
         if (!$this->router instanceof RouterInterface) {
             $this->router = $this->createMock(RouterInterface::class);
@@ -64,10 +61,7 @@ class PlanTest extends TestCase
         return $this->router;
     }
 
-    /**
-     * @return \PHPUnit\Framework\MockObject\MockObject|ProcessorPlanInterface|null
-     */
-    public function getProcessorPlanMock()
+    public function getProcessorPlanMock(): \Teknoo\East\Foundation\Processor\ProcessorPlanInterface|\PHPUnit\Framework\MockObject\MockObject
     {
         if (!$this->processorPlan instanceof ProcessorPlanInterface) {
             $this->processorPlan = $this->createMock(ProcessorPlanInterface::class);
@@ -76,10 +70,7 @@ class PlanTest extends TestCase
         return $this->processorPlan;
     }
 
-    /**
-     * @return \PHPUnit\Framework\MockObject\MockObject|LoopDetectorInterface|null
-     */
-    public function getLoopDetectorMock()
+    public function getLoopDetectorMock(): \Teknoo\East\Foundation\Processor\LoopDetectorInterface|\PHPUnit\Framework\MockObject\MockObject
     {
         if (!$this->loopDetector instanceof LoopDetectorInterface) {
             $this->loopDetector = $this->createMock(LoopDetectorInterface::class);
@@ -88,10 +79,7 @@ class PlanTest extends TestCase
         return $this->loopDetector;
     }
 
-    /**
-     * @return \PHPUnit\Framework\MockObject\MockObject|RecipeInterface|null
-     */
-    public function getRecipeMock()
+    public function getRecipeMock(): \Teknoo\East\Foundation\Recipe\RecipeInterface|\PHPUnit\Framework\MockObject\MockObject
     {
         if (!$this->recipe instanceof RecipeInterface) {
             $this->recipe = $this->createMock(RecipeInterface::class);
@@ -110,19 +98,19 @@ class PlanTest extends TestCase
         );
     }
 
-    public function testFillWithWrongRecipe()
+    public function testFillWithWrongRecipe(): void
     {
         $this->expectException(\TypeError::class);
         $this->buildPlan()->fill(new \stdClass());
     }
 
-    public function testFillWithOriginalRecipe()
+    public function testFillWithOriginalRecipe(): void
     {
         $this->expectException(\TypeError::class);
         $this->buildPlan()->fill($this->createMock(OriginalRecipeInterface::class));
     }
 
-    public function testFill()
+    public function testFill(): void
     {
         $this->assertInstanceOf(
             Plan::class,
@@ -130,13 +118,13 @@ class PlanTest extends TestCase
         );
     }
 
-    public function testTrainWithWrongChef()
+    public function testTrainWithWrongChef(): void
     {
         $this->expectException(\TypeError::class);
         $this->buildPlan()->train(new \stdClass());
     }
 
-    public function testTrain()
+    public function testTrain(): void
     {
         $this->getRecipeMock()->expects($this->once())->method('cook')->willReturnSelf();
         $this->getRecipeMock()->expects($this->once())->method('execute')->willReturnSelf();
@@ -153,21 +141,21 @@ class PlanTest extends TestCase
         );
     }
 
-    public function testPrepareWithWrongWorkplan()
+    public function testPrepareWithWrongWorkplan(): void
     {
         $this->expectException(\TypeError::class);
         $wp = new \stdClass();
         $this->buildPlan()->prepare($wp, $this->createMock(ChefInterface::class));
     }
 
-    public function testPrepareWithWrongChef()
+    public function testPrepareWithWrongChef(): void
     {
         $this->expectException(\TypeError::class);
         $wp = [];
         $this->buildPlan()->prepare($wp, new \stdClass());
     }
 
-    public function testPrepare()
+    public function testPrepare(): void
     {
         $this->getRecipeMock()->expects($this->once())->method('cook')->willReturnSelf();
         $this->getRecipeMock()->expects($this->once())->method('execute')->willReturnSelf();
@@ -179,7 +167,7 @@ class PlanTest extends TestCase
         );
     }
 
-    public function testValidate()
+    public function testValidate(): void
     {
         $this->getRecipeMock()->expects($this->once())->method('cook')->willReturnSelf();
         $this->getRecipeMock()->expects($this->once())->method('execute')->willReturnSelf();

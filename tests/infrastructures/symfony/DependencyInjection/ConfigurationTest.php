@@ -39,15 +39,12 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 #[CoversClass(Configuration::class)]
 class ConfigurationTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @return Configuration
-     */
     private function buildConfiguration(): Configuration
     {
         return new Configuration();
     }
 
-    public function testGetConfigTreeBuilder()
+    public function testGetConfigTreeBuilder(): void
     {
         $treeBuilder = $this->buildConfiguration()->getConfigTreeBuilder();
 

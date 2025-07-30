@@ -54,13 +54,14 @@ class ParameterTest extends AbstractParameterTests
         return new Parameter('foo', false, null, new \ReflectionClass(\DateTime::class));
     }
 
-    public function testValueObjectBehaviorConstructor()
+    #[\Override]
+    public function testValueObjectBehaviorConstructor(): void
     {
         $this->expectException(\Error::class);
         $this->buildParameter()->__construct('foo', false, null, null);
     }
 
-    public function testConstructBadClass()
+    public function testConstructBadClass(): void
     {
         $this->expectException(\TypeError::class);
         new Parameter('foo', false, null, new \DateTime());

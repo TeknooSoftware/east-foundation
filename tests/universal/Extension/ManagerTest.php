@@ -48,6 +48,7 @@ use Teknoo\Tests\East\Foundation\Extension\Support\ExtensionMock1;
 class ManagerTest extends TestCase
 {
     private ?string $previousLoaderEnvValue = null;
+
     private ?string $previousDisabledEnvValue = null;
 
     protected function setUp(): void
@@ -75,7 +76,7 @@ class ManagerTest extends TestCase
         parent::tearDown();
     }
 
-    public function testRunWithLoader()
+    public function testRunWithLoader(): void
     {
         $loader = $this->createMock(LoaderInterface::class);
         Manager::reset();
@@ -86,7 +87,7 @@ class ManagerTest extends TestCase
         $this->assertSame($m1, $m2);
     }
 
-    public function testRunWithoutLoader()
+    public function testRunWithoutLoader(): void
     {
         Manager::reset();
         $m1 = Manager::run();
@@ -96,7 +97,7 @@ class ManagerTest extends TestCase
         $this->assertSame($m1, $m2);
     }
 
-    public function testRunWithLoaderClassInEnvReferencingUnknownClass()
+    public function testRunWithLoaderClassInEnvReferencingUnknownClass(): void
     {
         Manager::reset();
         $this->expectException(LoaderException::class);
@@ -104,7 +105,7 @@ class ManagerTest extends TestCase
         Manager::run();
     }
 
-    public function testRunWithLoaderClassInEnvReferencingNotLoaderClass()
+    public function testRunWithLoaderClassInEnvReferencingNotLoaderClass(): void
     {
         Manager::reset();
         $this->expectException(LoaderException::class);
@@ -112,7 +113,7 @@ class ManagerTest extends TestCase
         Manager::run();
     }
 
-    public function testRunWithLoaderClassInEnv()
+    public function testRunWithLoaderClassInEnv(): void
     {
         Manager::reset();
         $_ENV['TEKNOO_EAST_EXTENSION_LOADER'] = ComposerLoader::class;
@@ -123,7 +124,7 @@ class ManagerTest extends TestCase
         $this->assertSame($m1, $m2);
     }
 
-    public function testExecute()
+    public function testExecute(): void
     {
         $loader = $this->createMock(LoaderInterface::class);
         Manager::reset();
@@ -150,7 +151,7 @@ class ManagerTest extends TestCase
         $ext->module = null;
     }
 
-    public function testExecuteDisabled()
+    public function testExecuteDisabled(): void
     {
         $loader = $this->createMock(LoaderInterface::class);
         $_ENV['TEKNOO_EAST_EXTENSION_DISABLED'] = 'true';
@@ -175,7 +176,7 @@ class ManagerTest extends TestCase
         $this->assertNull($ext->module);
     }
 
-    public function testListLoadedExtensions()
+    public function testListLoadedExtensions(): void
     {
         $loader = $this->createMock(LoaderInterface::class);
         Manager::reset();
@@ -195,7 +196,7 @@ class ManagerTest extends TestCase
         );
     }
 
-    public function testListLoadedExtensionsDisabled()
+    public function testListLoadedExtensionsDisabled(): void
     {
         $loader = $this->createMock(LoaderInterface::class);
         $_ENV['TEKNOO_EAST_EXTENSION_DISABLED'] = 'true';

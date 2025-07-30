@@ -41,7 +41,7 @@ use Teknoo\East\FoundationBundle\Extension\PHPDI;
 #[CoversClass(PHPDI::class)]
 class PHPDITest extends TestCase
 {
-    public function testCreate()
+    public function testCreate(): void
     {
         $module1 = PHPDI::create();
         $module2 = PHPDI::create();
@@ -49,7 +49,7 @@ class PHPDITest extends TestCase
         $this->assertSame($module1, $module2);
     }
 
-    public function testConfigure()
+    public function testConfigure(): void
     {
         $manager = $this->createMock(ManagerInterface::class);
         $manager->expects($this->once())
@@ -66,13 +66,13 @@ class PHPDITest extends TestCase
         );
     }
 
-    public function testPrepareCompilation()
+    public function testPrepareCompilation(): void
     {
         $manager = $this->createMock(ManagerInterface::class);
         $manager->expects($this->once())
             ->method('execute')
             ->willReturnCallback(
-                function ($module) use ($manager) {
+                function ($module) use ($manager): \PHPUnit\Framework\MockObject\MockObject {
                     $this->assertInstanceOf(PHPDI::class, $module);
 
                     $module->prepareCompilation('foo');
@@ -93,7 +93,7 @@ class PHPDITest extends TestCase
         );
     }
 
-    public function testPrepareCompilationWithoutBuider()
+    public function testPrepareCompilationWithoutBuider(): void
     {
         $manager = $this->createMock(ManagerInterface::class);
         $module = new PHPDI($manager);
@@ -102,13 +102,13 @@ class PHPDITest extends TestCase
         $module->prepareCompilation('foo');
     }
 
-    public function testEnableCache()
+    public function testEnableCache(): void
     {
         $manager = $this->createMock(ManagerInterface::class);
         $manager->expects($this->once())
             ->method('execute')
             ->willReturnCallback(
-                function ($module) use ($manager) {
+                function ($module) use ($manager): \PHPUnit\Framework\MockObject\MockObject {
                     $this->assertInstanceOf(PHPDI::class, $module);
 
                     $module->enableCache(true);
@@ -129,7 +129,7 @@ class PHPDITest extends TestCase
         );
     }
 
-    public function testEnableCacheWithoutBuider()
+    public function testEnableCacheWithoutBuider(): void
     {
         $manager = $this->createMock(ManagerInterface::class);
         $module = new PHPDI($manager);
@@ -138,13 +138,13 @@ class PHPDITest extends TestCase
         $module->enableCache(true);
     }
 
-    public function testLoadDefinition()
+    public function testLoadDefinition(): void
     {
         $manager = $this->createMock(ManagerInterface::class);
         $manager->expects($this->once())
             ->method('execute')
             ->willReturnCallback(
-                function ($module) use ($manager) {
+                function ($module) use ($manager): \PHPUnit\Framework\MockObject\MockObject {
                     $this->assertInstanceOf(PHPDI::class, $module);
 
                     $module->loadDefinition(['foo']);
@@ -165,7 +165,7 @@ class PHPDITest extends TestCase
         );
     }
 
-    public function testLoadDefinitionWithoutBuider()
+    public function testLoadDefinitionWithoutBuider(): void
     {
         $manager = $this->createMock(ManagerInterface::class);
         $module = new PHPDI($manager);
@@ -174,13 +174,13 @@ class PHPDITest extends TestCase
         $module->loadDefinition(['foo']);
     }
 
-    public function testImport()
+    public function testImport(): void
     {
         $manager = $this->createMock(ManagerInterface::class);
         $manager->expects($this->once())
             ->method('execute')
             ->willReturnCallback(
-                function ($module) use ($manager) {
+                function ($module) use ($manager): \PHPUnit\Framework\MockObject\MockObject {
                     $this->assertInstanceOf(PHPDI::class, $module);
 
                     $module->import('foo', 'bar');
@@ -201,7 +201,7 @@ class PHPDITest extends TestCase
         );
     }
 
-    public function testImportWithoutBuider()
+    public function testImportWithoutBuider(): void
     {
         $manager = $this->createMock(ManagerInterface::class);
         $module = new PHPDI($manager);

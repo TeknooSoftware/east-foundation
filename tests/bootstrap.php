@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * East Foundation.
  *
@@ -36,19 +38,19 @@ error_reporting(E_ALL);
 if (!\function_exists('pcntl_async_signals')) {
     define('PCNTL_MOCKED', true);
 
-    function pcntl_async_signals(bool $enable)
+    function pcntl_async_signals(bool $enable): void
     {
     }
 }
 
 if (!\function_exists('pcntl_signal')) {
-    function pcntl_signal(int $signal, callable $callback)
+    function pcntl_signal(int $signal, callable $callback): void
     {
     }
 }
 
 if (!\function_exists('pcntl_alarm')) {
-    function pcntl_alarm(int $seconds) {
+    function pcntl_alarm(int $seconds): void {
 
     }
 }

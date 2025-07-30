@@ -44,7 +44,7 @@ class CallbackStreamFactoryTest extends TestCase
         return new CallbackStreamFactory();
     }
 
-    public function testCreateStream()
+    public function testCreateStream(): void
     {
         $this->assertInstanceOf(
             CallbackStream::class,
@@ -57,7 +57,7 @@ class CallbackStreamFactoryTest extends TestCase
         );
     }
 
-    public function testCreateStreamFromFile()
+    public function testCreateStreamFromFile(): void
     {
         $this->assertInstanceOf(
             CallbackStream::class,
@@ -70,7 +70,7 @@ class CallbackStreamFactoryTest extends TestCase
         );
     }
 
-    public function testCreateStreamFromFileNotReadable()
+    public function testCreateStreamFromFileNotReadable(): void
     {
         $this->assertInstanceOf(
             CallbackStream::class,
@@ -81,7 +81,7 @@ class CallbackStreamFactoryTest extends TestCase
         $stream->getContents();
     }
 
-    public function testcreateStreamFromResource()
+    public function testcreateStreamFromResource(): void
     {
         $hf = fopen('php://memory', 'rw+');
         fwrite($hf, 'fooBarContent');

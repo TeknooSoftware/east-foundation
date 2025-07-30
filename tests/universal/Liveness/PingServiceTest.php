@@ -35,33 +35,33 @@ use Teknoo\East\Foundation\Liveness\PingService;
 #[CoversClass(PingService::class)]
 class PingServiceTest extends TestCase
 {
-    public function testRegister()
+    public function testRegister(): void
     {
         $this->assertInstanceOf(
             PingService::class,
-            (new PingService())->register('foo', function () {}),
+            new PingService()->register('foo', function (): void {}),
         );
     }
 
-    public function testUnregisterNotRegistered()
+    public function testUnregisterNotRegistered(): void
     {
         $this->assertInstanceOf(
             PingService::class,
-            (new PingService())->unregister('foo'),
+            new PingService()->unregister('foo'),
         );
     }
 
-    public function testUnregister()
+    public function testUnregister(): void
     {
         $this->assertInstanceOf(
             PingService::class,
-            (new PingService())
-                ->register('foo', function () {})
+            new PingService()
+                ->register('foo', function (): void {})
                 ->unregister('foo'),
         );
     }
 
-    public function testPing()
+    public function testPing(): void
     {
         $call1 = 0;
         $call2 = 0;

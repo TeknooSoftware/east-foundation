@@ -48,7 +48,7 @@ use Teknoo\Tests\Recipe\Bowl\AbstractBowlTests;
 #[CoversClass(FiberHandlerBowl::class)]
 class FiberHandlerBowlTest extends AbstractBowlTests
 {
-    protected function getCallable()
+    protected function getCallable(): \Psr\Http\Server\RequestHandlerInterface
     {
         return new class implements RequestHandlerInterface {
             public function handle(ServerRequestInterface $request): ResponseInterface
@@ -58,6 +58,7 @@ class FiberHandlerBowlTest extends AbstractBowlTests
         };
     }
 
+    #[\Override]
     protected function getValidWorkPlan(): array
     {
         return [
@@ -70,7 +71,7 @@ class FiberHandlerBowlTest extends AbstractBowlTests
         ];
     }
 
-    protected function getMapping()
+    protected function getMapping(): array
     {
         return ['bar' => 'foo', 'bar2' => ['bar', 'foo']];
     }
@@ -96,6 +97,7 @@ class FiberHandlerBowlTest extends AbstractBowlTests
         );
     }
 
+    #[\Override]
     public function testExecute(): void
     {
         $values = $this->getValidWorkPlan();
@@ -109,6 +111,7 @@ class FiberHandlerBowlTest extends AbstractBowlTests
         );
     }
 
+    #[\Override]
     public function testExecuteWithValue(): void
     {
         $this->assertTrue(true);

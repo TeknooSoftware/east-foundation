@@ -100,7 +100,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         return Router::class;
     }
 
-    public function testExecuteNotFound()
+    public function testExecuteNotFound(): void
     {
         /**
          * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
@@ -109,7 +109,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         /**
          * @var ServerRequestInterface|\PHPUnit\Framework\MockObject\MockObject $request
          */
-        $request = $this->createMock('Psr\Http\Message\ServerRequestInterface');
+        $request = $this->createMock(\Psr\Http\Message\ServerRequestInterface::class);
         $request->method('getUri')->willReturn(
             $this->createMock(UriInterface::class)
         );
@@ -128,7 +128,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testExecuteNotFoundException()
+    public function testExecuteNotFoundException(): void
     {
         /**
          * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
@@ -156,7 +156,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testExecuteOtherException()
+    public function testExecuteOtherException(): void
     {
         $this->expectException(\Exception::class);
         /**
@@ -182,7 +182,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         $this->buildRouter()->execute($client, $request, $manager);
     }
 
-    public function testExecuteWithNoController()
+    public function testExecuteWithNoController(): void
     {
         /**
          * @var \PHPUnit\Framework\MockObject\MockObject|ClientInterface
@@ -210,7 +210,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testExecuteWithNoPathExcluded()
+    public function testExecuteWithNoPathExcluded(): void
     {
         $uri = $this->createMock(UriInterface::class);
         $uri->method('getPath')->willReturn('/foo');
@@ -238,7 +238,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testExecuteWithNoStartPathExcluded()
+    public function testExecuteWithNoStartPathExcluded(): void
     {
         $uri = $this->createMock(UriInterface::class);
         $uri->method('getPath')->willReturn('/foo/bar');
@@ -266,7 +266,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testExecuteWithControllerNotCallable()
+    public function testExecuteWithControllerNotCallable(): void
     {
         /**
          * @var \PHPUnit\Framework\MockObject\MockObject|ClientInterface
@@ -294,7 +294,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testExecuteWithController()
+    public function testExecuteWithController(): void
     {
         /**
          * @var \PHPUnit\Framework\MockObject\MockObject|ClientInterface
@@ -318,7 +318,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         $manager->method('continueExecution')->willReturnSelf();
         $manager->expects($this->once())->method('updateMessage')->willReturnSelf();
         $manager->expects($this->once())->method('updateWorkPlan')
-            ->willReturnCallback(function ($workPlan) use ($manager) {
+            ->willReturnCallback(function (array $workPlan) use ($manager) {
                 $this->assertInstanceOf(ResultInterface::class, $workPlan[ResultInterface::class]);
                 return $manager;
             });
@@ -329,7 +329,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testExecuteWithControllerStatic()
+    public function testExecuteWithControllerStatic(): void
     {
         /**
          * @var \PHPUnit\Framework\MockObject\MockObject|ClientInterface
@@ -347,13 +347,13 @@ class RouterTest extends \PHPUnit\Framework\TestCase
          */
         $manager = $this->createMock(ManagerInterface::class);
         $manager->expects($this->once())->method('updateWorkPlan')
-            ->willReturnCallback(function ($workPlan) use ($manager) {
+            ->willReturnCallback(function (array $workPlan) use ($manager) {
                 $this->assertInstanceOf(ResultInterface::class, $workPlan[ResultInterface::class]);
                 return $manager;
             });
 
         $class = new class {
-            public static function action()
+            public static function action(): void
             {
             }
         };
@@ -369,7 +369,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testExecuteWithControllerSymfonyStyleNotStatic()
+    public function testExecuteWithControllerSymfonyStyleNotStatic(): void
     {
         /**
          * @var \PHPUnit\Framework\MockObject\MockObject|ClientInterface
@@ -389,7 +389,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         $manager->expects($this->never())->method('updateWorkPlan');
 
         $class = new class {
-            public function action()
+            public function action(): void
             {
             }
         };
@@ -404,7 +404,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testExecuteWithControllerSymfonyStyleNotFound()
+    public function testExecuteWithControllerSymfonyStyleNotFound(): void
     {
         /**
          * @var \PHPUnit\Framework\MockObject\MockObject|ClientInterface
@@ -424,7 +424,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         $manager->expects($this->never())->method('updateWorkPlan');
 
         $class = new class {
-            public function action()
+            public function action(): void
             {
             }
         };
@@ -439,7 +439,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testExecuteWithSymfonyAbstractControllerStatic()
+    public function testExecuteWithSymfonyAbstractControllerStatic(): void
     {
         /**
          * @var \PHPUnit\Framework\MockObject\MockObject|ClientInterface
@@ -459,7 +459,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         $manager->expects($this->never())->method('updateWorkPlan');
 
         $class = new class extends SymfonyAbstractController {
-            public static function action()
+            public static function action(): void
             {
             }
         };
@@ -474,7 +474,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testExecuteWithControllerInContainer()
+    public function testExecuteWithControllerInContainer(): void
     {
         /**
          * @var \PHPUnit\Framework\MockObject\MockObject|ClientInterface
@@ -492,7 +492,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
          */
         $manager = $this->createMock(ManagerInterface::class);
         $manager->expects($this->once())->method('updateWorkPlan')
-            ->willReturnCallback(function ($workPlan) use ($manager) {
+            ->willReturnCallback(function (array $workPlan) use ($manager) {
                 $this->assertInstanceOf(ResultInterface::class, $workPlan[ResultInterface::class]);
                 return $manager;
             });
@@ -512,7 +512,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testExecuteWithSymfonyAbstractControllerInContainer()
+    public function testExecuteWithSymfonyAbstractControllerInContainer(): void
     {
         /**
          * @var \PHPUnit\Framework\MockObject\MockObject|ClientInterface
@@ -547,7 +547,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testExecuteWithControllerRemoveAppDotPhpStart()
+    public function testExecuteWithControllerRemoveAppDotPhpStart(): void
     {
         $client = $this->createMock(ClientInterface::class);
         $request = $this->createMock(ServerRequestInterface::class);
@@ -560,7 +560,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
 
         $this->getUrlMatcherMock()->expects($this->once())->method('match')
             ->with('/foo')
-            ->willReturn(['_controller' => function () {
+            ->willReturn(['_controller' => function (): void {
             }]);
 
         $manager->method('continueExecution')->willReturnSelf();
@@ -568,7 +568,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         $this->buildRouter()->execute($client, $request, $manager);
     }
 
-    public function testExecuteWithControllerNotRemoveAppDotPhpStart()
+    public function testExecuteWithControllerNotRemoveAppDotPhpStart(): void
     {
         $client = $this->createMock(ClientInterface::class);
         $request = $this->createMock(ServerRequestInterface::class);
@@ -580,13 +580,13 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         $manager = $this->createMock(ManagerInterface::class);
         $this->getUrlMatcherMock()->expects($this->once())->method('match')
             ->with('/foo/app.php')
-            ->willReturn(['_controller' => function () {
+            ->willReturn(['_controller' => function (): void {
             }]);
 
         $this->buildRouter()->execute($client, $request, $manager);
     }
 
-    public function testExecuteWithControllerRemoveAppDevDotPhpEnd()
+    public function testExecuteWithControllerRemoveAppDevDotPhpEnd(): void
     {
         $client = $this->createMock(ClientInterface::class);
         $request = $this->createMock(ServerRequestInterface::class);
@@ -598,7 +598,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
 
         $this->getUrlMatcherMock()->expects($this->once())->method('match')
             ->with('/foo')
-            ->willReturn(['_controller' => function () {
+            ->willReturn(['_controller' => function (): void {
             }]);
 
         $manager->method('continueExecution')->willReturnSelf();
@@ -606,7 +606,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         $this->buildRouter()->execute($client, $request, $manager);
     }
 
-    public function testExecuteWithControllerNotRemoveAppDevDotPhpEnd()
+    public function testExecuteWithControllerNotRemoveAppDevDotPhpEnd(): void
     {
         $client = $this->createMock(ClientInterface::class);
         $request = $this->createMock(ServerRequestInterface::class);
@@ -618,13 +618,13 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         $manager = $this->createMock(ManagerInterface::class);
         $this->getUrlMatcherMock()->expects($this->once())->method('match')
             ->with('/foo/app_dev.php')
-            ->willReturn(['_controller' => function () {
+            ->willReturn(['_controller' => function (): void {
             }]);
 
         $this->buildRouter()->execute($client, $request, $manager);
     }
 
-    public function testExecuteWithControllerRemoveIndexDotPhpStart()
+    public function testExecuteWithControllerRemoveIndexDotPhpStart(): void
     {
         $client = $this->createMock(ClientInterface::class);
         $request = $this->createMock(ServerRequestInterface::class);
@@ -636,7 +636,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
 
         $this->getUrlMatcherMock()->expects($this->once())->method('match')
             ->with('/foo')
-            ->willReturn(['_controller' => function () {
+            ->willReturn(['_controller' => function (): void {
             }]);
 
         $manager->method('continueExecution')->willReturnSelf();
@@ -644,7 +644,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         $this->buildRouter()->execute($client, $request, $manager);
     }
 
-    public function testExecuteWithControllerNotRemoveIndexDotPhpEnd()
+    public function testExecuteWithControllerNotRemoveIndexDotPhpEnd(): void
     {
         $client = $this->createMock(ClientInterface::class);
         $request = $this->createMock(ServerRequestInterface::class);
@@ -656,13 +656,13 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         $manager = $this->createMock(ManagerInterface::class);
         $this->getUrlMatcherMock()->expects($this->once())->method('match')
             ->with('/foo/index.php')
-            ->willReturn(['_controller' => function () {
+            ->willReturn(['_controller' => function (): void {
             }]);
 
         $this->buildRouter()->execute($client, $request, $manager);
     }
 
-    public function testExecuteWithMessage()
+    public function testExecuteWithMessage(): void
     {
         $client = $this->createMock(ClientInterface::class);
         $message = $this->createMock(MessageInterface::class);
@@ -674,7 +674,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testExecuteErrorClient()
+    public function testExecuteErrorClient(): void
     {
         $this->expectException(\TypeError::class);
         $this->buildRouter()->execute(
@@ -684,7 +684,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testExecuteErrorRequest()
+    public function testExecuteErrorRequest(): void
     {
         $this->expectException(\TypeError::class);
         $this->buildRouter()->execute(
@@ -694,7 +694,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testExecuteErrorManager()
+    public function testExecuteErrorManager(): void
     {
         $this->expectException(\TypeError::class);
         $this->buildRouter()->execute(

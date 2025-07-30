@@ -105,20 +105,9 @@ class FeatureContext implements Context
     private ?Executor $executor = null;
 
     /**
-     * Initializes context.
-     *
-     * Every scenario gets its own context instance.
-     * You can also pass arbitrary arguments to the
-     * context constructor through behat.yml.
-     */
-    public function __construct()
-    {
-    }
-
-    /**
      * @BeforeScenario
      */
-    public function clean()
+    public function clean(): void
     {
         $this->loggingEnabled = false;
     }
@@ -126,7 +115,7 @@ class FeatureContext implements Context
     /**
      * @Given I have DI initialized
      */
-    public function iHaveDiInitialized()
+    public function iHaveDiInitialized(): void
     {
         set_time_limit(0);
         $this->error = null;
@@ -138,7 +127,7 @@ class FeatureContext implements Context
     /**
      * @Given client are configured to ignore missing response
      */
-    public function clientAreConfiguredToIgnoreMissingResponse()
+    public function clientAreConfiguredToIgnoreMissingResponse(): void
     {
         $this->container->set('teknoo.east.client.must_send_response', false);
     }
@@ -146,10 +135,10 @@ class FeatureContext implements Context
     /**
      * @Given I register a router
      */
-    public function iRegisterARouter()
+    public function iRegisterARouter(): void
     {
         $this->router = new class implements RouterInterface {
-            private $routes = [];
+            private array $routes = [];
 
             public function registerRoute(string $route, callable $controller): self
             {
@@ -189,11 +178,11 @@ class FeatureContext implements Context
     /**
      * @Given The router can process the request :url to controller :controllerName
      */
-    public function theRouterCanProcessTheRequestToController($url, $controllerName)
+    public function theRouterCanProcessTheRequestToController($url, $controllerName): void
     {
         $controller = $controllerName;
         if ('closureFoo' === $controllerName) {
-            $controller = function (ClientInterface $client, ServerRequest $request) {
+            $controller = function (ClientInterface $client, ServerRequest $request): void {
                 $params = $request->getQueryParams();
 
                 if (isset($params['test'])) {
@@ -209,21 +198,21 @@ class FeatureContext implements Context
         $this->router->registerRoute($url, $controller);
     }
 
-    private function createRecipeToReturnResponse(string $url, string $controllerName, string $type, bool $inFiber)
+    private function createRecipeToReturnResponse(string $url, string $controllerName, string $type, bool $inFiber): void
     {
         $controller = $controllerName;
         $recipe = new Recipe;
 
         if ('standard' === $controllerName) {
             $recipe = $recipe->cook(
-                function (ClientInterface $client, ServerRequest $request, $test) use ($type) {
+                function (ClientInterface $client, ServerRequest $request, string $test) use ($type): void {
                     if ('psr' === $type) {
                         $client->acceptResponse(
                             new TextResponse($test . $request->getUri())
                         );
                     } elseif ('east' === $type) {
                         $client->acceptResponse(
-                            new class($test) implements EastResponse {
+                            new readonly class($test) implements EastResponse {
                                 public function __construct(
                                     private string $value,
                                 ) {
@@ -237,7 +226,7 @@ class FeatureContext implements Context
                         );
                     }elseif ('json' === $type) {
                         $client->acceptResponse(
-                            new class($test) implements EastResponse, JsonSerializable {
+                            new readonly class($test) implements EastResponse, JsonSerializable {
                                 public function __construct(
                                     private string $value,
                                 ) {
@@ -285,7 +274,7 @@ class FeatureContext implements Context
                 ): ResponseInterface {
                     $response = $handler->handle($request);
 
-                    return new TextResponse('PSR15 Middleware ' . ((string) $response->getBody()));
+                    return new TextResponse('PSR15 Middleware ' . ($response->getBody()));
                 }
             };
 
@@ -297,7 +286,7 @@ class FeatureContext implements Context
 
             $recipe = $recipe->cook($bowl, 'body1');
             $recipe = $recipe->cook(
-                function (ClientInterface $client, ServerRequest $request)  {
+                function (ClientInterface $client, ServerRequest $request): void  {
                     $client->acceptResponse(
                         new TextResponse($request->getQueryParams()['test'])
                     );
@@ -308,7 +297,7 @@ class FeatureContext implements Context
 
         if ('empty' === $controllerName) {
             $recipe = $recipe->cook(
-                function (ClientInterface $client, ServerRequest $request, $test) {
+                function (ClientInterface $client, ServerRequest $request, $test): void {
 
                 },
                 'body',
@@ -327,7 +316,7 @@ class FeatureContext implements Context
     /**
      * @Given The router can process the request :url to recipe :controllerName to return a :type response
      */
-    public function theRouterCanProcessTheRequestToRecipeToReturnResponse($url, $controllerName, $type)
+    public function theRouterCanProcessTheRequestToRecipeToReturnResponse(string $url, string $controllerName, string $type): void
     {
         $this->createRecipeToReturnResponse($url, $controllerName, $type, false);
     }
@@ -335,7 +324,7 @@ class FeatureContext implements Context
     /**
      * @Given The router can process the request :url to recipe :controllerName in a fiber to return a :type response
      */
-    public function theRouterCanProcessTheRequestToRecipeInAFiberToReturnResponse($url, $controllerName, $type)
+    public function theRouterCanProcessTheRequestToRecipeInAFiberToReturnResponse(string $url, string $controllerName, string $type): void
     {
         $this->createRecipeToReturnResponse($url, $controllerName, $type, true);
     }
@@ -343,7 +332,7 @@ class FeatureContext implements Context
     private function createClient(): void
     {
         $this->client = new class($this) implements ClientInterface {
-            private FeatureContext $context;
+            private readonly FeatureContext $context;
 
             private bool $inSilentlyMode = false;
 
@@ -409,7 +398,7 @@ class FeatureContext implements Context
     /**
      * @When The server will receive the request :url
      */
-    public function theServerWillReceiveTheRequest($url)
+    public function theServerWillReceiveTheRequest($url): void
     {
         $manager = new Manager($this->container->get(PlanInterface::class));
 
@@ -433,7 +422,7 @@ class FeatureContext implements Context
     /**
      * @Then The client must not accept a response.
      */
-    public function theClientMustNotAcceptAResponse()
+    public function theClientMustNotAcceptAResponse(): void
     {
         Assert::assertNull($this->response);
         Assert::assertNull($this->error);
@@ -442,7 +431,7 @@ class FeatureContext implements Context
     /**
      * @Then The client must accept a psr response
      */
-    public function theClientMustAcceptAPSRResponse()
+    public function theClientMustAcceptAPSRResponse(): void
     {
         Assert::assertInstanceOf(ResponseInterface::class, $this->response);
         Assert::assertNull($this->error);
@@ -451,7 +440,7 @@ class FeatureContext implements Context
     /**
      * @Then The client must accept a east response
      */
-    public function theClientMustAcceptAEastResponse()
+    public function theClientMustAcceptAEastResponse(): void
     {
         Assert::assertInstanceOf(EastResponse::class, $this->response);
         Assert::assertNull($this->error);
@@ -460,7 +449,7 @@ class FeatureContext implements Context
     /**
      * @Then The client must accept a json response
      */
-    public function theClientMustAcceptAJsonResponse()
+    public function theClientMustAcceptAJsonResponse(): void
     {
         Assert::assertInstanceOf(JsonSerializable::class, $this->response);
         Assert::assertNull($this->error);
@@ -469,7 +458,7 @@ class FeatureContext implements Context
     /**
      * @Then I should get as response :value
      */
-    public function iShouldGetAsResponse ($value)
+    public function iShouldGetAsResponse ($value): void
     {
         if ($this->response instanceof ResponseInterface) {
             Assert::assertEquals($value, (string) $this->response->getBody());
@@ -479,7 +468,7 @@ class FeatureContext implements Context
 
         if ($this->response instanceof JsonSerializable) {
             Assert::assertEquals(
-                json_decode($value, true),
+                json_decode((string) $value, true),
                 json_decode((string) json_encode($this->response), true)
             );
 
@@ -498,7 +487,7 @@ class FeatureContext implements Context
     /**
      * @Then I should get nothing
      */
-    public function iShouldGetNothing()
+    public function iShouldGetNothing(): void
     {
         $this->client->sendResponse();
         Assert::assertNull($this->response);
@@ -507,7 +496,7 @@ class FeatureContext implements Context
     /**
      * @Then The client must accept an error
      */
-    public function theClientMustAcceptAnError()
+    public function theClientMustAcceptAnError(): void
     {
         Assert::assertNull($this->response);
         Assert::assertInstanceOf(Throwable::class, $this->error);
@@ -516,14 +505,15 @@ class FeatureContext implements Context
     /**
      * @Then The client must throw an exception
      */
-    public function theClientMustThrowAnException()
+    public function theClientMustThrowAnException(): void
     {
         $errorCatched = false;
         try {
             $this->client->sendResponse();
-        } catch (Throwable $error) {
+        } catch (Throwable) {
             $errorCatched = true;
         }
+
         Assert::assertTrue($errorCatched);
         Assert::assertNull($this->response);
     }
@@ -531,7 +521,7 @@ class FeatureContext implements Context
     /**
      * @Given a cli agent
      */
-    public function aCliAgent()
+    public function aCliAgent(): void
     {
         $this->response = null;
         $this->error = null;
@@ -546,21 +536,21 @@ class FeatureContext implements Context
     /**
      * @Given a liveness behavior build on event on a file :fileName
      */
-    public function aLivenessBehaviorBuildOnEventOnAFile(string $fileName)
+    public function aLivenessBehaviorBuildOnEventOnAFile(string $fileName): void
     {
         $filePath = $this->pingFile = dirname(__DIR__, 1) . "/var/$fileName";
         $this->container
             ->get(PingService::class)
             ->register(
                 id: "behat-ping",
-                callback: fn () => file_put_contents($filePath, time()),
+                callback: fn (): int|false => file_put_contents($filePath, time()),
             );
     }
 
     /**
      * @Given each task must be limited in time of :value seconds and killed when they exceed it.
      */
-    public function eachTaskMustBeLimitedInTimeOfSecondsAndKilledWhenTheyExceedIt(int $value)
+    public function eachTaskMustBeLimitedInTimeOfSecondsAndKilledWhenTheyExceedIt(int $value): void
     {
         $this->container
             ->get(TimeoutService::class)
@@ -570,7 +560,7 @@ class FeatureContext implements Context
     /**
      * @Then task must be finished
      */
-    public function taskMustBeFinished()
+    public function taskMustBeFinished(): void
     {
         Assert::assertInstanceOf(
             EastResponse::class,
@@ -581,7 +571,7 @@ class FeatureContext implements Context
     /**
      * @Then no exception must be throwed
      */
-    public function noExceptionMustBeThrowed()
+    public function noExceptionMustBeThrowed(): void
     {
         Assert::assertNull($this->error);
     }
@@ -589,7 +579,7 @@ class FeatureContext implements Context
     /**
      * @When the agent start a short task
      */
-    public function theAgentStartAShortTask()
+    public function theAgentStartAShortTask(): void
     {
         $recipe = new Recipe();
         $recipe = $recipe->cook(
@@ -626,7 +616,7 @@ class FeatureContext implements Context
     /**
      * @Given a timer action to ping a message to a log each :seconds seconds
      */
-    public function aTimerActionToPingAMessageToALogEachSeconds(int $seconds)
+    public function aTimerActionToPingAMessageToALogEachSeconds(int $seconds): void
     {
         $this->logOutput = '';
         $this->loggingEnabled = true;
@@ -655,7 +645,7 @@ class FeatureContext implements Context
     /**
      * @When the agent sleeps :seconds seconds
      */
-    public function theAgentSleepsSeconds(int $seconds)
+    public function theAgentSleepsSeconds(int $seconds): void
     {
         $sleepService = $this->container->get(SleepServiceInterface::class);
         $this->timeBeforeSleeping = time();
@@ -666,7 +656,7 @@ class FeatureContext implements Context
     /**
      * @Then the main function has been paused for :exptectedSeconds seconds
      */
-    public function theMainFunctionHasBeenPausedForSeconds(int $exptectedSeconds)
+    public function theMainFunctionHasBeenPausedForSeconds(int $exptectedSeconds): void
     {
         $actualSeconds = time() - $this->timeBeforeSleeping;
         Assert::assertEquals(
@@ -678,7 +668,7 @@ class FeatureContext implements Context
     /**
      * @Then the logs have :count lines
      */
-    public function theLogsHaveLines(int $count)
+    public function theLogsHaveLines(int $count): void
     {
         Assert::assertCount(
             $count,
@@ -689,7 +679,7 @@ class FeatureContext implements Context
     /**
      * @When the agent start a too long task
      */
-    public function theAgentStartATooLongTask()
+    public function theAgentStartATooLongTask(): void
     {
         $recipe = new Recipe();
         $recipe = $recipe->cook(
@@ -725,7 +715,7 @@ class FeatureContext implements Context
     /**
      * @Then An exception must be catched
      */
-    public function anExceptionMustBeCatched()
+    public function anExceptionMustBeCatched(): void
     {
         Assert::assertInstanceOf(
             TimeLimitReachedException::class,
@@ -736,7 +726,7 @@ class FeatureContext implements Context
     /**
      * @Then the task must be not finished
      */
-    public function theTaskMustBeNotFinished()
+    public function theTaskMustBeNotFinished(): void
     {
         Assert::assertNull($this->response);
     }

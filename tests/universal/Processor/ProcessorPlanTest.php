@@ -46,10 +46,7 @@ class ProcessorPlanTest extends TestCase
 
     private ?ProcessorInterface $processor = null;
 
-    /**
-     * @return \PHPUnit\Framework\MockObject\MockObject|ProcessorRecipeInterface|null
-     */
-    public function getRecipeMock()
+    public function getRecipeMock(): \Teknoo\East\Foundation\Processor\ProcessorRecipeInterface|\PHPUnit\Framework\MockObject\MockObject
     {
         if (!$this->recipe instanceof ProcessorRecipeInterface) {
             $this->recipe = $this->createMock(ProcessorRecipeInterface::class);
@@ -58,10 +55,7 @@ class ProcessorPlanTest extends TestCase
         return $this->recipe;
     }
 
-    /**
-     * @return \PHPUnit\Framework\MockObject\MockObject|ProcessorInterface|null
-     */
-    public function getProcessorMock()
+    public function getProcessorMock(): \Teknoo\East\Foundation\Processor\ProcessorInterface|\PHPUnit\Framework\MockObject\MockObject
     {
         if (!$this->processor instanceof ProcessorInterface) {
             $this->processor = $this->createMock(ProcessorInterface::class);
@@ -78,19 +72,19 @@ class ProcessorPlanTest extends TestCase
         );
     }
 
-    public function testFillWithWrongRecipe()
+    public function testFillWithWrongRecipe(): void
     {
         $this->expectException(\TypeError::class);
         $this->buildPlan()->fill(new \stdClass());
     }
 
-    public function testFillWithOriginalRecipe()
+    public function testFillWithOriginalRecipe(): void
     {
         $this->expectException(\TypeError::class);
         $this->buildPlan()->fill($this->createMock(OriginalRecipeInterface::class));
     }
 
-    public function testFill()
+    public function testFill(): void
     {
         $this->assertInstanceOf(
             ProcessorPlan::class,
@@ -98,13 +92,13 @@ class ProcessorPlanTest extends TestCase
         );
     }
 
-    public function testTrainWithWrongChef()
+    public function testTrainWithWrongChef(): void
     {
         $this->expectException(\TypeError::class);
         $this->buildPlan()->train(new \stdClass());
     }
 
-    public function testTrain()
+    public function testTrain(): void
     {
         $this->getRecipeMock()->expects($this->exactly(2))->method('cook')->willReturnSelf();
 
@@ -119,21 +113,21 @@ class ProcessorPlanTest extends TestCase
         );
     }
 
-    public function testPrepareWithWrongWorkplan()
+    public function testPrepareWithWrongWorkplan(): void
     {
         $this->expectException(\TypeError::class);
         $wp = new \stdClass();
         $this->buildPlan()->prepare($wp, $this->createMock(ChefInterface::class));
     }
 
-    public function testPrepareWithWrongChef()
+    public function testPrepareWithWrongChef(): void
     {
         $this->expectException(\TypeError::class);
         $wp = [];
         $this->buildPlan()->prepare($wp, new \stdClass());
     }
 
-    public function testPrepare()
+    public function testPrepare(): void
     {
         $this->getRecipeMock()->expects($this->exactly(2))->method('cook')->willReturnSelf();
 
@@ -144,7 +138,7 @@ class ProcessorPlanTest extends TestCase
         );
     }
 
-    public function testValidate()
+    public function testValidate(): void
     {
         $this->getRecipeMock()->expects($this->exactly(2))->method('cook')->willReturnSelf();
 

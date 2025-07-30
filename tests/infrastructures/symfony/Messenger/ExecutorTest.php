@@ -67,7 +67,7 @@ class ExecutorTest extends TestCase
         );
     }
 
-    public function testExecuteBadRecipe()
+    public function testExecuteBadRecipe(): void
     {
         $this->expectException(\TypeError::class);
         $this->buildExecutor()->execute(
@@ -78,7 +78,7 @@ class ExecutorTest extends TestCase
         );
     }
 
-    public function testExecuteBadWorkPlan()
+    public function testExecuteBadWorkPlan(): void
     {
         $this->expectException(\TypeError::class);
         $this->buildExecutor()->execute(
@@ -89,7 +89,7 @@ class ExecutorTest extends TestCase
         );
     }
 
-    public function testExecuteBadMessage()
+    public function testExecuteBadMessage(): void
     {
         $this->expectException(\TypeError::class);
         $this->buildExecutor()->execute(
@@ -100,7 +100,7 @@ class ExecutorTest extends TestCase
         );
     }
 
-    public function testExecuteBadClient()
+    public function testExecuteBadClient(): void
     {
         $this->expectException(\TypeError::class);
         $this->buildExecutor()->execute(
@@ -111,7 +111,7 @@ class ExecutorTest extends TestCase
         );
     }
 
-    public function testExecute()
+    public function testExecute(): void
     {
         $executor = $this->buildExecutor();
         $this->assertInstanceOf(
@@ -125,12 +125,12 @@ class ExecutorTest extends TestCase
         );
     }
 
-    public function testExecuteTwoTimes()
+    public function testExecuteTwoTimes(): void
     {
         $executor = new Executor(new Manager());
         $recipe = $this->createMock(RecipeInterface::class);
         $recipe->method('train')->willReturnCallback(
-            function (ChefInterface $chef) use ($recipe) {
+            function (ChefInterface $chef) use ($recipe): \Teknoo\Recipe\BaseRecipeInterface {
                 $chef->followSteps([$this->createMock(BowlInterface::class)]);
 
                 return $recipe;

@@ -45,13 +45,13 @@ use Teknoo\East\FoundationBundle\Normalizer\EastNormalizer;
         return new EastNormalizer();
     }
 
-    public function testInjectDataBadArray()
+    public function testInjectDataBadArray(): void
     {
         $this->expectException(\TypeError::class);
         $this->buildNormalizer()->injectData(new \stdClass());
     }
 
-    public function testInjectData()
+    public function testInjectData(): void
     {
         $this->assertInstanceOf(
             EastNormalizer::class,
@@ -59,7 +59,7 @@ use Teknoo\East\FoundationBundle\Normalizer\EastNormalizer;
         );
     }
 
-    public function testSupportsNormalization()
+    public function testSupportsNormalization(): void
     {
         $this->assertFalse($this->buildNormalizer()->supportsNormalization(new \stdClass()));
         $this->assertTrue($this->buildNormalizer()->supportsNormalization(
@@ -67,18 +67,18 @@ use Teknoo\East\FoundationBundle\Normalizer\EastNormalizer;
         ));
     }
 
-    public function testGetSupportedTypes()
+    public function testGetSupportedTypes(): void
     {
         $this->assertIsArray($this->buildNormalizer()->getSupportedTypes('array'));
     }
 
-    public function testNormalizeBadObject()
+    public function testNormalizeBadObject(): void
     {
         $this->expectException(\RuntimeException::class);
         $this->buildNormalizer()->normalize(new \stdClass());
     }
 
-    public function testNormalize()
+    public function testNormalize(): void
     {
         $object = $this->createMock(NormalizableInterface::class);
         $normalizer = $this->buildNormalizer();
@@ -88,7 +88,7 @@ use Teknoo\East\FoundationBundle\Normalizer\EastNormalizer;
 
         $object->expects($this->once())
             ->method('exportToMeData')
-            ->willReturnCallback(function ($nrmlz, $ctxt) use ($normalizer, $object, $context, $returnValue) {
+            ->willReturnCallback(function ($nrmlz, $ctxt) use ($normalizer, $object, $context, $returnValue): \PHPUnit\Framework\MockObject\MockObject {
                 $this->assertInstanceOf(EastNormalizer::class, $nrmlz);
                 $this->assertNotSame($normalizer, $nrmlz);
                 $this->assertEquals($context, $ctxt);
@@ -104,7 +104,7 @@ use Teknoo\East\FoundationBundle\Normalizer\EastNormalizer;
         );
     }
 
-    public function testNormalizeWithAwareNormalizerWithOnlyScalarValues()
+    public function testNormalizeWithAwareNormalizerWithOnlyScalarValues(): void
     {
         $object = $this->createMock(NormalizableInterface::class);
         $normalizer = $this->buildNormalizer();
@@ -114,7 +114,7 @@ use Teknoo\East\FoundationBundle\Normalizer\EastNormalizer;
 
         $object->expects($this->once())
             ->method('exportToMeData')
-            ->willReturnCallback(function ($nrmlz, $ctxt) use ($normalizer, $object, $context, $returnValue) {
+            ->willReturnCallback(function ($nrmlz, $ctxt) use ($normalizer, $object, $context, $returnValue): \PHPUnit\Framework\MockObject\MockObject {
                 $this->assertInstanceOf(EastNormalizer::class, $nrmlz);
                 $this->assertNotSame($normalizer, $nrmlz);
                 $this->assertEquals($context, $ctxt);
@@ -136,7 +136,7 @@ use Teknoo\East\FoundationBundle\Normalizer\EastNormalizer;
         );
     }
 
-    public function testNormalizeWithAwareNormalizer()
+    public function testNormalizeWithAwareNormalizer(): void
     {
         $object = $this->createMock(NormalizableInterface::class);
         $normalizer = $this->buildNormalizer();
@@ -147,7 +147,7 @@ use Teknoo\East\FoundationBundle\Normalizer\EastNormalizer;
 
         $object->expects($this->once())
             ->method('exportToMeData')
-            ->willReturnCallback(function ($nrmlz, $ctxt) use ($normalizer, $object, $context, $returnValue) {
+            ->willReturnCallback(function ($nrmlz, $ctxt) use ($normalizer, $object, $context, $returnValue): \PHPUnit\Framework\MockObject\MockObject {
                 $this->assertInstanceOf(EastNormalizer::class, $nrmlz);
                 $this->assertNotSame($normalizer, $nrmlz);
                 $this->assertEquals($context, $ctxt);

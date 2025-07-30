@@ -25,6 +25,7 @@ declare(strict_types=1);
 namespace Teknoo\Tests\East\FoundationBundle\Messenger;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
@@ -45,15 +46,9 @@ use Teknoo\East\FoundationBundle\Messenger\Client;
 #[CoversClass(Client::class)]
 class ClientTest extends TestCase
 {
-    /**
-     * @var MessageBusInterface
-     */
-    private $messageBusInterface;
+    private ?MessageBusInterface $messageBusInterface = null;
 
-    /**
-     * @return MessageBusInterface|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private function getMessageBusInterfaceMock(): MessageBusInterface
+    private function getMessageBusInterfaceMock(): MessageBusInterface&MockObject
     {
         if (!$this->messageBusInterface instanceof MessageBusInterface) {
             $this->messageBusInterface = $this->createMock(MessageBusInterface::class);
@@ -78,24 +73,24 @@ class ClientTest extends TestCase
         return Client::class;
     }
 
-    public function testUpdateResponseError()
+    public function testUpdateResponseError(): void
     {
         $this->expectException(\TypeError::class);
         $this->buildClient()->updateResponse(new \stdClass());
     }
     
-    public function testUpdateResponse()
+    public function testUpdateResponse(): void
     {
         $client = $this->buildClient();
         $this->assertInstanceOf(
             $this->getClientClass(),
-            $client->updateResponse(function (ClientInterface $client, ?ResponseInterface $response=null) {
-                $this->assertEmpty($response);
+            $client->updateResponse(function (ClientInterface $client, ?ResponseInterface $response=null): void {
+                $this->assertNotInstanceOf(\Psr\Http\Message\ResponseInterface::class, $response);
             })
         );
     }
 
-    public function testUpdateResponseWithResponse()
+    public function testUpdateResponseWithResponse(): void
     {
         /**
          * @var ResponseInterface
@@ -106,14 +101,14 @@ class ClientTest extends TestCase
         $this->assertInstanceOf(
             $this->getClientClass(),
             $client->acceptResponse($response)->updateResponse(
-                function (ClientInterface $client, ?ResponseInterface $responsePassed=null) use ($response) {
+                function (ClientInterface $client, ?ResponseInterface $responsePassed=null) use ($response): void {
                     $this->assertEquals($response, $responsePassed);
                 }
             )
         );
     }
 
-    public function testUpdateResponseWithEastResponse()
+    public function testUpdateResponseWithEastResponse(): void
     {
         $response = $this->createMock(EastResponse::class);
 
@@ -121,14 +116,14 @@ class ClientTest extends TestCase
         $this->assertInstanceOf(
             $this->getClientClass(),
             $client->acceptResponse($response)->updateResponse(
-                function (ClientInterface $client, ?EastResponse $responsePassed=null) use ($response) {
+                function (ClientInterface $client, ?EastResponse $responsePassed=null) use ($response): void {
                     $this->assertEquals($response, $responsePassed);
                 }
             )
         );
     }
 
-    public function testUpdateResponseWithJsonResponse()
+    public function testUpdateResponseWithJsonResponse(): void
     {
 
         $response = new class implements EastResponse, \JsonSerializable
@@ -148,20 +143,20 @@ class ClientTest extends TestCase
         $this->assertInstanceOf(
             $this->getClientClass(),
             $client->acceptResponse($response)->updateResponse(
-                function (ClientInterface $client, ?EastResponse $responsePassed=null) use ($response) {
+                function (ClientInterface $client, ?EastResponse $responsePassed=null) use ($response): void {
                     $this->assertEquals($response, $responsePassed);
                 }
             )
         );
     }
 
-    public function testAcceptResponseError()
+    public function testAcceptResponseError(): void
     {
         $this->expectException(\TypeError::class);
         $this->buildClient()->acceptResponse(new \stdClass());
     }
     
-    public function testAcceptPSRResponse()
+    public function testAcceptPSRResponse(): void
     {
         /**
          * @var ResponseInterface
@@ -175,7 +170,7 @@ class ClientTest extends TestCase
         );
     }
 
-    public function testAcceptEastResponse()
+    public function testAcceptEastResponse(): void
     {
         $response = $this->createMock(EastResponse::class);
 
@@ -186,7 +181,7 @@ class ClientTest extends TestCase
         );
     }
 
-    public function testAcceptJsonResponse()
+    public function testAcceptJsonResponse(): void
     {
         $response = new class implements EastResponse, \JsonSerializable
         {
@@ -208,7 +203,7 @@ class ClientTest extends TestCase
         );
     }
     
-    public function testSendJsonResponse()
+    public function testSendJsonResponse(): void
     {
 
         $response = new class implements EastResponse, \JsonSerializable
@@ -236,7 +231,7 @@ class ClientTest extends TestCase
         );
     }
 
-    public function testSendPSRResponse()
+    public function testSendPSRResponse(): void
     {
         /**
          * @var ResponseInterface
@@ -255,7 +250,7 @@ class ClientTest extends TestCase
         );
     }
 
-    public function testSendEastResponse()
+    public function testSendEastResponse(): void
     {
         $response = $this->createMock(EastResponse::class);
 
@@ -271,7 +266,7 @@ class ClientTest extends TestCase
         );
     }
 
-    public function testSendResponseWithoutBus()
+    public function testSendResponseWithoutBus(): void
     {
         /**
          * @var ResponseInterface
@@ -280,11 +275,11 @@ class ClientTest extends TestCase
 
         $this->assertInstanceOf(
             $this->getClientClass(),
-            (new Client(null))->sendResponse($response)
+            new Client(null)->sendResponse($response)
         );
     }
 
-    public function testSendResponseWithAccept()
+    public function testSendResponseWithAccept(): void
     {
         /**
          * @var ResponseInterface
@@ -303,7 +298,7 @@ class ClientTest extends TestCase
         );
     }
 
-    public function testSendResponseAfterReset()
+    public function testSendResponseAfterReset(): void
     {
         /**
          * @var ResponseInterface
@@ -325,7 +320,7 @@ class ClientTest extends TestCase
         $client->sendResponse();
     }
 
-    public function testSendResponseWithoutResponse()
+    public function testSendResponseWithoutResponse(): void
     {
         $this->expectException(\RuntimeException::class);
         $client = $this->buildClient();
@@ -336,7 +331,7 @@ class ClientTest extends TestCase
         );
     }
 
-    public function testSendResponseSilently()
+    public function testSendResponseSilently(): void
     {
         /**
          * @var ResponseInterface
@@ -355,7 +350,7 @@ class ClientTest extends TestCase
         );
     }
 
-    public function testSendResponseCleanResponse()
+    public function testSendResponseCleanResponse(): void
     {
         /**
          * @var ResponseInterface
@@ -374,7 +369,7 @@ class ClientTest extends TestCase
         );
     }
 
-    public function testSendResponseWithAcceptSilently()
+    public function testSendResponseWithAcceptSilently(): void
     {
         /**
          * @var ResponseInterface
@@ -393,7 +388,7 @@ class ClientTest extends TestCase
         );
     }
 
-    public function testSendResponseWithoutResponseSilently()
+    public function testSendResponseWithoutResponseSilently(): void
     {
         $client = $this->buildClient();
 
@@ -403,19 +398,19 @@ class ClientTest extends TestCase
         );
     }
 
-    public function testSendResponseError()
+    public function testSendResponseError(): void
     {
         $this->expectException(\TypeError::class);
         $this->buildClient()->sendResponse(new \stdClass());
     }
 
-    public function testSendResponseError2()
+    public function testSendResponseError2(): void
     {
         $this->expectException(\TypeError::class);
         $this->buildClient()->sendResponse(null, new \stdClass());
     }
 
-    public function testErrorInRequest()
+    public function testErrorInRequest(): void
     {
         $this->expectException(\Exception::class);
 
@@ -426,7 +421,7 @@ class ClientTest extends TestCase
         );
     }
 
-    public function testErrorInRequestSilently()
+    public function testErrorInRequestSilently(): void
     {
         $client = $this->buildClient();
         $this->assertInstanceOf(
@@ -435,7 +430,7 @@ class ClientTest extends TestCase
         );
     }
 
-    public function testErrorInRequestWithLogger()
+    public function testErrorInRequestWithLogger(): void
     {
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects($this->once())->method('error');
@@ -449,7 +444,7 @@ class ClientTest extends TestCase
         );
     }
 
-    public function testErrorInRequestSilentlyWithLogger()
+    public function testErrorInRequestSilentlyWithLogger(): void
     {
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects($this->once())->method('error');
@@ -461,20 +456,20 @@ class ClientTest extends TestCase
         );
     }
 
-    public function testErrorInRequestError()
+    public function testErrorInRequestError(): void
     {
         $this->expectException(\TypeError::class);
         $this->buildClient()->errorInRequest(new \stdClass());
     }
 
-    public function testMustSendAResponse()
+    public function testMustSendAResponse(): void
     {
         $client = $this->buildClient();
 
         $this->assertInstanceOf(Client::class, $client->mustSendAResponse());
     }
 
-    public function testSendAResponseIsOptional()
+    public function testSendAResponseIsOptional(): void
     {
         $client = $this->buildClient();
 

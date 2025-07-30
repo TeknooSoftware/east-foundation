@@ -48,9 +48,6 @@ use Teknoo\East\Foundation\Http\Message\MessageFactoryInterface;
  */
 class LaminasContainerTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @return Container
-     */
     protected function buildContainer() : Container
     {
         $containerDefinition = new ContainerBuilder();
@@ -61,7 +58,7 @@ class LaminasContainerTest extends \PHPUnit\Framework\TestCase
         return $containerDefinition->build();
     }
 
-    public function testServerRequestFactory()
+    public function testServerRequestFactory(): void
     {
         $container = $this->buildContainer();
 
@@ -71,7 +68,7 @@ class LaminasContainerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testServerRequestFactoryInterface()
+    public function testServerRequestFactoryInterface(): void
     {
         $container = $this->buildContainer();
 
@@ -81,7 +78,7 @@ class LaminasContainerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testUploadedFileFactory()
+    public function testUploadedFileFactory(): void
     {
         $container = $this->buildContainer();
 
@@ -91,7 +88,7 @@ class LaminasContainerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testUploadedFileFactoryInterface()
+    public function testUploadedFileFactoryInterface(): void
     {
         $container = $this->buildContainer();
 
@@ -101,7 +98,7 @@ class LaminasContainerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testResponseFactory()
+    public function testResponseFactory(): void
     {
         $container = $this->buildContainer();
 
@@ -111,7 +108,7 @@ class LaminasContainerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testResponseFactoryInterface()
+    public function testResponseFactoryInterface(): void
     {
         $container = $this->buildContainer();
 
@@ -121,7 +118,7 @@ class LaminasContainerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testStreamFactory()
+    public function testStreamFactory(): void
     {
         $container = $this->buildContainer();
 
@@ -131,7 +128,7 @@ class LaminasContainerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testStreamFactoryInterface()
+    public function testStreamFactoryInterface(): void
     {
         $container = $this->buildContainer();
 
@@ -141,7 +138,7 @@ class LaminasContainerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testMessageFactory()
+    public function testMessageFactory(): void
     {
         $container = $this->buildContainer();
 
@@ -151,7 +148,7 @@ class LaminasContainerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testResponseMessageFactory()
+    public function testResponseMessageFactory(): void
     {
         $container = $this->buildContainer();
 

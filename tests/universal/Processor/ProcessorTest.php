@@ -45,15 +45,12 @@ use Teknoo\East\Foundation\Router\ResultInterface;
 #[CoversClass(Processor::class)]
 class ProcessorTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @return Processor
-     */
-    private function buildProcessor(bool $inSilentMode = false)
+    private function buildProcessor(bool $inSilentMode = false): \Teknoo\East\Foundation\Processor\Processor
     {
         return new Processor($inSilentMode);
     }
 
-    public function testExecuteRequestWithNoResultClientInSilentMode()
+    public function testExecuteRequestWithNoResultClientInSilentMode(): void
     {
         /**
          * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
@@ -81,7 +78,7 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testExecuteRequestWithNoResultClientNotInSilentMode()
+    public function testExecuteRequestWithNoResultClientNotInSilentMode(): void
     {
         /**
          * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
@@ -109,7 +106,7 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testExecuteRequestAndPreventionOfVarRequestAndClientVarOverwrittingInSilentMode()
+    public function testExecuteRequestAndPreventionOfVarRequestAndClientVarOverwrittingInSilentMode(): void
     {
         /**
          * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
@@ -129,7 +126,7 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $routerResult = $this->createMock(ResultInterface::class);
-        $routerResult->method('getController')->willReturn($controller = function () {
+        $routerResult->method('getController')->willReturn($controller = function (): void {
         });
 
         $manager = $this->createMock(ManagerInterface::class);
@@ -156,7 +153,7 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testExecuteRequestAndPreventionOfVarRequestAndClientVarOverwrittingNotInSilentMode()
+    public function testExecuteRequestAndPreventionOfVarRequestAndClientVarOverwrittingNotInSilentMode(): void
     {
         /**
          * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
@@ -176,7 +173,7 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $routerResult = $this->createMock(ResultInterface::class);
-        $routerResult->method('getController')->willReturn($controller = function () {
+        $routerResult->method('getController')->willReturn($controller = function (): void {
         });
 
         $manager = $this->createMock(ManagerInterface::class);
@@ -203,7 +200,7 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testExecuteMessageWithNoResultInSilentMode()
+    public function testExecuteMessageWithNoResultInSilentMode(): void
     {
         /**
          * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject
@@ -230,7 +227,7 @@ class ProcessorTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testExecuteMessageWithNoResultNotInSilentMode()
+    public function testExecuteMessageWithNoResultNotInSilentMode(): void
     {
         /**
          * @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject

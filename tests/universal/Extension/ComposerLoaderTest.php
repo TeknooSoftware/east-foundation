@@ -45,7 +45,7 @@ use function iterator_to_array;
 #[CoversClass(ComposerLoader::class)]
 class ComposerLoaderTest extends TestCase
 {
-    public function testInvoke()
+    public function testInvoke(): void
     {
         $loader = new ComposerLoader();
         $this->assertEquals(

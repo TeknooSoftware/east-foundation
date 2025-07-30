@@ -41,10 +41,7 @@ use Symfony\Component\DependencyInjection\Definition;
 #[CoversClass(EastFoundationCompilerPass::class)]
 class EastFrameworkCompilerPassTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var ContainerBuilder
-     */
-    private $container;
+    private ?ContainerBuilder $container = null;
 
     private function getContainerBuilderMock(): ContainerBuilder&MockObject
     {
@@ -68,18 +65,16 @@ class EastFrameworkCompilerPassTest extends \PHPUnit\Framework\TestCase
         return EastFoundationCompilerPass::class;
     }
 
-    public function testProcess()
+    public function testProcess(): void
     {
         $def = $this->createMock(Definition::class);
         $def->expects($this->exactly(2))->method('addMethodCall')->willReturnSelf();
 
         $this->getContainerBuilderMock()
-            
             ->method('has')
             ->willReturn(true);
 
         $this->getContainerBuilderMock()
-            
             ->method('findTaggedServiceIds')
             ->with('east.endpoint.template')
             ->willReturn([
@@ -92,7 +87,7 @@ class EastFrameworkCompilerPassTest extends \PHPUnit\Framework\TestCase
             ->method('getDefinition')
             ->with(
                 $this->callback(
-                    fn ($value) => match ($value) {
+                    fn ($value): bool => match ($value) {
                         'service1' => true,
                         'service2' => true,
                         default => false,
@@ -109,18 +104,16 @@ class EastFrameworkCompilerPassTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testProcessNoTwig()
+    public function testProcessNoTwig(): void
     {
         $def = $this->createMock(Definition::class);
         $def->expects($this->exactly(0))->method('addMethodCall')->willReturnSelf();
 
         $this->getContainerBuilderMock()
-            
             ->method('has')
-            ->willReturnCallback(fn($value) => 'twig' != $value);
+            ->willReturnCallback(fn(string $value): bool => 'twig' != $value);
 
         $this->getContainerBuilderMock()
-            
             ->method('findTaggedServiceIds')
             ->with('east.endpoint.template')
             ->willReturn([
@@ -129,11 +122,10 @@ class EastFrameworkCompilerPassTest extends \PHPUnit\Framework\TestCase
             ]);
 
         $this->getContainerBuilderMock()
-            
             ->method('getDefinition')
             ->with(
                 $this->callback(
-                    fn ($value) => match ($value) {
+                    fn ($value): bool => match ($value) {
                         'service1' => true,
                         'service2' => true,
                         default => false,
@@ -150,7 +142,7 @@ class EastFrameworkCompilerPassTest extends \PHPUnit\Framework\TestCase
         );
     }
     
-    public function testProcessError()
+    public function testProcessError(): void
     {
         $this->expectException(\TypeError::class);
         $this->buildCompilerPass()->process(new \stdClass());

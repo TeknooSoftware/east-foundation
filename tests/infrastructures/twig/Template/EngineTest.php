@@ -61,7 +61,7 @@ class EngineTest extends TestCase
         return new Engine($this->getTwig());
     }
 
-    public function testRenderNotCallResult()
+    public function testRenderNotCallResult(): void
     {
         $view = 'foo';
         $parameters = ['foo' => 'bar'];
@@ -69,7 +69,7 @@ class EngineTest extends TestCase
         $promise = $this->createMock(PromiseInterface::class);
         $promise->expects($this->once())
             ->method('success')
-            ->with(self::callback(fn($r) => $r instanceof ResultInterface));
+            ->with(self::callback(fn($r): bool => $r instanceof ResultInterface));
 
         $this->assertInstanceOf(
             EngineInterface::class,
@@ -81,7 +81,7 @@ class EngineTest extends TestCase
         );
     }
 
-    public function testRenderCallingResult()
+    public function testRenderCallingResult(): void
     {
         $view = 'foo';
         $parameters = ['foo' => 'bar'];
@@ -96,8 +96,8 @@ class EngineTest extends TestCase
         $promise->expects($this->once())
             ->method('success')
             ->willReturnCallback(
-                function (ResultInterface $result) use ($promise) {
-                    $this->assertEquals('bar', (string) $result);
+                function (ResultInterface $result) use ($promise): \PHPUnit\Framework\MockObject\MockObject {
+                    $this->assertSame('bar', (string) $result);
 
                     return $promise;
                 }
@@ -113,7 +113,7 @@ class EngineTest extends TestCase
         );
     }
 
-    public function testRenderError()
+    public function testRenderError(): void
     {
         $view = 'foo';
         $parameters = ['foo' => 'bar'];

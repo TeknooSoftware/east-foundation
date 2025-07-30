@@ -38,7 +38,7 @@ use Teknoo\East\Diactoros\CallbackStream;
 #[CoversClass(CallbackStream::class)]
 class CallbackStreamTest extends TestCase
 {
-    public function testBind()
+    public function testBind(): void
     {
         $this->assertInstanceOf(
             CallbackStream::class,
@@ -46,11 +46,11 @@ class CallbackStreamTest extends TestCase
         );
     }
 
-    public function testUnbind()
+    public function testUnbind(): void
     {
         $this->assertInstanceOf(
             CallbackStream::class,
-            (new CallbackStream(function () {}))->unbind()
+            new CallbackStream(function (): void {})->unbind()
         );
     }
 }

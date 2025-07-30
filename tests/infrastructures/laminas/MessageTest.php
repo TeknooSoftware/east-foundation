@@ -39,7 +39,7 @@ use Teknoo\East\Diactoros\Message;
 #[CoversClass(Message::class)]
 class MessageTest extends TestCase
 {
-    public function testProtocolVersion()
+    public function testProtocolVersion(): void
     {
         $message = new Message();
         $newMessage = $message->withProtocolVersion('1.1');
@@ -55,7 +55,7 @@ class MessageTest extends TestCase
         );
     }
 
-    public function testHeaders()
+    public function testHeaders(): void
     {
         $message = new Message();
 
@@ -96,7 +96,7 @@ class MessageTest extends TestCase
         );
     }
 
-    public function testBody()
+    public function testBody(): void
     {
         $message = new Message();
         $newMessage = $message->withBody($this->createMock(StreamInterface::class));
