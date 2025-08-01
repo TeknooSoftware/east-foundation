@@ -123,7 +123,10 @@ class Router implements RouterInterface
         }
 
         $controller = $parameters['_controller'];
-        if (!($isCallable = is_callable($controller)) && !$this->container->has($controller)) {
+        if (
+            !($isCallable = is_callable($controller))
+            && (is_string($controller) && !$this->container->has($controller))
+        ) {
             return null;
         }
 
@@ -146,7 +149,10 @@ class Router implements RouterInterface
             return $controller;
         }
 
-        $entry = $this->container->get($parameters['_controller']);
+        $entry = null;
+        if (is_string($parameters['_controller'])) {
+            $entry = $this->container->get($parameters['_controller']);
+        }
 
         $isSymfony = $entry instanceof SfAbstractController;
 

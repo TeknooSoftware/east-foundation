@@ -34,6 +34,11 @@ use Teknoo\East\Foundation\Router\ResultInterface;
 use Teknoo\Immutable\ImmutableInterface;
 use Teknoo\Immutable\ImmutableTrait;
 
+use function array_filter;
+use function is_string;
+
+use const ARRAY_FILTER_USE_KEY;
+
 /**
  * Processor implementation to inject the controller returned by the router into the dedicated place in the workplan
  * to allow the chef to execute it via a DynamicBowl.
@@ -92,8 +97,15 @@ class Processor implements ProcessorInterface, ImmutableInterface
      */
     private function getParameters(ServerRequestInterface $request): array
     {
-        return $request->getAttributes()
+        $values = $request->getAttributes()
             + (array) $request->getParsedBody()
             + $request->getQueryParams();
+
+        return array_filter(
+            array: $values,
+            callback: static fn (mixed $key): bool => is_string($key),
+            mode: ARRAY_FILTER_USE_KEY
+        );
+
     }
 }

@@ -29,6 +29,8 @@ use Teknoo\East\Foundation\Extension\Exception\LoaderException;
 
 use function class_exists;
 use function is_a;
+use function is_scalar;
+use function is_string;
 
 /**
  * Default manager extension. It ables to return ots singleton when its static method 'run' is called.
@@ -75,7 +77,13 @@ class Manager implements ManagerInterface
         }
 
         $loaderClass = $_ENV[self::KEY_LOADER_ENV_NAME];
-        if (!class_exists(class: $loaderClass, autoload: true)) {
+        if (!is_string($loaderClass) || !class_exists(class: $loaderClass, autoload: true)) {
+            if (!is_scalar($loaderClass)) {
+                throw new LoaderException(
+                    "The extension loader class is not defined or is invalid"
+                );
+            }
+
             throw new LoaderException(
                 "The extension loader class `$loaderClass` is not available"
             );

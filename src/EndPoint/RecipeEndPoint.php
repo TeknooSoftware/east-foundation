@@ -79,6 +79,7 @@ class RecipeEndPoint
         foreach ($request->getAttributes() as $name => $value) {
             if (
                 !is_string($value)
+                || !is_string($name)
                 || 2 > strlen($value)
                 || '@' !== $value[0]
             ) {

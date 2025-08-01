@@ -34,6 +34,7 @@ use function file_exists;
 use function file_get_contents;
 use function is_a;
 use function is_array;
+use function is_scalar;
 use function is_string;
 use function json_decode;
 
@@ -68,7 +69,7 @@ class FileLoader implements LoaderInterface
     {
         $file = $_ENV[self::ENV_FILE_NAME] ?? self::DEFAULT_FILE_NAME;
 
-        if (!file_exists($file)) {
+        if (!is_string($file) || !file_exists($file)) {
             return [];
         }
 
