@@ -1,10 +1,11 @@
 <?php
+
 /**
  * East Foundation.
  *
  * LICENSE
  *
- * This source file is subject to the MIT license
+ * This source file is subject to the 3-Clause BSD license
  * it is available in LICENSE file at the root of this package
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -16,7 +17,7 @@
  *
  * @link        https://teknoo.software/east-collection/foundation Project website
  *
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 
@@ -24,6 +25,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\FoundationBundle\Resources;
 
+use PHPUnit\Framework\TestCase;
 use DI\Container;
 use DI\ContainerBuilder;
 use Laminas\Diactoros\ResponseFactory;
@@ -43,119 +45,116 @@ use Teknoo\East\Foundation\Http\Message\MessageFactoryInterface;
  *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
-class LaminasContainerTest extends \PHPUnit\Framework\TestCase
+class LaminasContainerTest extends TestCase
 {
-    /**
-     * @return Container
-     */
-    protected function buildContainer() : Container
+    protected function buildContainer(): Container
     {
         $containerDefinition = new ContainerBuilder();
         $containerDefinition->addDefinitions(
-        __DIR__.'/../../../../infrastructures/symfony/Resources/config/laminas_di.php'
+            __DIR__.'/../../../../infrastructures/symfony/Resources/config/laminas_di.php'
         );
 
         return $containerDefinition->build();
     }
 
-    public function testServerRequestFactory()
+    public function testServerRequestFactory(): void
     {
         $container = $this->buildContainer();
 
-        self::assertInstanceOf(
-          ServerRequestFactory::class,
+        $this->assertInstanceOf(
+            ServerRequestFactory::class,
             $container->get(ServerRequestFactory::class)
         );
     }
 
-    public function testServerRequestFactoryInterface()
+    public function testServerRequestFactoryInterface(): void
     {
         $container = $this->buildContainer();
 
-        self::assertInstanceOf(
-          ServerRequestFactoryInterface::class,
+        $this->assertInstanceOf(
+            ServerRequestFactoryInterface::class,
             $container->get(ServerRequestFactoryInterface::class)
         );
     }
 
-    public function testUploadedFileFactory()
+    public function testUploadedFileFactory(): void
     {
         $container = $this->buildContainer();
 
-        self::assertInstanceOf(
-          UploadedFileFactory::class,
+        $this->assertInstanceOf(
+            UploadedFileFactory::class,
             $container->get(UploadedFileFactory::class)
         );
     }
 
-    public function testUploadedFileFactoryInterface()
+    public function testUploadedFileFactoryInterface(): void
     {
         $container = $this->buildContainer();
 
-        self::assertInstanceOf(
-          UploadedFileFactoryInterface::class,
+        $this->assertInstanceOf(
+            UploadedFileFactoryInterface::class,
             $container->get(UploadedFileFactoryInterface::class)
         );
     }
 
-    public function testResponseFactory()
+    public function testResponseFactory(): void
     {
         $container = $this->buildContainer();
 
-        self::assertInstanceOf(
-          ResponseFactory::class,
+        $this->assertInstanceOf(
+            ResponseFactory::class,
             $container->get(ResponseFactory::class)
         );
     }
 
-    public function testResponseFactoryInterface()
+    public function testResponseFactoryInterface(): void
     {
         $container = $this->buildContainer();
 
-        self::assertInstanceOf(
-          ResponseFactoryInterface::class,
+        $this->assertInstanceOf(
+            ResponseFactoryInterface::class,
             $container->get(ResponseFactoryInterface::class)
         );
     }
 
-    public function testStreamFactory()
+    public function testStreamFactory(): void
     {
         $container = $this->buildContainer();
 
-        self::assertInstanceOf(
-          StreamFactory::class,
+        $this->assertInstanceOf(
+            StreamFactory::class,
             $container->get(StreamFactory::class)
         );
     }
 
-    public function testStreamFactoryInterface()
+    public function testStreamFactoryInterface(): void
     {
         $container = $this->buildContainer();
 
-        self::assertInstanceOf(
-          StreamFactoryInterface::class,
+        $this->assertInstanceOf(
+            StreamFactoryInterface::class,
             $container->get(StreamFactoryInterface::class)
         );
     }
 
-    public function testMessageFactory()
+    public function testMessageFactory(): void
     {
         $container = $this->buildContainer();
 
-        self::assertInstanceOf(
-          MessageFactory::class,
+        $this->assertInstanceOf(
+            MessageFactory::class,
             $container->get(MessageFactory::class)
         );
     }
 
-    public function testResponseMessageFactory()
+    public function testResponseMessageFactory(): void
     {
         $container = $this->buildContainer();
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             ResponseMessageFactory::class,
             $container->get(ResponseMessageFactory::class)
         );

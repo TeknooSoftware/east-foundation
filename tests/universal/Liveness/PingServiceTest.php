@@ -1,10 +1,11 @@
 <?php
+
 /**
  * East Foundation.
  *
  * LICENSE
  *
- * This source file is subject to the MIT license
+ * This source file is subject to the 3-Clause BSD license
  * it is available in LICENSE file at the root of this package
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -16,7 +17,7 @@
  *
  * @link        https://teknoo.software/east-collection/foundation Project website
  *
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 
@@ -29,39 +30,39 @@ use PHPUnit\Framework\TestCase;
 use Teknoo\East\Foundation\Liveness\PingService;
 
 /**
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 #[CoversClass(PingService::class)]
 class PingServiceTest extends TestCase
 {
-    public function testRegister()
+    public function testRegister(): void
     {
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             PingService::class,
-            (new PingService())->register('foo', function () {}),
+            new PingService()->register('foo', function (): void {}),
         );
     }
 
-    public function testUnregisterNotRegistered()
+    public function testUnregisterNotRegistered(): void
     {
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             PingService::class,
-            (new PingService())->unregister('foo'),
+            new PingService()->unregister('foo'),
         );
     }
 
-    public function testUnregister()
+    public function testUnregister(): void
     {
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             PingService::class,
-            (new PingService())
-                ->register('foo', function () {})
+            new PingService()
+                ->register('foo', function (): void {})
                 ->unregister('foo'),
         );
     }
 
-    public function testPing()
+    public function testPing(): void
     {
         $call1 = 0;
         $call2 = 0;
@@ -76,22 +77,22 @@ class PingServiceTest extends TestCase
         $service->register('f1', $f1);
         $service->register('f2', $f2);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             PingService::class,
             $service->ping()
         );
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             PingService::class,
             $service->ping()
         );
 
         $service->unregister('f1');
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             PingService::class,
             $service->ping()
         );
 
-        self::assertEquals(2, $call1);
-        self::assertEquals(3, $call2);
+        $this->assertEquals(2, $call1);
+        $this->assertEquals(3, $call2);
     }
 }

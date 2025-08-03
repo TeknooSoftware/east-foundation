@@ -1,10 +1,11 @@
 <?php
+
 /**
  * East Foundation.
  *
  * LICENSE
  *
- * This source file is subject to the MIT license
+ * This source file is subject to the 3-Clause BSD license
  * it is available in LICENSE file at the root of this package
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -16,7 +17,7 @@
  *
  * @link        https://teknoo.software/east-collection/foundation Project website
  *
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 
@@ -36,7 +37,7 @@ use Twig\Environment;
 /**
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 #[CoversClass(Engine::class)]
@@ -61,7 +62,7 @@ class EngineTest extends TestCase
         return new Engine($this->getTwig());
     }
 
-    public function testRenderNotCallResult()
+    public function testRenderNotCallResult(): void
     {
         $view = 'foo';
         $parameters = ['foo' => 'bar'];
@@ -69,9 +70,9 @@ class EngineTest extends TestCase
         $promise = $this->createMock(PromiseInterface::class);
         $promise->expects($this->once())
             ->method('success')
-            ->with(self::callback(fn($r) => $r instanceof ResultInterface));
+            ->with(self::callback(fn ($r): bool => $r instanceof ResultInterface));
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             EngineInterface::class,
             $this->buildEngine()->render(
                 $promise,
@@ -81,7 +82,7 @@ class EngineTest extends TestCase
         );
     }
 
-    public function testRenderCallingResult()
+    public function testRenderCallingResult(): void
     {
         $view = 'foo';
         $parameters = ['foo' => 'bar'];
@@ -96,14 +97,14 @@ class EngineTest extends TestCase
         $promise->expects($this->once())
             ->method('success')
             ->willReturnCallback(
-                function (ResultInterface $result) use ($promise) {
-                    self::assertEquals('bar', (string) $result);
+                function (ResultInterface $result) use ($promise): \PHPUnit\Framework\MockObject\MockObject {
+                    $this->assertSame('bar', (string) $result);
 
                     return $promise;
                 }
             );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             EngineInterface::class,
             $this->buildEngine()->render(
                 $promise,
@@ -113,7 +114,7 @@ class EngineTest extends TestCase
         );
     }
 
-    public function testRenderError()
+    public function testRenderError(): void
     {
         $view = 'foo';
         $parameters = ['foo' => 'bar'];
@@ -124,7 +125,7 @@ class EngineTest extends TestCase
             ->willThrowException(new \RuntimeException('foo'));
         $promise->expects($this->once())->method('fail');
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             EngineInterface::class,
             $this->buildEngine()->render(
                 $promise,

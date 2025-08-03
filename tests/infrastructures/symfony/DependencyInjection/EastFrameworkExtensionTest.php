@@ -1,10 +1,11 @@
 <?php
+
 /**
  * East Foundation.
  *
  * LICENSE
  *
- * This source file is subject to the MIT license
+ * This source file is subject to the 3-Clause BSD license
  * it is available in LICENSE file at the root of this package
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -16,7 +17,7 @@
  *
  * @link        https://teknoo.software/east-collection/foundation Project website
  *
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 
@@ -24,6 +25,9 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\FoundationBundle\DependencyInjection;
 
+use PHPUnit\Framework\TestCase;
+use TypeError;
+use stdClass;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -34,16 +38,13 @@ use Teknoo\East\FoundationBundle\DependencyInjection\EastFoundationExtension;
  *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 #[CoversClass(EastFoundationExtension::class)]
-class EastFrameworkExtensionTest extends \PHPUnit\Framework\TestCase
+class EastFrameworkExtensionTest extends TestCase
 {
-    /**
-     * @var ContainerBuilder
-     */
-    private $container;
+    private ?ContainerBuilder $container = null;
 
     private function getContainerBuilderMock(): ContainerBuilder&MockObject
     {
@@ -67,23 +68,23 @@ class EastFrameworkExtensionTest extends \PHPUnit\Framework\TestCase
         return EastFoundationExtension::class;
     }
 
-    public function testLoad()
+    public function testLoad(): void
     {
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getExtensionClass(),
             $this->buildExtension()->load([], $this->getContainerBuilderMock())
         );
     }
 
-    public function testLoadErrorContainer()
+    public function testLoadErrorContainer(): void
     {
-        $this->expectException(\TypeError::class);
-        $this->buildExtension()->load([], new \stdClass());
+        $this->expectException(TypeError::class);
+        $this->buildExtension()->load([], new stdClass());
     }
 
-    public function testLoadErrorConfig()
+    public function testLoadErrorConfig(): void
     {
-        $this->expectException(\TypeError::class);
-        $this->buildExtension()->load(new \stdClass(), $this->getContainerBuilderMock());
+        $this->expectException(TypeError::class);
+        $this->buildExtension()->load(new stdClass(), $this->getContainerBuilderMock());
     }
 }

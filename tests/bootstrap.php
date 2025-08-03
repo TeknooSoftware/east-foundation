@@ -1,10 +1,13 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * East Foundation.
  *
  * LICENSE
  *
- * This source file is subject to the MIT license
+ * This source file is subject to the 3-Clause BSD license
  * it is available in LICENSE file at the root of this package
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -16,7 +19,7 @@
  *
  * @link        https://teknoo.software/east-collection/foundation Project website
  *
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 defined('RUN_CLI_MODE')
@@ -36,19 +39,20 @@ error_reporting(E_ALL);
 if (!\function_exists('pcntl_async_signals')) {
     define('PCNTL_MOCKED', true);
 
-    function pcntl_async_signals(bool $enable)
+    function pcntl_async_signals(bool $enable): void
     {
     }
 }
 
 if (!\function_exists('pcntl_signal')) {
-    function pcntl_signal(int $signal, callable $callback)
+    function pcntl_signal(int $signal, callable $callback): void
     {
     }
 }
 
 if (!\function_exists('pcntl_alarm')) {
-    function pcntl_alarm(int $seconds) {
+    function pcntl_alarm(int $seconds): void
+    {
 
     }
 }

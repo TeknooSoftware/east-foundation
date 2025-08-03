@@ -5,7 +5,7 @@
  *
  * LICENSE
  *
- * This source file is subject to the MIT license
+ * This source file is subject to the 3-Clause BSD license
  * it is available in LICENSE file at the root of this package
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -17,7 +17,7 @@
  *
  * @link        https://teknoo.software/east-collection/foundation Project website
  *
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 
@@ -60,7 +60,7 @@ use function substr;
  *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 class Router implements RouterInterface
@@ -105,7 +105,7 @@ class Router implements RouterInterface
     {
         $parameters = [];
         $path = $this->cleanSymfonyHandler(
-            (string) $request->getUri()->getPath()
+            $request->getUri()->getPath()
         );
 
         if (null !== $this->excludePathsRegex && preg_match($this->excludePathsRegex, $path)) {
@@ -123,7 +123,10 @@ class Router implements RouterInterface
         }
 
         $controller = $parameters['_controller'];
-        if (!($isCallable = is_callable($controller)) && !$this->container->has($controller)) {
+        if (
+            !($isCallable = is_callable($controller))
+            && (is_string($controller) && !$this->container->has($controller))
+        ) {
             return null;
         }
 
@@ -146,7 +149,10 @@ class Router implements RouterInterface
             return $controller;
         }
 
-        $entry = $this->container->get($parameters['_controller']);
+        $entry = null;
+        if (is_string($parameters['_controller'])) {
+            $entry = $this->container->get($parameters['_controller']);
+        }
 
         $isSymfony = $entry instanceof SfAbstractController;
 

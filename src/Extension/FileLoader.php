@@ -5,7 +5,7 @@
  *
  * LICENSE
  *
- * This source file is subject to the MIT license
+ * This source file is subject to the 3-Clause BSD license
  * it is available in LICENSE file at the root of this package
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -17,7 +17,7 @@
  *
  * @link        https://teknoo.software/east-collection/foundation Project website
  *
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 
@@ -34,6 +34,7 @@ use function file_exists;
 use function file_get_contents;
 use function is_a;
 use function is_array;
+use function is_scalar;
 use function is_string;
 use function json_decode;
 
@@ -47,14 +48,14 @@ use const JSON_THROW_ON_ERROR;
  *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 class FileLoader implements LoaderInterface
 {
-    private const ENV_FILE_NAME = 'TEKNOO_EAST_EXTENSION_FILE';
+    private const string ENV_FILE_NAME = 'TEKNOO_EAST_EXTENSION_FILE';
 
-    private const DEFAULT_FILE_NAME = 'extensions/enabled.json';
+    private const string DEFAULT_FILE_NAME = 'extensions/enabled.json';
 
     /**
      * @var array<class-string<ExtensionInterface>>
@@ -68,7 +69,7 @@ class FileLoader implements LoaderInterface
     {
         $file = $_ENV[self::ENV_FILE_NAME] ?? self::DEFAULT_FILE_NAME;
 
-        if (!file_exists($file)) {
+        if (!is_string($file) || !file_exists($file)) {
             return [];
         }
 

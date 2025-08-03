@@ -1,10 +1,11 @@
 <?php
+
 /**
  * East Foundation.
  *
  * LICENSE
  *
- * This source file is subject to the MIT license
+ * This source file is subject to the 3-Clause BSD license
  * it is available in LICENSE file at the root of this package
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -16,7 +17,7 @@
  *
  * @link        https://teknoo.software/east-collection/foundation Project website
  *
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 
@@ -40,7 +41,7 @@ use Teknoo\Tests\East\Foundation\Extension\Support\ExtensionMock1;
  *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 #[CoversClass(Manager::class)]
@@ -48,6 +49,7 @@ use Teknoo\Tests\East\Foundation\Extension\Support\ExtensionMock1;
 class ManagerTest extends TestCase
 {
     private ?string $previousLoaderEnvValue = null;
+
     private ?string $previousDisabledEnvValue = null;
 
     protected function setUp(): void
@@ -75,28 +77,28 @@ class ManagerTest extends TestCase
         parent::tearDown();
     }
 
-    public function testRunWithLoader()
+    public function testRunWithLoader(): void
     {
         $loader = $this->createMock(LoaderInterface::class);
         Manager::reset();
         $m1 = Manager::run($loader);
         $m2 = Manager::run($loader);
 
-        self::assertInstanceOf(Manager::class, $m1);
-        self::assertSame($m1, $m2);
+        $this->assertInstanceOf(Manager::class, $m1);
+        $this->assertSame($m1, $m2);
     }
 
-    public function testRunWithoutLoader()
+    public function testRunWithoutLoader(): void
     {
         Manager::reset();
         $m1 = Manager::run();
         $m2 = Manager::run();
 
-        self::assertInstanceOf(Manager::class, $m1);
-        self::assertSame($m1, $m2);
+        $this->assertInstanceOf(Manager::class, $m1);
+        $this->assertSame($m1, $m2);
     }
 
-    public function testRunWithLoaderClassInEnvReferencingUnknownClass()
+    public function testRunWithLoaderClassInEnvReferencingUnknownClass(): void
     {
         Manager::reset();
         $this->expectException(LoaderException::class);
@@ -104,7 +106,15 @@ class ManagerTest extends TestCase
         Manager::run();
     }
 
-    public function testRunWithLoaderClassInEnvReferencingNotLoaderClass()
+    public function testRunWithLoaderClassInEnvIsNotScalar(): void
+    {
+        Manager::reset();
+        $this->expectException(LoaderException::class);
+        $_ENV['TEKNOO_EAST_EXTENSION_LOADER'] = ['foo'];
+        Manager::run();
+    }
+
+    public function testRunWithLoaderClassInEnvReferencingNotLoaderClass(): void
     {
         Manager::reset();
         $this->expectException(LoaderException::class);
@@ -112,18 +122,18 @@ class ManagerTest extends TestCase
         Manager::run();
     }
 
-    public function testRunWithLoaderClassInEnv()
+    public function testRunWithLoaderClassInEnv(): void
     {
         Manager::reset();
         $_ENV['TEKNOO_EAST_EXTENSION_LOADER'] = ComposerLoader::class;
         $m1 = Manager::run();
         $m2 = Manager::run();
 
-        self::assertInstanceOf(Manager::class, $m1);
-        self::assertSame($m1, $m2);
+        $this->assertInstanceOf(Manager::class, $m1);
+        $this->assertSame($m1, $m2);
     }
 
-    public function testExecute()
+    public function testExecute(): void
     {
         $loader = $this->createMock(LoaderInterface::class);
         Manager::reset();
@@ -141,16 +151,16 @@ class ManagerTest extends TestCase
         $module = $this->createMock(ModuleInterface::class);
         $m1->execute($module);
 
-        self::assertSame($module, $ext->module);
+        $this->assertSame($module, $ext->module);
         $ext->module = null;
 
         $m2->execute($module);
 
-        self::assertSame($module, $ext->module);
+        $this->assertSame($module, $ext->module);
         $ext->module = null;
     }
 
-    public function testExecuteDisabled()
+    public function testExecuteDisabled(): void
     {
         $loader = $this->createMock(LoaderInterface::class);
         $_ENV['TEKNOO_EAST_EXTENSION_DISABLED'] = 'true';
@@ -169,13 +179,13 @@ class ManagerTest extends TestCase
 
         $module = $this->createMock(ModuleInterface::class);
         $m1->execute($module);
-        self::assertNull($ext->module);
+        $this->assertNull($ext->module);
 
         $m2->execute($module);
-        self::assertNull($ext->module);
+        $this->assertNull($ext->module);
     }
 
-    public function testListLoadedExtensions()
+    public function testListLoadedExtensions(): void
     {
         $loader = $this->createMock(LoaderInterface::class);
         Manager::reset();
@@ -187,7 +197,7 @@ class ManagerTest extends TestCase
                 ExtensionMock1::class
             ]);
 
-        self::assertEquals(
+        $this->assertEquals(
             [
                 ExtensionMock1::class => 'test 1'
             ],
@@ -195,7 +205,7 @@ class ManagerTest extends TestCase
         );
     }
 
-    public function testListLoadedExtensionsDisabled()
+    public function testListLoadedExtensionsDisabled(): void
     {
         $loader = $this->createMock(LoaderInterface::class);
         $_ENV['TEKNOO_EAST_EXTENSION_DISABLED'] = 'true';
@@ -209,7 +219,7 @@ class ManagerTest extends TestCase
                 ExtensionMock1::class
             ]);
 
-        self::assertEquals(
+        $this->assertEquals(
             [],
             \iterator_to_array($m1->listLoadedExtensions())
         );

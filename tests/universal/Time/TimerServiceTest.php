@@ -1,10 +1,11 @@
 <?php
+
 /**
  * East Foundation.
  *
  * LICENSE
  *
- * This source file is subject to the MIT license
+ * This source file is subject to the 3-Clause BSD license
  * it is available in LICENSE file at the root of this package
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -16,7 +17,7 @@
  *
  * @link        https://teknoo.software/east-collection/foundation Project website
  *
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 
@@ -31,13 +32,14 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Teknoo\East\Foundation\Time\DatesService;
 use Teknoo\East\Foundation\Time\TimerService;
+
 use function pcntl_alarm;
 use function sleep;
 use function str_repeat;
 use function time;
 
 /**
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 #[CoversClass(TimerService::class)]
@@ -47,27 +49,27 @@ class TimerServiceTest extends TestCase
 
     public function getDatesServiceMock(): DatesService&MockObject
     {
-        if (null === $this->datesService) {
+        if (!$this->datesService instanceof \Teknoo\East\Foundation\Time\DatesService) {
             $this->datesService = $this->createMock(DatesService::class);
         }
 
         return $this->datesService;
     }
 
-    public function testIsAvailable()
+    public function testIsAvailable(): void
     {
-        self::assertTrue(TimerService::isAvailable());
+        $this->assertTrue(TimerService::isAvailable());
     }
 
-    public function testUnregister()
+    public function testUnregister(): void
     {
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimerService::class,
-            (new TimerService($this->getDatesServiceMock()))->unregister('foo'),
+            new TimerService($this->getDatesServiceMock())->unregister('foo'),
         );
     }
 
-    public function testSimpleRegisterOneFunction()
+    public function testSimpleRegisterOneFunction(): void
     {
         if (defined('PCNTL_MOCKED')) {
             self::markTestSkipped('PCNTL is not available');
@@ -76,7 +78,7 @@ class TimerServiceTest extends TestCase
         $service = new TimerService(new DatesService());
 
         $called = false;
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimerService::class,
             $service->register(
                 seconds: 1,
@@ -87,15 +89,16 @@ class TimerServiceTest extends TestCase
             )
         );
 
-        self::assertFalse($called);
+        $this->assertFalse($called);
         $expectedTime = time() + 2;
         while (time() < $expectedTime) {
             $x = str_repeat('x', 100000);
         }
-        self::assertTrue($called);
+
+        $this->assertTrue($called);
     }
 
-    public function testSimpleRegisterOneFunctionWith0Seconds()
+    public function testSimpleRegisterOneFunctionWith0Seconds(): void
     {
         if (defined('PCNTL_MOCKED')) {
             self::markTestSkipped('PCNTL is not available');
@@ -104,7 +107,7 @@ class TimerServiceTest extends TestCase
         $service = new TimerService(new DatesService());
 
         $called = false;
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimerService::class,
             $service->register(
                 seconds: 0,
@@ -115,10 +118,10 @@ class TimerServiceTest extends TestCase
             )
         );
 
-        self::assertTrue($called);
+        $this->assertTrue($called);
     }
 
-    public function testSimpleRegisterOneFunctionWithSleep()
+    public function testSimpleRegisterOneFunctionWithSleep(): void
     {
         if (defined('PCNTL_MOCKED')) {
             self::markTestSkipped('PCNTL is not available');
@@ -128,7 +131,7 @@ class TimerServiceTest extends TestCase
 
         $called = false;
         $calledAt = null;
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimerService::class,
             $service->register(
                 seconds: 1,
@@ -140,14 +143,14 @@ class TimerServiceTest extends TestCase
             )
         );
 
-        self::assertFalse($called);
+        $this->assertFalse($called);
         $expectedTime = time() + 3;
         sleep(3);
-        self::assertTrue($called);
-        self::assertLessThan($expectedTime, $calledAt);
+        $this->assertTrue($called);
+        $this->assertLessThan($expectedTime, $calledAt);
     }
 
-    public function testSimpleRegisterOneFunctionWithSignalCalledBefore()
+    public function testSimpleRegisterOneFunctionWithSignalCalledBefore(): void
     {
         if (defined('PCNTL_MOCKED')) {
             self::markTestSkipped('PCNTL is not available');
@@ -157,7 +160,7 @@ class TimerServiceTest extends TestCase
 
         $called = false;
         $calledAt = null;
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimerService::class,
             $service->register(
                 seconds: 3,
@@ -172,17 +175,17 @@ class TimerServiceTest extends TestCase
         $mustBeCalledAt = time() + 3;
         pcntl_alarm(2);
 
-        self::assertFalse($called);
+        $this->assertFalse($called);
         $expectedTime = time() + 5;
         sleep(5);
-        self::assertFalse($called);
+        $this->assertFalse($called);
         sleep(5);
-        self::assertTrue($called);
-        self::assertGreaterThanOrEqual($mustBeCalledAt, $calledAt);
-        self::assertLessThan($expectedTime, $calledAt);
+        $this->assertTrue($called);
+        $this->assertGreaterThanOrEqual($mustBeCalledAt, $calledAt);
+        $this->assertLessThan($expectedTime, $calledAt);
     }
 
-    public function testSimpleRegisterOneFunctionThenUnregister()
+    public function testSimpleRegisterOneFunctionThenUnregister(): void
     {
         if (defined('PCNTL_MOCKED')) {
             self::markTestSkipped('PCNTL is not available');
@@ -191,7 +194,7 @@ class TimerServiceTest extends TestCase
         $service = new TimerService(new DatesService());
 
         $called = false;
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimerService::class,
             $service->register(
                 seconds: 1,
@@ -201,22 +204,23 @@ class TimerServiceTest extends TestCase
                 },
             )
         );
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimerService::class,
             $service->unregister(
                 timerId: 'test1',
             )
         );
 
-        self::assertFalse($called);
+        $this->assertFalse($called);
         $expectedTime = time() + 2;
         while (time() < $expectedTime) {
             $x = str_repeat('x', 100000);
         }
-        self::assertFalse($called);
+
+        $this->assertFalse($called);
     }
 
-    public function testSimpleRegisterTwoFunction()
+    public function testSimpleRegisterTwoFunction(): void
     {
         if (defined('PCNTL_MOCKED')) {
             self::markTestSkipped('PCNTL is not available');
@@ -226,7 +230,7 @@ class TimerServiceTest extends TestCase
 
         $called1 = false;
         $called2 = false;
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimerService::class,
             $service->register(
                 seconds: 1,
@@ -236,7 +240,7 @@ class TimerServiceTest extends TestCase
                 },
             )
         );
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimerService::class,
             $service->register(
                 seconds: 3,
@@ -247,25 +251,26 @@ class TimerServiceTest extends TestCase
             )
         );
 
-        self::assertFalse($called1);
-        self::assertFalse($called2);
+        $this->assertFalse($called1);
+        $this->assertFalse($called2);
 
         $expectedTime = time() + 2;
         while (time() < $expectedTime) {
             $x = str_repeat('x', 100000);
         }
 
-        self::assertTrue($called1);
-        self::assertFalse($called2);
+        $this->assertTrue($called1);
+        $this->assertFalse($called2);
 
         $expectedTime = time() + 2;
         while (time() < $expectedTime) {
             $x = str_repeat('x', 100000);
         }
-        self::assertTrue($called2);
+
+        $this->assertTrue($called2);
     }
 
-    public function testSimpleRegisterTwoFunctionWithSleepAtFirst()
+    public function testSimpleRegisterTwoFunctionWithSleepAtFirst(): void
     {
         if (defined('PCNTL_MOCKED')) {
             self::markTestSkipped('PCNTL is not available');
@@ -275,7 +280,7 @@ class TimerServiceTest extends TestCase
 
         $called1 = false;
         $called2 = false;
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimerService::class,
             $service->register(
                 seconds: 1,
@@ -286,7 +291,7 @@ class TimerServiceTest extends TestCase
                 },
             )
         );
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimerService::class,
             $service->register(
                 seconds: 2,
@@ -297,19 +302,19 @@ class TimerServiceTest extends TestCase
             )
         );
 
-        self::assertFalse($called1);
-        self::assertFalse($called2);
+        $this->assertFalse($called1);
+        $this->assertFalse($called2);
 
         $expectedTime = time() + 2;
         while (time() < $expectedTime) {
             $x = str_repeat('x', 100000);
         }
 
-        self::assertTrue($called1);
-        self::assertTrue($called2);
+        $this->assertTrue($called1);
+        $this->assertTrue($called2);
     }
 
-    public function testSimpleRegisterTwoFunctionSecondBeforeFirst()
+    public function testSimpleRegisterTwoFunctionSecondBeforeFirst(): void
     {
         if (defined('PCNTL_MOCKED')) {
             self::markTestSkipped('PCNTL is not available');
@@ -319,7 +324,7 @@ class TimerServiceTest extends TestCase
 
         $called1 = false;
         $called2 = false;
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimerService::class,
             $service->register(
                 seconds: 3,
@@ -329,7 +334,7 @@ class TimerServiceTest extends TestCase
                 },
             )
         );
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimerService::class,
             $service->register(
                 seconds: 1,
@@ -340,25 +345,26 @@ class TimerServiceTest extends TestCase
             )
         );
 
-        self::assertFalse($called1);
-        self::assertFalse($called2);
+        $this->assertFalse($called1);
+        $this->assertFalse($called2);
 
         $expectedTime = time() + 2;
         while (time() < $expectedTime) {
             $x = str_repeat('x', 100000);
         }
 
-        self::assertFalse($called1);
-        self::assertTrue($called2);
+        $this->assertFalse($called1);
+        $this->assertTrue($called2);
 
         $expectedTime = time() + 2;
         while (time() < $expectedTime) {
             $x = str_repeat('x', 100000);
         }
-        self::assertTrue($called1);
+
+        $this->assertTrue($called1);
     }
 
-    public function testSimpleRegisterTwoFunctionAndFirstRemoved()
+    public function testSimpleRegisterTwoFunctionAndFirstRemoved(): void
     {
         if (defined('PCNTL_MOCKED')) {
             self::markTestSkipped('PCNTL is not available');
@@ -368,7 +374,7 @@ class TimerServiceTest extends TestCase
 
         $called1 = false;
         $called2 = false;
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimerService::class,
             $service->register(
                 seconds: 1,
@@ -378,7 +384,7 @@ class TimerServiceTest extends TestCase
                 },
             )
         );
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimerService::class,
             $service->register(
                 seconds: 3,
@@ -388,33 +394,34 @@ class TimerServiceTest extends TestCase
                 },
             )
         );
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimerService::class,
             $service->unregister(
                 timerId: 'test1',
             )
         );
 
-        self::assertFalse($called1);
-        self::assertFalse($called2);
+        $this->assertFalse($called1);
+        $this->assertFalse($called2);
 
         $expectedTime = time() + 2;
         while (time() < $expectedTime) {
             $x = str_repeat('x', 100000);
         }
 
-        self::assertFalse($called1);
-        self::assertFalse($called2);
+        $this->assertFalse($called1);
+        $this->assertFalse($called2);
 
         $expectedTime = time() + 2;
         while (time() < $expectedTime) {
             $x = str_repeat('x', 100000);
         }
-        self::assertFalse($called1);
-        self::assertTrue($called2);
+
+        $this->assertFalse($called1);
+        $this->assertTrue($called2);
     }
 
-    public function testRegisterTwoFunctionAndFirstRemovedAndReregister()
+    public function testRegisterTwoFunctionAndFirstRemovedAndReregister(): void
     {
         if (defined('PCNTL_MOCKED')) {
             self::markTestSkipped('PCNTL is not available');
@@ -424,7 +431,7 @@ class TimerServiceTest extends TestCase
 
         $called1 = false;
         $called2 = false;
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimerService::class,
             $service->register(
                 seconds: 1,
@@ -434,7 +441,7 @@ class TimerServiceTest extends TestCase
                 },
             )
         );
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimerService::class,
             $service->register(
                 seconds: 3,
@@ -444,13 +451,13 @@ class TimerServiceTest extends TestCase
                 },
             )
         );
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimerService::class,
             $service->unregister(
                 timerId: 'test1',
             )
         );
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimerService::class,
             $service->register(
                 seconds: 5,
@@ -461,32 +468,34 @@ class TimerServiceTest extends TestCase
             )
         );
 
-        self::assertFalse($called1);
-        self::assertFalse($called2);
+        $this->assertFalse($called1);
+        $this->assertFalse($called2);
 
         $expectedTime = time() + 2;
         while (time() < $expectedTime) {
             $x = str_repeat('x', 100000);
         }
 
-        self::assertFalse($called1);
-        self::assertFalse($called2);
+        $this->assertFalse($called1);
+        $this->assertFalse($called2);
 
         $expectedTime = time() + 2;
         while (time() < $expectedTime) {
             $x = str_repeat('x', 100000);
         }
-        self::assertFalse($called1);
-        self::assertTrue($called2);
+
+        $this->assertFalse($called1);
+        $this->assertTrue($called2);
         $expectedTime = time() + 2;
         while (time() < $expectedTime) {
             $x = str_repeat('x', 100000);
         }
-        self::assertTrue($called1);
-        self::assertTrue($called2);
+
+        $this->assertTrue($called1);
+        $this->assertTrue($called2);
     }
 
-    public function testRegisterTwoFunctionAndFirstReregisterWithoutUnregister()
+    public function testRegisterTwoFunctionAndFirstReregisterWithoutUnregister(): void
     {
         if (defined('PCNTL_MOCKED')) {
             self::markTestSkipped('PCNTL is not available');
@@ -496,7 +505,7 @@ class TimerServiceTest extends TestCase
 
         $called1 = false;
         $called2 = false;
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimerService::class,
             $service->register(
                 seconds: 1,
@@ -506,7 +515,7 @@ class TimerServiceTest extends TestCase
                 },
             )
         );
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimerService::class,
             $service->register(
                 seconds: 3,
@@ -516,7 +525,7 @@ class TimerServiceTest extends TestCase
                 },
             )
         );
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimerService::class,
             $service->register(
                 seconds: 5,
@@ -527,28 +536,30 @@ class TimerServiceTest extends TestCase
             )
         );
 
-        self::assertFalse($called1);
-        self::assertFalse($called2);
+        $this->assertFalse($called1);
+        $this->assertFalse($called2);
 
         $expectedTime = time() + 2;
         while (time() < $expectedTime) {
             $x = str_repeat('x', 100000);
         }
 
-        self::assertFalse($called1);
-        self::assertFalse($called2);
+        $this->assertFalse($called1);
+        $this->assertFalse($called2);
 
         $expectedTime = time() + 2;
         while (time() < $expectedTime) {
             $x = str_repeat('x', 100000);
         }
-        self::assertFalse($called1);
-        self::assertTrue($called2);
+
+        $this->assertFalse($called1);
+        $this->assertTrue($called2);
         $expectedTime = time() + 2;
         while (time() < $expectedTime) {
             $x = str_repeat('x', 100000);
         }
-        self::assertTrue($called1);
-        self::assertTrue($called2);
+
+        $this->assertTrue($called1);
+        $this->assertTrue($called2);
     }
 }

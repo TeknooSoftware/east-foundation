@@ -1,5 +1,17 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [9.0.0] - 2025-08-03
+### Stable Release
+- Drop support of PHP 8.3
+- Requires PHP 8.4
+- Remove support of Symfony 6
+- Update to Teknoo States 7
+- Update to Teknoo Recipe 7
+- Update to PHPStan 2
+- Remove deprecated feature build on `Cookbook`, use `Plan` instead
+- Fix some bugs
+- Switch license from MIT to 3-Clause BSD
+
 ## [8.0.5] - 2025-06-17
 ### Stable Release
 - Fix issue with last phpunit updates.

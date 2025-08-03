@@ -1,10 +1,11 @@
 <?php
+
 /**
  * East Foundation.
  *
  * LICENSE
  *
- * This source file is subject to the MIT license
+ * This source file is subject to the 3-Clause BSD license
  * it is available in LICENSE file at the root of this package
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -16,7 +17,7 @@
  *
  * @link        https://teknoo.software/east-collection/foundation Project website
  *
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 
@@ -32,81 +33,81 @@ use Teknoo\East\Diactoros\Message;
 /**
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  *
  */
 #[CoversClass(Message::class)]
 class MessageTest extends TestCase
 {
-    public function testProtocolVersion()
+    public function testProtocolVersion(): void
     {
         $message = new Message();
         $newMessage = $message->withProtocolVersion('1.1');
 
-        self::assertNotSame(
+        $this->assertNotSame(
             $message,
             $newMessage
         );
 
-        self::assertEquals(
+        $this->assertEquals(
             '1.1',
             $newMessage->getProtocolVersion()
         );
     }
 
-    public function testHeaders()
+    public function testHeaders(): void
     {
         $message = new Message();
 
-        self::assertFalse(
+        $this->assertFalse(
             $message->hasHeader('foo')
         );
 
         $newMessage = $message->withHeader('foo', 'bar');
 
-        self::assertNotSame(
+        $this->assertNotSame(
             $message,
             $newMessage
         );
 
-        self::assertFalse(
+        $this->assertFalse(
             $message->hasHeader('foo')
         );
 
-        self::assertTrue(
+        $this->assertTrue(
             $newMessage->hasHeader('foo')
         );
 
-        self::assertEquals(
+        $this->assertEquals(
             ['foo' => ['bar']],
             $newMessage->getHeaders()
         );
 
-        self::assertEquals(
+        $this->assertEquals(
             ['bar'],
             $newMessage->getHeader('foo')
         );
 
         $newMessage = $newMessage->withAddedHeader('foo', 'bar2');
 
-        self::assertEquals(
+        $this->assertEquals(
             ['bar', 'bar2'],
             $newMessage->getHeader('foo')
         );
     }
 
-    public function testBody()
+    public function testBody(): void
     {
         $message = new Message();
         $newMessage = $message->withBody($this->createMock(StreamInterface::class));
 
-        self::assertNotSame(
+        $this->assertNotSame(
             $message,
             $newMessage
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             StreamInterface::class,
             $newMessage->getBody()
         );

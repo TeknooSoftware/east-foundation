@@ -1,10 +1,11 @@
 <?php
+
 /**
  * East Foundation.
  *
  * LICENSE
  *
- * This source file is subject to the MIT license
+ * This source file is subject to the 3-Clause BSD license
  * it is available in LICENSE file at the root of this package
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -16,7 +17,7 @@
  *
  * @link        https://teknoo.software/east-collection/foundation Project website
  *
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 
@@ -37,13 +38,12 @@ use function iterator_to_array;
  *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 #[CoversClass(FileLoader::class)]
 class FileLoaderTest extends TestCase
 {
-
     private ?string $previousEnvValue = null;
 
     protected function setUp(): void
@@ -63,54 +63,54 @@ class FileLoaderTest extends TestCase
 
         parent::tearDown();
     }
-    
-    public function testInvokeExceptionWhenFileNotFound()
+
+    public function testInvokeExceptionWhenFileNotFound(): void
     {
         $_ENV['TEKNOO_EAST_EXTENSION_FILE'] = 'not-found';
-        self::assertEmpty(iterator_to_array((new FileLoader())()));
+        $this->assertEmpty(iterator_to_array((new FileLoader())()));
     }
 
-    public function testInvokeExceptionWhenFileEmpty()
+    public function testInvokeExceptionWhenFileEmpty(): void
     {
         $this->expectException(LoaderException::class);
         $_ENV['TEKNOO_EAST_EXTENSION_FILE'] = __DIR__ . '/Support/emptyfile';
         iterator_to_array((new FileLoader())());
     }
 
-    public function testInvokeExceptionWhenFileNotValidJson()
+    public function testInvokeExceptionWhenFileNotValidJson(): void
     {
         $this->expectException(LoaderException::class);
         $_ENV['TEKNOO_EAST_EXTENSION_FILE'] = __DIR__ . '/Support/invalid.json';
         iterator_to_array((new FileLoader())());
     }
 
-    public function testInvokeExceptionWhenFileNotArrayJson()
+    public function testInvokeExceptionWhenFileNotArrayJson(): void
     {
         $this->expectException(LoaderException::class);
         $_ENV['TEKNOO_EAST_EXTENSION_FILE'] = __DIR__ . '/Support/string.json';
         iterator_to_array((new FileLoader())());
     }
 
-    public function testInvokeReferencedClassIsNotExtension()
+    public function testInvokeReferencedClassIsNotExtension(): void
     {
         $this->expectException(LoaderException::class);
         $_ENV['TEKNOO_EAST_EXTENSION_FILE'] = __DIR__ . '/Support/badclass.json';
         iterator_to_array((new FileLoader())());
     }
 
-    public function testInvoke()
+    public function testInvoke(): void
     {
         $_ENV['TEKNOO_EAST_EXTENSION_FILE'] = __DIR__ . '/Support/good.json';
         $loader = new FileLoader();
 
-        self::assertEquals(
+        $this->assertEquals(
             [
                 ExtensionMock2::class
             ],
             iterator_to_array($loader())
         );
 
-        self::assertEquals(
+        $this->assertEquals(
             [
                 ExtensionMock2::class
             ],
