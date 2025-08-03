@@ -1,10 +1,11 @@
 <?php
+
 /**
  * East Foundation.
  *
  * LICENSE
  *
- * This source file is subject to the MIT license
+ * This source file is subject to the 3-Clause BSD license
  * it is available in LICENSE file at the root of this package
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -16,7 +17,7 @@
  *
  * @link        https://teknoo.software/east-collection/foundation Project website
  *
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 
@@ -36,7 +37,7 @@ use Teknoo\Recipe\Bowl\RecipeBowl;
  *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 #[CoversClass(LoopDetector::class)]
@@ -47,7 +48,7 @@ class LoopDetectorTest extends TestCase
         return new LoopDetector();
     }
 
-    public function testInvokeNoResult()
+    public function testInvokeNoResult(): void
     {
         $bowl = $this->createMock(RecipeBowl::class);
         $manager = $this->createMock(ManagerInterface::class);
@@ -59,13 +60,13 @@ class LoopDetectorTest extends TestCase
             ->method('updateWorkPlan')
             ->with([ResultInterface::class => null]);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             LoopDetector::class,
             $this->buildObject()($bowl, $manager)
         );
     }
 
-    public function testInvokeResultNoNext()
+    public function testInvokeResultNoNext(): void
     {
         $bowl = $this->createMock(RecipeBowl::class);
         $manager = $this->createMock(ManagerInterface::class);
@@ -78,19 +79,19 @@ class LoopDetectorTest extends TestCase
             ->method('updateWorkPlan')
             ->with([ResultInterface::class => null]);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             LoopDetector::class,
             $this->buildObject()($bowl, $manager, $result)
         );
     }
 
-    public function testInvokeResultNext()
+    public function testInvokeResultNext(): void
     {
         $bowl = $this->createMock(RecipeBowl::class);
         $manager = $this->createMock(ManagerInterface::class);
         $result = $this->createMock(ResultInterface::class);
         $next = $this->createMock(ResultInterface::class);
-        $result->expects($this->any())
+        $result
             ->method('getNext')
             ->willReturn($next);
 
@@ -101,7 +102,7 @@ class LoopDetectorTest extends TestCase
             ->method('updateWorkPlan')
             ->with([ResultInterface::class => $next]);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             LoopDetector::class,
             $this->buildObject()->__invoke($bowl, $manager, $result)
         );

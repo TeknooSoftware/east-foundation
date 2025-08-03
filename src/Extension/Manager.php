@@ -5,7 +5,7 @@
  *
  * LICENSE
  *
- * This source file is subject to the MIT license
+ * This source file is subject to the 3-Clause BSD license
  * it is available in LICENSE file at the root of this package
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -17,7 +17,7 @@
  *
  * @link        https://teknoo.software/east-collection/foundation Project website
  *
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 
@@ -29,6 +29,8 @@ use Teknoo\East\Foundation\Extension\Exception\LoaderException;
 
 use function class_exists;
 use function is_a;
+use function is_scalar;
+use function is_string;
 
 /**
  * Default manager extension. It ables to return ots singleton when its static method 'run' is called.
@@ -42,14 +44,14 @@ use function is_a;
  *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 class Manager implements ManagerInterface
 {
-    private const KEY_LOADER_ENV_NAME = 'TEKNOO_EAST_EXTENSION_LOADER';
+    private const string KEY_LOADER_ENV_NAME = 'TEKNOO_EAST_EXTENSION_LOADER';
 
-    private const KEY_DISABLED_ENV_NAME = 'TEKNOO_EAST_EXTENSION_DISABLED';
+    private const string KEY_DISABLED_ENV_NAME = 'TEKNOO_EAST_EXTENSION_DISABLED';
 
     protected static ?self $instance = null;
 
@@ -75,7 +77,13 @@ class Manager implements ManagerInterface
         }
 
         $loaderClass = $_ENV[self::KEY_LOADER_ENV_NAME];
-        if (!class_exists(class: $loaderClass, autoload: true)) {
+        if (!is_string($loaderClass) || !class_exists(class: $loaderClass, autoload: true)) {
+            if (!is_scalar($loaderClass)) {
+                throw new LoaderException(
+                    "The extension loader class is not defined or is invalid"
+                );
+            }
+
             throw new LoaderException(
                 "The extension loader class `$loaderClass` is not available"
             );

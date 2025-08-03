@@ -1,10 +1,11 @@
 <?php
+
 /**
  * East Foundation.
  *
  * LICENSE
  *
- * This source file is subject to the MIT license
+ * This source file is subject to the 3-Clause BSD license
  * it is available in LICENSE file at the root of this package
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -16,7 +17,7 @@
  *
  * @link        https://teknoo.software/east-collection/foundation Project website
  *
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 
@@ -25,31 +26,28 @@ declare(strict_types=1);
 namespace Teknoo\Tests\East\FoundationBundle\Session;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
+use stdClass;
 use Symfony\Component\HttpFoundation\Session\SessionInterface as SymfonySession;
-use Teknoo\Recipe\Promise\Promise;
 use Teknoo\Recipe\Promise\PromiseInterface;
 use Teknoo\East\FoundationBundle\Session\Session;
+use TypeError;
 
 /**
  * Class SessionTest
  *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 #[CoversClass(Session::class)]
-class SessionTest extends \PHPUnit\Framework\TestCase
+class SessionTest extends TestCase
 {
-    /**
-     * @var SymfonySession
-     */
-    private $symfonySession;
+    private ?SymfonySession $symfonySession = null;
 
-    /**
-     * @return SymfonySession|\PHPUnit\Framework\MockObject\MockObject
-     */
-    public function getSymfonySession(): SymfonySession
+    public function getSymfonySession(): SymfonySession&MockObject
     {
         if (!$this->symfonySession instanceof SymfonySession) {
             $this->symfonySession = $this->createMock(SymfonySession::class);
@@ -58,47 +56,44 @@ class SessionTest extends \PHPUnit\Framework\TestCase
         return $this->symfonySession;
     }
 
-    /**
-     * @return Session
-     */
     public function buildSession(): Session
     {
         return new Session($this->getSymfonySession());
     }
 
-    public function testSetBadArgument()
+    public function testSetBadArgument(): void
     {
-        $this->expectException(\TypeError::class);
-        $this->buildSession()->set(new \stdClass(), '');
+        $this->expectException(TypeError::class);
+        $this->buildSession()->set(new stdClass(), '');
     }
-    
-    public function testSet()
+
+    public function testSet(): void
     {
         $this->getSymfonySession()
             ->expects($this->once())
             ->method('set')
             ->with('foo', 'bar');
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Session::class,
             $this->buildSession()->set('foo', 'bar')
         );
     }
 
-    public function testGetBadArgument()
+    public function testGetBadArgument(): void
     {
-        $this->expectException(\TypeError::class);
+        $this->expectException(TypeError::class);
         $promise = $this->createMock(PromiseInterface::class);
-        $this->buildSession()->get(new \stdClass(), $promise);
+        $this->buildSession()->get(new stdClass(), $promise);
     }
 
-    public function testGetBadArgumentPromise()
+    public function testGetBadArgumentPromise(): void
     {
-        $this->expectException(\TypeError::class);
-        $this->buildSession()->get('foo', new \stdClass());
+        $this->expectException(TypeError::class);
+        $this->buildSession()->get('foo', new stdClass());
     }
-    
-    public function testGetFound()
+
+    public function testGetFound(): void
     {
         $promise = $this->createMock(PromiseInterface::class);
         $promise->expects($this->once())
@@ -120,13 +115,13 @@ class SessionTest extends \PHPUnit\Framework\TestCase
             ->with('foo')
             ->willReturn('bar');
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Session::class,
             $this->buildSession()->get('foo', $promise)
         );
     }
 
-    public function testGetNotFound()
+    public function testGetNotFound(): void
     {
         $promise = $this->createMock(PromiseInterface::class);
         $promise->expects($this->never())
@@ -144,38 +139,38 @@ class SessionTest extends \PHPUnit\Framework\TestCase
             ->expects($this->never())
             ->method('get');
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Session::class,
             $this->buildSession()->get('foo', $promise)
         );
     }
 
-    public function testRemoveBadArgument()
+    public function testRemoveBadArgument(): void
     {
-        $this->expectException(\TypeError::class);
-        $this->buildSession()->remove(new \stdClass());
+        $this->expectException(TypeError::class);
+        $this->buildSession()->remove(new stdClass());
     }
 
-    public function testRemove()
+    public function testRemove(): void
     {
         $this->getSymfonySession()
             ->expects($this->once())
             ->method('remove')
             ->with('foo');
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Session::class,
             $this->buildSession()->remove('foo')
         );
     }
 
-    public function testClear()
+    public function testClear(): void
     {
         $this->getSymfonySession()
             ->expects($this->once())
             ->method('clear');
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Session::class,
             $this->buildSession()->clear()
         );

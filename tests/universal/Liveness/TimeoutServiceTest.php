@@ -1,10 +1,11 @@
 <?php
+
 /**
  * East Foundation.
  *
  * LICENSE
  *
- * This source file is subject to the MIT license
+ * This source file is subject to the 3-Clause BSD license
  * it is available in LICENSE file at the root of this package
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -16,7 +17,7 @@
  *
  * @link        https://teknoo.software/east-collection/foundation Project website
  *
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 
@@ -32,7 +33,7 @@ use Teknoo\East\Foundation\Liveness\TimeoutService;
 use Teknoo\East\Foundation\Time\TimerService;
 
 /**
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 #[CoversClass(TimeoutService::class)]
@@ -61,20 +62,20 @@ class TimeoutServiceTest extends TestCase
 
         $rp = new \ReflectionProperty(TimeoutService::class, 'setTimeoutCallable');
         $rp->setAccessible(true);
-        $rp->setValue($service, function (int $seconds) {
+        $rp->setValue($service, function (int $seconds): void {
             $this->seconds = $seconds;
         });
 
         return $service;
     }
 
-    public function testThrowException()
+    public function testThrowException(): void
     {
         $this->expectException(TimeLimitReachedException::class);
         TimeoutService::throwException();
     }
 
-    public function testEnable()
+    public function testEnable(): void
     {
         $service = $this->createService();
         $this->seconds = null;
@@ -84,34 +85,34 @@ class TimeoutServiceTest extends TestCase
             ->method('register')
             ->willReturnCallback(
                 function (int $seconds, string $timerId) {
-                    self::assertEquals(10, $seconds);
-                    self::assertEquals(TimeoutService::class, $timerId);
+                    $this->assertEquals(10, $seconds);
+                    $this->assertEquals(TimeoutService::class, $timerId);
                     return $this->getTimerMock();
                 }
             );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimeoutService::class,
             $service->enable(10),
         );
 
-        self::assertEquals(15, $this->seconds);
+        $this->assertEquals(15, $this->seconds);
     }
 
-    public function testEnableWithoutTimer()
+    public function testEnableWithoutTimer(): void
     {
         $service = $this->createService(false);
         $this->seconds = null;
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimeoutService::class,
             $service->enable(10),
         );
 
-        self::assertEquals(15, $this->seconds);
+        $this->assertEquals(15, $this->seconds);
     }
 
-    public function testDisable()
+    public function testDisable(): void
     {
         $service = $this->createService();
 
@@ -120,22 +121,22 @@ class TimeoutServiceTest extends TestCase
             ->method('unregister')
             ->willReturnCallback(
                 function (string $timerId) {
-                    self::assertEquals(TimeoutService::class, $timerId);
+                    $this->assertEquals(TimeoutService::class, $timerId);
                     return $this->getTimerMock();
                 }
             );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimeoutService::class,
             $service->disable(),
         );
     }
 
-    public function testDisableWithoutTimer()
+    public function testDisableWithoutTimer(): void
     {
         $service = $this->createService(false);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimeoutService::class,
             $service->disable(),
         );

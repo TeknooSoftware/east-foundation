@@ -1,10 +1,11 @@
 <?php
+
 /**
  * East Foundation.
  *
  * LICENSE
  *
- * This source file is subject to the MIT license
+ * This source file is subject to the 3-Clause BSD license
  * it is available in LICENSE file at the root of this package
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -16,7 +17,7 @@
  *
  * @link        https://teknoo.software/east-collection/foundation Project website
  *
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 
@@ -41,18 +42,18 @@ use Teknoo\East\Foundation\Manager\ManagerInterface;
  *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 #[CoversClass(SessionMiddleware::class)]
 class SessionMiddlewareTest extends TestCase
 {
-    public function buildMiddleware()
+    public function buildMiddleware(): \Teknoo\East\FoundationBundle\Session\SessionMiddleware
     {
         return new SessionMiddleware();
     }
 
-    public function testHasNoSymfonyRequest()
+    public function testHasNoSymfonyRequest(): void
     {
         $request = $this->createMock(ServerRequestInterface::class);
         $client = $this->createMock(ClientInterface::class);
@@ -64,13 +65,13 @@ class SessionMiddlewareTest extends TestCase
         $request->expects($this->never())
             ->method('withAttribute');
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             SessionMiddleware::class,
             $this->buildMiddleware()->execute($client, $request, $manager)
         );
     }
 
-    public function testHasMessage()
+    public function testHasMessage(): void
     {
         $message = $this->createMock(MessageInterface::class);
         $client = $this->createMock(ClientInterface::class);
@@ -79,13 +80,13 @@ class SessionMiddlewareTest extends TestCase
         $manager->expects($this->never())
             ->method('continueExecution');
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             SessionMiddleware::class,
             $this->buildMiddleware()->execute($client, $message, $manager)
         );
     }
 
-    public function testHasSymfonyRequest()
+    public function testHasSymfonyRequest(): void
     {
         $request = $this->createMock(ServerRequestInterface::class);
         $requestUpdated = $this->createMock(ServerRequestInterface::class);
@@ -96,11 +97,11 @@ class SessionMiddlewareTest extends TestCase
         $sfRequest->attributes = new ParameterBag();
 
         $session = $this->createMock(\Symfony\Component\HttpFoundation\Session\SessionInterface::class);
-        $sfRequest->expects($this->any())
+        $sfRequest
             ->method('getSession')
             ->willReturn($session);
 
-        $request->expects($this->any())
+        $request
             ->method('getAttribute')
             ->with('request')
             ->willReturn($sfRequest);
@@ -108,10 +109,10 @@ class SessionMiddlewareTest extends TestCase
 
         $request->expects($this->once())
             ->method('withAttribute')
-            ->with(SessionInterface::ATTRIBUTE_KEY, $this->callback(fn($object) => $object instanceof Session))
+            ->with(SessionInterface::ATTRIBUTE_KEY, $this->callback(fn ($object): bool => $object instanceof Session))
             ->willReturn($requestUpdated);
 
-        $manager->expects($this->any())
+        $manager
             ->method('continueExecution')
             ->with($client, $requestUpdated)
             ->willReturnSelf();
@@ -125,16 +126,15 @@ class SessionMiddlewareTest extends TestCase
             ->method('updateWorkPlan')
             ->willReturnSelf();
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             SessionMiddleware::class,
             $this->buildMiddleware()->execute($client, $request, $manager)
         );
     }
 
-    public function testHasSymfonyRequestInStateless()
+    public function testHasSymfonyRequestInStateless(): void
     {
         $request = $this->createMock(ServerRequestInterface::class);
-        $requestUpdated = $this->createMock(ServerRequestInterface::class);
         $client = $this->createMock(ClientInterface::class);
         $manager = $this->createMock(ManagerInterface::class);
 
@@ -145,7 +145,7 @@ class SessionMiddlewareTest extends TestCase
         $sfRequest->attributes = new ParameterBag();
         $sfRequest->attributes->set('_stateless', true);
 
-        $request->expects($this->any())
+        $request
             ->method('getAttribute')
             ->with('request')
             ->willReturn($sfRequest);
@@ -162,7 +162,7 @@ class SessionMiddlewareTest extends TestCase
         $manager->expects($this->never())
             ->method('updateWorkPlan');
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             SessionMiddleware::class,
             $this->buildMiddleware()->execute($client, $request, $manager)
         );

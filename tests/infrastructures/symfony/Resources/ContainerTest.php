@@ -1,10 +1,11 @@
 <?php
+
 /**
  * East Foundation.
  *
  * LICENSE
  *
- * This source file is subject to the MIT license
+ * This source file is subject to the 3-Clause BSD license
  * it is available in LICENSE file at the root of this package
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -16,7 +17,7 @@
  *
  * @link        https://teknoo.software/east-collection/foundation Project website
  *
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 
@@ -24,6 +25,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\FoundationBundle\Resources;
 
+use PHPUnit\Framework\TestCase;
 use DI\Container;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
@@ -43,20 +45,17 @@ use Teknoo\East\FoundationBundle\Session\SessionMiddleware;
  *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
-class ContainerTest extends \PHPUnit\Framework\TestCase
+class ContainerTest extends TestCase
 {
-    /**
-     * @return Container
-     */
-    protected function buildContainer() : Container
+    protected function buildContainer(): Container
     {
         return include __DIR__.'/../../../../infrastructures/symfony/generator.php';
     }
 
-    public function testCreateManager()
+    public function testCreateManager(): void
     {
         $container = $this->buildContainer();
         $container->set(LoggerInterface::class, $this->createMock(LoggerInterface::class));
@@ -64,20 +63,20 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $manager1 = $container->get(Manager::class);
         $manager2 = $container->get(ManagerInterface::class);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Manager::class,
             $manager1
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Manager::class,
             $manager2
         );
 
-        self::assertSame($manager1, $manager2);
+        $this->assertSame($manager1, $manager2);
     }
 
-    public function testCreateProcessor()
+    public function testCreateProcessor(): void
     {
         $container = $this->buildContainer();
         $container->set(LoggerInterface::class, $this->createMock(LoggerInterface::class));
@@ -86,20 +85,20 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $processor1 = $container->get(ProcessorInterface::class);
         $processor2 = $container->get(Processor::class);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Processor::class,
             $processor1
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Processor::class,
             $processor2
         );
 
-        self::assertSame($processor1, $processor2);
+        $this->assertSame($processor1, $processor2);
     }
 
-    public function testCreateClient()
+    public function testCreateClient(): void
     {
         $container = $this->buildContainer();
         $container->set(LoggerInterface::class, $this->createMock(LoggerInterface::class));
@@ -111,30 +110,30 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $client2 = $container->get(HttpClient::class);
         $client3 = $container->get(Client::class);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Client::class,
             $client1
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Client::class,
             $client2
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Client::class,
             $client3
         );
 
-        self::assertSame($client1, $client3);
-        self::assertSame($client2, $client3);
+        $this->assertSame($client1, $client3);
+        $this->assertSame($client2, $client3);
     }
 
-    public function testCreateSessionMiddleware()
+    public function testCreateSessionMiddleware(): void
     {
         $container = $this->buildContainer();
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             SessionMiddleware::class,
             $container->get(SessionMiddleware::class)
         );

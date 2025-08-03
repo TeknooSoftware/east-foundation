@@ -1,10 +1,11 @@
 <?php
+
 /**
  * East Foundation.
  *
  * LICENSE
  *
- * This source file is subject to the MIT license
+ * This source file is subject to the 3-Clause BSD license
  * it is available in LICENSE file at the root of this package
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -16,7 +17,7 @@
  *
  * @link        https://teknoo.software/east-collection/foundation Project website
  *
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 
@@ -43,15 +44,15 @@ use Teknoo\Tests\Recipe\Bowl\AbstractBowlTests;
 /**
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 #[CoversClass(FiberMiddlewareBowl::class)]
 class FiberMiddlewareBowlTest extends AbstractBowlTests
 {
-    protected function getCallable()
+    protected function getCallable(): \Psr\Http\Server\MiddlewareInterface
     {
-        return new class implements MiddlewareInterface {
+        return new class () implements MiddlewareInterface {
             public function process(
                 ServerRequestInterface $request,
                 RequestHandlerInterface $handler
@@ -61,6 +62,7 @@ class FiberMiddlewareBowlTest extends AbstractBowlTests
         };
     }
 
+    #[\Override]
     protected function getValidWorkPlan(): array
     {
         return [
@@ -73,7 +75,7 @@ class FiberMiddlewareBowlTest extends AbstractBowlTests
         ];
     }
 
-    protected function getMapping()
+    protected function getMapping(): array
     {
         return ['bar' => 'foo', 'bar2' => ['bar', 'foo']];
     }
@@ -99,10 +101,11 @@ class FiberMiddlewareBowlTest extends AbstractBowlTests
         );
     }
 
+    #[\Override]
     public function testExecute(): void
     {
         $values = $this->getValidWorkPlan();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             BowlInterface::class,
             $this->buildBowl()->execute(
                 $this->createMock(ChefInterface::class),
@@ -112,8 +115,9 @@ class FiberMiddlewareBowlTest extends AbstractBowlTests
         );
     }
 
+    #[\Override]
     public function testExecuteWithValue(): void
     {
-        self::assertTrue(true);
+        $this->assertTrue(true);
     }
 }

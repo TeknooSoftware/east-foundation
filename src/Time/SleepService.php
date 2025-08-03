@@ -5,7 +5,7 @@
  *
  * LICENSE
  *
- * This source file is subject to the MIT license
+ * This source file is subject to the 3-Clause BSD license
  * it is available in LICENSE file at the root of this package
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -17,7 +17,7 @@
  *
  * @link        https://teknoo.software/east-collection/foundation Project website
  *
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 
@@ -42,14 +42,14 @@ use function usleep;
  *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 class SleepService implements SleepServiceInterface
 {
     public function __construct(
-        private TimerServiceInterface $timer,
-        private int $usleeepTime = 1000,
+        private readonly TimerServiceInterface $timer,
+        private readonly int $usleeepTime = 1000,
     ) {
     }
 
@@ -72,7 +72,7 @@ class SleepService implements SleepServiceInterface
         $timerId = "timer-$seconds" . bin2hex(random_bytes(23));
 
         $timerFinished = new Promise(
-            fn () => true,
+            fn (): true => true,
             fn (#[SensitiveParameter] Throwable $error) => throw $error,
         );
         $timerFinished->setDefaultResult(false);

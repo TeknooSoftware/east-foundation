@@ -1,10 +1,11 @@
 <?php
+
 /**
  * East Foundation.
  *
  * LICENSE
  *
- * This source file is subject to the MIT license
+ * This source file is subject to the 3-Clause BSD license
  * it is available in LICENSE file at the root of this package
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -16,7 +17,7 @@
  *
  * @link        https://teknoo.software/east-collection/foundation Project website
  *
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 
@@ -31,14 +32,14 @@ use Teknoo\East\Foundation\Normalizer\Object\GroupsTrait;
 /** *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 class GroupsTraitTest extends TestCase
 {
     public function buildObject(): object
     {
-        return new class {
+        return new class () {
             use GroupsTrait;
 
             public function setConfig(array $configurations): void
@@ -50,17 +51,17 @@ class GroupsTraitTest extends TestCase
                 array $data,
                 array $groups,
                 bool $lazyData = false,
-            ) {
+            ): array {
                 return $this->filterExport($data, $groups, $lazyData);
             }
         };
     }
 
-    public function testFilteringWithoutsGroupsDefined()
+    public function testFilteringWithoutsGroupsDefined(): void
     {
         $object = $this->buildObject();
 
-        self::assertEquals(
+        $this->assertEquals(
             [],
             $object->runFilter(
                 [
@@ -76,7 +77,7 @@ class GroupsTraitTest extends TestCase
         );
     }
 
-    public function testFilteringWithGroupNotFound()
+    public function testFilteringWithGroupNotFound(): void
     {
         $object = $this->buildObject();
 
@@ -88,7 +89,7 @@ class GroupsTraitTest extends TestCase
             ]
         );
 
-        self::assertEquals(
+        $this->assertEquals(
             [],
             $object->runFilter(
                 [
@@ -104,7 +105,7 @@ class GroupsTraitTest extends TestCase
         );
     }
 
-    public function testFilteringWithGroups()
+    public function testFilteringWithGroups(): void
     {
 
         $object = $this->buildObject();
@@ -118,7 +119,7 @@ class GroupsTraitTest extends TestCase
             ]
         );
 
-        self::assertEquals(
+        $this->assertEquals(
             [
                 'key1' => 'foo',
                 'key2' => 123,
@@ -141,7 +142,7 @@ class GroupsTraitTest extends TestCase
         );
     }
 
-    public function testFilteringWithGroupsAndLasyData()
+    public function testFilteringWithGroupsAndLasyData(): void
     {
 
         $object = $this->buildObject();
@@ -155,7 +156,7 @@ class GroupsTraitTest extends TestCase
             ]
         );
 
-        self::assertEquals(
+        $this->assertEquals(
             [
                 'key1' => 'foo',
                 'key2' => 123,
@@ -163,11 +164,11 @@ class GroupsTraitTest extends TestCase
             ],
             $object->runFilter(
                 [
-                    'key1' => fn () => 'foo',
+                    'key1' => fn (): string => 'foo',
                     'key2' => 123,
-                    'key3' => fn () => ['foo', 'bar'],
-                    'key4' => fn () => new stdClass(),
-                    'key5' => fn () => 'bar',
+                    'key3' => fn (): array => ['foo', 'bar'],
+                    'key4' => fn (): \stdClass => new stdClass(),
+                    'key5' => fn (): string => 'bar',
                 ],
                 [
                     'group1',
@@ -179,10 +180,10 @@ class GroupsTraitTest extends TestCase
         );
     }
 
-    public function testFilteringWithGroupsWithClosureButNotLazyData()
+    public function testFilteringWithGroupsWithClosureButNotLazyData(): void
     {
-        $toCall1 = fn () => 'foo';
-        $toCall2 = fn () => ['foo', 'bar'];
+        $toCall1 = fn (): string => 'foo';
+        $toCall2 = fn (): array => ['foo', 'bar'];
 
         $object = $this->buildObject();
 
@@ -195,7 +196,7 @@ class GroupsTraitTest extends TestCase
             ]
         );
 
-        self::assertEquals(
+        $this->assertEquals(
             [
                 'key1' => $toCall1,
                 'key2' => 123,
@@ -206,8 +207,8 @@ class GroupsTraitTest extends TestCase
                     'key1' => $toCall1,
                     'key2' => 123,
                     'key3' => $toCall2,
-                    'key4' => fn () => new stdClass(),
-                    'key5' => fn () => 'bar',
+                    'key4' => fn (): \stdClass => new stdClass(),
+                    'key5' => fn (): string => 'bar',
                 ],
                 [
                     'group1',

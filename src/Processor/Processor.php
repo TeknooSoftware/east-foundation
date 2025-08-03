@@ -5,7 +5,7 @@
  *
  * LICENSE
  *
- * This source file is subject to the MIT license
+ * This source file is subject to the 3-Clause BSD license
  * it is available in LICENSE file at the root of this package
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -17,7 +17,7 @@
  *
  * @link        https://teknoo.software/east-collection/foundation Project website
  *
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 
@@ -34,13 +34,18 @@ use Teknoo\East\Foundation\Router\ResultInterface;
 use Teknoo\Immutable\ImmutableInterface;
 use Teknoo\Immutable\ImmutableTrait;
 
+use function array_filter;
+use function is_string;
+
+use const ARRAY_FILTER_USE_KEY;
+
 /**
  * Processor implementation to inject the controller returned by the router into the dedicated place in the workplan
  * to allow the chef to execute it via a DynamicBowl.
  *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 class Processor implements ProcessorInterface, ImmutableInterface
@@ -92,8 +97,14 @@ class Processor implements ProcessorInterface, ImmutableInterface
      */
     private function getParameters(ServerRequestInterface $request): array
     {
-        return (array) $request->getAttributes()
+        $values = $request->getAttributes()
             + (array) $request->getParsedBody()
-            + (array) $request->getQueryParams();
+            + $request->getQueryParams();
+
+        return array_filter(
+            array: $values,
+            callback: static fn (mixed $key): bool => is_string($key),
+            mode: ARRAY_FILTER_USE_KEY
+        );
     }
 }

@@ -1,10 +1,11 @@
 <?php
+
 /**
  * East Foundation.
  *
  * LICENSE
  *
- * This source file is subject to the MIT license
+ * This source file is subject to the 3-Clause BSD license
  * it is available in LICENSE file at the root of this package
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -16,7 +17,7 @@
  *
  * @link        https://teknoo.software/east-collection/foundation Project website
  *
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 
@@ -33,13 +34,14 @@ use Teknoo\East\Foundation\Time\DatesService;
 use Teknoo\East\Foundation\Time\SleepService;
 use Teknoo\East\Foundation\Time\TimerService;
 use Teknoo\East\Foundation\Time\TimerServiceInterface;
+
 use function pcntl_alarm;
 use function sleep;
 use function str_repeat;
 use function time;
 
 /**
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 #[CoversClass(SleepService::class)]
@@ -49,14 +51,14 @@ class SleepServiceTest extends TestCase
 
     public function getTimerServiceMock(): TimerServiceInterface&MockObject
     {
-        if (null === $this->timerService) {
+        if (!$this->timerService instanceof \Teknoo\East\Foundation\Time\TimerServiceInterface) {
             $this->timerService = $this->createMock(TimerServiceInterface::class);
         }
 
         return $this->timerService;
     }
 
-    public function testWaitWithMock()
+    public function testWaitWithMock(): void
     {
         if (defined('PCNTL_MOCKED')) {
             self::markTestSkipped('PCNTL is not available');
@@ -66,7 +68,7 @@ class SleepServiceTest extends TestCase
             ->expects($this->once())
             ->method('register')
             ->willReturnCallback(
-                function (int $seconds, string $timerId, callable $callback) {
+                function (int $seconds, string $timerId, callable $callback): \Teknoo\East\Foundation\Time\TimerServiceInterface&\PHPUnit\Framework\MockObject\MockObject {
                     sleep($seconds);
                     $callback();
 
@@ -75,45 +77,45 @@ class SleepServiceTest extends TestCase
             );
 
         $t = time();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             SleepService::class,
-            (new SleepService($this->getTimerServiceMock()))->wait(2),
+            new SleepService($this->getTimerServiceMock())->wait(2),
         );
-        self::assertEquals(
+        $this->assertSame(
             $t + 2,
             time(),
         );
     }
 
-    public function testWaitWithTimer()
+    public function testWaitWithTimer(): void
     {
         if (defined('PCNTL_MOCKED')) {
             self::markTestSkipped('PCNTL is not available');
         }
 
         $t = time();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             SleepService::class,
-            (new SleepService(new TimerService(new DatesService())))->wait(2),
+            new SleepService(new TimerService(new DatesService()))->wait(2),
         );
-        self::assertEquals(
+        $this->assertSame(
             $t + 2,
             time(),
         );
     }
 
-    public function testWait0SecondsWithTimer()
+    public function testWait0SecondsWithTimer(): void
     {
         if (defined('PCNTL_MOCKED')) {
             self::markTestSkipped('PCNTL is not available');
         }
 
         $t = time();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             SleepService::class,
-            (new SleepService(new TimerService(new DatesService())))->wait(0),
+            new SleepService(new TimerService(new DatesService()))->wait(0),
         );
-        self::assertLessThanOrEqual(
+        $this->assertLessThanOrEqual(
             $t + 1,
             time(),
         );

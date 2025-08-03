@@ -9,3 +9,12 @@ parameters:
         -
             message: '#[a-zA-Z0-9\\_]+::findClasses\(\)#'
             path: src/Extension/ComposerLoader.php
+        -
+            message: '#encapsed string cannot be cast to string#'
+            path: src/Extension/FileLoader.php
+        -
+            message: "#using === between '@' and '@' will always evaluate to true#"
+            path: src/EndPoint/RecipeEndPoint.php
+        -
+            message: "#Unsafe usage of new static#"
+            path: src/Extension/ExtensionInitTrait.php

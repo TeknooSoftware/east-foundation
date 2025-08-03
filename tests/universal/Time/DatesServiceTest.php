@@ -1,10 +1,11 @@
 <?php
+
 /**
  * East Foundation.
  *
  * LICENSE
  *
- * This source file is subject to the MIT license
+ * This source file is subject to the 3-Clause BSD license
  * it is available in LICENSE file at the root of this package
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -16,7 +17,7 @@
  *
  * @link        https://teknoo.software/east-collection/foundation Project website
  *
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 
@@ -33,25 +34,27 @@ use Psr\Clock\ClockInterface;
 use Teknoo\East\Foundation\Time\DatesService;
 
 /**
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 #[CoversClass(DatesService::class)]
 class DatesServiceTest extends TestCase
 {
-    public function buildService()
+    public function buildService(): \Teknoo\East\Foundation\Time\DatesService
     {
         return new DatesService();
     }
 
-    public function testPassMeTheDateWithNoDefinedDate()
+    public function testPassMeTheDateWithNoDefinedDate(): void
     {
-        $object = new class {
-            private $date;
+        $object = new class () {
+            private ?\DateTimeInterface $date = null;
+
             public function getDate(): ?DateTimeInterface
             {
                 return $this->date;
             }
+
             public function setDate(DateTimeInterface $date): self
             {
                 $this->date = $date;
@@ -61,28 +64,30 @@ class DatesServiceTest extends TestCase
         };
 
         $service = $this->buildService();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             DatesService::class,
             $service->passMeTheDate($object->setDate(...))
         );
 
-        self::assertInstanceOf(DateTimeInterface::class, $object->getDate());
+        $this->assertInstanceOf(DateTimeInterface::class, $object->getDate());
         $oldDate = $object->getDate();
 
         $service->passMeTheDate($object->setDate(...));
-        self::assertEquals($oldDate, $object->getDate());
+        $this->assertEquals($oldDate, $object->getDate());
     }
 
-    public function testPassMeTheDateWithDefinedDate()
+    public function testPassMeTheDateWithDefinedDate(): void
     {
         $date = new DateTime('2017-01-01');
 
-        $object = new class {
-            private $date;
+        $object = new class () {
+            private ?\DateTimeInterface $date = null;
+
             public function getDate(): ?DateTimeInterface
             {
                 return $this->date;
             }
+
             public function setDate(DateTimeInterface $date): self
             {
                 $this->date = $date;
@@ -92,29 +97,31 @@ class DatesServiceTest extends TestCase
 
         $service = $this->buildService();
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             DatesService::class,
             $service->setCurrentDate($date)
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             DatesService::class,
             $service->passMeTheDate($object->setDate(...))
         );
 
-        self::assertEquals($date, $object->getDate());
+        $this->assertEquals($date, $object->getDate());
     }
 
-    public function testPassMeTheDateWithDefinedDateFromClockk()
+    public function testPassMeTheDateWithDefinedDateFromClockk(): void
     {
         $date = new DateTime('2017-01-01');
 
-        $object = new class {
-            private $date;
+        $object = new class () {
+            private ?\DateTimeInterface $date = null;
+
             public function getDate(): ?DateTimeInterface
             {
                 return $this->date;
             }
+
             public function setDate(DateTimeInterface $date): self
             {
                 $this->date = $date;
@@ -125,33 +132,35 @@ class DatesServiceTest extends TestCase
         $service = $this->buildService();
 
         $clock = $this->createMock(ClockInterface::class);
-        $clock->expects($this->any())
+        $clock
             ->method('now')
             ->willReturn(DateTimeImmutable::createFromInterface($date));
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             DatesService::class,
             $service->setCurrentDate($clock)
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             DatesService::class,
             $service->passMeTheDate($object->setDate(...))
         );
 
-        self::assertEquals($date, $object->getDate());
+        $this->assertEquals($date, $object->getDate());
     }
 
-    public function testPassMeTheDateWithRealDate()
+    public function testPassMeTheDateWithRealDate(): void
     {
         $date = new DateTime('2017-01-01');
 
-        $object = new class {
-            private $date;
+        $object = new class () {
+            private ?\DateTimeInterface $date = null;
+
             public function getDate(): ?DateTimeInterface
             {
                 return $this->date;
             }
+
             public function setDate(DateTimeInterface $date): self
             {
                 $this->date = $date;
@@ -161,29 +170,31 @@ class DatesServiceTest extends TestCase
 
         $service = $this->buildService();
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             DatesService::class,
             $service->setCurrentDate($date)
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             DatesService::class,
             $service->passMeTheDate($object->setDate(...), true)
         );
 
-        self::assertNotEquals($date, $object->getDate());
+        $this->assertNotEquals($date, $object->getDate());
     }
 
-    public function testPassMeTheDateWithRealDateAndRefresInternalDate()
+    public function testPassMeTheDateWithRealDateAndRefresInternalDate(): void
     {
         $date = new DateTime('2017-01-01');
 
-        $object = new class {
-            private $date;
+        $object = new class () {
+            private ?\DateTimeInterface $date = null;
+
             public function getDate(): ?DateTimeInterface
             {
                 return $this->date;
             }
+
             public function setDate(DateTimeInterface $date): self
             {
                 $this->date = $date;
@@ -193,37 +204,39 @@ class DatesServiceTest extends TestCase
 
         $service = $this->buildService();
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             DatesService::class,
             $service->setCurrentDate($date)
         );
 
         $object2 = clone $object;
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             DatesService::class,
             $service->passMeTheDate($object->setDate(...), true)
         );
 
-        self::assertNotEquals($date, $object->getDate());
+        $this->assertNotEquals($date, $object->getDate());
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             DatesService::class,
-            $service->passMeTheDate([$object2, 'setDate'])
+            $service->passMeTheDate($object2->setDate(...))
         );
 
-        self::assertNotEquals($date, $object2->getDate());
-        self::assertNotSame($object->getDate(), $object2->getDate());
-        self::assertEquals($object->getDate(), $object2->getDate());
+        $this->assertNotEquals($date, $object2->getDate());
+        $this->assertNotSame($object->getDate(), $object2->getDate());
+        $this->assertEquals($object->getDate(), $object2->getDate());
     }
 
-    public function testSince()
+    public function testSince(): void
     {
-        $object = new class {
-            private $date;
+        $object = new class () {
+            private ?\DateTimeInterface $date = null;
+
             public function getDate(): ?DateTimeInterface
             {
                 return $this->date;
             }
+
             public function setDate(DateTimeInterface $date): self
             {
                 $this->date = $date;
@@ -233,29 +246,31 @@ class DatesServiceTest extends TestCase
         };
 
         $service = $this->buildService();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             DatesService::class,
             $service->passMeTheDate($object->setDate(...))
         );
 
         $date = new DateTime('2017-01-06');
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             DatesService::class,
             $service->setCurrentDate($date)
         );
 
         $service->since('5 days', $object->setDate(...));
-        self::assertEquals(new DateTime('2017-01-01'), $object->getDate());
+        $this->assertEquals(new DateTime('2017-01-01'), $object->getDate());
     }
 
-    public function testForward()
+    public function testForward(): void
     {
-        $object = new class {
-            private $date;
+        $object = new class () {
+            private ?\DateTimeInterface $date = null;
+
             public function getDate(): ?DateTimeInterface
             {
                 return $this->date;
             }
+
             public function setDate(DateTimeInterface $date): self
             {
                 $this->date = $date;
@@ -265,30 +280,32 @@ class DatesServiceTest extends TestCase
         };
 
         $service = $this->buildService();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             DatesService::class,
             $service->passMeTheDate($object->setDate(...))
         );
 
         $date = new DateTime('2017-01-06');
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             DatesService::class,
             $service->setCurrentDate($date)
         );
 
         $service->forward('5 days', $object->setDate(...));
-        self::assertEquals(new DateTime('2017-01-11'), $object->getDate());
+        $this->assertEquals(new DateTime('2017-01-11'), $object->getDate());
     }
 
-    public function testSinceWithRealDate()
+    public function testSinceWithRealDate(): void
     {
 
-        $object = new class {
-            private $date;
+        $object = new class () {
+            private ?\DateTimeInterface $date = null;
+
             public function getDate(): ?DateTimeInterface
             {
                 return $this->date;
             }
+
             public function setDate(DateTimeInterface $date): self
             {
                 $this->date = $date;
@@ -298,21 +315,23 @@ class DatesServiceTest extends TestCase
 
         $service = $this->buildService();
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             DatesService::class,
             $service->since('5 days', $object->setDate(...), true)
         );
-        self::assertInstanceOf(DateTimeInterface::class, $object->getDate());
+        $this->assertInstanceOf(DateTimeInterface::class, $object->getDate());
     }
 
-    public function testForwardWithRealDate()
+    public function testForwardWithRealDate(): void
     {
-        $object = new class {
-            private $date;
+        $object = new class () {
+            private ?\DateTimeInterface $date = null;
+
             public function getDate(): ?DateTimeInterface
             {
                 return $this->date;
             }
+
             public function setDate(DateTimeInterface $date): self
             {
                 $this->date = $date;
@@ -322,57 +341,57 @@ class DatesServiceTest extends TestCase
 
         $service = $this->buildService();
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             DatesService::class,
             $service->forward('5 days', $object->setDate(...), true)
         );
-        self::assertInstanceOf(DateTimeInterface::class, $object->getDate());
+        $this->assertInstanceOf(DateTimeInterface::class, $object->getDate());
     }
 
-    public function testNowWithNoDefinedDate()
+    public function testNowWithNoDefinedDate(): void
     {
         $service = $this->buildService();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             DateTimeImmutable::class,
             $service->now(),
         );
     }
 
-    public function testNowWithDefinedDate()
+    public function testNowWithDefinedDate(): void
     {
         $date = new DateTime('2017-01-01');
 
         $service = $this->buildService();
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             DatesService::class,
             $service->setCurrentDate($date)
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             DateTimeImmutable::class,
             $now = $service->now(),
         );
 
-        self::assertEquals($date, $now);
+        $this->assertEquals($date, $now);
     }
 
-    public function testNowWithDefinedImmutableDate()
+    public function testNowWithDefinedImmutableDate(): void
     {
         $date = new DateTimeImmutable('2017-01-01');
 
         $service = $this->buildService();
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             DatesService::class,
             $service->setCurrentDate($date)
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             DateTimeImmutable::class,
             $now = $service->now(),
         );
 
-        self::assertEquals($date, $now);
+        $this->assertEquals($date, $now);
     }
 }

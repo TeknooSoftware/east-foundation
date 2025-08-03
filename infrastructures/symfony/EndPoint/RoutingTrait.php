@@ -5,7 +5,7 @@
  *
  * LICENSE
  *
- * This source file is subject to the MIT license
+ * This source file is subject to the 3-Clause BSD license
  * it is available in LICENSE file at the root of this package
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -17,7 +17,7 @@
  *
  * @link        https://teknoo.software/east-collection/foundation Project website
  *
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 
@@ -35,7 +35,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 trait RoutingTrait
@@ -54,12 +54,14 @@ trait RoutingTrait
         return $this;
     }
 
-    /*
+    /**
      * Generates a URL from the given parameters.
+     *
+     * @param array<string, string|int> $parameters
      */
     protected function generateUrl(
         string $route,
-        mixed $parameters = [],
+        array $parameters = [],
         int $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH
     ): string {
         if (!$this->router instanceof UrlGeneratorInterface) {
@@ -88,8 +90,10 @@ trait RoutingTrait
         return $this;
     }
 
-    /*
+    /**
      * Returns a RedirectResponse to the given route with the given parameters.
+     *
+     * @param array<string, int|string> $parameters
      */
     protected function redirectToRoute(
         ClientInterface $client,

@@ -1,10 +1,11 @@
 <?php
+
 /**
  * East Foundation.
  *
  * LICENSE
  *
- * This source file is subject to the MIT license
+ * This source file is subject to the 3-Clause BSD license
  * it is available in LICENSE file at the root of this package
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -16,7 +17,7 @@
  *
  * @link        https://teknoo.software/east-collection/foundation Project website
  *
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 
@@ -24,6 +25,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\Foundation;
 
+use PHPUnit\Framework\TestCase;
 use DI\Container;
 use Psr\Log\LoggerInterface;
 use Teknoo\East\Foundation\Command\Executor;
@@ -58,20 +60,17 @@ use function defined;
  *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
-class ContainerTest extends \PHPUnit\Framework\TestCase
+class ContainerTest extends TestCase
 {
-    /**
-     * @return Container
-     */
-    protected function buildContainer() : Container
+    protected function buildContainer(): Container
     {
         return include __DIR__ . '/../../src/generator.php';
     }
 
-    public function testCreateManager()
+    public function testCreateManager(): void
     {
         $container = $this->buildContainer();
         $container->set(LoggerInterface::class, $this->createMock(LoggerInterface::class));
@@ -79,20 +78,20 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $manager1 = $container->get(Manager::class);
         $manager2 = $container->get(ManagerInterface::class);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Manager::class,
             $manager1
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Manager::class,
             $manager2
         );
 
-        self::assertSame($manager1, $manager2);
+        $this->assertSame($manager1, $manager2);
     }
 
-    public function testCreateProcessor()
+    public function testCreateProcessor(): void
     {
         $container = $this->buildContainer();
         $container->set(LoggerInterface::class, $this->createMock(LoggerInterface::class));
@@ -101,88 +100,88 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $processor1 = $container->get(ProcessorInterface::class);
         $processor2 = $container->get(Processor::class);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Processor::class,
             $processor1
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Processor::class,
             $processor2
         );
 
-        self::assertSame($processor1, $processor2);
+        $this->assertSame($processor1, $processor2);
     }
 
-    public function testLoopDetector()
+    public function testLoopDetector(): void
     {
         $container = $this->buildContainer();
         $loopDetector1 = $container->get(LoopDetectorInterface::class);
         $loopDetector2 = $container->get(LoopDetector::class);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             LoopDetector::class,
             $loopDetector1
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             LoopDetector::class,
             $loopDetector2
         );
 
-        self::assertSame($loopDetector1, $loopDetector2);
+        $this->assertSame($loopDetector1, $loopDetector2);
     }
 
-    public function testProcessorRecipe()
+    public function testProcessorRecipe(): void
     {
         $container = $this->buildContainer();
         $recipe = $container->get(ProcessorRecipeInterface::class);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             ProcessorRecipeInterface::class,
             $recipe
         );
     }
 
-    public function testRecipe()
+    public function testRecipe(): void
     {
         $container = $this->buildContainer();
         $recipe1 = $container->get(Recipe::class);
         $recipe2 = $container->get(RecipeInterface::class);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Recipe::class,
             $recipe1
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Recipe::class,
             $recipe2
         );
 
-        self::assertSame($recipe1, $recipe2);
+        $this->assertSame($recipe1, $recipe2);
     }
 
-    public function testProcessorPlan()
+    public function testProcessorPlan(): void
     {
         $container = $this->buildContainer();
         $plan1 = $container->get(ProcessorPlan::class);
         $plan2 = $container->get(ProcessorPlanInterface::class);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             ProcessorPlan::class,
             $plan1
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             ProcessorPlan::class,
             $plan2
         );
 
-        self::assertSame($plan1, $plan2);
+        $this->assertSame($plan1, $plan2);
     }
 
-    public function testRecipePlan()
+    public function testRecipePlan(): void
     {
         $container = $this->buildContainer();
         $container->set(LoggerInterface::class, $this->createMock(LoggerInterface::class));
@@ -190,93 +189,93 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $plan1 = $container->get(Plan::class);
         $plan2 = $container->get(PlanInterface::class);
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Plan::class,
             $plan1
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Plan::class,
             $plan2
         );
 
-        self::assertSame($plan1, $plan2);
+        $this->assertSame($plan1, $plan2);
     }
 
-    public function testDatesService()
+    public function testDatesService(): void
     {
         $container = $this->buildContainer();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             DatesService::class,
             $container->get(DatesService::class)
         );
     }
 
-    public function testTimerService()
+    public function testTimerService(): void
     {
         if (defined('PCNTL_MOCKED')) {
             self::markTestSkipped('PCNTL is not available');
         }
 
         $container = $this->buildContainer();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimerService::class,
             $container->get(TimerService::class)
         );
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimerServiceInterface::class,
             $container->get(TimerServiceInterface::class)
         );
     }
 
-    public function testPingService()
+    public function testPingService(): void
     {
         $container = $this->buildContainer();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             PingService::class,
             $container->get(PingService::class)
         );
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             PingServiceInterface::class,
             $container->get(PingServiceInterface::class)
         );
     }
 
-    public function testTimeoutService()
+    public function testTimeoutService(): void
     {
         $container = $this->buildContainer();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimeoutService::class,
             $container->get(TimeoutService::class)
         );
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             TimeoutServiceInterface::class,
             $container->get(TimeoutServiceInterface::class)
         );
     }
 
-    public function testExecutor()
+    public function testExecutor(): void
     {
         $container = $this->buildContainer();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Executor::class,
             $container->get(Executor::class)
         );
     }
 
-    public function testExtensionManagerInterface()
+    public function testExtensionManagerInterface(): void
     {
         $container = $this->buildContainer();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             ExtensionManagerInterface::class,
             $container->get(ExtensionManagerInterface::class)
         );
     }
 
-    public function testExtensionManager()
+    public function testExtensionManager(): void
     {
         $container = $this->buildContainer();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             ExtensionManager::class,
             $container->get(ExtensionManager::class)
         );

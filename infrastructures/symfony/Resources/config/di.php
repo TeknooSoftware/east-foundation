@@ -5,7 +5,7 @@
  *
  * LICENSE
  *
- * This source file is subject to the MIT license
+ * This source file is subject to the 3-Clause BSD license
  * it is available in LICENSE file at the root of this package
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -17,7 +17,7 @@
  *
  * @link        https://teknoo.software/east-collection/foundation Project website
  *
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 
@@ -42,14 +42,16 @@ return [
     BaseClient::class => get(Client::class),
     HttpClient::class => get(Client::class),
 
-    PlanInterface::class => decorate(static function (PlanInterface $previous, ContainerInterface $container) {
-        /** @var SessionMiddleware $sessionMiddleware */
-        $sessionMiddleware = $container->get(SessionMiddleware::class);
-        $previous->add(
-            action: $sessionMiddleware->execute(...),
-            position: SessionMiddleware::MIDDLEWARE_PRIORITY,
-        );
+    PlanInterface::class => decorate(
+        static function (PlanInterface $previous, ContainerInterface $container): PlanInterface {
+            /** @var SessionMiddleware $sessionMiddleware */
+            $sessionMiddleware = $container->get(SessionMiddleware::class);
+            $previous->add(
+                action: $sessionMiddleware->execute(...),
+                position: SessionMiddleware::MIDDLEWARE_PRIORITY,
+            );
 
-        return $previous;
-    }),
+            return $previous;
+        }
+    ),
 ];

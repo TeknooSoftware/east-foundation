@@ -1,10 +1,11 @@
 <?php
+
 /**
  * East Foundation.
  *
  * LICENSE
  *
- * This source file is subject to the MIT license
+ * This source file is subject to the 3-Clause BSD license
  * it is available in LICENSE file at the root of this package
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -16,7 +17,7 @@
  *
  * @link        https://teknoo.software/east-collection/foundation Project website
  *
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 
@@ -24,6 +25,8 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\FoundationBundle\Listener;
 
+use TypeError;
+use stdClass;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -40,26 +43,17 @@ use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
  *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 #[CoversClass(KernelListener::class)]
 class KernelListenerTest extends TestCase
 {
-    /**
-     * @var ManagerInterface
-     */
-    private $manager;
+    private ?ManagerInterface $manager = null;
 
-    /**
-     * @var ClientWithResponseEventInterface
-     */
-    private $clientWithResponseEventInterface;
+    private ?ClientWithResponseEventInterface $clientWithResponseEventInterface = null;
 
-    /**
-     * @var HttpMessageFactoryInterface
-     */
-    private $factory;
+    private ?HttpMessageFactoryInterface $factory = null;
 
     private function getManagerMock(): ManagerInterface&MockObject
     {
@@ -105,16 +99,16 @@ class KernelListenerTest extends TestCase
         return KernelListener::class;
     }
 
-    public function testOnKernelRequest()
+    public function testOnKernelRequest(): void
     {
         $request = $this->createMock(RequestEvent::class);
-        $request->expects($this->any())->method('getRequest')->willReturn(new Request());
+        $request->method('getRequest')->willReturn(new Request());
 
         $psrRquest = $this->createMock(ServerRequestInterface::class);
-        $psrRquest->expects($this->any())->method('withAttribute')->willReturnSelf();
+        $psrRquest->method('withAttribute')->willReturnSelf();
 
         $this->getFactoryMock()
-            ->expects($this->any())
+
             ->method('createRequest')
             ->willReturn($psrRquest);
 
@@ -128,7 +122,7 @@ class KernelListenerTest extends TestCase
             ->expects($this->never())
             ->method('mustSendAResponse');
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getKernelListenerClass(),
             $this->buildKernelListener()->onKernelRequest(
                 $request
@@ -136,15 +130,14 @@ class KernelListenerTest extends TestCase
         );
     }
 
-    public function testOnKernelRequestErrorLoopFromSymfony()
+    public function testOnKernelRequestErrorLoopFromSymfony(): void
     {
         $symfonyRequest = new Request();
         $symfonyRequest->attributes->set('exception', new \Exception());
         $request = $this->createMock(RequestEvent::class);
-        $request->expects($this->any())->method('getRequest')->willReturn($symfonyRequest);
+        $request->method('getRequest')->willReturn($symfonyRequest);
 
         $this->getFactoryMock()
-            ->expects($this->any())
             ->method('createRequest')
             ->willReturn($this->createMock(ServerRequestInterface::class));
 
@@ -156,7 +149,7 @@ class KernelListenerTest extends TestCase
             ->expects($this->never())
             ->method('receiveRequest');
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             $this->getKernelListenerClass(),
             $this->buildKernelListener()->onKernelRequest(
                 $request
@@ -164,9 +157,9 @@ class KernelListenerTest extends TestCase
         );
     }
 
-    public function testOnKernelRequestError()
+    public function testOnKernelRequestError(): void
     {
-        $this->expectException(\TypeError::class);
-        $this->buildKernelListener()->onKernelRequest(new \stdClass());
+        $this->expectException(TypeError::class);
+        $this->buildKernelListener()->onKernelRequest(new stdClass());
     }
 }

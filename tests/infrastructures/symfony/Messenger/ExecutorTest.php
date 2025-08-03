@@ -1,10 +1,11 @@
 <?php
+
 /**
  * East Foundation.
  *
  * LICENSE
  *
- * This source file is subject to the MIT license
+ * This source file is subject to the 3-Clause BSD license
  * it is available in LICENSE file at the root of this package
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -16,7 +17,7 @@
  *
  * @link        https://teknoo.software/east-collection/foundation Project website
  *
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 
@@ -24,6 +25,8 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\FoundationBundle\Messenger;
 
+use TypeError;
+use stdClass;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -40,16 +43,13 @@ use Teknoo\Recipe\RecipeInterface;
 /**
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
- * @license     https://teknoo.software/license/mit         MIT License
+ * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
 #[CoversClass(Executor::class)]
 class ExecutorTest extends TestCase
 {
-    /**
-     * @var ManagerInterface
-     */
-    private $manager;
+    private ?ManagerInterface $manager = null;
 
     private function getManagerMock(): ManagerInterface&MockObject
     {
@@ -67,54 +67,54 @@ class ExecutorTest extends TestCase
         );
     }
 
-    public function testExecuteBadRecipe()
+    public function testExecuteBadRecipe(): void
     {
-        $this->expectException(\TypeError::class);
+        $this->expectException(TypeError::class);
         $this->buildExecutor()->execute(
-            new \stdClass(),
+            new stdClass(),
             $this->createMock(MessageInterface::class),
             $this->createMock(ClientInterface::class),
             [],
         );
     }
 
-    public function testExecuteBadWorkPlan()
+    public function testExecuteBadWorkPlan(): void
     {
-        $this->expectException(\TypeError::class);
+        $this->expectException(TypeError::class);
         $this->buildExecutor()->execute(
             $this->createMock(BaseRecipeInterface::class),
             $this->createMock(MessageInterface::class),
             $this->createMock(ClientInterface::class),
-            new \stdClass(),
+            new stdClass(),
         );
     }
 
-    public function testExecuteBadMessage()
+    public function testExecuteBadMessage(): void
     {
-        $this->expectException(\TypeError::class);
+        $this->expectException(TypeError::class);
         $this->buildExecutor()->execute(
             $this->createMock(BaseRecipeInterface::class),
-            new \stdClass(),
+            new stdClass(),
             $this->createMock(ClientInterface::class),
             [],
         );
     }
 
-    public function testExecuteBadClient()
+    public function testExecuteBadClient(): void
     {
-        $this->expectException(\TypeError::class);
+        $this->expectException(TypeError::class);
         $this->buildExecutor()->execute(
             $this->createMock(BaseRecipeInterface::class),
             $this->createMock(ClientInterface::class),
-            new \stdClass(),
+            new stdClass(),
             [],
         );
     }
 
-    public function testExecute()
+    public function testExecute(): void
     {
         $executor = $this->buildExecutor();
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Executor::class,
             $executor->execute(
                 $this->createMock(BaseRecipeInterface::class),
@@ -125,19 +125,19 @@ class ExecutorTest extends TestCase
         );
     }
 
-    public function testExecuteTwoTimes()
+    public function testExecuteTwoTimes(): void
     {
         $executor = new Executor(new Manager());
         $recipe = $this->createMock(RecipeInterface::class);
-        $recipe->expects($this->any())->method('train')->willReturnCallback(
-            function (ChefInterface $chef) use ($recipe) {
+        $recipe->method('train')->willReturnCallback(
+            function (ChefInterface $chef) use ($recipe): \Teknoo\Recipe\BaseRecipeInterface {
                 $chef->followSteps([$this->createMock(BowlInterface::class)]);
 
                 return $recipe;
             }
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Executor::class,
             $executor->execute(
                 $recipe,
@@ -147,7 +147,7 @@ class ExecutorTest extends TestCase
             )
         );
 
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             Executor::class,
             $executor->execute(
                 $recipe,
