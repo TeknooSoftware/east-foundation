@@ -75,6 +75,7 @@ class SleepService implements SleepServiceInterface
             fn (): true => true,
             fn (#[SensitiveParameter] Throwable $error) => throw $error,
         );
+        $timerFinished->allowReuse();
         $timerFinished->setDefaultResult(false);
 
         $this->timer->register(
