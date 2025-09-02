@@ -46,7 +46,7 @@
         "php-di/php-di": "^7.0.11",
         "teknoo/immutable": "^3.0.21",
         "teknoo/states": "^7",
-        "teknoo/recipe": "^7"
+        "teknoo/recipe": "^7.1"
     },
     "require-dev": {
         "ext-pcntl": "*",
