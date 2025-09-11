@@ -43,7 +43,7 @@ use Teknoo\East\Foundation\Extension\ModuleInterface;
  *
  * @phpstan-consistent-constructor
  */
-class Routes implements ModuleInterface
+final class Routes implements ModuleInterface
 {
     private function __construct(
         private readonly RoutingConfigurator $routes,

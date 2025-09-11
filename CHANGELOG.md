@@ -1,5 +1,9 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [9.0.1] - 2025-08-11
+### Stable Release
+- Fix PHPStan issues
+
 ## [9.0.0] - 2025-08-03
 ### Stable Release
 - Drop support of PHP 8.3

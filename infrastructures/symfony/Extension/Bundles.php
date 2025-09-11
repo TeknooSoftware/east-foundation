@@ -43,7 +43,7 @@ use Teknoo\East\Foundation\Extension\ModuleInterface;
  *
  * @phpstan-consistent-constructor
  */
-class Bundles implements ModuleInterface
+final class Bundles implements ModuleInterface
 {
     /**
      * @param array<string, array<string, boolean>> $bundles
