@@ -52,7 +52,7 @@
         "ext-pcntl": "*",
         "roave/security-advisories": "dev-latest",
         "phpunit/phpunit": "^12.2.7",
-        "squizlabs/php_codesniffer": "^3.13.2",
+        "squizlabs/php_codesniffer": "^4",
         "phpstan/phpstan": "^2.1.23",
         "phpstan/extension-installer": "^1.4.3",
         "symfony/property-access": "^6.4.24||^7.3",
