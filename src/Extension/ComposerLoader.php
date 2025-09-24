@@ -89,6 +89,7 @@ class ComposerLoader implements LoaderInterface
                     try {
                         return !preg_match($pattern, $class, $m)
                             && $class !== ExtensionInterface::class
+                            && class_exists($class, true)
                             && is_a($class, ExtensionInterface::class, true);
                     } catch (Throwable) {
                         return false;
