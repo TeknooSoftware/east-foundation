@@ -29,6 +29,6 @@ use DI\ContainerBuilder;
 
 $containerDefinition = new ContainerBuilder();
 $containerDefinition->addDefinitions(__DIR__ . '/../../src/di.php');
-$containerDefinition->addDefinitions(__DIR__ . '/Resources/config/di.php');
+$containerDefinition->addDefinitions(__DIR__ . '/config/di.php');
 
 return $containerDefinition->build();
