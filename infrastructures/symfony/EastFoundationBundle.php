@@ -37,12 +37,10 @@ use Teknoo\East\FoundationBundle\DependencyInjection\EastFoundationCompilerPass;
  */
 class EastFoundationBundle extends Bundle
 {
-    public function build(ContainerBuilder $container): EastFoundationBundle
+    public function build(ContainerBuilder $container): void
     {
         parent::build($container);
 
         $container->addCompilerPass(new EastFoundationCompilerPass());
-
-        return $this;
     }
 }
