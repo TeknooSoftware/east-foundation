@@ -48,7 +48,7 @@ use Teknoo\East\Foundation\Manager\ManagerInterface;
 #[CoversClass(SessionMiddleware::class)]
 class SessionMiddlewareTest extends TestCase
 {
-    public function buildMiddleware(): \Teknoo\East\FoundationBundle\Session\SessionMiddleware
+    public function buildMiddleware(): SessionMiddleware
     {
         return new SessionMiddleware();
     }
@@ -56,7 +56,7 @@ class SessionMiddlewareTest extends TestCase
     public function testHasNoSymfonyRequest(): void
     {
         $request = $this->createMock(ServerRequestInterface::class);
-        $client = $this->createMock(ClientInterface::class);
+        $client = $this->createStub(ClientInterface::class);
         $manager = $this->createMock(ManagerInterface::class);
 
         $manager->expects($this->never())
@@ -73,8 +73,8 @@ class SessionMiddlewareTest extends TestCase
 
     public function testHasMessage(): void
     {
-        $message = $this->createMock(MessageInterface::class);
-        $client = $this->createMock(ClientInterface::class);
+        $message = $this->createStub(MessageInterface::class);
+        $client = $this->createStub(ClientInterface::class);
         $manager = $this->createMock(ManagerInterface::class);
 
         $manager->expects($this->never())
@@ -89,14 +89,14 @@ class SessionMiddlewareTest extends TestCase
     public function testHasSymfonyRequest(): void
     {
         $request = $this->createMock(ServerRequestInterface::class);
-        $requestUpdated = $this->createMock(ServerRequestInterface::class);
-        $client = $this->createMock(ClientInterface::class);
+        $requestUpdated = $this->createStub(ServerRequestInterface::class);
+        $client = $this->createStub(ClientInterface::class);
         $manager = $this->createMock(ManagerInterface::class);
 
-        $sfRequest = $this->createMock(Request::class);
+        $sfRequest = $this->createStub(Request::class);
         $sfRequest->attributes = new ParameterBag();
 
-        $session = $this->createMock(\Symfony\Component\HttpFoundation\Session\SessionInterface::class);
+        $session = $this->createStub(\Symfony\Component\HttpFoundation\Session\SessionInterface::class);
         $sfRequest
             ->method('getSession')
             ->willReturn($session);
@@ -135,7 +135,7 @@ class SessionMiddlewareTest extends TestCase
     public function testHasSymfonyRequestInStateless(): void
     {
         $request = $this->createMock(ServerRequestInterface::class);
-        $client = $this->createMock(ClientInterface::class);
+        $client = $this->createStub(ClientInterface::class);
         $manager = $this->createMock(ManagerInterface::class);
 
         $sfRequest = $this->createMock(Request::class);

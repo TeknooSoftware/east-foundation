@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\FoundationBundle\Command;
 
+use PHPUnit\Framework\MockObject\Stub;
 use TypeError;
 use stdClass;
 use RuntimeException;
@@ -51,7 +52,16 @@ class ClientTest extends TestCase
 {
     private ?OutputInterface $output = null;
 
-    private function getOutputMock(): OutputInterface&MockObject
+    private function getOutputMock(): OutputInterface&Stub
+    {
+        if (!$this->output instanceof OutputInterface) {
+            $this->output = $this->createStub(OutputInterface::class);
+        }
+
+        return $this->output;
+    }
+
+    private function getOutputMockObject(): OutputInterface&MockObject
     {
         if (!$this->output instanceof OutputInterface) {
             $this->output = $this->createMock(OutputInterface::class);
@@ -97,7 +107,7 @@ class ClientTest extends TestCase
         /**
          * @var ResponseInterface
          */
-        $response = $this->createMock(ResponseInterface::class);
+        $response = $this->createStub(ResponseInterface::class);
 
         $client = $this->buildClient();
         $this->assertInstanceOf(
@@ -121,7 +131,7 @@ class ClientTest extends TestCase
         /**
          * @var ResponseInterface
          */
-        $response = $this->createMock(ResponseInterface::class);
+        $response = $this->createStub(ResponseInterface::class);
 
         $client = $this->buildClient();
         $this->assertInstanceOf(
@@ -135,7 +145,7 @@ class ClientTest extends TestCase
         /**
          * @var ResponseInterface
          */
-        $response = $this->createMock(ResponseInterface::class);
+        $response = $this->createStub(ResponseInterface::class);
 
 
         $this->getOutputMock()
@@ -153,7 +163,7 @@ class ClientTest extends TestCase
         /**
          * @var ResponseInterface
          */
-        $response = $this->createMock(ResponseInterface::class);
+        $response = $this->createStub(ResponseInterface::class);
 
         $this->getOutputMock()
             ->method('writeln');
@@ -191,7 +201,7 @@ class ClientTest extends TestCase
 
     public function testSendResponsetWithAccept(): void
     {
-        $response = $this->createMock(EastResponse::class);
+        $response = $this->createStub(EastResponse::class);
 
         $this->getOutputMock()
             ->method('writeln');
@@ -218,7 +228,7 @@ class ClientTest extends TestCase
         /**
          * @var ResponseInterface
          */
-        $response = $this->createMock(ResponseInterface::class);
+        $response = $this->createStub(ResponseInterface::class);
 
         $this->getOutputMock()
             ->method('writeln');
@@ -235,9 +245,9 @@ class ClientTest extends TestCase
         /**
          * @var ResponseInterface
          */
-        $response = $this->createMock(ResponseInterface::class);
+        $response = $this->createStub(ResponseInterface::class);
 
-        $this->getOutputMock()
+        $this->getOutputMockObject()
             ->expects($this->once())
             ->method('writeln');
 
@@ -250,9 +260,9 @@ class ClientTest extends TestCase
 
     public function testSendResponseCleanEastResponse(): void
     {
-        $response = $this->createMock(EastResponse::class);
+        $response = $this->createStub(EastResponse::class);
 
-        $this->getOutputMock()
+        $this->getOutputMockObject()
             ->expects($this->once())
             ->method('writeln');
 
@@ -277,7 +287,7 @@ class ClientTest extends TestCase
             }
         };
 
-        $this->getOutputMock()
+        $this->getOutputMockObject()
             ->expects($this->once())
             ->method('writeln');
 
@@ -293,7 +303,7 @@ class ClientTest extends TestCase
         /**
          * @var ResponseInterface
          */
-        $response = $this->createMock(ResponseInterface::class);
+        $response = $this->createStub(ResponseInterface::class);
 
         $this->getOutputMock()
             ->method('writeln');
@@ -310,7 +320,7 @@ class ClientTest extends TestCase
         /**
          * @var ResponseInterface
          */
-        $response = $this->createMock(ResponseInterface::class);
+        $response = $this->createStub(ResponseInterface::class);
 
         $this->getOutputMock()
             ->method('writeln');
@@ -335,7 +345,7 @@ class ClientTest extends TestCase
         /**
          * @var ResponseInterface
          */
-        $response = $this->createMock(ResponseInterface::class);
+        $response = $this->createStub(ResponseInterface::class);
 
         $client = new Client();
         $this->assertInstanceOf(
@@ -393,7 +403,7 @@ class ClientTest extends TestCase
         $this->getOutputMock()
             ->method('writeln');
 
-        $output = $this->createMock(ConsoleOutputInterface::class);
+        $output = $this->createStub(ConsoleOutputInterface::class);
         $output
             ->method('getErrorOutput')
             ->willReturn($this->getOutputMock());
@@ -424,7 +434,7 @@ class ClientTest extends TestCase
         $client = $this->buildClient();
         $this->assertInstanceOf(
             $this->getClientClass(),
-            $client->setOutput($this->createMock(OutputInterface::class))
+            $client->setOutput($this->createStub(OutputInterface::class))
         );
     }
 

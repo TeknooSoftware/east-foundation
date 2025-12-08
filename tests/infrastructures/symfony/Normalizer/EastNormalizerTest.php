@@ -68,7 +68,7 @@ class EastNormalizerTest extends TestCase
     {
         $this->assertFalse($this->buildNormalizer()->supportsNormalization(new stdClass()));
         $this->assertTrue($this->buildNormalizer()->supportsNormalization(
-            $this->createMock(NormalizableInterface::class)
+            $this->createStub(NormalizableInterface::class)
         ));
     }
 

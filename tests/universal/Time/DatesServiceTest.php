@@ -131,7 +131,7 @@ class DatesServiceTest extends TestCase
 
         $service = $this->buildService();
 
-        $clock = $this->createMock(ClockInterface::class);
+        $clock = $this->createStub(ClockInterface::class);
         $clock
             ->method('now')
             ->willReturn(DateTimeImmutable::createFromInterface($date));

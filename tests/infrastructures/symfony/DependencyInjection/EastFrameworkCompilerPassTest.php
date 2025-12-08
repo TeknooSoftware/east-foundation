@@ -113,35 +113,27 @@ class EastFrameworkCompilerPassTest extends TestCase
         $def = $this->createMock(Definition::class);
         $def->expects($this->exactly(0))->method('addMethodCall')->willReturnSelf();
 
-        $this->getContainerBuilderMock()
+        $container = $this->createStub(ContainerBuilder::class);
+
+        $container
             ->method('has')
             ->willReturnCallback(fn (string $value): bool => 'twig' != $value);
 
-        $this->getContainerBuilderMock()
+        $container
             ->method('findTaggedServiceIds')
-            ->with('east.endpoint.template')
             ->willReturn([
                 'service1' => ['foo' => 'bar'],
                 'service2' => ['bar' => 'foo'],
             ]);
 
-        $this->getContainerBuilderMock()
+        $container
             ->method('getDefinition')
-            ->with(
-                $this->callback(
-                    fn ($value): bool => match ($value) {
-                        'service1' => true,
-                        'service2' => true,
-                        default => false,
-                    }
-                )
-            )
             ->willReturn($def);
 
         $this->assertInstanceOf(
             $this->getCompilerPassClass(),
             $this->buildCompilerPass()->process(
-                $this->getContainerBuilderMock()
+                $container
             )
         );
     }

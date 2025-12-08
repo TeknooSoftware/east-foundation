@@ -27,6 +27,7 @@ namespace Teknoo\Tests\East\FoundationBundle\Session;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 use Symfony\Component\HttpFoundation\Session\SessionInterface as SymfonySession;
@@ -49,8 +50,20 @@ class SessionTest extends TestCase
 
     public function getSymfonySession(): SymfonySession&MockObject
     {
-        if (!$this->symfonySession instanceof SymfonySession) {
+        if (
+            !$this->symfonySession instanceof SymfonySession
+            || !$this->symfonySession instanceof MockObject
+        ) {
             $this->symfonySession = $this->createMock(SymfonySession::class);
+        }
+
+        return $this->symfonySession;
+    }
+
+    public function getSymfonySessionStub(): SymfonySession&Stub
+    {
+        if (!$this->symfonySession instanceof SymfonySession) {
+            $this->symfonySession = $this->createStub(SymfonySession::class);
         }
 
         return $this->symfonySession;
@@ -61,10 +74,15 @@ class SessionTest extends TestCase
         return new Session($this->getSymfonySession());
     }
 
+    public function buildSessionWithStub(): Session
+    {
+        return new Session($this->getSymfonySessionStub());
+    }
+
     public function testSetBadArgument(): void
     {
         $this->expectException(TypeError::class);
-        $this->buildSession()->set(new stdClass(), '');
+        $this->buildSessionWithStub()->set(new stdClass(), '');
     }
 
     public function testSet(): void
@@ -83,14 +101,14 @@ class SessionTest extends TestCase
     public function testGetBadArgument(): void
     {
         $this->expectException(TypeError::class);
-        $promise = $this->createMock(PromiseInterface::class);
-        $this->buildSession()->get(new stdClass(), $promise);
+        $promise = $this->createStub(PromiseInterface::class);
+        $this->buildSessionWithStub()->get(new stdClass(), $promise);
     }
 
     public function testGetBadArgumentPromise(): void
     {
         $this->expectException(TypeError::class);
-        $this->buildSession()->get('foo', new stdClass());
+        $this->buildSessionWithStub()->get('foo', new stdClass());
     }
 
     public function testGetFound(): void
@@ -148,7 +166,7 @@ class SessionTest extends TestCase
     public function testRemoveBadArgument(): void
     {
         $this->expectException(TypeError::class);
-        $this->buildSession()->remove(new stdClass());
+        $this->buildSessionWithStub()->remove(new stdClass());
     }
 
     public function testRemove(): void

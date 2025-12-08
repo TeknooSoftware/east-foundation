@@ -59,7 +59,7 @@ class PHPDITest extends TestCase
 
         $module = new PHPDI($manager);
 
-        $builder = $this->createMock(BridgeBuilderInterface::class);
+        $builder = $this->createStub(BridgeBuilderInterface::class);
 
         $this->assertInstanceOf(
             ExtensionInterface::class,
@@ -96,7 +96,7 @@ class PHPDITest extends TestCase
 
     public function testPrepareCompilationWithoutBuider(): void
     {
-        $manager = $this->createMock(ManagerInterface::class);
+        $manager = $this->createStub(ManagerInterface::class);
         $module = new PHPDI($manager);
 
         $this->expectException(MissingBuilderException::class);
@@ -132,7 +132,7 @@ class PHPDITest extends TestCase
 
     public function testEnableCacheWithoutBuider(): void
     {
-        $manager = $this->createMock(ManagerInterface::class);
+        $manager = $this->createStub(ManagerInterface::class);
         $module = new PHPDI($manager);
 
         $this->expectException(MissingBuilderException::class);
@@ -168,7 +168,7 @@ class PHPDITest extends TestCase
 
     public function testLoadDefinitionWithoutBuider(): void
     {
-        $manager = $this->createMock(ManagerInterface::class);
+        $manager = $this->createStub(ManagerInterface::class);
         $module = new PHPDI($manager);
 
         $this->expectException(MissingBuilderException::class);
@@ -204,7 +204,7 @@ class PHPDITest extends TestCase
 
     public function testImportWithoutBuider(): void
     {
-        $manager = $this->createMock(ManagerInterface::class);
+        $manager = $this->createStub(ManagerInterface::class);
         $module = new PHPDI($manager);
 
         $this->expectException(MissingBuilderException::class);

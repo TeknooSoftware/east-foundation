@@ -26,11 +26,12 @@ declare(strict_types=1);
 namespace Teknoo\Tests\East\FoundationBundle\Messenger;
 
 use Exception;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Stub;
 use TypeError;
 use stdClass;
 use RuntimeException;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
@@ -53,7 +54,16 @@ class ClientTest extends TestCase
 {
     private ?MessageBusInterface $messageBusInterface = null;
 
-    private function getMessageBusInterfaceMock(): MessageBusInterface&MockObject
+    private function getMessageBusInterfaceMock(): MessageBusInterface&Stub
+    {
+        if (!$this->messageBusInterface instanceof MessageBusInterface) {
+            $this->messageBusInterface = $this->createStub(MessageBusInterface::class);
+        }
+
+        return $this->messageBusInterface;
+    }
+
+    private function getMessageBusInterfaceMockObject(): MessageBusInterface&MockObject
     {
         if (!$this->messageBusInterface instanceof MessageBusInterface) {
             $this->messageBusInterface = $this->createMock(MessageBusInterface::class);
@@ -97,7 +107,7 @@ class ClientTest extends TestCase
         /**
          * @var ResponseInterface
          */
-        $response = $this->createMock(ResponseInterface::class);
+        $response = $this->createStub(ResponseInterface::class);
 
         $client = $this->buildClient();
         $this->assertInstanceOf(
@@ -112,7 +122,7 @@ class ClientTest extends TestCase
 
     public function testUpdateResponseWithEastResponse(): void
     {
-        $response = $this->createMock(EastResponse::class);
+        $response = $this->createStub(EastResponse::class);
 
         $client = $this->buildClient();
         $this->assertInstanceOf(
@@ -162,7 +172,7 @@ class ClientTest extends TestCase
         /**
          * @var ResponseInterface
          */
-        $response = $this->createMock(ResponseInterface::class);
+        $response = $this->createStub(ResponseInterface::class);
 
         $client = $this->buildClient();
         $this->assertInstanceOf(
@@ -173,7 +183,7 @@ class ClientTest extends TestCase
 
     public function testAcceptEastResponse(): void
     {
-        $response = $this->createMock(EastResponse::class);
+        $response = $this->createStub(EastResponse::class);
 
         $client = $this->buildClient();
         $this->assertInstanceOf(
@@ -218,7 +228,7 @@ class ClientTest extends TestCase
             }
         };
 
-        $this->getMessageBusInterfaceMock()
+        $this->getMessageBusInterfaceMockObject()
             ->expects($this->once())
             ->method('dispatch')
             ->willReturn(new Envelope(new stdClass()));
@@ -235,9 +245,9 @@ class ClientTest extends TestCase
         /**
          * @var ResponseInterface
          */
-        $response = $this->createMock(ResponseInterface::class);
+        $response = $this->createStub(ResponseInterface::class);
 
-        $this->getMessageBusInterfaceMock()
+        $this->getMessageBusInterfaceMockObject()
             ->expects($this->once())
             ->method('dispatch')
             ->willReturn(new Envelope(new stdClass()));
@@ -251,9 +261,9 @@ class ClientTest extends TestCase
 
     public function testSendEastResponse(): void
     {
-        $response = $this->createMock(EastResponse::class);
+        $response = $this->createStub(EastResponse::class);
 
-        $this->getMessageBusInterfaceMock()
+        $this->getMessageBusInterfaceMockObject()
             ->expects($this->once())
             ->method('dispatch')
             ->willReturn(new Envelope(new stdClass()));
@@ -270,7 +280,7 @@ class ClientTest extends TestCase
         /**
          * @var ResponseInterface
          */
-        $response = $this->createMock(ResponseInterface::class);
+        $response = $this->createStub(ResponseInterface::class);
 
         $this->assertInstanceOf(
             $this->getClientClass(),
@@ -283,9 +293,9 @@ class ClientTest extends TestCase
         /**
          * @var ResponseInterface
          */
-        $response = $this->createMock(ResponseInterface::class);
+        $response = $this->createStub(ResponseInterface::class);
 
-        $this->getMessageBusInterfaceMock()
+        $this->getMessageBusInterfaceMockObject()
             ->expects($this->once())
             ->method('dispatch')
             ->willReturn(new Envelope(new stdClass()));
@@ -302,9 +312,9 @@ class ClientTest extends TestCase
         /**
          * @var ResponseInterface
          */
-        $response = $this->createMock(ResponseInterface::class);
+        $response = $this->createStub(ResponseInterface::class);
 
-        $this->getMessageBusInterfaceMock()
+        $this->getMessageBusInterfaceMockObject()
             ->expects($this->never())
             ->method('dispatch');
 
@@ -335,9 +345,9 @@ class ClientTest extends TestCase
         /**
          * @var ResponseInterface
          */
-        $response = $this->createMock(ResponseInterface::class);
+        $response = $this->createStub(ResponseInterface::class);
 
-        $this->getMessageBusInterfaceMock()
+        $this->getMessageBusInterfaceMockObject()
             ->expects($this->once())
             ->method('dispatch')
             ->willReturn(new Envelope(new stdClass()));
@@ -354,9 +364,9 @@ class ClientTest extends TestCase
         /**
          * @var ResponseInterface
          */
-        $response = $this->createMock(ResponseInterface::class);
+        $response = $this->createStub(ResponseInterface::class);
 
-        $this->getMessageBusInterfaceMock()
+        $this->getMessageBusInterfaceMockObject()
             ->expects($this->once())
             ->method('dispatch')
             ->willReturn(new Envelope(new stdClass()));
@@ -373,9 +383,9 @@ class ClientTest extends TestCase
         /**
          * @var ResponseInterface
          */
-        $response = $this->createMock(ResponseInterface::class);
+        $response = $this->createStub(ResponseInterface::class);
 
-        $this->getMessageBusInterfaceMock()
+        $this->getMessageBusInterfaceMockObject()
             ->expects($this->once())
             ->method('dispatch')
             ->willReturn(new Envelope(new stdClass()));

@@ -25,10 +25,9 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\Foundation\Time;
 
-use DateTime;
-use DateTimeInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 use Teknoo\East\Foundation\Time\DatesService;
 use Teknoo\East\Foundation\Time\SleepService;
@@ -49,9 +48,18 @@ class SleepServiceTest extends TestCase
 {
     private ?TimerServiceInterface $timerService = null;
 
-    public function getTimerServiceMock(): TimerServiceInterface&MockObject
+    public function getTimerServiceMock(): TimerServiceInterface&Stub
     {
-        if (!$this->timerService instanceof \Teknoo\East\Foundation\Time\TimerServiceInterface) {
+        if (!$this->timerService instanceof TimerServiceInterface) {
+            $this->timerService = $this->createStub(TimerServiceInterface::class);
+        }
+
+        return $this->timerService;
+    }
+
+    public function getTimerServiceMockObject(): TimerServiceInterface&MockObject
+    {
+        if (!$this->timerService instanceof TimerServiceInterface) {
             $this->timerService = $this->createMock(TimerServiceInterface::class);
         }
 
@@ -64,22 +72,22 @@ class SleepServiceTest extends TestCase
             self::markTestSkipped('PCNTL is not available');
         }
 
-        $this->getTimerServiceMock()
+        $this->getTimerServiceMockObject()
             ->expects($this->once())
             ->method('register')
             ->willReturnCallback(
-                function (int $seconds, string $timerId, callable $callback): \Teknoo\East\Foundation\Time\TimerServiceInterface&\PHPUnit\Framework\MockObject\MockObject {
+                function (int $seconds, string $timerId, callable $callback): TimerServiceInterface&MockObject {
                     sleep($seconds);
                     $callback();
 
-                    return $this->getTimerServiceMock();
+                    return $this->getTimerServiceMockObject();
                 }
             );
 
         $t = time();
         $this->assertInstanceOf(
             SleepService::class,
-            new SleepService($this->getTimerServiceMock())->wait(2),
+            new SleepService($this->getTimerServiceMockObject())->wait(2),
         );
         $this->assertSame(
             $t + 2,

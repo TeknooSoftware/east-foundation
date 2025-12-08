@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\FoundationBundle\Router;
 
+use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 use Exception;
 use TypeError;
@@ -59,7 +60,16 @@ class RouterTest extends TestCase
 
     private ?ContainerInterface $container = null;
 
-    private function getUrlMatcherMock(): UrlMatcherInterface&MockObject
+    private function getUrlMatcherMock(): UrlMatcherInterface&Stub
+    {
+        if (!$this->matcher instanceof UrlMatcherInterface) {
+            $this->matcher = $this->createStub(UrlMatcherInterface::class);
+        }
+
+        return $this->matcher;
+    }
+
+    private function getUrlMatcherMockObject(): UrlMatcherInterface&MockObject
     {
         if (!$this->matcher instanceof UrlMatcherInterface) {
             $this->matcher = $this->createMock(UrlMatcherInterface::class);
@@ -68,10 +78,10 @@ class RouterTest extends TestCase
         return $this->matcher;
     }
 
-    private function getContainerMock(): ContainerInterface&MockObject
+    private function getContainerMock(): ContainerInterface&Stub
     {
         if (!$this->container instanceof ContainerInterface) {
-            $this->container = $this->createMock(ContainerInterface::class);
+            $this->container = $this->createStub(ContainerInterface::class);
         }
 
         return $this->container;
@@ -99,13 +109,13 @@ class RouterTest extends TestCase
         /**
          * @var ClientInterface|MockObject
          */
-        $client = $this->createMock(ClientInterface::class);
+        $client = $this->createStub(ClientInterface::class);
         /**
          * @var ServerRequestInterface|MockObject $request
          */
-        $request = $this->createMock(ServerRequestInterface::class);
+        $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getUri')->willReturn(
-            $this->createMock(UriInterface::class)
+            $this->createStub(UriInterface::class)
         );
         /**
          * @var ManagerInterface|MockObject $manager
@@ -127,13 +137,13 @@ class RouterTest extends TestCase
         /**
          * @var ClientInterface|MockObject
          */
-        $client = $this->createMock(ClientInterface::class);
+        $client = $this->createStub(ClientInterface::class);
         /**
          * @var ServerRequestInterface|MockObject $request
          */
-        $request = $this->createMock(ServerRequestInterface::class);
+        $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getUri')->willReturn(
-            $this->createMock(UriInterface::class)
+            $this->createStub(UriInterface::class)
         );
         /**
          * @var ManagerInterface|MockObject $manager
@@ -156,13 +166,13 @@ class RouterTest extends TestCase
         /**
          * @var ClientInterface|MockObject
          */
-        $client = $this->createMock(ClientInterface::class);
+        $client = $this->createStub(ClientInterface::class);
         /**
          * @var ServerRequestInterface|MockObject $request
          */
-        $request = $this->createMock(ServerRequestInterface::class);
+        $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getUri')->willReturn(
-            $this->createMock(UriInterface::class)
+            $this->createStub(UriInterface::class)
         );
         /**
          * @var ManagerInterface|MockObject $manager
@@ -181,13 +191,13 @@ class RouterTest extends TestCase
         /**
          * @var \PHPUnit\Framework\MockObject\MockObject|ClientInterface
          */
-        $client = $this->createMock(ClientInterface::class);
+        $client = $this->createStub(ClientInterface::class);
         /**
          * @var ServerRequestInterface|MockObject $request
          */
-        $request = $this->createMock(ServerRequestInterface::class);
+        $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getUri')->willReturn(
-            $this->createMock(UriInterface::class)
+            $this->createStub(UriInterface::class)
         );
         /**
          * @var ManagerInterface|MockObject $manager
@@ -206,16 +216,16 @@ class RouterTest extends TestCase
 
     public function testExecuteWithNoPathExcluded(): void
     {
-        $uri = $this->createMock(UriInterface::class);
+        $uri = $this->createStub(UriInterface::class);
         $uri->method('getPath')->willReturn('/foo');
         /**
          * @var \PHPUnit\Framework\MockObject\MockObject|ClientInterface
          */
-        $client = $this->createMock(ClientInterface::class);
+        $client = $this->createStub(ClientInterface::class);
         /**
          * @var ServerRequestInterface|MockObject $request
          */
-        $request = $this->createMock(ServerRequestInterface::class);
+        $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
         /**
          * @var ManagerInterface|MockObject $manager
@@ -234,16 +244,16 @@ class RouterTest extends TestCase
 
     public function testExecuteWithNoStartPathExcluded(): void
     {
-        $uri = $this->createMock(UriInterface::class);
+        $uri = $this->createStub(UriInterface::class);
         $uri->method('getPath')->willReturn('/foo/bar');
         /**
          * @var \PHPUnit\Framework\MockObject\MockObject|ClientInterface
          */
-        $client = $this->createMock(ClientInterface::class);
+        $client = $this->createStub(ClientInterface::class);
         /**
          * @var ServerRequestInterface|MockObject $request
          */
-        $request = $this->createMock(ServerRequestInterface::class);
+        $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
         /**
          * @var ManagerInterface|MockObject $manager
@@ -265,13 +275,13 @@ class RouterTest extends TestCase
         /**
          * @var \PHPUnit\Framework\MockObject\MockObject|ClientInterface
          */
-        $client = $this->createMock(ClientInterface::class);
+        $client = $this->createStub(ClientInterface::class);
         /**
          * @var ServerRequestInterface|MockObject $request
          */
-        $request = $this->createMock(ServerRequestInterface::class);
+        $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getUri')->willReturn(
-            $this->createMock(UriInterface::class)
+            $this->createStub(UriInterface::class)
         );
         /**
          * @var ManagerInterface|MockObject $manager
@@ -293,13 +303,13 @@ class RouterTest extends TestCase
         /**
          * @var \PHPUnit\Framework\MockObject\MockObject|ClientInterface
          */
-        $client = $this->createMock(ClientInterface::class);
+        $client = $this->createStub(ClientInterface::class);
         /**
          * @var ServerRequestInterface|MockObject $request
          */
-        $request = $this->createMock(ServerRequestInterface::class);
+        $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getUri')->willReturn(
-            $this->createMock(UriInterface::class)
+            $this->createStub(UriInterface::class)
         );
         /**
          * @var ManagerInterface|MockObject $manager
@@ -328,13 +338,13 @@ class RouterTest extends TestCase
         /**
          * @var \PHPUnit\Framework\MockObject\MockObject|ClientInterface
          */
-        $client = $this->createMock(ClientInterface::class);
+        $client = $this->createStub(ClientInterface::class);
         /**
          * @var ServerRequestInterface|MockObject $request
          */
-        $request = $this->createMock(ServerRequestInterface::class);
+        $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getUri')->willReturn(
-            $this->createMock(UriInterface::class)
+            $this->createStub(UriInterface::class)
         );
         /**
          * @var ManagerInterface|MockObject $manager
@@ -368,13 +378,13 @@ class RouterTest extends TestCase
         /**
          * @var \PHPUnit\Framework\MockObject\MockObject|ClientInterface
          */
-        $client = $this->createMock(ClientInterface::class);
+        $client = $this->createStub(ClientInterface::class);
         /**
          * @var ServerRequestInterface|MockObject $request
          */
-        $request = $this->createMock(ServerRequestInterface::class);
+        $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getUri')->willReturn(
-            $this->createMock(UriInterface::class)
+            $this->createStub(UriInterface::class)
         );
         /**
          * @var ManagerInterface|MockObject $manager
@@ -403,13 +413,13 @@ class RouterTest extends TestCase
         /**
          * @var \PHPUnit\Framework\MockObject\MockObject|ClientInterface
          */
-        $client = $this->createMock(ClientInterface::class);
+        $client = $this->createStub(ClientInterface::class);
         /**
          * @var ServerRequestInterface|MockObject $request
          */
-        $request = $this->createMock(ServerRequestInterface::class);
+        $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getUri')->willReturn(
-            $this->createMock(UriInterface::class)
+            $this->createStub(UriInterface::class)
         );
         /**
          * @var ManagerInterface|MockObject $manager
@@ -438,13 +448,13 @@ class RouterTest extends TestCase
         /**
          * @var \PHPUnit\Framework\MockObject\MockObject|ClientInterface
          */
-        $client = $this->createMock(ClientInterface::class);
+        $client = $this->createStub(ClientInterface::class);
         /**
          * @var ServerRequestInterface|MockObject $request
          */
-        $request = $this->createMock(ServerRequestInterface::class);
+        $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getUri')->willReturn(
-            $this->createMock(UriInterface::class)
+            $this->createStub(UriInterface::class)
         );
         /**
          * @var ManagerInterface|MockObject $manager
@@ -473,13 +483,13 @@ class RouterTest extends TestCase
         /**
          * @var \PHPUnit\Framework\MockObject\MockObject|ClientInterface
          */
-        $client = $this->createMock(ClientInterface::class);
+        $client = $this->createStub(ClientInterface::class);
         /**
          * @var ServerRequestInterface|MockObject $request
          */
-        $request = $this->createMock(ServerRequestInterface::class);
+        $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getUri')->willReturn(
-            $this->createMock(UriInterface::class)
+            $this->createStub(UriInterface::class)
         );
         /**
          * @var ManagerInterface|MockObject $manager
@@ -511,13 +521,13 @@ class RouterTest extends TestCase
         /**
          * @var \PHPUnit\Framework\MockObject\MockObject|ClientInterface
          */
-        $client = $this->createMock(ClientInterface::class);
+        $client = $this->createStub(ClientInterface::class);
         /**
          * @var ServerRequestInterface|MockObject $request
          */
-        $request = $this->createMock(ServerRequestInterface::class);
+        $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getUri')->willReturn(
-            $this->createMock(UriInterface::class)
+            $this->createStub(UriInterface::class)
         );
         /**
          * @var ManagerInterface|MockObject $manager
@@ -543,16 +553,16 @@ class RouterTest extends TestCase
 
     public function testExecuteWithControllerRemoveAppDotPhpStart(): void
     {
-        $client = $this->createMock(ClientInterface::class);
-        $request = $this->createMock(ServerRequestInterface::class);
+        $client = $this->createStub(ClientInterface::class);
+        $request = $this->createStub(ServerRequestInterface::class);
 
-        $uri = $this->createMock(UriInterface::class);
+        $uri = $this->createStub(UriInterface::class);
         $uri->method('getPath')->willReturn('/app.php/foo');
 
         $request->method('getUri')->willReturn($uri);
         $manager = $this->createMock(ManagerInterface::class);
 
-        $this->getUrlMatcherMock()->expects($this->once())->method('match')
+        $this->getUrlMatcherMockObject()->expects($this->once())->method('match')
             ->with('/foo')
             ->willReturn(['_controller' => function (): void {
             }]);
@@ -564,15 +574,15 @@ class RouterTest extends TestCase
 
     public function testExecuteWithControllerNotRemoveAppDotPhpStart(): void
     {
-        $client = $this->createMock(ClientInterface::class);
-        $request = $this->createMock(ServerRequestInterface::class);
+        $client = $this->createStub(ClientInterface::class);
+        $request = $this->createStub(ServerRequestInterface::class);
 
-        $uri = $this->createMock(UriInterface::class);
+        $uri = $this->createStub(UriInterface::class);
         $uri->method('getPath')->willReturn('/foo/app.php');
         $request->method('getUri')->willReturn($uri);
 
-        $manager = $this->createMock(ManagerInterface::class);
-        $this->getUrlMatcherMock()->expects($this->once())->method('match')
+        $manager = $this->createStub(ManagerInterface::class);
+        $this->getUrlMatcherMockObject()->expects($this->once())->method('match')
             ->with('/foo/app.php')
             ->willReturn(['_controller' => function (): void {
             }]);
@@ -582,15 +592,15 @@ class RouterTest extends TestCase
 
     public function testExecuteWithControllerRemoveAppDevDotPhpEnd(): void
     {
-        $client = $this->createMock(ClientInterface::class);
-        $request = $this->createMock(ServerRequestInterface::class);
+        $client = $this->createStub(ClientInterface::class);
+        $request = $this->createStub(ServerRequestInterface::class);
 
-        $uri = $this->createMock(UriInterface::class);
+        $uri = $this->createStub(UriInterface::class);
         $uri->method('getPath')->willReturn('/app_dev.php/foo');
         $request->method('getUri')->willReturn($uri);
         $manager = $this->createMock(ManagerInterface::class);
 
-        $this->getUrlMatcherMock()->expects($this->once())->method('match')
+        $this->getUrlMatcherMockObject()->expects($this->once())->method('match')
             ->with('/foo')
             ->willReturn(['_controller' => function (): void {
             }]);
@@ -602,15 +612,15 @@ class RouterTest extends TestCase
 
     public function testExecuteWithControllerNotRemoveAppDevDotPhpEnd(): void
     {
-        $client = $this->createMock(ClientInterface::class);
-        $request = $this->createMock(ServerRequestInterface::class);
+        $client = $this->createStub(ClientInterface::class);
+        $request = $this->createStub(ServerRequestInterface::class);
 
-        $uri = $this->createMock(UriInterface::class);
+        $uri = $this->createStub(UriInterface::class);
         $uri->method('getPath')->willReturn('/foo/app_dev.php');
         $request->method('getUri')->willReturn($uri);
 
-        $manager = $this->createMock(ManagerInterface::class);
-        $this->getUrlMatcherMock()->expects($this->once())->method('match')
+        $manager = $this->createStub(ManagerInterface::class);
+        $this->getUrlMatcherMockObject()->expects($this->once())->method('match')
             ->with('/foo/app_dev.php')
             ->willReturn(['_controller' => function (): void {
             }]);
@@ -620,15 +630,15 @@ class RouterTest extends TestCase
 
     public function testExecuteWithControllerRemoveIndexDotPhpStart(): void
     {
-        $client = $this->createMock(ClientInterface::class);
-        $request = $this->createMock(ServerRequestInterface::class);
+        $client = $this->createStub(ClientInterface::class);
+        $request = $this->createStub(ServerRequestInterface::class);
 
-        $uri = $this->createMock(UriInterface::class);
+        $uri = $this->createStub(UriInterface::class);
         $uri->method('getPath')->willReturn('/index.php/foo');
         $request->method('getUri')->willReturn($uri);
         $manager = $this->createMock(ManagerInterface::class);
 
-        $this->getUrlMatcherMock()->expects($this->once())->method('match')
+        $this->getUrlMatcherMockObject()->expects($this->once())->method('match')
             ->with('/foo')
             ->willReturn(['_controller' => function (): void {
             }]);
@@ -640,15 +650,15 @@ class RouterTest extends TestCase
 
     public function testExecuteWithControllerNotRemoveIndexDotPhpEnd(): void
     {
-        $client = $this->createMock(ClientInterface::class);
-        $request = $this->createMock(ServerRequestInterface::class);
+        $client = $this->createStub(ClientInterface::class);
+        $request = $this->createStub(ServerRequestInterface::class);
 
-        $uri = $this->createMock(UriInterface::class);
+        $uri = $this->createStub(UriInterface::class);
         $uri->method('getPath')->willReturn('/foo/index.php');
         $request->method('getUri')->willReturn($uri);
 
-        $manager = $this->createMock(ManagerInterface::class);
-        $this->getUrlMatcherMock()->expects($this->once())->method('match')
+        $manager = $this->createStub(ManagerInterface::class);
+        $this->getUrlMatcherMockObject()->expects($this->once())->method('match')
             ->with('/foo/index.php')
             ->willReturn(['_controller' => function (): void {
             }]);
@@ -658,9 +668,9 @@ class RouterTest extends TestCase
 
     public function testExecuteWithMessage(): void
     {
-        $client = $this->createMock(ClientInterface::class);
-        $message = $this->createMock(MessageInterface::class);
-        $manager = $this->createMock(ManagerInterface::class);
+        $client = $this->createStub(ClientInterface::class);
+        $message = $this->createStub(MessageInterface::class);
+        $manager = $this->createStub(ManagerInterface::class);
 
         $this->assertInstanceOf(
             RouterInterface::class,
@@ -673,8 +683,8 @@ class RouterTest extends TestCase
         $this->expectException(TypeError::class);
         $this->buildRouter()->execute(
             new stdClass(),
-            $this->createMock(ServerRequestInterface::class),
-            $this->createMock(ManagerInterface::class)
+            $this->createStub(ServerRequestInterface::class),
+            $this->createStub(ManagerInterface::class)
         );
     }
 
@@ -682,9 +692,9 @@ class RouterTest extends TestCase
     {
         $this->expectException(TypeError::class);
         $this->buildRouter()->execute(
-            $this->createMock(ClientInterface::class),
+            $this->createStub(ClientInterface::class),
             new stdClass(),
-            $this->createMock(ManagerInterface::class)
+            $this->createStub(ManagerInterface::class)
         );
     }
 
@@ -692,8 +702,8 @@ class RouterTest extends TestCase
     {
         $this->expectException(TypeError::class);
         $this->buildRouter()->execute(
-            $this->createMock(ClientInterface::class),
-            $this->createMock(ServerRequestInterface::class),
+            $this->createStub(ClientInterface::class),
+            $this->createStub(ServerRequestInterface::class),
             new stdClass()
         );
     }

@@ -29,6 +29,7 @@ use DateTime;
 use DateTimeInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 use Teknoo\East\Foundation\Time\DatesService;
 use Teknoo\East\Foundation\Time\TimerService;
@@ -56,6 +57,15 @@ class TimerServiceTest extends TestCase
         return $this->datesService;
     }
 
+    public function getDatesServiceStub(): DatesService&Stub
+    {
+        if (!$this->datesService instanceof \Teknoo\East\Foundation\Time\DatesService) {
+            $this->datesService = $this->createStub(DatesService::class);
+        }
+
+        return $this->datesService;
+    }
+
     public function testIsAvailable(): void
     {
         $this->assertTrue(TimerService::isAvailable());
@@ -65,7 +75,7 @@ class TimerServiceTest extends TestCase
     {
         $this->assertInstanceOf(
             TimerService::class,
-            new TimerService($this->getDatesServiceMock())->unregister('foo'),
+            new TimerService($this->getDatesServiceStub())->unregister('foo'),
         );
     }
 
