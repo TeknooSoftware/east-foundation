@@ -79,7 +79,7 @@ class ManagerTest extends TestCase
 
     public function testRunWithLoader(): void
     {
-        $loader = $this->createMock(LoaderInterface::class);
+        $loader = $this->createStub(LoaderInterface::class);
         Manager::reset();
         $m1 = Manager::run($loader);
         $m2 = Manager::run($loader);
@@ -148,7 +148,7 @@ class ManagerTest extends TestCase
 
         $ext = ExtensionMock1::create();
 
-        $module = $this->createMock(ModuleInterface::class);
+        $module = $this->createStub(ModuleInterface::class);
         $m1->execute($module);
 
         $this->assertSame($module, $ext->module);
@@ -177,7 +177,7 @@ class ManagerTest extends TestCase
 
         $ext = ExtensionMock1::create();
 
-        $module = $this->createMock(ModuleInterface::class);
+        $module = $this->createStub(ModuleInterface::class);
         $m1->execute($module);
         $this->assertNull($ext->module);
 

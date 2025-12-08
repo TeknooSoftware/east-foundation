@@ -46,15 +46,15 @@ class PSR15Test extends TestCase
 {
     public function testHandle(): void
     {
-        $chef = $this->createMock(ChefInterface::class);
-        $client = $this->createMock(ClientInterface::class);
-        $request = $this->createMock(ServerRequestInterface::class);
+        $chef = $this->createStub(ChefInterface::class);
+        $client = $this->createStub(ClientInterface::class);
+        $request = $this->createStub(ServerRequestInterface::class);
 
         $client
             ->method('updateResponse')
             ->willReturnCallback(
                 function (callable $callback) use ($client): \Teknoo\East\Foundation\Client\ClientInterface {
-                    $callback($client, $this->createMock(ResponseInterface::class));
+                    $callback($client, $this->createStub(ResponseInterface::class));
 
                     return $client;
                 }
@@ -70,9 +70,9 @@ class PSR15Test extends TestCase
 
     public function testErrorHandleWithoutResponse(): void
     {
-        $chef = $this->createMock(ChefInterface::class);
-        $client = $this->createMock(ClientInterface::class);
-        $request = $this->createMock(ServerRequestInterface::class);
+        $chef = $this->createStub(ChefInterface::class);
+        $client = $this->createStub(ClientInterface::class);
+        $request = $this->createStub(ServerRequestInterface::class);
 
         $handler = new PSR15($chef, $client);
 

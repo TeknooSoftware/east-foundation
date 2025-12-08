@@ -28,6 +28,8 @@ namespace Teknoo\Tests\East\Foundation\Processor;
 use TypeError;
 use stdClass;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 use Teknoo\East\Foundation\Processor\ProcessorPlan;
 use Teknoo\East\Foundation\Processor\ProcessorInterface;
@@ -49,10 +51,22 @@ class ProcessorPlanTest extends TestCase
 
     private ?ProcessorInterface $processor = null;
 
-    public function getRecipeMock(): \Teknoo\East\Foundation\Processor\ProcessorRecipeInterface|MockObject
+    public function getRecipeMock(): ProcessorRecipeInterface&MockObject
+    {
+        if (
+            !$this->recipe instanceof ProcessorRecipeInterface
+            || !$this->recipe instanceof MockObject
+        ) {
+            $this->recipe = $this->createMock(ProcessorRecipeInterface::class);
+        }
+
+        return $this->recipe;
+    }
+
+    public function getRecipeStub(): ProcessorRecipeInterface&Stub
     {
         if (!$this->recipe instanceof ProcessorRecipeInterface) {
-            $this->recipe = $this->createMock(ProcessorRecipeInterface::class);
+            $this->recipe = $this->createStub(ProcessorRecipeInterface::class);
         }
 
         return $this->recipe;
@@ -61,7 +75,7 @@ class ProcessorPlanTest extends TestCase
     public function getProcessorMock(): \Teknoo\East\Foundation\Processor\ProcessorInterface|MockObject
     {
         if (!$this->processor instanceof ProcessorInterface) {
-            $this->processor = $this->createMock(ProcessorInterface::class);
+            $this->processor = $this->createStub(ProcessorInterface::class);
         }
 
         return $this->processor;
@@ -75,30 +89,38 @@ class ProcessorPlanTest extends TestCase
         );
     }
 
+    public function buildPlanWithStub(): ProcessorPlan
+    {
+        return new ProcessorPlan(
+            $this->getRecipeStub(),
+            $this->getProcessorMock()
+        );
+    }
+
     public function testFillWithWrongRecipe(): void
     {
         $this->expectException(TypeError::class);
-        $this->buildPlan()->fill(new stdClass());
+        $this->buildPlanWithStub()->fill(new stdClass());
     }
 
     public function testFillWithOriginalRecipe(): void
     {
         $this->expectException(TypeError::class);
-        $this->buildPlan()->fill($this->createMock(OriginalRecipeInterface::class));
+        $this->buildPlanWithStub()->fill($this->createStub(OriginalRecipeInterface::class));
     }
 
     public function testFill(): void
     {
         $this->assertInstanceOf(
             ProcessorPlan::class,
-            $this->buildPlan()->fill($this->createMock(ProcessorRecipeInterface::class))
+            $this->buildPlanWithStub()->fill($this->createStub(ProcessorRecipeInterface::class))
         );
     }
 
     public function testTrainWithWrongChef(): void
     {
         $this->expectException(TypeError::class);
-        $this->buildPlan()->train(new stdClass());
+        $this->buildPlanWithStub()->train(new stdClass());
     }
 
     public function testTrain(): void
@@ -108,11 +130,11 @@ class ProcessorPlanTest extends TestCase
         $plan = $this->buildPlan();
         $this->assertInstanceOf(
             ProcessorPlan::class,
-            $plan->train($this->createMock(ChefInterface::class))
+            $plan->train($this->createStub(ChefInterface::class))
         );
         $this->assertInstanceOf(
             ProcessorPlan::class,
-            $plan->train($this->createMock(ChefInterface::class))
+            $plan->train($this->createStub(ChefInterface::class))
         );
     }
 
@@ -120,14 +142,14 @@ class ProcessorPlanTest extends TestCase
     {
         $this->expectException(TypeError::class);
         $wp = new stdClass();
-        $this->buildPlan()->prepare($wp, $this->createMock(ChefInterface::class));
+        $this->buildPlanWithStub()->prepare($wp, $this->createStub(ChefInterface::class));
     }
 
     public function testPrepareWithWrongChef(): void
     {
         $this->expectException(TypeError::class);
         $wp = [];
-        $this->buildPlan()->prepare($wp, new stdClass());
+        $this->buildPlanWithStub()->prepare($wp, new stdClass());
     }
 
     public function testPrepare(): void
@@ -137,7 +159,7 @@ class ProcessorPlanTest extends TestCase
         $wp = [];
         $this->assertInstanceOf(
             ProcessorPlan::class,
-            $this->buildPlan()->prepare($wp, $this->createMock(ChefInterface::class))
+            $this->buildPlan()->prepare($wp, $this->createStub(ChefInterface::class))
         );
     }
 

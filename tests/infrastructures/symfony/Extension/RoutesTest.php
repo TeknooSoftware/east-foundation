@@ -59,8 +59,8 @@ class RoutesTest extends TestCase
             );
 
         $configurator = new RoutingConfigurator(
-            $this->createMock(RouteCollection::class),
-            $this->createMock(PhpFileLoader::class),
+            $this->createStub(RouteCollection::class),
+            $this->createStub(PhpFileLoader::class),
             __DIR__,
             __FILE__,
         );

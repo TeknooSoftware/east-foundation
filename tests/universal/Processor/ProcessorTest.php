@@ -64,7 +64,7 @@ class ProcessorTest extends TestCase
         /**
          * @var ServerRequestInterface|MockObject
          */
-        $requestMock = $this->createMock(ServerRequestInterface::class);
+        $requestMock = $this->createStub(ServerRequestInterface::class);
         $requestMock->method('getAttributes')->willReturn(['bar' => 456, 'foo' => 123]);
 
         $manager = $this->createMock(ManagerInterface::class);
@@ -92,7 +92,7 @@ class ProcessorTest extends TestCase
         /**
          * @var ServerRequestInterface|MockObject
          */
-        $requestMock = $this->createMock(ServerRequestInterface::class);
+        $requestMock = $this->createStub(ServerRequestInterface::class);
         $requestMock->method('getAttributes')->willReturn(['bar' => 456, 'foo' => 123]);
 
         $manager = $this->createMock(ManagerInterface::class);
@@ -120,14 +120,14 @@ class ProcessorTest extends TestCase
         /**
          * @var ServerRequestInterface|MockObject
          */
-        $requestMock = $this->createMock(ServerRequestInterface::class);
+        $requestMock = $this->createStub(ServerRequestInterface::class);
         $requestMock->method('getAttributes')->willReturn([
             'bar' => 456,
             'foo' => 123,
-            'request' => $this->createMock(Request::class)
+            'request' => $this->createStub(Request::class)
         ]);
 
-        $routerResult = $this->createMock(ResultInterface::class);
+        $routerResult = $this->createStub(ResultInterface::class);
         $routerResult->method('getController')->willReturn($controller = function (): void {
         });
 
@@ -167,14 +167,14 @@ class ProcessorTest extends TestCase
         /**
          * @var ServerRequestInterface|MockObject
          */
-        $requestMock = $this->createMock(ServerRequestInterface::class);
+        $requestMock = $this->createStub(ServerRequestInterface::class);
         $requestMock->method('getAttributes')->willReturn([
             'bar' => 456,
             'foo' => 123,
-            'request' => $this->createMock(Request::class)
+            'request' => $this->createStub(Request::class)
         ]);
 
-        $routerResult = $this->createMock(ResultInterface::class);
+        $routerResult = $this->createStub(ResultInterface::class);
         $routerResult->method('getController')->willReturn($controller = function (): void {
         });
 
@@ -214,7 +214,7 @@ class ProcessorTest extends TestCase
         /**
          * @var MessageInterface|MockObject
          */
-        $messageMock = $this->createMock(MessageInterface::class);
+        $messageMock = $this->createStub(MessageInterface::class);
 
         $manager = $this->createMock(ManagerInterface::class);
         $manager->expects($this->never())->method('updateWorkPlan');
@@ -241,7 +241,7 @@ class ProcessorTest extends TestCase
         /**
          * @var MessageInterface|MockObject
          */
-        $messageMock = $this->createMock(MessageInterface::class);
+        $messageMock = $this->createStub(MessageInterface::class);
 
         $manager = $this->createMock(ManagerInterface::class);
         $manager->expects($this->never())->method('updateWorkPlan');

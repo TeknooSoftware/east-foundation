@@ -100,7 +100,7 @@ class MessageTest extends TestCase
     public function testBody(): void
     {
         $message = new Message();
-        $newMessage = $message->withBody($this->createMock(StreamInterface::class));
+        $newMessage = $message->withBody($this->createStub(StreamInterface::class));
 
         $this->assertNotSame(
             $message,

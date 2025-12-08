@@ -70,8 +70,8 @@ class FiberMiddlewareBowlTest extends AbstractBowlTests
             'foo2' => 'bar2',
             'now' => (new DateTime('2018-01-01')),
             DateTimeInterface::class => (new DateTime('2018-01-02')),
-            ServerRequestInterface::class => $this->createMock(ServerRequestInterface::class),
-            ClientInterface::class => $this->createMock(ClientInterface::class),
+            ServerRequestInterface::class => $this->createStub(ServerRequestInterface::class),
+            ClientInterface::class => $this->createStub(ClientInterface::class),
         ];
     }
 
@@ -108,9 +108,9 @@ class FiberMiddlewareBowlTest extends AbstractBowlTests
         $this->assertInstanceOf(
             BowlInterface::class,
             $this->buildBowl()->execute(
-                $this->createMock(ChefInterface::class),
+                $this->createStub(ChefInterface::class),
                 $values,
-                $this->createMock(CookingSupervisorInterface::class),
+                $this->createStub(CookingSupervisorInterface::class),
             )
         );
     }

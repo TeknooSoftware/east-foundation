@@ -56,7 +56,7 @@ class EastFoundationBundleTest extends TestCase
     public function testBuild(): void
     {
         $this->buildBundle()->build(
-            $this->createMock(ContainerBuilder::class)
+            $this->createStub(ContainerBuilder::class)
         );
 
         $this->assertTrue(true);

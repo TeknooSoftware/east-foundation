@@ -80,11 +80,11 @@ class ManagerTest extends AbstractChefTests
     {
         $this->assertInstanceOf(
             $this->getManagerClass(),
-            $this->buildChef()->read($this->createMock(RecipeInterface::class))
-                ->followSteps([$this->createMock(BowlInterface::class)])
+            $this->buildChef()->read($this->createStub(RecipeInterface::class))
+                ->followSteps([$this->createStub(BowlInterface::class)])
                 ->receiveRequest(
-                    $this->createMock(ClientInterface::class),
-                    $this->createMock(ServerRequestInterface::class)
+                    $this->createStub(ClientInterface::class),
+                    $this->createStub(ServerRequestInterface::class)
                 )
         );
     }
@@ -93,11 +93,11 @@ class ManagerTest extends AbstractChefTests
     {
         $this->assertInstanceOf(
             $this->getManagerClass(),
-            $this->buildChef()->read($this->createMock(RecipeInterface::class))
-                ->followSteps([$this->createMock(BowlInterface::class)])
+            $this->buildChef()->read($this->createStub(RecipeInterface::class))
+                ->followSteps([$this->createStub(BowlInterface::class)])
                 ->receiveRequest(
-                    $this->createMock(ClientInterface::class),
-                    $this->createMock(MessageInterface::class)
+                    $this->createStub(ClientInterface::class),
+                    $this->createStub(MessageInterface::class)
                 )
         );
     }
@@ -105,19 +105,19 @@ class ManagerTest extends AbstractChefTests
     public function testReceiveRequestErrorClient(): void
     {
         $this->expectException(TypeError::class);
-        $this->buildChef()->followSteps([$this->createMock(BowlInterface::class)])
+        $this->buildChef()->followSteps([$this->createStub(BowlInterface::class)])
             ->receiveRequest(
                 new stdClass(),
-                $this->createMock(ServerRequestInterface::class)
+                $this->createStub(ServerRequestInterface::class)
             );
     }
 
     public function testReceiveRequestErrorRequest(): void
     {
         $this->expectException(TypeError::class);
-        $this->buildChef()->followSteps([$this->createMock(BowlInterface::class)])
+        $this->buildChef()->followSteps([$this->createStub(BowlInterface::class)])
             ->receiveRequest(
-                $this->createMock(ClientInterface::class),
+                $this->createStub(ClientInterface::class),
                 new stdClass()
             );
     }
@@ -125,19 +125,19 @@ class ManagerTest extends AbstractChefTests
     public function testContinueExecutionErrorClient(): void
     {
         $this->expectException(TypeError::class);
-        $this->buildChef()->followSteps([$this->createMock(BowlInterface::class)])
+        $this->buildChef()->followSteps([$this->createStub(BowlInterface::class)])
             ->continueExecution(
                 new stdClass(),
-                $this->createMock(ServerRequestInterface::class)
+                $this->createStub(ServerRequestInterface::class)
             );
     }
 
     public function testContinueExecutionErrorRequest(): void
     {
         $this->expectException(TypeError::class);
-        $this->buildChef()->followSteps([$this->createMock(BowlInterface::class)])
+        $this->buildChef()->followSteps([$this->createStub(BowlInterface::class)])
             ->continueExecution(
-                $this->createMock(ClientInterface::class),
+                $this->createStub(ClientInterface::class),
                 new stdClass()
             );
     }
@@ -145,7 +145,7 @@ class ManagerTest extends AbstractChefTests
     public function testUpdateMessageExecutionErrorRequest(): void
     {
         $this->expectException(TypeError::class);
-        $this->buildChef()->followSteps([$this->createMock(BowlInterface::class)])
+        $this->buildChef()->followSteps([$this->createStub(BowlInterface::class)])
             ->updateWorkPlan(
                 new stdClass()
             );
@@ -178,15 +178,15 @@ class ManagerTest extends AbstractChefTests
         /**
          * @var ClientInterface|MockObject
          */
-        $clientMock = $this->createMock(ClientInterface::class);
+        $clientMock = $this->createStub(ClientInterface::class);
 
         /**
          * @var ServerRequestInterface|MockObject
          */
-        $serverRequestMock = $this->createMock(ServerRequestInterface::class);
+        $serverRequestMock = $this->createStub(ServerRequestInterface::class);
 
         $manager = $this->buildChef();
-        $manager->read($this->createMock(RecipeInterface::class));
+        $manager->read($this->createStub(RecipeInterface::class));
         $manager->followSteps([new Bowl($middleware->execute(...), [])]);
         $manager->receiveRequest($clientMock, $serverRequestMock);
     }
@@ -218,15 +218,15 @@ class ManagerTest extends AbstractChefTests
         /**
          * @var ClientInterface|MockObject
          */
-        $clientMock = $this->createMock(ClientInterface::class);
+        $clientMock = $this->createStub(ClientInterface::class);
 
         /**
          * @var MessageInterface|MockObject
          */
-        $messageMock = $this->createMock(MessageInterface::class);
+        $messageMock = $this->createStub(MessageInterface::class);
 
         $manager = $this->buildChef();
-        $manager->read($this->createMock(RecipeInterface::class));
+        $manager->read($this->createStub(RecipeInterface::class));
         $manager->followSteps([new Bowl($middleware->execute(...), [])]);
         $manager->receiveRequest($clientMock, $messageMock);
     }
@@ -238,12 +238,12 @@ class ManagerTest extends AbstractChefTests
         /**
          * @var ClientInterface|MockObject
          */
-        $clientMock = $this->createMock(ClientInterface::class);
+        $clientMock = $this->createStub(ClientInterface::class);
 
         /**
          * @var ServerRequestInterface|MockObject
          */
-        $serverRequestMock = $this->createMock(ServerRequestInterface::class);
+        $serverRequestMock = $this->createStub(ServerRequestInterface::class);
 
         /**
          * @var MiddlewareInterface|MockObject
@@ -269,7 +269,7 @@ class ManagerTest extends AbstractChefTests
         $middleware3 = $this->createMock(MiddlewareInterface::class);
         $middleware3->expects($this->never())->method('execute');
 
-        $manager->read($this->createMock(RecipeInterface::class))
+        $manager->read($this->createStub(RecipeInterface::class))
             ->followSteps(
                 [
                     new Bowl([$middleware1, 'execute'], []),
@@ -290,12 +290,12 @@ class ManagerTest extends AbstractChefTests
         /**
          * @var ClientInterface|MockObject
          */
-        $clientMock = $this->createMock(ClientInterface::class);
+        $clientMock = $this->createStub(ClientInterface::class);
 
         /**
          * @var MessageInterface|MockObject
          */
-        $messageMock = $this->createMock(MessageInterface::class);
+        $messageMock = $this->createStub(MessageInterface::class);
 
         /**
          * @var MiddlewareInterface|MockObject
@@ -321,7 +321,7 @@ class ManagerTest extends AbstractChefTests
         $middleware3 = $this->createMock(MiddlewareInterface::class);
         $middleware3->expects($this->never())->method('execute');
 
-        $manager->read($this->createMock(RecipeInterface::class))
+        $manager->read($this->createStub(RecipeInterface::class))
             ->followSteps(
                 [
                     new Bowl([$middleware1, 'execute'], []),
@@ -342,12 +342,12 @@ class ManagerTest extends AbstractChefTests
         /**
          * @var ClientInterface|MockObject
          */
-        $clientMock = $this->createMock(ClientInterface::class);
+        $clientMock = $this->createStub(ClientInterface::class);
 
         /**
          * @var ServerRequestInterface|MockObject
          */
-        $serverRequestMock = $this->createMock(ServerRequestInterface::class);
+        $serverRequestMock = $this->createStub(ServerRequestInterface::class);
 
         /**
          * @var MiddlewareInterface|MockObject
@@ -385,7 +385,7 @@ class ManagerTest extends AbstractChefTests
         $middleware3 = $this->createMock(MiddlewareInterface::class);
         $middleware3->expects($this->never())->method('execute');
 
-        $manager->read($this->createMock(RecipeInterface::class))
+        $manager->read($this->createStub(RecipeInterface::class))
             ->followSteps([
                 new Bowl([$middleware2, 'execute'], []),
                 new Bowl([$middleware1, 'execute'], []),
@@ -406,12 +406,12 @@ class ManagerTest extends AbstractChefTests
         /**
          * @var ClientInterface|MockObject
          */
-        $clientMock = $this->createMock(ClientInterface::class);
+        $clientMock = $this->createStub(ClientInterface::class);
 
         /**
          * @var MessageInterface|MockObject
          */
-        $messageMock = $this->createMock(MessageInterface::class);
+        $messageMock = $this->createStub(MessageInterface::class);
 
         /**
          * @var MiddlewareInterface|MockObject
@@ -449,7 +449,7 @@ class ManagerTest extends AbstractChefTests
         $middleware3 = $this->createMock(MiddlewareInterface::class);
         $middleware3->expects($this->never())->method('execute');
 
-        $manager->read($this->createMock(RecipeInterface::class))
+        $manager->read($this->createStub(RecipeInterface::class))
             ->followSteps([
                 new Bowl([$middleware2, 'execute'], []),
                 new Bowl([$middleware1, 'execute'], []),
@@ -470,12 +470,12 @@ class ManagerTest extends AbstractChefTests
         /**
          * @var ClientInterface|MockObject
          */
-        $clientMock = $this->createMock(ClientInterface::class);
+        $clientMock = $this->createStub(ClientInterface::class);
 
         /**
          * @var ServerRequestInterface|MockObject
          */
-        $serverRequestMock = $this->createMock(ServerRequestInterface::class);
+        $serverRequestMock = $this->createStub(ServerRequestInterface::class);
 
         /**
          * @var MiddlewareInterface|MockObject
@@ -513,7 +513,7 @@ class ManagerTest extends AbstractChefTests
         $middleware3 = $this->createMock(MiddlewareInterface::class);
         $middleware3->expects($this->never())->method('execute');
 
-        $manager->read($this->createMock(RecipeInterface::class))
+        $manager->read($this->createStub(RecipeInterface::class))
             ->followSteps([
                 new Bowl([$middleware2, 'execute'], []),
                 new Bowl([$middleware1, 'execute'], []),
@@ -534,12 +534,12 @@ class ManagerTest extends AbstractChefTests
         /**
          * @var ClientInterface|MockObject
          */
-        $clientMock = $this->createMock(ClientInterface::class);
+        $clientMock = $this->createStub(ClientInterface::class);
 
         /**
          * @var MessageInterface|MockObject
          */
-        $messageMock = $this->createMock(MessageInterface::class);
+        $messageMock = $this->createStub(MessageInterface::class);
 
         /**
          * @var MiddlewareInterface|MockObject
@@ -577,7 +577,7 @@ class ManagerTest extends AbstractChefTests
         $middleware3 = $this->createMock(MiddlewareInterface::class);
         $middleware3->expects($this->never())->method('execute');
 
-        $manager->read($this->createMock(RecipeInterface::class))
+        $manager->read($this->createStub(RecipeInterface::class))
             ->followSteps([
                 new Bowl([$middleware2, 'execute'], []),
                 new Bowl([$middleware1, 'execute'], []),
@@ -598,12 +598,12 @@ class ManagerTest extends AbstractChefTests
         /**
          * @var ClientInterface|MockObject
          */
-        $clientMock = $this->createMock(ClientInterface::class);
+        $clientMock = $this->createStub(ClientInterface::class);
 
         /**
          * @var ServerRequestInterface|MockObject
          */
-        $serverRequestMock = $this->createMock(ServerRequestInterface::class);
+        $serverRequestMock = $this->createStub(ServerRequestInterface::class);
 
         /**
          * @var MiddlewareInterface|MockObject
@@ -629,7 +629,7 @@ class ManagerTest extends AbstractChefTests
         $middleware3 = $this->createMock(MiddlewareInterface::class);
         $middleware3->expects($this->never())->method('execute');
 
-        $manager->read($this->createMock(RecipeInterface::class))
+        $manager->read($this->createStub(RecipeInterface::class))
             ->followSteps([
                 new Bowl([$middleware1, 'execute'], []),
                 new Bowl([$middleware2, 'execute'], []),
@@ -654,12 +654,12 @@ class ManagerTest extends AbstractChefTests
         /**
          * @var ClientInterface|MockObject
          */
-        $clientMock = $this->createMock(ClientInterface::class);
+        $clientMock = $this->createStub(ClientInterface::class);
 
         /**
          * @var MessageInterface|MockObject
          */
-        $messageMock = $this->createMock(MessageInterface::class);
+        $messageMock = $this->createStub(MessageInterface::class);
 
         /**
          * @var MiddlewareInterface|MockObject
@@ -685,7 +685,7 @@ class ManagerTest extends AbstractChefTests
         $middleware3 = $this->createMock(MiddlewareInterface::class);
         $middleware3->expects($this->never())->method('execute');
 
-        $manager->read($this->createMock(RecipeInterface::class))
+        $manager->read($this->createStub(RecipeInterface::class))
             ->followSteps([
                 new Bowl([$middleware1, 'execute'], []),
                 new Bowl([$middleware2, 'execute'], []),

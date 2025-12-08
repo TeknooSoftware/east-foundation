@@ -25,10 +25,10 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\FoundationBundle\Messenger;
 
+use PHPUnit\Framework\MockObject\Stub;
 use TypeError;
 use stdClass;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\MessageInterface;
 use Teknoo\East\Foundation\Client\ClientInterface;
@@ -51,10 +51,10 @@ class ExecutorTest extends TestCase
 {
     private ?ManagerInterface $manager = null;
 
-    private function getManagerMock(): ManagerInterface&MockObject
+    private function getManagerMock(): ManagerInterface&Stub
     {
         if (!$this->manager instanceof ManagerInterface) {
-            $this->manager = $this->createMock(ManagerInterface::class);
+            $this->manager = $this->createStub(ManagerInterface::class);
         }
 
         return $this->manager;
@@ -72,8 +72,8 @@ class ExecutorTest extends TestCase
         $this->expectException(TypeError::class);
         $this->buildExecutor()->execute(
             new stdClass(),
-            $this->createMock(MessageInterface::class),
-            $this->createMock(ClientInterface::class),
+            $this->createStub(MessageInterface::class),
+            $this->createStub(ClientInterface::class),
             [],
         );
     }
@@ -82,9 +82,9 @@ class ExecutorTest extends TestCase
     {
         $this->expectException(TypeError::class);
         $this->buildExecutor()->execute(
-            $this->createMock(BaseRecipeInterface::class),
-            $this->createMock(MessageInterface::class),
-            $this->createMock(ClientInterface::class),
+            $this->createStub(BaseRecipeInterface::class),
+            $this->createStub(MessageInterface::class),
+            $this->createStub(ClientInterface::class),
             new stdClass(),
         );
     }
@@ -93,9 +93,9 @@ class ExecutorTest extends TestCase
     {
         $this->expectException(TypeError::class);
         $this->buildExecutor()->execute(
-            $this->createMock(BaseRecipeInterface::class),
+            $this->createStub(BaseRecipeInterface::class),
             new stdClass(),
-            $this->createMock(ClientInterface::class),
+            $this->createStub(ClientInterface::class),
             [],
         );
     }
@@ -104,8 +104,8 @@ class ExecutorTest extends TestCase
     {
         $this->expectException(TypeError::class);
         $this->buildExecutor()->execute(
-            $this->createMock(BaseRecipeInterface::class),
-            $this->createMock(ClientInterface::class),
+            $this->createStub(BaseRecipeInterface::class),
+            $this->createStub(ClientInterface::class),
             new stdClass(),
             [],
         );
@@ -117,9 +117,9 @@ class ExecutorTest extends TestCase
         $this->assertInstanceOf(
             Executor::class,
             $executor->execute(
-                $this->createMock(BaseRecipeInterface::class),
-                $this->createMock(MessageInterface::class),
-                $this->createMock(ClientInterface::class),
+                $this->createStub(BaseRecipeInterface::class),
+                $this->createStub(MessageInterface::class),
+                $this->createStub(ClientInterface::class),
                 []
             )
         );
@@ -128,10 +128,10 @@ class ExecutorTest extends TestCase
     public function testExecuteTwoTimes(): void
     {
         $executor = new Executor(new Manager());
-        $recipe = $this->createMock(RecipeInterface::class);
+        $recipe = $this->createStub(RecipeInterface::class);
         $recipe->method('train')->willReturnCallback(
             function (ChefInterface $chef) use ($recipe): \Teknoo\Recipe\BaseRecipeInterface {
-                $chef->followSteps([$this->createMock(BowlInterface::class)]);
+                $chef->followSteps([$this->createStub(BowlInterface::class)]);
 
                 return $recipe;
             }
@@ -141,8 +141,8 @@ class ExecutorTest extends TestCase
             Executor::class,
             $executor->execute(
                 $recipe,
-                $this->createMock(MessageInterface::class),
-                $this->createMock(ClientInterface::class),
+                $this->createStub(MessageInterface::class),
+                $this->createStub(ClientInterface::class),
                 []
             )
         );
@@ -151,8 +151,8 @@ class ExecutorTest extends TestCase
             Executor::class,
             $executor->execute(
                 $recipe,
-                $this->createMock(MessageInterface::class),
-                $this->createMock(ClientInterface::class),
+                $this->createStub(MessageInterface::class),
+                $this->createStub(ClientInterface::class),
                 []
             )
         );

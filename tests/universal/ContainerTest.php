@@ -73,8 +73,8 @@ class ContainerTest extends TestCase
     public function testCreateManager(): void
     {
         $container = $this->buildContainer();
-        $container->set(LoggerInterface::class, $this->createMock(LoggerInterface::class));
-        $container->set(RouterInterface::class, $this->createMock(RouterInterface::class));
+        $container->set(LoggerInterface::class, $this->createStub(LoggerInterface::class));
+        $container->set(RouterInterface::class, $this->createStub(RouterInterface::class));
         $manager1 = $container->get(Manager::class);
         $manager2 = $container->get(ManagerInterface::class);
 
@@ -94,8 +94,8 @@ class ContainerTest extends TestCase
     public function testCreateProcessor(): void
     {
         $container = $this->buildContainer();
-        $container->set(LoggerInterface::class, $this->createMock(LoggerInterface::class));
-        $manager = $this->createMock(ManagerInterface::class);
+        $container->set(LoggerInterface::class, $this->createStub(LoggerInterface::class));
+        $manager = $this->createStub(ManagerInterface::class);
         $container->set(ManagerInterface::class, $manager);
         $processor1 = $container->get(ProcessorInterface::class);
         $processor2 = $container->get(Processor::class);
@@ -184,8 +184,8 @@ class ContainerTest extends TestCase
     public function testRecipePlan(): void
     {
         $container = $this->buildContainer();
-        $container->set(LoggerInterface::class, $this->createMock(LoggerInterface::class));
-        $container->set(RouterInterface::class, $this->createMock(RouterInterface::class));
+        $container->set(LoggerInterface::class, $this->createStub(LoggerInterface::class));
+        $container->set(RouterInterface::class, $this->createStub(RouterInterface::class));
         $plan1 = $container->get(Plan::class);
         $plan2 = $container->get(PlanInterface::class);
 

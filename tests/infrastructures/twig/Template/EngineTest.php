@@ -27,6 +27,7 @@ namespace Teknoo\Tests\East\Twig\Template;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 use Teknoo\Recipe\Promise\PromiseInterface;
 use Teknoo\East\Foundation\Template\ResultInterface;
@@ -48,10 +49,22 @@ class EngineTest extends TestCase
     /**
      * @return Environment|MockObject
      */
-    public function getTwig(): Environment
+    public function getTwig(): Environment&MockObject
+    {
+        if (
+            !$this->twig instanceof Environment
+            || !$this->twig instanceof MockObject
+        ) {
+            $this->twig = $this->createMock(Environment::class);
+        }
+
+        return $this->twig;
+    }
+
+    public function getTwigStub(): Environment&Stub
     {
         if (!$this->twig instanceof Environment) {
-            $this->twig = $this->createMock(Environment::class);
+            $this->twig = $this->createStub(Environment::class);
         }
 
         return $this->twig;
@@ -60,6 +73,11 @@ class EngineTest extends TestCase
     public function buildEngine(): Engine
     {
         return new Engine($this->getTwig());
+    }
+
+    public function buildEngineWithStub(): Engine
+    {
+        return new Engine($this->getTwigStub());
     }
 
     public function testRenderNotCallResult(): void
@@ -74,7 +92,7 @@ class EngineTest extends TestCase
 
         $this->assertInstanceOf(
             EngineInterface::class,
-            $this->buildEngine()->render(
+            $this->buildEngineWithStub()->render(
                 $promise,
                 $view,
                 $parameters
@@ -127,7 +145,7 @@ class EngineTest extends TestCase
 
         $this->assertInstanceOf(
             EngineInterface::class,
-            $this->buildEngine()->render(
+            $this->buildEngineWithStub()->render(
                 $promise,
                 $view,
                 $parameters

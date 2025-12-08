@@ -70,7 +70,7 @@ class LoopDetectorTest extends TestCase
     {
         $bowl = $this->createMock(RecipeBowl::class);
         $manager = $this->createMock(ManagerInterface::class);
-        $result = $this->createMock(ResultInterface::class);
+        $result = $this->createStub(ResultInterface::class);
 
         $bowl->expects($this->once())
             ->method('stopLooping');
@@ -89,8 +89,8 @@ class LoopDetectorTest extends TestCase
     {
         $bowl = $this->createMock(RecipeBowl::class);
         $manager = $this->createMock(ManagerInterface::class);
-        $result = $this->createMock(ResultInterface::class);
-        $next = $this->createMock(ResultInterface::class);
+        $result = $this->createStub(ResultInterface::class);
+        $next = $this->createStub(ResultInterface::class);
         $result
             ->method('getNext')
             ->willReturn($next);

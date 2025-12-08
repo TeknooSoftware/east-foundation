@@ -29,7 +29,7 @@ use PHPUnit\Framework\TestCase;
 use TypeError;
 use stdClass;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Stub;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Teknoo\East\FoundationBundle\DependencyInjection\EastFoundationExtension;
 
@@ -46,10 +46,10 @@ class EastFrameworkExtensionTest extends TestCase
 {
     private ?ContainerBuilder $container = null;
 
-    private function getContainerBuilderMock(): ContainerBuilder&MockObject
+    private function getContainerBuilderStub(): ContainerBuilder&Stub
     {
         if (!$this->container instanceof ContainerBuilder) {
-            $this->container = $this->createMock(ContainerBuilder::class);
+            $this->container = $this->createStub(ContainerBuilder::class);
         }
 
         return $this->container;
@@ -72,7 +72,7 @@ class EastFrameworkExtensionTest extends TestCase
     {
         $this->assertInstanceOf(
             $this->getExtensionClass(),
-            $this->buildExtension()->load([], $this->getContainerBuilderMock())
+            $this->buildExtension()->load([], $this->getContainerBuilderStub())
         );
     }
 
@@ -85,6 +85,6 @@ class EastFrameworkExtensionTest extends TestCase
     public function testLoadErrorConfig(): void
     {
         $this->expectException(TypeError::class);
-        $this->buildExtension()->load(new stdClass(), $this->getContainerBuilderMock());
+        $this->buildExtension()->load(new stdClass(), $this->getContainerBuilderStub());
     }
 }

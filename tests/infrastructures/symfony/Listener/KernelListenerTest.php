@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\FoundationBundle\Listener;
 
+use PHPUnit\Framework\MockObject\Stub;
 use TypeError;
 use stdClass;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -57,8 +58,20 @@ class KernelListenerTest extends TestCase
 
     private function getManagerMock(): ManagerInterface&MockObject
     {
-        if (!$this->manager instanceof ManagerInterface) {
+        if (
+            !$this->manager instanceof ManagerInterface
+            || !$this->manager instanceof MockObject
+        ) {
             $this->manager = $this->createMock(ManagerInterface::class);
+        }
+
+        return $this->manager;
+    }
+
+    private function getManagerStub(): ManagerInterface&Stub
+    {
+        if (!$this->manager instanceof ManagerInterface) {
+            $this->manager = $this->createStub(ManagerInterface::class);
         }
 
         return $this->manager;
@@ -73,10 +86,19 @@ class KernelListenerTest extends TestCase
         return $this->clientWithResponseEventInterface;
     }
 
-    private function getFactoryMock(): HttpMessageFactoryInterface&MockObject
+    private function getClientWithResponseEventInterfaceStub(): ClientWithResponseEventInterface&Stub
+    {
+        if (!$this->clientWithResponseEventInterface instanceof ClientWithResponseEventInterface) {
+            $this->clientWithResponseEventInterface = $this->createStub(ClientWithResponseEventInterface::class);
+        }
+
+        return $this->clientWithResponseEventInterface;
+    }
+
+    private function getFactoryMock(): HttpMessageFactoryInterface&Stub
     {
         if (!$this->factory instanceof HttpMessageFactoryInterface) {
-            $this->factory = $this->createMock(HttpMessageFactoryInterface::class);
+            $this->factory = $this->createStub(HttpMessageFactoryInterface::class);
         }
 
         return $this->factory;
@@ -94,6 +116,15 @@ class KernelListenerTest extends TestCase
         );
     }
 
+    private function buildKernelListenerWithStubs(): KernelListener
+    {
+        return new KernelListener(
+            $this->getManagerStub(),
+            $this->getClientWithResponseEventInterfaceStub(),
+            $this->getFactoryMock(),
+        );
+    }
+
     private function getKernelListenerClass(): string
     {
         return KernelListener::class;
@@ -101,10 +132,10 @@ class KernelListenerTest extends TestCase
 
     public function testOnKernelRequest(): void
     {
-        $request = $this->createMock(RequestEvent::class);
+        $request = $this->createStub(RequestEvent::class);
         $request->method('getRequest')->willReturn(new Request());
 
-        $psrRquest = $this->createMock(ServerRequestInterface::class);
+        $psrRquest = $this->createStub(ServerRequestInterface::class);
         $psrRquest->method('withAttribute')->willReturnSelf();
 
         $this->getFactoryMock()
@@ -122,9 +153,15 @@ class KernelListenerTest extends TestCase
             ->expects($this->never())
             ->method('mustSendAResponse');
 
+        $listener = new KernelListener(
+            $this->createStub(ManagerInterface::class),
+            $this->getClientWithResponseEventInterfaceMock(),
+            $this->getFactoryMock(),
+        );
+
         $this->assertInstanceOf(
             $this->getKernelListenerClass(),
-            $this->buildKernelListener()->onKernelRequest(
+            $listener->onKernelRequest(
                 $request
             )
         );
@@ -134,12 +171,12 @@ class KernelListenerTest extends TestCase
     {
         $symfonyRequest = new Request();
         $symfonyRequest->attributes->set('exception', new \Exception());
-        $request = $this->createMock(RequestEvent::class);
+        $request = $this->createStub(RequestEvent::class);
         $request->method('getRequest')->willReturn($symfonyRequest);
 
         $this->getFactoryMock()
             ->method('createRequest')
-            ->willReturn($this->createMock(ServerRequestInterface::class));
+            ->willReturn($this->createStub(ServerRequestInterface::class));
 
         $this->getClientWithResponseEventInterfaceMock()
             ->expects($this->never())
@@ -160,6 +197,6 @@ class KernelListenerTest extends TestCase
     public function testOnKernelRequestError(): void
     {
         $this->expectException(TypeError::class);
-        $this->buildKernelListener()->onKernelRequest(new stdClass());
+        $this->buildKernelListenerWithStubs()->onKernelRequest(new stdClass());
     }
 }
