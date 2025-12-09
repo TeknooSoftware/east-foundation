@@ -1,5 +1,11 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [9.0.3] - 2025-12-09
+### Stable Release
+- Fix bc break introduced into patch of phpstan and phpunit
+- Support PHPStan 2.1.33+
+- Support PHPUnit 12.5.1+
+
 ## [9.0.1] - 2025-08-11
 ### Stable Release
 - Fix PHPStan issues
