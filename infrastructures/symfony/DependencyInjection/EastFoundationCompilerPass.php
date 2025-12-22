@@ -41,14 +41,14 @@ use Teknoo\East\Twig\Template\Engine;
  */
 class EastFoundationCompilerPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container): EastFoundationCompilerPass
+    public function process(ContainerBuilder $container): void
     {
         $taggedControllers = $container->findTaggedServiceIds('east.endpoint.template');
 
         $twigPresent = $container->has('twig');
 
         if (false === $twigPresent) {
-            return $this;
+            return;
         }
 
         foreach ($taggedControllers as $id => $tags) {
@@ -59,7 +59,5 @@ class EastFoundationCompilerPass implements CompilerPassInterface
                 [new Reference(Engine::class)]
             );
         }
-
-        return $this;
     }
 }

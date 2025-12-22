@@ -23,7 +23,7 @@
 
 declare(strict_types=1);
 
-namespace Teknoo\East\FoundationBundle\Resources\config;
+namespace Teknoo\East\FoundationBundle\config;
 
 use Psr\Container\ContainerInterface;
 use Teknoo\East\Foundation\Client\ClientInterface as BaseClient;

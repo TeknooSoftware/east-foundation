@@ -32,8 +32,8 @@ Create the file `config/packages/east_foundation.yaml` with this content :
     di_bridge:
         definitions:
             - '{ priority: 30, file: %kernel.project_dir%/vendor/teknoo/east-foundation/src/di.php' }
-            - '{ priority: 30, %kernel.project_dir%/vendor/teknoo/east-foundation/infrastructures/symfony/Resources/config/di.php' }
-            - '{ priority: 30, %kernel.project_dir%/vendor/teknoo/east-foundation/infrastructures/symfony/Resources/config/laminas_di.php' }
+            - '{ priority: 30, %kernel.project_dir%/vendor/teknoo/east-foundation/infrastructures/symfony/config/di.php' }
+            - '{ priority: 30, %kernel.project_dir%/vendor/teknoo/east-foundation/infrastructures/symfony/config/laminas_di.php' }
         import:
             Psr\\Log\\LoggerInterface: 'logger'
 

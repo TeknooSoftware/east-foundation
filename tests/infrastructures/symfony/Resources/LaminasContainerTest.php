@@ -54,7 +54,7 @@ class LaminasContainerTest extends TestCase
     {
         $containerDefinition = new ContainerBuilder();
         $containerDefinition->addDefinitions(
-            __DIR__.'/../../../../infrastructures/symfony/Resources/config/laminas_di.php'
+            __DIR__.'/../../../../infrastructures/symfony/config/laminas_di.php'
         );
 
         return $containerDefinition->build();
