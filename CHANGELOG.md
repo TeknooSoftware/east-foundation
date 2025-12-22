@@ -1,6 +1,6 @@
 # Teknoo Software - East Foundation - Change Log
 
-## [9.0.4] - 2025-12-09
+## [9.0.4] - 2025-12-22
 ### Stable Release
 - Migrate in Symfony Bundle config files from Resources/config to config.
 - Fix methods signatures about Dependency Injection in Symfony Bundle
