@@ -23,7 +23,7 @@
 
 declare(strict_types=1);
 
-namespace Teknoo\East\FoundationBundle\Resources\config;
+namespace Teknoo\East\FoundationBundle\config;
 
 use Laminas\Diactoros\ResponseFactory;
 use Laminas\Diactoros\ServerRequestFactory;

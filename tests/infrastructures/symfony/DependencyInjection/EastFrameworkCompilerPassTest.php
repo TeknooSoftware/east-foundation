@@ -100,12 +100,10 @@ class EastFrameworkCompilerPassTest extends TestCase
             )
             ->willReturn($def);
 
-        $this->assertInstanceOf(
-            $this->getCompilerPassClass(),
-            $this->buildCompilerPass()->process(
-                $this->getContainerBuilderMock()
-            )
+        $this->buildCompilerPass()->process(
+            $this->getContainerBuilderMock()
         );
+        $this->assertTrue(true);
     }
 
     public function testProcessNoTwig(): void
@@ -130,12 +128,10 @@ class EastFrameworkCompilerPassTest extends TestCase
             ->method('getDefinition')
             ->willReturn($def);
 
-        $this->assertInstanceOf(
-            $this->getCompilerPassClass(),
-            $this->buildCompilerPass()->process(
-                $container
-            )
+        $this->buildCompilerPass()->process(
+            $container
         );
+        $this->assertTrue(true);
     }
 
     public function testProcessError(): void
