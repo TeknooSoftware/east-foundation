@@ -1,5 +1,9 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [9.0.5] - 2026-01-27
+### Stable Release
+- Update QA in PHPDocs
+
 ## [9.0.4] - 2025-12-22
 ### Stable Release
 - Migrate in Symfony Bundle config files from Resources/config to config.

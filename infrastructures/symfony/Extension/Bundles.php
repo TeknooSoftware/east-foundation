@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace Teknoo\East\FoundationBundle\Extension;
 
+use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Teknoo\East\Foundation\Extension\Manager;
 use Teknoo\East\Foundation\Extension\ManagerInterface;
 use Teknoo\East\Foundation\Extension\ModuleInterface;
@@ -46,7 +47,7 @@ use Teknoo\East\Foundation\Extension\ModuleInterface;
 final class Bundles implements ModuleInterface
 {
     /**
-     * @param array<string, array<string, boolean>> $bundles
+     * @param array<class-string<BundleInterface>, array<string, bool>> $bundles
      */
     private function __construct(
         private array $bundles
@@ -54,6 +55,7 @@ final class Bundles implements ModuleInterface
     }
 
     /**
+     * @param class-string<BundleInterface> $bundleClass
      * @param array<string, boolean> $environments
      */
     public function register(string $bundleClass, array $environments): self
@@ -64,7 +66,7 @@ final class Bundles implements ModuleInterface
     }
 
     /**
-     * @param array<string, array<string, boolean>> $bundles
+     * @param array<class-string<BundleInterface>, array<string, bool>> $bundles
      */
     public static function extendsBundles(array &$bundles, ?ManagerInterface $manager = null): void
     {
