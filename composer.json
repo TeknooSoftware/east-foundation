@@ -51,7 +51,7 @@
     "require-dev": {
         "ext-pcntl": "*",
         "roave/security-advisories": "dev-latest",
-        "phpunit/phpunit": "^13",
+        "phpunit/phpunit": "^13.0.1",
         "squizlabs/php_codesniffer": "^4.0.1",
         "phpstan/phpstan": "^2.1.38",
         "phpstan/extension-installer": "^1.4.3",

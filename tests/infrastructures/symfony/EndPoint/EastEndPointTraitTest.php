@@ -76,8 +76,9 @@ class EastEndPointTraitTest extends TestCase
 
     public function testGenerateUrl(): void
     {
-        $router = $this->createStub(RouterInterface::class);
+        $router = $this->createMock(RouterInterface::class);
         $router
+            ->expects($this->atLeastOnce())
             ->method('generate')
             ->with('routeName', ['foo' => 'bar'])
             ->willReturn('/foo/bar');
@@ -129,8 +130,9 @@ class EastEndPointTraitTest extends TestCase
         $response->method('withHeader')->willReturnSelf();
         $responseFactory->method('createResponse')->willReturn($response);
 
-        $router = $this->createStub(RouterInterface::class);
+        $router = $this->createMock(RouterInterface::class);
         $router
+            ->expects($this->atLeastOnce())
             ->method('generate')
             ->with('routeName', ['foo' => 'bar'])
             ->willReturn('/foo/bar');

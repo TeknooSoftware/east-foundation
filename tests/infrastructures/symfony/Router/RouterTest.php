@@ -503,8 +503,8 @@ class RouterTest extends TestCase
 
         $this->getUrlMatcherMock()->method('match')->willReturn(['_controller' => 'fooBar']);
 
-        $this->getContainerMock()->method('has')->with('fooBar')->willReturn(true);
-        $this->getContainerMock()->method('get')->with('fooBar')->willReturn(function () {
+        $this->getContainerMock()->method('has')->willReturn(true);
+        $this->getContainerMock()->method('get')->willReturn(function () {
         });
 
         $manager->method('continueExecution')->willReturnSelf();
@@ -537,8 +537,8 @@ class RouterTest extends TestCase
 
         $this->getUrlMatcherMock()->method('match')->willReturn(['_controller' => 'fooBar']);
 
-        $this->getContainerMock()->method('has')->with('fooBar')->willReturn(true);
-        $this->getContainerMock()->method('get')->with('fooBar')->willReturn(
+        $this->getContainerMock()->method('has')->willReturn(true);
+        $this->getContainerMock()->method('get')->willReturn(
             new class () extends SymfonyAbstractController {
             }
         );
