@@ -79,6 +79,7 @@ class EastFrameworkCompilerPassTest extends TestCase
             ->willReturn(true);
 
         $this->getContainerBuilderMock()
+            ->expects($this->atLeastOnce())
             ->method('findTaggedServiceIds')
             ->with('east.endpoint.template')
             ->willReturn([

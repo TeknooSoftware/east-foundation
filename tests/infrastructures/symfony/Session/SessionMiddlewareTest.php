@@ -102,6 +102,7 @@ class SessionMiddlewareTest extends TestCase
             ->willReturn($session);
 
         $request
+            ->expects($this->atLeastOnce())
             ->method('getAttribute')
             ->with('request')
             ->willReturn($sfRequest);
@@ -111,11 +112,6 @@ class SessionMiddlewareTest extends TestCase
             ->method('withAttribute')
             ->with(SessionInterface::ATTRIBUTE_KEY, $this->callback(fn ($object): bool => $object instanceof Session))
             ->willReturn($requestUpdated);
-
-        $manager
-            ->method('continueExecution')
-            ->with($client, $requestUpdated)
-            ->willReturnSelf();
 
         $manager->expects($this->once())
             ->method('updateMessage')
@@ -146,6 +142,7 @@ class SessionMiddlewareTest extends TestCase
         $sfRequest->attributes->set('_stateless', true);
 
         $request
+            ->expects($this->atLeastOnce())
             ->method('getAttribute')
             ->with('request')
             ->willReturn($sfRequest);
