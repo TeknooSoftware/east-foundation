@@ -61,7 +61,6 @@ class TimeoutServiceTest extends TestCase
         }
 
         $rp = new \ReflectionProperty(TimeoutService::class, 'setTimeoutCallable');
-        $rp->setAccessible(true);
         $rp->setValue($service, function (int $seconds): void {
             $this->seconds = $seconds;
         });

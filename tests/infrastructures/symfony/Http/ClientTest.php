@@ -772,7 +772,6 @@ class ClientTest extends TestCase
         $this->assertInstanceOf(Client::class, $clonedClient);
 
         $reflectionProperty = new \ReflectionProperty($clonedClient, 'factory');
-        $reflectionProperty->setAccessible(true);
         $this->assertNotSame($this->getHttpFoundationFactoryStub(), $reflectionProperty->getValue($clonedClient));
     }
 
