@@ -80,7 +80,10 @@ class TimerService implements TimerServiceInterface
     {
         $timestamp = $dateTime->getTimestamp();
         while (false !== ($timersIds = current($this->pipes)) && key($this->pipes) <= $timestamp) {
-            unset($this->pipes[key($this->pipes)]);
+            if ($key = key($this->pipes)) {
+                unset($this->pipes[$key]);
+            }
+
             foreach ($timersIds as $timerId) {
                 if (isset($this->callbacks[$timerId])) {
                     $callback = $this->callbacks[$timerId];
