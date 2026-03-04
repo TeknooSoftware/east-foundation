@@ -1,5 +1,10 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [9.1.0] - 2026-03-04
+### Stable Release
+- Update Router to support Symfony UX Live Component and execute original East Recipe
+- Provide trait to write Components usable with East
+
 ## [9.0.5] - 2026-01-27
 ### Stable Release
 - Update QA in PHPDocs
