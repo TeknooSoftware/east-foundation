@@ -39,15 +39,14 @@ use Teknoo\East\Foundation\Router\Result;
 use Teknoo\East\Foundation\Router\ResultInterface;
 use Teknoo\East\Foundation\Router\RouterInterface;
 
-use function array_flip;
 use function explode;
 use function implode;
 use function is_callable;
 use function is_string;
+use function json_decode;
 use function preg_match;
 use function str_starts_with;
 use function str_contains;
-use function strtolower;
 use function substr;
 
 /**
@@ -97,29 +96,101 @@ class Router implements RouterInterface
         return $path;
     }
 
+    /**
+     * @param ServerRequestInterface $request
+     * @return array<string, mixed>|null
+     * @throws \JsonException
+     */
+    private function getParameters(ServerRequestInterface &$request): ?array
+    {
+        $originalPath = $this->cleanSymfonyHandler(
+            $request->getUri()->getPath()
+        );
+
+        if (null !== $this->excludePathsRegex && preg_match($this->excludePathsRegex, $originalPath)) {
+            return null;
+        }
+
+        /** @var array<string, mixed> $originalParameters */
+        $originalParameters = $this->matcher->match($originalPath);
+
+        if (
+            !empty($originalParameters['_controller'])
+            || 'ux_live_component' !== ($originalParameters['_route'] ?? '')
+            || empty($originalParameters['_live_component'])
+        ) {
+            return $originalParameters;
+        }
+
+        $json = ((array) $request->getParsedBody())['data'] ?? '[]';
+        if (!is_string($json)) {
+            return $originalParameters;
+        }
+
+        $body = json_decode(
+            json: $json,
+            associative: true,
+            flags: JSON_THROW_ON_ERROR
+        );
+
+        if (
+            !is_array($body)
+            || empty($body['props'])
+            || !is_array($body['props'])
+            || empty($body['props']['originalPath'])
+            || !is_string($body['props']['originalPath'])
+        ) {
+            return $originalParameters;
+        }
+
+        $realPath = $this->cleanSymfonyHandler($body['props']['originalPath']);
+
+        /** @var array<string, mixed> $realParameters */
+        $realParameters = $this->matcher->match($realPath);
+        $realParameters['_live_parameters'] = $originalParameters;
+        $realParameters['_live_body'] = $body;
+
+        if (empty($body['updated']) || !is_array($body['updated'])) {
+            return $realParameters;
+        }
+
+        $attributes = $request->getAttributes();
+        foreach ($body['updated'] as $key => $value) {
+            if (is_string($key) && !isset($attributes[$key]) & is_string($value)) {
+                $request = $request->withAttribute($key, $value);
+            }
+        }
+
+        return $realParameters;
+    }
+
     /*
      * Method to find the controller to call for this method via the Symfony Matcher. Return only controller as service
      * (callable provided by the Symfony matcher), ignore other.
      */
-    private function matchRequest(ServerRequestInterface $request): ?callable
-    {
-        $parameters = [];
-        $path = $this->cleanSymfonyHandler(
-            $request->getUri()->getPath()
-        );
-
-        if (null !== $this->excludePathsRegex && preg_match($this->excludePathsRegex, $path)) {
-            return null;
-        }
-
+    private function matchRequest(
+        ServerRequestInterface &$request,
+    ): ?callable {
         try {
-            $parameters = $this->matcher->match($path);
+            if (!$parameters = $this->getParameters($request)) {
+                return null;
+            }
         } catch (ResourceNotFoundException) {
             /* Do nothing, keep the framework to manage it */
         }
 
         if (empty($parameters['_controller'])) {
             return null;
+        }
+
+        if (!empty($parameters['_live_parameters'])) {
+            foreach ($parameters as $name => $value) {
+                if ('_live_parameters' === $name) {
+                    continue;
+                }
+
+                $request = $request->withAttribute($name, $value);
+            }
         }
 
         $controller = $parameters['_controller'];
@@ -166,7 +237,7 @@ class Router implements RouterInterface
     public function execute(
         ClientInterface $client,
         MessageInterface $message,
-        ManagerInterface $manager
+        ManagerInterface $manager,
     ): MiddlewareInterface {
         if (!$message instanceof ServerRequestInterface) {
             return $this;
