@@ -707,4 +707,530 @@ class RouterTest extends TestCase
             new stdClass()
         );
     }
+
+    public function testExecuteWithPathMatchingExcludedPattern(): void
+    {
+        $uri = $this->createStub(UriInterface::class);
+        $uri->method('getPath')->willReturn('/api/health');
+
+        $client = $this->createStub(ClientInterface::class);
+        $request = $this->createStub(ServerRequestInterface::class);
+        $request->method('getUri')->willReturn($uri);
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects($this->never())->method('updateWorkPlan');
+        $manager->expects($this->never())->method('updateMessage');
+
+        $this->getUrlMatcherMockObject()->expects($this->never())->method('match');
+
+        $this->assertInstanceOf(
+            $this->getRouterClass(),
+            $this->buildRouter(['/api', '/_wdt'])->execute($client, $request, $manager)
+        );
+    }
+
+    public function testExecuteWithLiveComponentRouteWithUpdatedFields(): void
+    {
+        $uri = $this->createStub(UriInterface::class);
+        $uri->method('getPath')->willReturn('/_components');
+
+        $client = $this->createStub(ClientInterface::class);
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->method('getUri')->willReturn($uri);
+        $request->method('getParsedBody')->willReturn([
+            'data' => json_encode([
+                'props' => [
+                    'originalPath' => '/user/profile/456'
+                ],
+                'updated' => [
+                    'username' => 'john_doe',
+                    'email' => 'john@example.com',
+                ]
+            ])
+        ]);
+        $request->method('getAttributes')->willReturn([]);
+
+        $callIndex = 0;
+        $request->expects($this->exactly(6))->method('withAttribute')
+            ->willReturnCallback(function (string $key, $value) use ($request, &$callIndex) {
+                $expectedCalls = [
+                    ['username', 'john_doe'],
+                    ['email', 'john@example.com'],
+                ];
+
+                if ($callIndex < 2) {
+                    $this->assertEquals($expectedCalls[$callIndex][0], $key);
+                    $this->assertEquals($expectedCalls[$callIndex][1], $value);
+                }
+
+                $callIndex++;
+                return $request;
+            });
+
+        $manager = $this->createMock(ManagerInterface::class);
+
+        $this->getUrlMatcherMock()->method('match')->willReturnCallback(
+            function (string $path) {
+                if ($path === '/_components') {
+                    return [
+                        '_route' => 'ux_live_component',
+                        '_live_component' => 'UserProfile',
+                    ];
+                }
+                if ($path === '/user/profile/456') {
+                    return [
+                        '_controller' => function (): void {},
+                        'id' => '456',
+                    ];
+                }
+                return [];
+            }
+        );
+
+        $manager->expects($this->once())->method('updateWorkPlan')
+            ->willReturnCallback(function (array $workPlan) use ($manager) {
+                $this->assertInstanceOf(ResultInterface::class, $workPlan[ResultInterface::class]);
+                return $manager;
+            });
+        $manager->expects($this->once())->method('updateMessage')->willReturnSelf();
+
+        $this->assertInstanceOf(
+            $this->getRouterClass(),
+            $this->buildRouter()->execute($client, $request, $manager)
+        );
+    }
+
+    public function testExecuteWithLiveComponentRouteWithNonStringData(): void
+    {
+        $uri = $this->createStub(UriInterface::class);
+        $uri->method('getPath')->willReturn('/_components');
+
+        $client = $this->createStub(ClientInterface::class);
+        $request = $this->createStub(ServerRequestInterface::class);
+        $request->method('getUri')->willReturn($uri);
+        $request->method('getParsedBody')->willReturn([
+            'data' => 12345  // Not a string
+        ]);
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects($this->never())->method('updateWorkPlan');
+
+        $this->getUrlMatcherMock()->method('match')->willReturn([
+            '_route' => 'ux_live_component',
+            '_live_component' => 'UserProfile',
+        ]);
+
+        $this->assertInstanceOf(
+            $this->getRouterClass(),
+            $this->buildRouter()->execute($client, $request, $manager)
+        );
+    }
+
+    public function testExecuteWithLiveComponentRouteWithoutOriginalPath(): void
+    {
+        $uri = $this->createStub(UriInterface::class);
+        $uri->method('getPath')->willReturn('/_components');
+
+        $client = $this->createStub(ClientInterface::class);
+        $request = $this->createStub(ServerRequestInterface::class);
+        $request->method('getUri')->willReturn($uri);
+        $request->method('getParsedBody')->willReturn([
+            'data' => json_encode([
+                'props' => []  // No originalPath
+            ])
+        ]);
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects($this->never())->method('updateWorkPlan');
+
+        $this->getUrlMatcherMock()->method('match')->willReturn([
+            '_route' => 'ux_live_component',
+            '_live_component' => 'UserProfile',
+        ]);
+
+        $this->assertInstanceOf(
+            $this->getRouterClass(),
+            $this->buildRouter()->execute($client, $request, $manager)
+        );
+    }
+
+    public function testExecuteWithLiveComponentRouteWithoutProps(): void
+    {
+        $uri = $this->createStub(UriInterface::class);
+        $uri->method('getPath')->willReturn('/_components');
+
+        $client = $this->createStub(ClientInterface::class);
+        $request = $this->createStub(ServerRequestInterface::class);
+        $request->method('getUri')->willReturn($uri);
+        $request->method('getParsedBody')->willReturn([
+            'data' => json_encode([])  // No props
+        ]);
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects($this->never())->method('updateWorkPlan');
+
+        $this->getUrlMatcherMock()->method('match')->willReturn([
+            '_route' => 'ux_live_component',
+            '_live_component' => 'UserProfile',
+        ]);
+
+        $this->assertInstanceOf(
+            $this->getRouterClass(),
+            $this->buildRouter()->execute($client, $request, $manager)
+        );
+    }
+
+    public function testExecuteWithLiveComponentRouteCleaningAppPhp(): void
+    {
+        $uri = $this->createStub(UriInterface::class);
+        $uri->method('getPath')->willReturn('/_components');
+
+        $client = $this->createStub(ClientInterface::class);
+        $request = $this->createStub(ServerRequestInterface::class);
+        $request->method('getUri')->willReturn($uri);
+        $request->method('getParsedBody')->willReturn([
+            'data' => json_encode([
+                'props' => [
+                    'originalPath' => '/app.php/user/profile/789'
+                ]
+            ])
+        ]);
+        $request->method('getAttributes')->willReturn([]);
+
+        $manager = $this->createMock(ManagerInterface::class);
+
+        $this->getUrlMatcherMock()->method('match')->willReturnCallback(
+            function (string $path) {
+                if ($path === '/_components') {
+                    return [
+                        '_route' => 'ux_live_component',
+                        '_live_component' => 'UserProfile',
+                    ];
+                }
+                if ($path === '/user/profile/789') {
+                    return [
+                        '_controller' => function (): void {},
+                        'id' => '789',
+                    ];
+                }
+                return [];
+            }
+        );
+
+        $manager->expects($this->once())->method('updateWorkPlan')
+            ->willReturnCallback(function (array $workPlan) use ($manager) {
+                $this->assertInstanceOf(ResultInterface::class, $workPlan[ResultInterface::class]);
+                return $manager;
+            });
+        $manager->expects($this->once())->method('updateMessage')->willReturnSelf();
+
+        $this->assertInstanceOf(
+            $this->getRouterClass(),
+            $this->buildRouter()->execute($client, $request, $manager)
+        );
+    }
+
+    public function testExecuteWithLiveParametersAddsAttributes(): void
+    {
+        $uri = $this->createStub(UriInterface::class);
+        $uri->method('getPath')->willReturn('/_components');
+
+        $client = $this->createStub(ClientInterface::class);
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->method('getUri')->willReturn($uri);
+        $request->method('getParsedBody')->willReturn([
+            'data' => json_encode([
+                'props' => [
+                    'originalPath' => '/product/view/999'
+                ]
+            ])
+        ]);
+        $request->method('getAttributes')->willReturn([]);
+
+        $addedAttributes = [];
+        // All parameters: _controller, id, category, _live_parameters, _live_body = 5 attributes
+        $request->expects($this->exactly(5))->method('withAttribute')
+            ->willReturnCallback(function (string $key, $value) use ($request, &$addedAttributes) {
+                $addedAttributes[$key] = $value;
+                return $request;
+            });
+
+        $manager = $this->createMock(ManagerInterface::class);
+
+        $this->getUrlMatcherMock()->method('match')->willReturnCallback(
+            function (string $path) {
+                if ($path === '/_components') {
+                    return [
+                        '_route' => 'ux_live_component',
+                        '_live_component' => 'ProductView',
+                    ];
+                }
+                if ($path === '/product/view/999') {
+                    return [
+                        '_controller' => function (): void {},
+                        'id' => '999',
+                        'category' => 'electronics',
+                    ];
+                }
+                return [];
+            }
+        );
+
+        $manager->expects($this->once())->method('updateWorkPlan')->willReturnSelf();
+        $manager->expects($this->once())->method('updateMessage')->willReturnSelf();
+
+        $this->assertInstanceOf(
+            $this->getRouterClass(),
+            $this->buildRouter()->execute($client, $request, $manager)
+        );
+
+        // Verify the expected attributes were added (including _live_parameters)
+        $this->assertArrayHasKey('_controller', $addedAttributes);
+        $this->assertArrayHasKey('id', $addedAttributes);
+        $this->assertEquals('999', $addedAttributes['id']);
+        $this->assertArrayHasKey('category', $addedAttributes);
+        $this->assertEquals('electronics', $addedAttributes['category']);
+        $this->assertArrayHasKey('_live_parameters', $addedAttributes);
+        $this->assertArrayHasKey('_live_body', $addedAttributes);
+    }
+
+    public function testExecuteWithNonCallableObjectController(): void
+    {
+        $client = $this->createStub(ClientInterface::class);
+        $request = $this->createStub(ServerRequestInterface::class);
+        $request->method('getUri')->willReturn(
+            $this->createStub(UriInterface::class)
+        );
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects($this->never())->method('updateWorkPlan');
+
+        $nonCallableObject = new stdClass();
+
+        $this->getUrlMatcherMock()->method('match')->willReturn([
+            '_controller' => $nonCallableObject
+        ]);
+
+        $this->assertInstanceOf(
+            $this->getRouterClass(),
+            $this->buildRouter()->execute($client, $request, $manager)
+        );
+    }
+
+    public function testExecuteWithLiveComponentRouteWithUpdatedFieldsNonStringKey(): void
+    {
+        $uri = $this->createStub(UriInterface::class);
+        $uri->method('getPath')->willReturn('/_components');
+
+        $client = $this->createStub(ClientInterface::class);
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->method('getUri')->willReturn($uri);
+        $request->method('getParsedBody')->willReturn([
+            'data' => json_encode([
+                'props' => [
+                    'originalPath' => '/user/profile/111'
+                ],
+                'updated' => [
+                    123 => 'should_be_ignored',  // Non-string key
+                    'validKey' => 'validValue',
+                ]
+            ])
+        ]);
+        $request->method('getAttributes')->willReturn([]);
+
+        $callIndex = 0;
+        $request->expects($this->exactly(5))->method('withAttribute')
+            ->willReturnCallback(function (string $key, $value) use ($request, &$callIndex) {
+                if ($callIndex === 0) {
+                    $this->assertEquals('validKey', $key);
+                    $this->assertEquals('validValue', $value);
+                }
+                // The key 123 should never appear
+                $this->assertIsString($key);
+                $callIndex++;
+                return $request;
+            });
+
+        $manager = $this->createMock(ManagerInterface::class);
+
+        $this->getUrlMatcherMock()->method('match')->willReturnCallback(
+            function (string $path) {
+                if ($path === '/_components') {
+                    return [
+                        '_route' => 'ux_live_component',
+                        '_live_component' => 'UserProfile',
+                    ];
+                }
+                if ($path === '/user/profile/111') {
+                    return [
+                        '_controller' => function (): void {},
+                        'id' => '111',
+                    ];
+                }
+                return [];
+            }
+        );
+
+        $manager->expects($this->once())->method('updateWorkPlan')->willReturnSelf();
+        $manager->expects($this->once())->method('updateMessage')->willReturnSelf();
+
+        $this->assertInstanceOf(
+            $this->getRouterClass(),
+            $this->buildRouter()->execute($client, $request, $manager)
+        );
+    }
+
+    public function testExecuteWithLiveComponentRouteWithUpdatedFieldsExistingAttribute(): void
+    {
+        $uri = $this->createStub(UriInterface::class);
+        $uri->method('getPath')->willReturn('/_components');
+
+        $client = $this->createStub(ClientInterface::class);
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->method('getUri')->willReturn($uri);
+        $request->method('getParsedBody')->willReturn([
+            'data' => json_encode([
+                'props' => [
+                    'originalPath' => '/user/profile/333'
+                ],
+                'updated' => [
+                    'existingAttr' => 'should_not_overwrite',
+                    'newAttr' => 'should_be_added',
+                ]
+            ])
+        ]);
+        $request->method('getAttributes')->willReturn([
+            'existingAttr' => 'original_value'
+        ]);
+
+        // 1 from 'updated' (newAttr only, existingAttr is not overwritten) + 4 from _live_parameters
+        $callIndex = 0;
+        $request->expects($this->exactly(5))->method('withAttribute')
+            ->willReturnCallback(function (string $key, $value) use ($request, &$callIndex) {
+                // First call should be newAttr from 'updated'
+                if ($callIndex === 0) {
+                    $this->assertEquals('newAttr', $key);
+                    $this->assertEquals('should_be_added', $value);
+                }
+                // existingAttr should never be overwritten
+                if ($key === 'existingAttr' && $value === 'should_not_overwrite') {
+                    $this->fail('existingAttr should not be overwritten');
+                }
+                $callIndex++;
+                return $request;
+            });
+
+        $manager = $this->createMock(ManagerInterface::class);
+
+        $this->getUrlMatcherMock()->method('match')->willReturnCallback(
+            function (string $path) {
+                if ($path === '/_components') {
+                    return [
+                        '_route' => 'ux_live_component',
+                        '_live_component' => 'UserProfile',
+                    ];
+                }
+                if ($path === '/user/profile/333') {
+                    return [
+                        '_controller' => function (): void {},
+                        'id' => '333',
+                    ];
+                }
+                return [];
+            }
+        );
+
+        $manager->expects($this->once())->method('updateWorkPlan')->willReturnSelf();
+        $manager->expects($this->once())->method('updateMessage')->willReturnSelf();
+
+        $this->assertInstanceOf(
+            $this->getRouterClass(),
+            $this->buildRouter()->execute($client, $request, $manager)
+        );
+    }
+
+    public function testExecuteWithLiveComponentRouteWithoutUpdatedField(): void
+    {
+        $uri = $this->createStub(UriInterface::class);
+        $uri->method('getPath')->willReturn('/_components');
+
+        $client = $this->createStub(ClientInterface::class);
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->method('getUri')->willReturn($uri);
+        $request->method('getParsedBody')->willReturn([
+            'data' => json_encode([
+                'props' => [
+                    'originalPath' => '/user/profile/444'
+                ]
+                // No 'updated' field
+            ])
+        ]);
+        $request->method('getAttributes')->willReturn([]);
+
+        // 0 from 'updated' (no updated field) + 4 from _live_parameters (all params)
+        $request->expects($this->exactly(4))->method('withAttribute')
+            ->willReturnCallback(function (string $key, $value) use ($request) {
+                // Only _live_parameters attributes should be added
+                $this->assertContains($key, ['_controller', 'id', '_live_parameters', '_live_body']);
+                return $request;
+            });
+
+        $manager = $this->createMock(ManagerInterface::class);
+
+        $this->getUrlMatcherMock()->method('match')->willReturnCallback(
+            function (string $path) {
+                if ($path === '/_components') {
+                    return [
+                        '_route' => 'ux_live_component',
+                        '_live_component' => 'UserProfile',
+                    ];
+                }
+                if ($path === '/user/profile/444') {
+                    return [
+                        '_controller' => function (): void {},
+                        'id' => '444',
+                    ];
+                }
+                return [];
+            }
+        );
+
+        $manager->expects($this->once())->method('updateWorkPlan')->willReturnSelf();
+        $manager->expects($this->once())->method('updateMessage')->willReturnSelf();
+
+        $this->assertInstanceOf(
+            $this->getRouterClass(),
+            $this->buildRouter()->execute($client, $request, $manager)
+        );
+    }
+
+    public function testExecuteWithNormalRequestNoLiveParametersNoAttributesAdded(): void
+    {
+        $uri = $this->createStub(UriInterface::class);
+        $uri->method('getPath')->willReturn('/normal/route');
+
+        $client = $this->createStub(ClientInterface::class);
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->method('getUri')->willReturn($uri);
+
+        // No withAttribute should be called for normal requests
+        $request->expects($this->never())->method('withAttribute');
+
+        $manager = $this->createMock(ManagerInterface::class);
+
+        $this->getUrlMatcherMock()->method('match')->willReturn([
+            '_controller' => function (): void {},
+            'id' => '666',
+            'name' => 'test',
+            // No _live_parameters
+        ]);
+
+        $manager->expects($this->once())->method('updateWorkPlan')->willReturnSelf();
+        $manager->expects($this->once())->method('updateMessage')->willReturnSelf();
+
+        $this->assertInstanceOf(
+            $this->getRouterClass(),
+            $this->buildRouter()->execute($client, $request, $manager)
+        );
+    }
 }
