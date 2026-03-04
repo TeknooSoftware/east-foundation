@@ -73,6 +73,7 @@ class Router implements RouterInterface
         private readonly UrlMatcherInterface $matcher,
         private readonly ContainerInterface $container,
         array $excludePaths = [],
+        private readonly string $symfonyUxLiveRoute = 'ux_live_component',
     ) {
         if (!empty($excludePaths)) {
             $this->excludePathsRegex = '#^(' . implode('|', $excludePaths) . ')#S';
@@ -99,7 +100,7 @@ class Router implements RouterInterface
     /**
      * @param ServerRequestInterface $request
      * @return array<string, mixed>|null
-     * @throws \JsonException
+     * @throws \JsonException|ResourceNotFoundException
      */
     private function getParameters(ServerRequestInterface &$request): ?array
     {
@@ -116,7 +117,7 @@ class Router implements RouterInterface
 
         if (
             !empty($originalParameters['_controller'])
-            || 'ux_live_component' !== ($originalParameters['_route'] ?? '')
+            || $this->symfonyUxLiveRoute !== ($originalParameters['_route'] ?? '')
             || empty($originalParameters['_live_component'])
         ) {
             return $originalParameters;
@@ -156,7 +157,7 @@ class Router implements RouterInterface
 
         $attributes = $request->getAttributes();
         foreach ($body['updated'] as $key => $value) {
-            if (is_string($key) && !isset($attributes[$key]) & is_string($value)) {
+            if (is_string($key) && !isset($attributes[$key])) {
                 $request = $request->withAttribute($key, $value);
             }
         }
@@ -185,10 +186,6 @@ class Router implements RouterInterface
 
         if (!empty($parameters['_live_parameters'])) {
             foreach ($parameters as $name => $value) {
-                if ('_live_parameters' === $name) {
-                    continue;
-                }
-
                 $request = $request->withAttribute($name, $value);
             }
         }

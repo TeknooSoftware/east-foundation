@@ -71,6 +71,7 @@
         "symfony/security-core": "^6.4.24||^7.4||^8",
         "symfony/serializer": "^6.4.24||^7.4||^8",
         "symfony/yaml": "^6.4.24||^7.4||^8",
+        "symfony/ux-live-component": "^2.32",
         "teknoo/bridge-phpdi-symfony": "^7.1.2",
         "twig/twig": "^3.23",
         "laminas/laminas-diactoros": "^3.8"
