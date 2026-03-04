@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * East Foundation.
  *
  * LICENSE
@@ -21,32 +21,19 @@
  * @author      Richard Déloge <richard@teknoo.software>
  */
 
-namespace Teknoo\East\FoundationBundle\UX\Components;
+declare(strict_types=1);
 
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\UX\LiveComponent\Attribute\LiveProp;
+namespace Support\PHPStan\Symfony;
+
+use Teknoo\East\FoundationBundle\UX\Components\LiveTrait;
 
 /**
- * Trait to help to create component usable with East Recipe
- *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
  * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
-trait LiveTrait
+class ComponentExample
 {
-    #[LiveProp]
-    public ?string $originalPath = null;
-
-    public function __construct(
-        private readonly RequestStack $requestStack,
-    ) {
-        $this->updateOriginalPath();
-    }
-
-    private function updateOriginalPath(): void
-    {
-        $this->originalPath = $this->requestStack->getCurrentRequest()?->getPathInfo();
-    }
+    use LiveTrait;
 }
