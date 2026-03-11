@@ -1,6 +1,8 @@
 parameters:
     teknoo.east.symfony.router.class: 'Teknoo\East\FoundationBundle\Router\Router'
     teknoo.east.symfony.router.excluded_paths: ['/_error', '/_wdt', '/_profiler', '/_fragment']
+    teknoo.east.symfony.router.symfony_ux_live_route: 'ux_live_component'
+    teknoo.east.symfony.router.secret: '%kernel.secret%'
     teknoo.east.symfony.listener.kernel.class: 'Teknoo\East\FoundationBundle\Listener\KernelListener'
     teknoo.east.symfony.normalizer.east_normalizer.class: 'Teknoo\East\FoundationBundle\Normalizer\EastNormalizer'
     teknoo.east.twig.template.engine: 'Teknoo\East\Twig\Template\Engine'
@@ -17,6 +19,8 @@ services:
             - '@router'
             - '@service_container'
             - '%teknoo.east.symfony.router.excluded_paths%'
+            - '%teknoo.east.symfony.router.symfony_ux_live_route%'
+            - '%teknoo.east.symfony.router.secret%'
         public: true
 
     Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface:

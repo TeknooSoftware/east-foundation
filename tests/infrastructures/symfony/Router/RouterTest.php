@@ -45,6 +45,12 @@ use Teknoo\East\FoundationBundle\Router\Router;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController as SymfonyAbstractController;
 use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 
+use function base64_encode;
+use function hash_hmac;
+use function is_array;
+use function json_encode;
+use function ksort;
+
 /**
  * Class RouterTest.
  *
@@ -56,6 +62,8 @@ use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 #[CoversClass(Router::class)]
 class RouterTest extends TestCase
 {
+    private const string TEST_SECRET = 'foo';
+
     private ?UrlMatcherInterface $matcher = null;
 
     private ?ContainerInterface $container = null;
@@ -88,6 +96,31 @@ class RouterTest extends TestCase
     }
 
     /**
+     * @param array<string|int, string|array<string|int, string>> $data
+     */
+    private function recursiveKeySort(array &$data): void
+    {
+        foreach ($data as &$value) {
+            if (is_array($value)) {
+                $this->recursiveKeySort($value);
+            }
+        }
+
+        ksort($data);
+    }
+
+    /**
+     * @param array<string|int, string|array<string|int, string>> $props
+     */
+    private function calculateChecksum(array $props): string
+    {
+        // sort so it is always consistent (frontend could have re-ordered data)
+        $this->recursiveKeySort($props);
+
+        return base64_encode(hash_hmac('sha256', (string) json_encode($props), self::TEST_SECRET, true));
+    }
+
+    /**
      * @return Router
      */
     private function buildRouter(array $excludedPaths = []): Router
@@ -96,6 +129,8 @@ class RouterTest extends TestCase
             $this->getUrlMatcherMock(),
             $this->getContainerMock(),
             $excludedPaths,
+            'ux_live_component',
+            self::TEST_SECRET,
         );
     }
 
@@ -737,11 +772,15 @@ class RouterTest extends TestCase
         $client = $this->createStub(ClientInterface::class);
         $request = $this->createMock(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
+
+        $props = [
+            'originalPath' => '/user/profile/456'
+        ];
+        $props['@checksum'] = $this->calculateChecksum($props);
+
         $request->method('getParsedBody')->willReturn([
             'data' => json_encode([
-                'props' => [
-                    'originalPath' => '/user/profile/456'
-                ],
+                'props' => $props,
                 'updated' => [
                     'username' => 'john_doe',
                     'email' => 'john@example.com',
@@ -888,11 +927,15 @@ class RouterTest extends TestCase
         $client = $this->createStub(ClientInterface::class);
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
+
+        $props = [
+            'originalPath' => '/app.php/user/profile/789'
+        ];
+        $props['@checksum'] = $this->calculateChecksum($props);
+
         $request->method('getParsedBody')->willReturn([
             'data' => json_encode([
-                'props' => [
-                    'originalPath' => '/app.php/user/profile/789'
-                ]
+                'props' => $props
             ])
         ]);
         $request->method('getAttributes')->willReturn([]);
@@ -938,11 +981,15 @@ class RouterTest extends TestCase
         $client = $this->createStub(ClientInterface::class);
         $request = $this->createMock(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
+
+        $props = [
+            'originalPath' => '/product/view/999'
+        ];
+        $props['@checksum'] = $this->calculateChecksum($props);
+
         $request->method('getParsedBody')->willReturn([
             'data' => json_encode([
-                'props' => [
-                    'originalPath' => '/product/view/999'
-                ]
+                'props' => $props
             ])
         ]);
         $request->method('getAttributes')->willReturn([]);
@@ -1025,11 +1072,15 @@ class RouterTest extends TestCase
         $client = $this->createStub(ClientInterface::class);
         $request = $this->createMock(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
+
+        $props = [
+            'originalPath' => '/user/profile/111'
+        ];
+        $props['@checksum'] = $this->calculateChecksum($props);
+
         $request->method('getParsedBody')->willReturn([
             'data' => json_encode([
-                'props' => [
-                    'originalPath' => '/user/profile/111'
-                ],
+                'props' => $props,
                 'updated' => [
                     123 => 'should_be_ignored',  // Non-string key
                     'validKey' => 'validValue',
@@ -1088,22 +1139,34 @@ class RouterTest extends TestCase
         $client = $this->createStub(ClientInterface::class);
         $request = $this->createMock(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
+
+        $props = [
+            'originalPath' => '/user/profile/333'
+        ];
+        $props['@checksum'] = $this->calculateChecksum($props);
+
         $request->method('getParsedBody')->willReturn([
             'data' => json_encode([
-                'props' => [
-                    'originalPath' => '/user/profile/333'
-                ],
+                'props' => $props,
                 'updated' => [
                     'existingAttr' => 'should_not_overwrite',
                     'newAttr' => 'should_be_added',
                 ]
             ])
         ]);
-        $request->method('getAttributes')->willReturn([
-            'existingAttr' => 'original_value'
-        ]);
 
-        // 1 from 'updated' (newAttr only, existingAttr is not overwritten) + 4 from _live_parameters
+        // Configure getAttribute to return the existing value for existingAttr
+        $request->method('getAttribute')->willReturnCallback(
+            function (string $key, $default = null) {
+                if ($key === 'existingAttr') {
+                    return 'original_value';
+                }
+                return $default;
+            }
+        );
+
+        // Only 'newAttr' from 'updated' should be added (existingAttr already exists)
+        // + 4 from _live_parameters (_controller, id, _live_parameters, _live_body)
         $callIndex = 0;
         $request->expects($this->exactly(5))->method('withAttribute')
             ->willReturnCallback(function (string $key, $value) use ($request, &$callIndex) {
@@ -1157,11 +1220,15 @@ class RouterTest extends TestCase
         $client = $this->createStub(ClientInterface::class);
         $request = $this->createMock(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
+
+        $props = [
+            'originalPath' => '/user/profile/444'
+        ];
+        $props['@checksum'] = $this->calculateChecksum($props);
+
         $request->method('getParsedBody')->willReturn([
             'data' => json_encode([
-                'props' => [
-                    'originalPath' => '/user/profile/444'
-                ]
+                'props' => $props
                 // No 'updated' field
             ])
         ]);
@@ -1232,5 +1299,288 @@ class RouterTest extends TestCase
             $this->getRouterClass(),
             $this->buildRouter()->execute($client, $request, $manager)
         );
+    }
+
+    public function testExecuteWithLiveComponentRouteMissingChecksum(): void
+    {
+        $uri = $this->createStub(UriInterface::class);
+        $uri->method('getPath')->willReturn('/_components');
+
+        $client = $this->createStub(ClientInterface::class);
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->method('getUri')->willReturn($uri);
+
+
+        // Props without checksum
+        $request->method('getParsedBody')->willReturn([
+            'data' => json_encode([
+                'props' => [
+                    'originalPath' => '/user/profile/555'
+                ]
+            ])
+        ]);
+
+        // No withAttribute should be called for normal requests
+        $request->expects($this->never())->method('withAttribute');
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects($this->never())->method('updateWorkPlan');
+
+        $this->getUrlMatcherMock()->method('match')->willReturn([
+            '_route' => 'ux_live_component',
+            '_live_component' => 'UserProfile',
+        ]);
+
+        $this->assertInstanceOf(
+            $this->getRouterClass(),
+            $this->buildRouter()->execute($client, $request, $manager)
+        );
+    }
+
+    public function testExecuteWithLiveComponentRouteInvalidChecksum(): void
+    {
+        $uri = $this->createStub(UriInterface::class);
+        $uri->method('getPath')->willReturn('/_components');
+
+        $client = $this->createStub(ClientInterface::class);
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->method('getUri')->willReturn($uri);
+
+        // Props with invalid checksum
+        $request->method('getParsedBody')->willReturn([
+            'data' => json_encode([
+                'props' => [
+                    'originalPath' => '/user/profile/666',
+                    '@checksum' => 'invalid_checksum_value'
+                ]
+            ])
+        ]);
+
+        // No withAttribute should be called for normal requests
+        $request->expects($this->never())->method('withAttribute');
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects($this->never())->method('updateWorkPlan');
+
+        $this->getUrlMatcherMock()->method('match')->willReturn([
+            '_route' => 'ux_live_component',
+            '_live_component' => 'UserProfile',
+        ]);
+
+        $this->assertInstanceOf(
+            $this->getRouterClass(),
+            $this->buildRouter()->execute($client, $request, $manager)
+        );
+    }
+
+    public function testExecuteWithLiveComponentRouteScalarPropsCopied(): void
+    {
+        $uri = $this->createStub(UriInterface::class);
+        $uri->method('getPath')->willReturn('/_components');
+
+        $client = $this->createStub(ClientInterface::class);
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->method('getUri')->willReturn($uri);
+
+        $props = [
+            'originalPath' => '/product/list/123',
+            'userId' => 'user_456',
+            'pageNumber' => 2,
+            'isActive' => true,
+            'discount' => 15.5,
+        ];
+        $props['@checksum'] = $this->calculateChecksum($props);
+
+        $request->method('getParsedBody')->willReturn([
+            'data' => json_encode([
+                'props' => $props
+            ])
+        ]);
+
+        $request->method('getAttribute')->willReturn(null);
+
+        // Expected calls: userId, pageNumber, isActive, discount (scalar props)
+        // + _controller, id, _live_parameters, _live_body (from live parameters) = 8 total
+        $addedAttributes = [];
+        $request->expects($this->exactly(8))->method('withAttribute')
+            ->willReturnCallback(function (string $key, $value) use ($request, &$addedAttributes) {
+                $addedAttributes[$key] = $value;
+                return $request;
+            });
+
+        $manager = $this->createMock(ManagerInterface::class);
+
+        $this->getUrlMatcherMock()->method('match')->willReturnCallback(
+            function (string $path) {
+                if ($path === '/_components') {
+                    return [
+                        '_route' => 'ux_live_component',
+                        '_live_component' => 'ProductList',
+                    ];
+                }
+                if ($path === '/product/list/123') {
+                    return [
+                        '_controller' => function (): void {},
+                        'id' => '123',
+                    ];
+                }
+                return [];
+            }
+        );
+
+        $manager->expects($this->once())->method('updateWorkPlan')->willReturnSelf();
+        $manager->expects($this->once())->method('updateMessage')->willReturnSelf();
+
+        $this->buildRouter()->execute($client, $request, $manager);
+
+        // Verify scalar props were copied
+        $this->assertArrayHasKey('userId', $addedAttributes);
+        $this->assertEquals('user_456', $addedAttributes['userId']);
+        $this->assertArrayHasKey('pageNumber', $addedAttributes);
+        $this->assertEquals(2, $addedAttributes['pageNumber']);
+        $this->assertArrayHasKey('isActive', $addedAttributes);
+        $this->assertTrue($addedAttributes['isActive']);
+        $this->assertArrayHasKey('discount', $addedAttributes);
+        $this->assertEquals(15.5, $addedAttributes['discount']);
+
+        // Verify originalPath was NOT copied
+        $this->assertArrayNotHasKey('originalPath', $addedAttributes);
+    }
+
+    public function testExecuteWithLiveComponentRouteNonScalarPropsNotCopied(): void
+    {
+        $uri = $this->createStub(UriInterface::class);
+        $uri->method('getPath')->willReturn('/_components');
+
+        $client = $this->createStub(ClientInterface::class);
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->method('getUri')->willReturn($uri);
+
+        $props = [
+            'originalPath' => '/product/view/789',
+            'scalarProp' => 'validValue',
+            'arrayProp' => ['item1', 'item2'],
+            'objectProp' => (object)['key' => 'value'],
+        ];
+        $props['@checksum'] = $this->calculateChecksum($props);
+
+        $request->method('getParsedBody')->willReturn([
+            'data' => json_encode([
+                'props' => $props
+            ])
+        ]);
+
+        $request->method('getAttribute')->willReturn(null);
+
+        // Only scalarProp should be copied from props
+        // + _controller, id, _live_parameters, _live_body = 5 total
+        $addedAttributes = [];
+        $request->expects($this->exactly(5))->method('withAttribute')
+            ->willReturnCallback(function (string $key, $value) use ($request, &$addedAttributes) {
+                $addedAttributes[$key] = $value;
+                return $request;
+            });
+
+        $manager = $this->createMock(ManagerInterface::class);
+
+        $this->getUrlMatcherMock()->method('match')->willReturnCallback(
+            function (string $path) {
+                if ($path === '/_components') {
+                    return [
+                        '_route' => 'ux_live_component',
+                        '_live_component' => 'ProductView',
+                    ];
+                }
+                if ($path === '/product/view/789') {
+                    return [
+                        '_controller' => function (): void {},
+                        'id' => '789',
+                    ];
+                }
+                return [];
+            }
+        );
+
+        $manager->expects($this->once())->method('updateWorkPlan')->willReturnSelf();
+        $manager->expects($this->once())->method('updateMessage')->willReturnSelf();
+
+        $this->buildRouter()->execute($client, $request, $manager);
+
+        // Verify only scalar prop was copied
+        $this->assertArrayHasKey('scalarProp', $addedAttributes);
+        $this->assertEquals('validValue', $addedAttributes['scalarProp']);
+
+        // Verify non-scalar props were NOT copied
+        $this->assertArrayNotHasKey('arrayProp', $addedAttributes);
+        $this->assertArrayNotHasKey('objectProp', $addedAttributes);
+    }
+
+    public function testExecuteWithLiveComponentRouteSpecialPrefixedPropsIgnored(): void
+    {
+        $uri = $this->createStub(UriInterface::class);
+        $uri->method('getPath')->willReturn('/_components');
+
+        $client = $this->createStub(ClientInterface::class);
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->method('getUri')->willReturn($uri);
+
+        $props = [
+            'originalPath' => '/user/settings/999',
+            'normalProp' => 'shouldBeCopied',
+            '@internalProp' => 'shouldBeIgnored',
+            '_privateProp' => 'shouldBeIgnored',
+        ];
+        $props['@checksum'] = $this->calculateChecksum($props);
+
+        $request->method('getParsedBody')->willReturn([
+            'data' => json_encode([
+                'props' => $props
+            ])
+        ]);
+
+        $request->method('getAttribute')->willReturn(null);
+
+        // Only normalProp should be copied from props
+        // + _controller, id, _live_parameters, _live_body = 5 total
+        $addedAttributes = [];
+        $request->expects($this->exactly(5))->method('withAttribute')
+            ->willReturnCallback(function (string $key, $value) use ($request, &$addedAttributes) {
+                $addedAttributes[$key] = $value;
+                return $request;
+            });
+
+        $manager = $this->createMock(ManagerInterface::class);
+
+        $this->getUrlMatcherMock()->method('match')->willReturnCallback(
+            function (string $path) {
+                if ($path === '/_components') {
+                    return [
+                        '_route' => 'ux_live_component',
+                        '_live_component' => 'UserSettings',
+                    ];
+                }
+                if ($path === '/user/settings/999') {
+                    return [
+                        '_controller' => function (): void {},
+                        'id' => '999',
+                    ];
+                }
+                return [];
+            }
+        );
+
+        $manager->expects($this->once())->method('updateWorkPlan')->willReturnSelf();
+        $manager->expects($this->once())->method('updateMessage')->willReturnSelf();
+
+        $this->buildRouter()->execute($client, $request, $manager);
+
+        // Verify normal prop was copied
+        $this->assertArrayHasKey('normalProp', $addedAttributes);
+        $this->assertEquals('shouldBeCopied', $addedAttributes['normalProp']);
+
+        // Verify special prefixed props were NOT copied
+        $this->assertArrayNotHasKey('@internalProp', $addedAttributes);
+        $this->assertArrayNotHasKey('_privateProp', $addedAttributes);
+        $this->assertArrayNotHasKey('originalPath', $addedAttributes);
     }
 }

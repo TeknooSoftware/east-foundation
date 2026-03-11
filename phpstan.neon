@@ -23,3 +23,12 @@ parameters:
         -
             message: "#Unsafe usage of new static#"
             path: src/Extension/ExtensionInitTrait.php
+        -
+            message: "#expects array#"
+            path: infrastructures/symfony/Router/Router.php
+        -
+            message: "#will always evaluate to true#"
+            path: infrastructures/symfony/Router/Router.php
+        -
+            message: "#boolean expression is always false#"
+            path: infrastructures/symfony/Router/Router.php

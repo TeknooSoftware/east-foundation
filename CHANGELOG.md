@@ -1,5 +1,10 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [9.1.1] - 2026-03-11
+### Stable Release
+- Use Checksum to avoid tampered live component
+- Inject live component's props (only scalar and non internal props) to request to be used in recipe
+
 ## [9.1.0] - 2026-03-04
 ### Stable Release
 - Update Router to support Symfony UX Live Component and execute original East Recipe

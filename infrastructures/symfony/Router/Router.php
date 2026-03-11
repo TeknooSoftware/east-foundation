@@ -25,8 +25,10 @@ declare(strict_types=1);
 
 namespace Teknoo\East\FoundationBundle\Router;
 
+use JsonException;
 use Psr\Http\Message\MessageInterface;
 use ReflectionClass;
+use SensitiveParameter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController as SfAbstractController;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
@@ -39,11 +41,18 @@ use Teknoo\East\Foundation\Router\Result;
 use Teknoo\East\Foundation\Router\ResultInterface;
 use Teknoo\East\Foundation\Router\RouterInterface;
 
+use function array_key_exists;
+use function base64_encode;
 use function explode;
+use function hash_hmac;
 use function implode;
+use function is_array;
 use function is_callable;
+use function is_scalar;
 use function is_string;
 use function json_decode;
+use function json_encode;
+use function ksort;
 use function preg_match;
 use function str_starts_with;
 use function str_contains;
@@ -64,6 +73,8 @@ use function substr;
  */
 class Router implements RouterInterface
 {
+    private const string CHECKSUM_KEY = '@checksum';
+
     private ?string $excludePathsRegex = null;
 
     /**
@@ -74,10 +85,36 @@ class Router implements RouterInterface
         private readonly ContainerInterface $container,
         array $excludePaths = [],
         private readonly string $symfonyUxLiveRoute = 'ux_live_component',
+        #[SensitiveParameter] private string $secret = '',
     ) {
         if (!empty($excludePaths)) {
             $this->excludePathsRegex = '#^(' . implode('|', $excludePaths) . ')#S';
         }
+    }
+
+    /**
+     * @param array<string|int, string|array<string|int, string>> $data
+     */
+    private function recursiveKeySort(array &$data): void
+    {
+        foreach ($data as &$value) {
+            if (is_array($value)) {
+                $this->recursiveKeySort($value);
+            }
+        }
+
+        ksort($data);
+    }
+
+    /**
+     * @param array<string|int, string|array<string|int, string>> $props
+     */
+    private function calculateChecksum(array &$props): string
+    {
+        // sort so it is always consistent (frontend could have re-ordered data)
+        $this->recursiveKeySort($props);
+
+        return base64_encode(hash_hmac('sha256', (string) json_encode($props), $this->secret, true));
     }
 
     private function cleanSymfonyHandler(string $path): string
@@ -98,9 +135,26 @@ class Router implements RouterInterface
     }
 
     /**
+     * @param array<string|int, string|array<string|int, string>> $props
+     */
+    private function valideLiveComponentProprs(array $props): bool
+    {
+        if (!array_key_exists(self::CHECKSUM_KEY, $props)) {
+            return false;
+        }
+
+        $sentChecksum = $props[self::CHECKSUM_KEY];
+        unset($props[self::CHECKSUM_KEY]);
+
+        $expectedChecksum = $this->calculateChecksum($props);
+
+        return is_string($sentChecksum) && hash_equals($expectedChecksum, $sentChecksum);
+    }
+
+    /**
      * @param ServerRequestInterface $request
      * @return array<string, mixed>|null
-     * @throws \JsonException|ResourceNotFoundException
+     * @throws JsonException|ResourceNotFoundException
      */
     private function getParameters(ServerRequestInterface &$request): ?array
     {
@@ -128,6 +182,9 @@ class Router implements RouterInterface
             return $originalParameters;
         }
 
+        /**
+         * @var array<string|int, string|array<string|int, string>> $body
+         */
         $body = json_decode(
             json: $json,
             associative: true,
@@ -138,6 +195,7 @@ class Router implements RouterInterface
             !is_array($body)
             || empty($body['props'])
             || !is_array($body['props'])
+            || !$this->valideLiveComponentProprs($body['props'])
             || empty($body['props']['originalPath'])
             || !is_string($body['props']['originalPath'])
         ) {
@@ -151,13 +209,26 @@ class Router implements RouterInterface
         $realParameters['_live_parameters'] = $originalParameters;
         $realParameters['_live_body'] = $body;
 
-        if (empty($body['updated']) || !is_array($body['updated'])) {
-            return $realParameters;
+        if (
+            !empty($body['updated'])
+            && is_array($body['updated'])
+        ) {
+            foreach ($body['updated'] as $key => $value) {
+                if (is_string($key) && null === $request->getAttribute($key, null)) {
+                    $request = $request->withAttribute($key, $value);
+                }
+            }
         }
 
-        $attributes = $request->getAttributes();
-        foreach ($body['updated'] as $key => $value) {
-            if (is_string($key) && !isset($attributes[$key])) {
+        foreach ($body['props'] as $key => $value) {
+            if (
+                is_string($key)
+                && is_scalar($value)
+                && null === $request->getAttribute($key, null)
+                && '@' !== $key[0]
+                && '_' !== $key[0]
+                && 'originalPath' !== $key
+            ) {
                 $request = $request->withAttribute($key, $value);
             }
         }
