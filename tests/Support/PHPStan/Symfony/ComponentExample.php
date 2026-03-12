@@ -23,7 +23,7 @@
 
 declare(strict_types=1);
 
-namespace Support\PHPStan\Symfony;
+namespace Teknoo\Tests\East\Support\PHPStan\Symfony;
 
 use Teknoo\East\FoundationBundle\UX\Components\LiveTrait;
 
