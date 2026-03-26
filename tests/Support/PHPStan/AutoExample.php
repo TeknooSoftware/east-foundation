@@ -23,7 +23,7 @@
 
 declare(strict_types=1);
 
-namespace Support\PHPStan;
+namespace Teknoo\Tests\East\Support\PHPStan;
 
 use Teknoo\East\Foundation\Normalizer\Object\AutoTrait;
 use Teknoo\East\Foundation\Normalizer\Object\NormalizableInterface;
