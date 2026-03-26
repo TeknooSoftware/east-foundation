@@ -1,5 +1,14 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [9.2.0] - 2026-03-26
+### Stable Release
+- Add `Teknoo\East\Foundation\Normalizer\Object\AutoTrait` and attributes
+  - `Teknoo\East\Foundation\Normalizer\Object\Group`
+  - `Teknoo\East\Foundation\Normalizer\Object\ClassGroup`
+  to implements easily `Teknoo\East\Foundation\Normalizer\EastNormalizerInterface` by defining groups with previous
+  attributes and avoid fill an array to pass to 
+    `Teknoo\East\Foundation\Normalizer\Object\GroupTrait::setGroupsConfiguration()`
+
 ## [9.1.1] - 2026-03-11
 ### Stable Release
 - Use Checksum to avoid tampered live component
