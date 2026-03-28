@@ -98,9 +98,9 @@ trait GroupsTrait
         if ($lazyData) {
             array_walk(
                 $dataFiltered,
-                static function (mixed &$item): void {
+                function (mixed &$item): void {
                     if (is_callable($item)) {
-                        $item = $item();
+                        $item = $item($this);
                     }
                 }
             );

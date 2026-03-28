@@ -31,15 +31,29 @@ use Teknoo\East\Foundation\Normalizer\Object\Normalize;
 use Teknoo\East\Foundation\Normalizer\Object\NormalizableInterface;
 
 #[ClassGroup('api')]
-class AutoTraitWithClassGroupFixture implements NormalizableInterface
+class AutoTraitWithLoaderFixture implements NormalizableInterface
 {
     use AutoTrait;
 
+    private string $barValue = 'barTest';
+
     public function __construct(
-        #[Normalize(['api', 'default'])]
+        #[Normalize(['api', 'default'], loader: 'bar')]
         private readonly string $name,
-        #[Normalize(['api', 'default'])]
+        #[Normalize(['api', 'default'], 'text', 'foo')]
         private readonly int $value,
+        #[Normalize(['api', 'default'], loader: '@lazy')]
+        private readonly array $complex = ['foo'],
     ) {
+    }
+
+    private function bar (self $that): string
+    {
+        return $that->barValue;
+    }
+
+    private function foo(): string
+    {
+        return 'foo';
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * East Foundation.
  *
  * LICENSE
@@ -23,28 +23,23 @@
 
 declare(strict_types=1);
 
-namespace Teknoo\East\Foundation\Normalizer\Object;
+namespace Teknoo\Tests\East\Support\Normalization;
 
-use Attribute;
+use Teknoo\East\Foundation\Normalizer\Object\AutoTrait;
+use Teknoo\East\Foundation\Normalizer\Object\ClassGroup;
+use Teknoo\East\Foundation\Normalizer\Object\Normalize;
+use Teknoo\East\Foundation\Normalizer\Object\NormalizableInterface;
 
-/**
- * Attribute to define groups for normalizable object properties
- *
- * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
- * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
- * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
- * @author      Richard Déloge <richard@teknoo.software>
- */
-#[Attribute(Attribute::TARGET_PROPERTY)]
-class Group
+#[ClassGroup('api')]
+class AutoTraitWithAliasFixture implements NormalizableInterface
 {
-    /**
-     * @var string[]
-     */
-    public readonly array $groups;
+    use AutoTrait;
 
-    public function __construct(string ...$groups)
-    {
-        $this->groups = $groups;
+    public function __construct(
+        #[Normalize(['api', 'default'])]
+        private readonly string $name,
+        #[Normalize(['api', 'default'], 'text')]
+        private readonly int $value,
+    ) {
     }
 }

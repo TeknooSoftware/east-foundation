@@ -30,6 +30,8 @@ use ReflectionClass;
 use Teknoo\East\Foundation\Normalizer\EastNormalizerInterface;
 
 use function array_keys;
+use function is_string;
+use function method_exists;
 
 /**
  * Trait to implement automatically Normalizable interface
@@ -51,9 +53,14 @@ trait AutoTrait
     private static array $exportConfigurations = [];
 
     /**
+     * @var array<string, array{name: string, loader: callable|string|null}>
+     */
+    private static array $exportMappings = [];
+
+    /**
      * @return array<string, string[]>
      */
-    private static function getExportConfigurations(): array
+    private function getExportConfigurations(): array
     {
         if (!empty(self::$exportConfigurations)) {
             return self::$exportConfigurations;
@@ -71,13 +78,37 @@ trait AutoTrait
             '@class' => $classGroups,
         ];
 
+        $mappings = [];
+
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
-            $attributes = $reflectionProperty->getAttributes(Group::class, ReflectionAttribute::IS_INSTANCEOF);
+            $attributes = $reflectionProperty->getAttributes(Normalize::class, ReflectionAttribute::IS_INSTANCEOF);
             foreach ($attributes as $attribute) {
-                $configurations[$reflectionProperty->getName()] = $attribute->newInstance()->groups;
+                $attrInstance = $attribute->newInstance();
+                $name = $attrInstance->name ?? $reflectionProperty->getName();
+
+                $loader = $attrInstance->loader;
+                $propertyName = $reflectionProperty->getName();
+                if (is_string($loader)) {
+                    if (method_exists($this, $loader)) {
+                        $loader = $this->{$loader}(...);
+                    }
+
+                    if ('@lazy' === $loader) {
+                        $loader = static function (self $that) use ($propertyName) {
+                            return $that->{$propertyName};
+                        };
+                    }
+                }
+
+                $configurations[$name] = $attrInstance->groups;
+                $mappings[$name] = [
+                    'name' => $propertyName,
+                    'loader' => $loader,
+                ];
             }
         }
 
+        self::$exportMappings = $mappings;
         return self::$exportConfigurations = $configurations;
     }
 
@@ -87,7 +118,7 @@ trait AutoTrait
             return;
         }
 
-        $this->setGroupsConfiguration(self::getExportConfigurations());
+        $this->setGroupsConfiguration($this->getExportConfigurations());
     }
 
     /**
@@ -104,7 +135,8 @@ trait AutoTrait
                 continue;
             }
 
-            $final[$propertyName] = $this->{$propertyName};
+            $final[$propertyName] = self::$exportMappings[$propertyName]['loader'] ??
+                $this->{self::$exportMappings[$propertyName]['name']};
         }
 
         return $final;

@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace Teknoo\Tests\East\Support\Normalization;
 
 use Teknoo\East\Foundation\Normalizer\Object\AutoTrait;
-use Teknoo\East\Foundation\Normalizer\Object\Group;
+use Teknoo\East\Foundation\Normalizer\Object\Normalize;
 use Teknoo\East\Foundation\Normalizer\Object\NormalizableInterface;
 
 class AutoTraitPartialGroupFixture implements NormalizableInterface
@@ -34,7 +34,7 @@ class AutoTraitPartialGroupFixture implements NormalizableInterface
     use AutoTrait;
 
     public function __construct(
-        #[Group('default')]
+        #[Normalize('default')]
         private readonly string $name,
         private readonly int $value,
         private readonly string $extra,

@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace Teknoo\Tests\East\Support\Normalization;
 
 use Teknoo\East\Foundation\Normalizer\Object\AutoTrait;
-use Teknoo\East\Foundation\Normalizer\Object\Group;
+use Teknoo\East\Foundation\Normalizer\Object\Normalize;
 use Teknoo\East\Foundation\Normalizer\Object\NormalizableInterface;
 
 class AutoTraitMultipleGroupsFixture implements NormalizableInterface
@@ -34,11 +34,11 @@ class AutoTraitMultipleGroupsFixture implements NormalizableInterface
     use AutoTrait;
 
     public function __construct(
-        #[Group('group1')]
+        #[Normalize('group1')]
         private readonly string $name,
-        #[Group('group2')]
+        #[Normalize('group2')]
         private readonly int $value,
-        #[Group('group2')]
+        #[Normalize('group2')]
         private readonly string $secret,
     ) {
     }

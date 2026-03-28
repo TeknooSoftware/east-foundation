@@ -34,7 +34,9 @@ use Teknoo\East\Foundation\Normalizer\Object\NormalizableInterface;
 use Teknoo\Tests\East\Support\Normalization\AutoTraitDefaultGroupFixture;
 use Teknoo\Tests\East\Support\Normalization\AutoTraitMultipleGroupsFixture;
 use Teknoo\Tests\East\Support\Normalization\AutoTraitPartialGroupFixture;
+use Teknoo\Tests\East\Support\Normalization\AutoTraitWithAliasFixture;
 use Teknoo\Tests\East\Support\Normalization\AutoTraitWithClassGroupFixture;
+use Teknoo\Tests\East\Support\Normalization\AutoTraitWithLoaderFixture;
 
 /**
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
@@ -170,6 +172,37 @@ class AutoTraitTest extends TestCase
             ->with([
                 'name' => 'hello',
                 'value' => 42,
+            ]);
+
+        $object->exportToMeData($normalizer, ['groups' => ['default']]);
+    }
+
+    public function testExportWithAlias(): void
+    {
+        $object = new AutoTraitWithAliasFixture('hello', 42);
+
+        $normalizer = $this->createMock(EastNormalizerInterface::class);
+        $normalizer->expects($this->once())
+            ->method('injectData')
+            ->with([
+                'name' => 'hello',
+                'text' => 42,
+            ]);
+
+        $object->exportToMeData($normalizer, ['groups' => ['default']]);
+    }
+
+    public function testExportWithLoader(): void
+    {
+        $object = new AutoTraitWithLoaderFixture('hello', 42);
+
+        $normalizer = $this->createMock(EastNormalizerInterface::class);
+        $normalizer->expects($this->once())
+            ->method('injectData')
+            ->with([
+                'name' => 'barTest',
+                'text' => 'foo',
+                'complex' => ['foo'],
             ]);
 
         $object->exportToMeData($normalizer, ['groups' => ['default']]);

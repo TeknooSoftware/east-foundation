@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * East Foundation.
  *
  * LICENSE
@@ -23,52 +23,47 @@
 
 declare(strict_types=1);
 
-namespace Teknoo\Tests\East\Foundation\Normalizer\Object;
+namespace Teknoo\East\Foundation\Normalizer\Object;
 
 use Attribute;
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\TestCase;
-use ReflectionClass;
-use Teknoo\East\Foundation\Normalizer\Object\Group;
+
+use function is_string;
 
 /**
+ * Attribute to define groups for normalizable object properties
+ *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
  * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
-#[CoversClass(Group::class)]
-class GroupTest extends TestCase
+#[Attribute(Attribute::TARGET_PROPERTY)]
+class Normalize
 {
-    public function testConstructWithNoGroups(): void
-    {
-        $group = new Group();
+    /**
+     * @var string[]
+     */
+    public readonly array $groups;
 
-        $this->assertSame([], $group->groups);
-    }
+    /**
+     * @var callable|string|null
+     */
+    public $loader = null;
 
-    public function testConstructWithSingleGroup(): void
-    {
-        $group = new Group('group1');
+    /**
+     * @param string[]|string $groups
+     */
+    public function __construct(
+        string|array $groups = [],
+        public readonly ?string $name = null,
+        callable|string|null $loader = null,
+    ) {
+        if (is_string($groups)) {
+            $this->groups = [$groups];
+        } else {
+            $this->groups = $groups;
+        }
 
-        $this->assertSame(['group1'], $group->groups);
-    }
-
-    public function testConstructWithMultipleGroups(): void
-    {
-        $group = new Group('group1', 'group2', 'group3');
-
-        $this->assertSame(['group1', 'group2', 'group3'], $group->groups);
-    }
-
-    public function testAttributeTargetsProperty(): void
-    {
-        $reflection = new ReflectionClass(Group::class);
-        $attributes = $reflection->getAttributes(Attribute::class);
-
-        $this->assertCount(1, $attributes);
-
-        $attribute = $attributes[0]->newInstance();
-        $this->assertSame(Attribute::TARGET_PROPERTY, $attribute->flags);
+        $this->loader = $loader;
     }
 }
