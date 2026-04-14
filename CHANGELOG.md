@@ -1,5 +1,9 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [9.2.1] - 2026-04-14
+### Stable Release
+- Support of Symfony UX 3
+
 ## [9.2.0] - 2026-03-28
 ### Stable Release
 - Add `Teknoo\East\Foundation\Normalizer\Object\AutoTrait` and attributes
