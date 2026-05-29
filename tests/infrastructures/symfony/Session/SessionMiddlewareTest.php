@@ -134,9 +134,7 @@ class SessionMiddlewareTest extends TestCase
         $client = $this->createStub(ClientInterface::class);
         $manager = $this->createMock(ManagerInterface::class);
 
-        $sfRequest = $this->createMock(Request::class);
-        $sfRequest->expects($this->never())
-            ->method('getSession');
+        $sfRequest = new Request();
 
         $sfRequest->attributes = new ParameterBag();
         $sfRequest->attributes->set('_stateless', true);
