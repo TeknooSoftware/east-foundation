@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\Foundation\Processor;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Psr\Http\Message\MessageInterface;
@@ -128,7 +129,10 @@ class ProcessorTest extends TestCase
         ]);
 
         $routerResult = $this->createStub(ResultInterface::class);
-        $routerResult->method('getController')->willReturn($controller = function (): void {
+        $routerResult->method('getController')->willReturn($controller = new class {
+            public function __invoke() {
+
+            }
         });
 
         $manager = $this->createMock(ManagerInterface::class);
@@ -175,7 +179,10 @@ class ProcessorTest extends TestCase
         ]);
 
         $routerResult = $this->createStub(ResultInterface::class);
-        $routerResult->method('getController')->willReturn($controller = function (): void {
+        $routerResult->method('getController')->willReturn($controller = $controller = new class {
+            public function __invoke() {
+
+            }
         });
 
         $manager = $this->createMock(ManagerInterface::class);
