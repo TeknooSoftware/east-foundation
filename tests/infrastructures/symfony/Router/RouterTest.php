@@ -121,6 +121,23 @@ class RouterTest extends TestCase
     }
 
     /**
+     * Builds the Symfony UX 3 checksum format (component name + props pre-image).
+     *
+     * @param array<string|int, string|array<string|int, string>> $props
+     */
+    private function calculateChecksumV3(array $props, string $componentName): string
+    {
+        // sort so it is always consistent (frontend could have re-ordered data)
+        $this->recursiveKeySort($props);
+
+        $encoded = (string) json_encode($props, JSON_THROW_ON_ERROR);
+
+        return base64_encode(
+            hash_hmac('sha256', $componentName . "\0props\0" . $encoded, self::TEST_SECRET, true)
+        );
+    }
+
+    /**
      * @return Router
      */
     private function buildRouter(array $excludedPaths = []): Router
@@ -1582,5 +1599,189 @@ class RouterTest extends TestCase
         $this->assertArrayNotHasKey('@internalProp', $addedAttributes);
         $this->assertArrayNotHasKey('_privateProp', $addedAttributes);
         $this->assertArrayNotHasKey('originalPath', $addedAttributes);
+    }
+
+    public function testExecuteWithLiveComponentRouteUX3Checksum(): void
+    {
+        $uri = $this->createStub(UriInterface::class);
+        $uri->method('getPath')->willReturn('/_components');
+
+        $client = $this->createStub(ClientInterface::class);
+        $request = $this->createStub(ServerRequestInterface::class);
+        $request->method('getUri')->willReturn($uri);
+
+        $props = [
+            'originalPath' => '/user/profile/456'
+        ];
+        // Checksum built with the Symfony UX 3 format (component name pre-image)
+        $props['@checksum'] = $this->calculateChecksumV3($props, 'UserProfile');
+
+        $request->method('getParsedBody')->willReturn([
+            'data' => json_encode([
+                'props' => $props
+            ])
+        ]);
+        $request->method('getAttribute')->willReturn(null);
+
+        $manager = $this->createMock(ManagerInterface::class);
+
+        $this->getUrlMatcherMock()->method('match')->willReturnCallback(
+            function (string $path) {
+                if ($path === '/_components') {
+                    return [
+                        '_route' => 'ux_live_component',
+                        '_live_component' => 'UserProfile',
+                    ];
+                }
+                if ($path === '/user/profile/456') {
+                    return [
+                        '_controller' => function (): void {},
+                        'id' => '456',
+                    ];
+                }
+                return [];
+            }
+        );
+
+        $manager->expects($this->once())->method('updateWorkPlan')
+            ->willReturnCallback(function (array $workPlan) use ($manager) {
+                $this->assertInstanceOf(ResultInterface::class, $workPlan[ResultInterface::class]);
+                return $manager;
+            });
+        $manager->expects($this->once())->method('updateMessage')->willReturnSelf();
+
+        $this->assertInstanceOf(
+            $this->getRouterClass(),
+            $this->buildRouter()->execute($client, $request, $manager)
+        );
+    }
+
+    public function testExecuteWithLiveComponentRouteLegacyChecksumStillAccepted(): void
+    {
+        $this->expectUserDeprecationMessageMatches('/Symfony UX Live Component 2\.x is deprecated/');
+
+        $uri = $this->createStub(UriInterface::class);
+        $uri->method('getPath')->willReturn('/_components');
+
+        $client = $this->createStub(ClientInterface::class);
+        $request = $this->createStub(ServerRequestInterface::class);
+        $request->method('getUri')->willReturn($uri);
+
+        $props = [
+            'originalPath' => '/user/profile/456'
+        ];
+        // Checksum built with the legacy Symfony UX 2 format (props only, no component name)
+        $props['@checksum'] = $this->calculateChecksum($props);
+
+        $request->method('getParsedBody')->willReturn([
+            'data' => json_encode([
+                'props' => $props
+            ])
+        ]);
+        $request->method('getAttribute')->willReturn(null);
+
+        $manager = $this->createMock(ManagerInterface::class);
+
+        $this->getUrlMatcherMock()->method('match')->willReturnCallback(
+            function (string $path) {
+                if ($path === '/_components') {
+                    return [
+                        '_route' => 'ux_live_component',
+                        '_live_component' => 'UserProfile',
+                    ];
+                }
+                if ($path === '/user/profile/456') {
+                    return [
+                        '_controller' => function (): void {},
+                        'id' => '456',
+                    ];
+                }
+                return [];
+            }
+        );
+
+        $manager->expects($this->once())->method('updateWorkPlan')
+            ->willReturnCallback(function (array $workPlan) use ($manager) {
+                $this->assertInstanceOf(ResultInterface::class, $workPlan[ResultInterface::class]);
+                return $manager;
+            });
+        $manager->expects($this->once())->method('updateMessage')->willReturnSelf();
+
+        $this->assertInstanceOf(
+            $this->getRouterClass(),
+            $this->buildRouter()->execute($client, $request, $manager)
+        );
+    }
+
+    public function testExecuteWithLiveComponentRouteNonStringChecksum(): void
+    {
+        $uri = $this->createStub(UriInterface::class);
+        $uri->method('getPath')->willReturn('/_components');
+
+        $client = $this->createStub(ClientInterface::class);
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->method('getUri')->willReturn($uri);
+
+        // Checksum is not a string: must be rejected
+        $request->method('getParsedBody')->willReturn([
+            'data' => json_encode([
+                'props' => [
+                    'originalPath' => '/user/profile/666',
+                    '@checksum' => 12345,
+                ]
+            ])
+        ]);
+
+        $request->expects($this->never())->method('withAttribute');
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects($this->never())->method('updateWorkPlan');
+
+        $this->getUrlMatcherMock()->method('match')->willReturn([
+            '_route' => 'ux_live_component',
+            '_live_component' => 'UserProfile',
+        ]);
+
+        $this->assertInstanceOf(
+            $this->getRouterClass(),
+            $this->buildRouter()->execute($client, $request, $manager)
+        );
+    }
+
+    public function testExecuteWithLiveComponentRouteNonStringLiveComponentRejected(): void
+    {
+        $uri = $this->createStub(UriInterface::class);
+        $uri->method('getPath')->willReturn('/_components');
+
+        $client = $this->createStub(ClientInterface::class);
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->method('getUri')->willReturn($uri);
+
+        $props = [
+            'originalPath' => '/user/profile/777'
+        ];
+        $props['@checksum'] = $this->calculateChecksumV3($props, 'UserProfile');
+
+        $request->method('getParsedBody')->willReturn([
+            'data' => json_encode([
+                'props' => $props
+            ])
+        ]);
+
+        $request->expects($this->never())->method('withAttribute');
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects($this->never())->method('updateWorkPlan');
+
+        // _live_component is truthy but not a string: must be rejected
+        $this->getUrlMatcherMock()->method('match')->willReturn([
+            '_route' => 'ux_live_component',
+            '_live_component' => 123,
+        ]);
+
+        $this->assertInstanceOf(
+            $this->getRouterClass(),
+            $this->buildRouter()->execute($client, $request, $manager)
+        );
     }
 }

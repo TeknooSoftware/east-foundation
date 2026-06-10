@@ -31,6 +31,7 @@ use JsonSerializable;
 use Laminas\Diactoros\Request;
 use Laminas\Diactoros\Response\TextResponse;
 use Laminas\Diactoros\ServerRequest;
+use Laminas\Diactoros\Uri;
 use PHPUnit\Framework\Assert;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -38,6 +39,12 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface as PsrMiddleware;
 use Psr\Http\Server\RequestHandlerInterface;
 use RuntimeException;
+use Symfony\Component\DependencyInjection\Container as SymfonyContainer;
+use Symfony\Component\Routing\Matcher\UrlMatcher;
+use Symfony\Component\Routing\RequestContext;
+use Symfony\Component\Routing\Route;
+use Symfony\Component\Routing\RouteCollection;
+use Teknoo\East\FoundationBundle\Router\Router as SymfonyUxRouter;
 use Teknoo\East\Foundation\Command\Executor;
 use Teknoo\East\Foundation\Http\Bowl\PSR15\FiberHandlerBowl;
 use Teknoo\East\Foundation\Http\Bowl\PSR15\FiberMiddlewareBowl;
@@ -62,16 +69,22 @@ use Teknoo\East\Foundation\Router\Result;
 use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
 use Throwable;
 
+use function base64_encode;
 use function dirname;
 use function explode;
 use function file_put_contents;
+use function hash_hmac;
+use function is_array;
 use function json_decode;
+use function json_encode;
+use function ksort;
 use function parse_str;
 use function set_time_limit;
 use function sleep;
 use function time;
 use function trim;
 
+use const JSON_THROW_ON_ERROR;
 use const PHP_EOL;
 
 /**
@@ -82,6 +95,8 @@ class FeatureContext implements Context
     private ?Container $container = null;
 
     private ?RouterInterface $router = null;
+
+    private string $liveSecret = '';
 
     private ?ClientInterface $client = null;
 
@@ -674,5 +689,130 @@ class FeatureContext implements Context
     public function theTaskMustBeNotFinished(): void
     {
         Assert::assertNull($this->response);
+    }
+
+    #[\Behat\Step\Given('I register a Symfony UX live component router with secret :secret')]
+    public function iRegisterASymfonyUxLiveComponentRouterWithSecret(string $secret): void
+    {
+        $this->liveSecret = $secret;
+
+        $routes = new RouteCollection();
+        // The live component route: no _controller, so the router enters the
+        // live-component branch and validates the checksum.
+        $routes->add(
+            'ux_live_component',
+            new Route('/_components', ['_live_component' => 'UserProfile']),
+        );
+        // The real target route resolved from the props' originalPath.
+        $routes->add(
+            'user_profile',
+            new Route(
+                '/user/profile/{id}',
+                [
+                    '_controller' => function (ClientInterface $client, ServerRequest $request): void {
+                        $client->acceptResponse(
+                            new TextResponse('Hello ' . $request->getAttribute('username'))
+                        );
+                    },
+                ],
+            ),
+        );
+
+        $router = new SymfonyUxRouter(
+            new UrlMatcher($routes, new RequestContext()),
+            new SymfonyContainer(),
+            [],
+            'ux_live_component',
+            $secret,
+        );
+
+        $this->router = $router;
+        $this->container->set(RouterInterface::class, $router);
+    }
+
+    #[\Behat\Step\When('a live component :component requests :originalPath with a valid UX3 checksum')]
+    public function aLiveComponentRequestsWithAValidUx3Checksum(string $component, string $originalPath): void
+    {
+        $this->dispatchLiveComponentRequest($component, $originalPath, 'ux3');
+    }
+
+    #[\Behat\Step\When('a live component :component requests :originalPath with a valid legacy checksum')]
+    public function aLiveComponentRequestsWithAValidLegacyChecksum(string $component, string $originalPath): void
+    {
+        $this->dispatchLiveComponentRequest($component, $originalPath, 'legacy');
+    }
+
+    #[\Behat\Step\When('a live component :component requests :originalPath with an invalid checksum')]
+    public function aLiveComponentRequestsWithAnInvalidChecksum(string $component, string $originalPath): void
+    {
+        $this->dispatchLiveComponentRequest($component, $originalPath, 'invalid');
+    }
+
+    private function dispatchLiveComponentRequest(string $component, string $originalPath, string $mode): void
+    {
+        $props = [
+            'originalPath' => $originalPath,
+            'username' => 'john_doe',
+        ];
+
+        $props['@checksum'] = match ($mode) {
+            'ux3' => $this->liveChecksum($props, $component),
+            'legacy' => $this->liveChecksum($props, null),
+            default => 'an-invalid-checksum-value',
+        };
+
+        $json = (string) json_encode(['props' => $props], JSON_THROW_ON_ERROR);
+
+        $manager = new Manager($this->container->get(PlanInterface::class));
+
+        $this->response = null;
+        $this->error = null;
+
+        $this->createClient();
+
+        $request = (new ServerRequest())
+            ->withUri(new Uri('https://foo.com/_components'))
+            ->withMethod('POST')
+            ->withParsedBody(['data' => $json]);
+
+        $manager->receiveRequest(
+            $this->client,
+            $request,
+        );
+    }
+
+    /**
+     * Same recursive ksort as Teknoo\East\FoundationBundle\Router\Router::recursiveKeySort.
+     *
+     * @param array<string|int, mixed> $data
+     */
+    private function recursiveKeySort(array &$data): void
+    {
+        foreach ($data as &$value) {
+            if (is_array($value)) {
+                $this->recursiveKeySort($value);
+            }
+        }
+
+        ksort($data);
+    }
+
+    /**
+     * Reproduces Router::calculateChecksum. A null component name yields the legacy
+     * Symfony UX 2 format; a non-null name yields the Symfony UX 3 pre-image format.
+     *
+     * @param array<string|int, mixed> $props
+     */
+    private function liveChecksum(array $props, ?string $componentName): string
+    {
+        $this->recursiveKeySort($props);
+
+        $encoded = (string) json_encode($props, JSON_THROW_ON_ERROR);
+
+        $preImage = null === $componentName
+            ? $encoded
+            : $componentName . "\0props\0" . $encoded;
+
+        return base64_encode(hash_hmac('sha256', $preImage, $this->liveSecret, true));
     }
 }

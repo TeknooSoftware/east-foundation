@@ -57,6 +57,9 @@ use function preg_match;
 use function str_starts_with;
 use function str_contains;
 use function substr;
+use function trigger_deprecation;
+
+use const JSON_THROW_ON_ERROR;
 
 /**
  * Class Router to check if a request is runnable by one of its controller and pass it to the selected controller.
@@ -109,12 +112,27 @@ class Router implements RouterInterface
     /**
      * @param array<string|int, string|array<string|int, string>> $props
      */
-    private function calculateChecksum(array &$props): string
+    private function calculateChecksum(array &$props, ?string $componentName): string
     {
         // sort so it is always consistent (frontend could have re-ordered data)
         $this->recursiveKeySort($props);
 
-        return base64_encode(hash_hmac('sha256', (string) json_encode($props), $this->secret, true));
+        $encodedProps = (string) json_encode($props, flags: JSON_THROW_ON_ERROR);
+
+        if (null === $componentName) {
+            trigger_deprecation(
+                'teknoo/east-foundation',
+                '9.2',
+                'Symfony UX Live Component 2.x is deprecated and will not be supported in version 10.0. '
+                 . 'Please upgrade to Symfony UX Live Component 3.x or later.'
+            );
+
+            return base64_encode(hash_hmac('sha256', $encodedProps, $this->secret, true));
+        }
+
+        $preImage = $componentName . "\0props\0" . $encodedProps;
+
+        return base64_encode(hash_hmac('sha256', $preImage, $this->secret, true));
     }
 
     private function cleanSymfonyHandler(string $path): string
@@ -137,7 +155,7 @@ class Router implements RouterInterface
     /**
      * @param array<string|int, string|array<string|int, string>> $props
      */
-    private function valideLiveComponentProprs(array $props): bool
+    private function valideLiveComponentProprs(array $props, string $componentName): bool
     {
         if (!array_key_exists(self::CHECKSUM_KEY, $props)) {
             return false;
@@ -146,9 +164,12 @@ class Router implements RouterInterface
         $sentChecksum = $props[self::CHECKSUM_KEY];
         unset($props[self::CHECKSUM_KEY]);
 
-        $expectedChecksum = $this->calculateChecksum($props);
+        if (!is_string($sentChecksum)) {
+            return false;
+        }
 
-        return is_string($sentChecksum) && hash_equals($expectedChecksum, $sentChecksum);
+        return hash_equals($this->calculateChecksum($props, $componentName), $sentChecksum)
+            || hash_equals($this->calculateChecksum($props, null), $sentChecksum);
     }
 
     /**
@@ -195,7 +216,8 @@ class Router implements RouterInterface
             !is_array($body)
             || empty($body['props'])
             || !is_array($body['props'])
-            || !$this->valideLiveComponentProprs($body['props'])
+            || !is_string($originalParameters['_live_component'])
+            || !$this->valideLiveComponentProprs($body['props'], $originalParameters['_live_component'])
             || empty($body['props']['originalPath'])
             || !is_string($body['props']['originalPath'])
         ) {

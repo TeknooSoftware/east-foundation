@@ -1,5 +1,9 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [9.2.2] - 2026-04-14
+### Stable Release
+- Fix issue with Live Component Checksum with Symfony UX 3
+
 ## [9.2.1] - 2026-04-14
 ### Stable Release
 - Support of Symfony UX 3
