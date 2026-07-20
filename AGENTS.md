@@ -34,9 +34,9 @@ The project is built upon several PSR standards. All new components must respect
 - **Regression Testing**: Any bug fix must include a test case that fails without the fix and passes with it.
 
 ### 3.2 Automated Verification
-Before any code is merged, it must pass:
-- Standard PHPUnit test suites.
-- Static analysis checks.
+Before any code is merged, use the following commands via `make` to verify changes:
+- `make test` for unit and feature tests (PHPUnit and Behat).
+- `make qa` for static analysis, linting, and security audits.
 
 ## 4. Contribution Workflow
 - **Branching**: All work must be performed in dedicated `feature/` or `hotfix/` branches. Do not commit directly to the main branch.
