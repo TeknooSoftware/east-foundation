@@ -29,6 +29,9 @@ defined('PHPUNIT')
     || define('PHPUNIT', true);
 
 ini_set('memory_limit', '64M');
+if (PHP_MAJOR_VERSION === 8 and PHP_MINOR_VERSION === 4) {
+    ini_set('memory_limit', '128M');
+}
 
 require_once __DIR__.'/../vendor/autoload.php';
 
