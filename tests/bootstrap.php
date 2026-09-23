@@ -28,7 +28,7 @@ defined('RUN_CLI_MODE')
 defined('PHPUNIT')
     || define('PHPUNIT', true);
 
-ini_set('memory_limit', '64M');
+ini_set('memory_limit', '75M');
 if (PHP_MAJOR_VERSION === 8 and PHP_MINOR_VERSION === 4) {
     ini_set('memory_limit', '128M');
 }
