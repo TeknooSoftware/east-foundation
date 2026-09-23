@@ -43,6 +43,11 @@ class TimeoutServiceTest extends TestCase
 
     private ?int $seconds = null;
 
+    /**
+     * @var array<int, int>
+     */
+    private array $secondsHistory = [];
+
     public function getTimerMock(): TimerService&MockObject
     {
         if (null === $this->timer) {
@@ -63,6 +68,7 @@ class TimeoutServiceTest extends TestCase
         $rp = new \ReflectionProperty(TimeoutService::class, 'setTimeoutCallable');
         $rp->setValue($service, function (int $seconds): void {
             $this->seconds = $seconds;
+            $this->secondsHistory[] = $seconds;
         });
 
         return $service;
@@ -109,6 +115,78 @@ class TimeoutServiceTest extends TestCase
         );
 
         $this->assertEquals(15, $this->seconds);
+    }
+
+    public function testEnableTwiceDisableBefore(): void
+    {
+        $service = $this->createService();
+        $this->secondsHistory = [];
+        $log = [];
+
+        $this->getTimerMock()
+            ->expects($this->exactly(2))
+            ->method('register')
+            ->willReturnCallback(
+                function (int $seconds, string $timerId) use (&$log) {
+                    $this->assertEquals(TimeoutService::class, $timerId);
+                    $log[] = 'register:' . $seconds;
+                    return $this->getTimerMock();
+                }
+            );
+
+        $this->getTimerMock()
+            ->expects($this->atLeastOnce())
+            ->method('unregister')
+            ->willReturnCallback(
+                function (string $timerId) use (&$log) {
+                    $this->assertEquals(TimeoutService::class, $timerId);
+                    $log[] = 'unregister';
+                    return $this->getTimerMock();
+                }
+            );
+
+        $this->assertInstanceOf(
+            TimeoutService::class,
+            $service->enable(10),
+        );
+
+        $this->assertInstanceOf(
+            TimeoutService::class,
+            $service->enable(20),
+        );
+
+        $this->assertEquals(['register:10', 'unregister', 'register:20'], $log);
+        $this->assertEquals([15, 0, 25], $this->secondsHistory);
+    }
+
+    public function testEnableTwiceWithoutTimer(): void
+    {
+        $service = $this->createService(false);
+        $this->secondsHistory = [];
+
+        $this->assertInstanceOf(
+            TimeoutService::class,
+            $service->enable(10),
+        );
+
+        $this->assertInstanceOf(
+            TimeoutService::class,
+            $service->enable(20),
+        );
+
+        $this->assertEquals([15, 0, 25], $this->secondsHistory);
+    }
+
+    public function testEnableAfterDisableDoesNotDisableTwice(): void
+    {
+        $service = $this->createService(false);
+        $this->secondsHistory = [];
+
+        $service->enable(10);
+        $service->disable();
+        $service->enable(20);
+
+        $this->assertEquals([15, 0, 25], $this->secondsHistory);
     }
 
     public function testDisable(): void

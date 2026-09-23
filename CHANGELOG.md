@@ -1,5 +1,9 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [9.2.3] - 2026-09-23
+### Stable Release
+- `TimeoutService::enable()` disables the current timeout before enabling a new one when it is already enabled.
+
 ## [9.2.2] - 2026-04-14
 ### Stable Release
 - Fix issue with Live Component Checksum with Symfony UX 3

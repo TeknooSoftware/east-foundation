@@ -34,6 +34,7 @@ use function set_time_limit;
  * Service to manage timeout behavior and kill operations that take too long. Its behavior is similar to
  * \set_time_limit, but an throwable exception is throwed instead a fatal error. A fallback on \set_time_limit is even
  * defined X seconds (5 by default). The time limit can be disable.
+ * If the time limit is already enabled, a new call to `enable` will disable it before enabling the new one.
  *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
@@ -46,6 +47,8 @@ class TimeoutService implements TimeoutServiceInterface
      * @var callable
      */
     private $setTimeoutCallable;
+
+    private bool $enabled = false;
 
     public function __construct(
         private readonly ?TimerService $timer = null,
@@ -65,12 +68,17 @@ class TimeoutService implements TimeoutServiceInterface
 
     public function enable(int $seconds, int $grace = 5): TimeoutServiceInterface
     {
+        if ($this->enabled) {
+            $this->disable();
+        }
+
         $this->timer?->register(
             seconds: $seconds,
             timerId: static::class,
             callback: self::throwException(...),
         );
         ($this->setTimeoutCallable)($seconds + $grace);
+        $this->enabled = true;
 
         return $this;
     }
@@ -79,6 +87,7 @@ class TimeoutService implements TimeoutServiceInterface
     {
         ($this->setTimeoutCallable)(0);
         $this->timer?->unregister(static::class);
+        $this->enabled = false;
 
         return $this;
     }
