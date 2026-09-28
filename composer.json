@@ -93,7 +93,8 @@
             "Teknoo\\Tests\\East\\FoundationBundle\\": "tests/infrastructures/symfony",
             "Teknoo\\Tests\\East\\Twig\\": "tests/infrastructures/twig",
             "Teknoo\\Tests\\East\\Support\\": "tests/Support"
-        }
+        },
+        "exclude-from-classmap": ["vendor/teknoo/recipe/tests/Php85/"]
     },
     "archive": {
         "exclude": ["docs", "features", ".idea"]
