@@ -54,6 +54,11 @@ class GroupsTraitTest extends TestCase
             ): array {
                 return $this->filterExport($data, $groups, $lazyData);
             }
+
+            public function computeValue(): string
+            {
+                return 'computed';
+            }
         };
     }
 
@@ -216,6 +221,81 @@ class GroupsTraitTest extends TestCase
                     'group2',
                 ],
                 false,
+            ),
+        );
+    }
+
+    public function testFilteringWithLazyDataDoesNotCallStringsOrArraysMatchingCallables(): void
+    {
+        $object = $this->buildObject();
+
+        $object->setConfig(
+            [
+                'key1' => ['group1'],
+                'key2' => ['group1'],
+                'key3' => ['group1'],
+                'key4' => ['group1'],
+                'key5' => ['group1'],
+            ]
+        );
+
+        $this->assertEquals(
+            [
+                'key1' => 'Max',
+                'key2' => 'print_r',
+                'key3' => 'Time',
+                'key4' => ['DateTime', 'createFromFormat'],
+                'key5' => [new stdClass(), 'foo'],
+            ],
+            $object->runFilter(
+                [
+                    'key1' => 'Max',
+                    'key2' => 'print_r',
+                    'key3' => 'Time',
+                    'key4' => ['DateTime', 'createFromFormat'],
+                    'key5' => [new stdClass(), 'foo'],
+                ],
+                [
+                    'group1',
+                ],
+                true,
+            ),
+        );
+    }
+
+    public function testFilteringWithLazyDataCallsClosuresAndMethodsOfTheObject(): void
+    {
+        $object = $this->buildObject();
+
+        $object->setConfig(
+            [
+                'key1' => ['group1'],
+                'key2' => ['group1'],
+                'key3' => ['group1'],
+                'key4' => ['group1'],
+            ]
+        );
+
+        $this->assertEquals(
+            [
+                'key1' => 'closure',
+                'key2' => 'arrow',
+                'key3' => 'computed',
+                'key4' => 'computed',
+            ],
+            $object->runFilter(
+                [
+                    'key1' => static function (object $that): string {
+                        return 'closure';
+                    },
+                    'key2' => fn (): string => 'arrow',
+                    'key3' => [$object, 'computeValue'],
+                    'key4' => $object->computeValue(...),
+                ],
+                [
+                    'group1',
+                ],
+                true,
             ),
         );
     }

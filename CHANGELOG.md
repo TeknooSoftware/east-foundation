@@ -1,5 +1,11 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [9.2.4] - 2026-09-29
+### Stable Release
+- `GroupsTrait::filterExport()`, with lazy data, calls only closures (and arrow functions) or methods of the current
+  object (`[$this, 'method']`). A string or an array value matching a PHP callable (like `Max`, `Time` or `print_r`)
+  is now exported as is, instead of being executed.
+
 ## [9.2.3] - 2026-09-23
 ### Stable Release
 - `TimeoutService::enable()` disables the current timeout before enabling a new one when it is already enabled.

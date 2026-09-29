@@ -25,11 +25,14 @@ declare(strict_types=1);
 
 namespace Teknoo\East\Foundation\Normalizer\Object;
 
+use Closure;
+
 use function array_flip;
 use function array_intersect_key;
 use function array_merge;
 use function array_values;
 use function array_walk;
+use function is_array;
 use function is_callable;
 
 /**
@@ -99,7 +102,15 @@ trait GroupsTrait
             array_walk(
                 $dataFiltered,
                 function (mixed &$item): void {
-                    if (is_callable($item)) {
+                    //Only closures (and arrow functions) or methods of this object must be called, a string or an
+                    //array, like a value `max` or `print_r`, can be also a callable
+                    if (
+                        is_callable($item)
+                        && (
+                            $item instanceof Closure
+                            || (is_array($item) && $item[0] === $this)
+                        )
+                    ) {
                         $item = $item($this);
                     }
                 }
