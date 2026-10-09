@@ -27,22 +27,20 @@ namespace Teknoo\East\Foundation\Time\Backend\Pcntl;
 
 use DateTimeInterface;
 use Teknoo\East\Foundation\Time\Backend\BackendInterface;
+use Teknoo\East\Foundation\Time\Backend\TimersQueueTrait;
 use Teknoo\East\Foundation\Time\DatesService;
 use Teknoo\East\Foundation\Time\Exception\PcntlNotAvailableException;
 
-use function array_diff;
-use function current;
+use function array_key_first;
 use function defined;
 use function function_exists;
 use function in_array;
 use function is_array;
 use function key;
-use function ksort;
 use function pcntl_alarm;
 use function pcntl_async_signals;
 use function pcntl_signal;
 use function pcntl_sigprocmask;
-use function reset;
 
 use const PHP_SAPI;
 use const SIG_BLOCK;
@@ -64,15 +62,7 @@ use const SIGALRM;
  */
 class TimerService implements BackendInterface
 {
-    /**
-     * @var array<string, callable>
-     */
-    private array $callbacks = [];
-
-    /**
-     * @var array<int, array<int, string>>
-     */
-    private array $pipes = [];
+    use TimersQueueTrait;
 
     private bool $asyncSignalsEnabled = false;
 
@@ -107,25 +97,6 @@ class TimerService implements BackendInterface
             && defined('SIGALRM')
             && 'frankenphp' !== PHP_SAPI
             && !$this->isAlarmSignalBlocked();
-    }
-
-    public function executeCallsBefore(DateTimeInterface $dateTime): void
-    {
-        $timestamp = $dateTime->getTimestamp();
-        while (false !== ($timersIds = current($this->pipes)) && key($this->pipes) <= $timestamp) {
-            if ($key = key($this->pipes)) {
-                unset($this->pipes[$key]);
-            }
-
-            foreach ($timersIds as $timerId) {
-                if (isset($this->callbacks[$timerId])) {
-                    $callback = $this->callbacks[$timerId];
-                    unset($this->callbacks[$timerId]);
-                    $callback();
-                    unset($callback);
-                }
-            }
-        }
     }
 
     /**
@@ -164,13 +135,7 @@ class TimerService implements BackendInterface
 
     public function unregister(string $timerId): self
     {
-        if (isset($this->callbacks[$timerId])) {
-            unset($this->callbacks[$timerId]);
-        }
-
-        foreach ($this->pipes as &$pipe) {
-            $pipe = array_diff($pipe, [$timerId]);
-        }
+        $this->removeTimer($timerId);
 
         return $this;
     }
@@ -197,17 +162,10 @@ class TimerService implements BackendInterface
             $next = array_key_first($this->pipes);
         }
 
-        if (isset($this->callbacks[$timerId])) {
-            $this->unregister($timerId);
-        }
-
-        $this->callbacks[$timerId] = $callback;
-
         $this->datesService->passMeTheDate(
-            setter: function (DateTimeInterface $dateTime) use ($seconds, $timerId, $next): void {
+            setter: function (DateTimeInterface $dateTime) use ($seconds, $timerId, $callback, $next): void {
                 $timestamp = (int) ($dateTime->getTimestamp() + $seconds);
-                $this->pipes[$timestamp][] = $timerId;
-                ksort($this->pipes);
+                $this->addTimer($timestamp, $timerId, $callback);
 
                 if (null === $next || $next > $timestamp) {
                     pcntl_signal(SIGALRM, $this->executeCallbacks(...));
