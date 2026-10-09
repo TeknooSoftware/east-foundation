@@ -6,9 +6,6 @@ parameters:
         - tests/Support/PHPStan/
     ignoreErrors:
         -
-            message: '#mixed given#'
-            path: src/di.php
-        -
             message: '#clone mixed#'
             path: src/di.php
         -

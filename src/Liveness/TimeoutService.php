@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace Teknoo\East\Foundation\Liveness;
 
 use Teknoo\East\Foundation\Liveness\Exception\TimeLimitReachedException;
-use Teknoo\East\Foundation\Time\Backend\Pcntl\TimerService;
+use Teknoo\East\Foundation\Time\TimerServiceInterface;
 
 use function set_time_limit;
 
@@ -51,7 +51,7 @@ class TimeoutService implements TimeoutServiceInterface
     private bool $enabled = false;
 
     public function __construct(
-        private readonly ?TimerService $timer = null,
+        private readonly ?TimerServiceInterface $timer = null,
     ) {
         $this->setTimeoutCallable = set_time_limit(...);
     }

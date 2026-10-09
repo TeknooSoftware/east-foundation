@@ -47,10 +47,13 @@ use Teknoo\East\Foundation\Recipe\Plan;
 use Teknoo\East\Foundation\Recipe\PlanInterface;
 use Teknoo\East\Foundation\Recipe\RecipeInterface;
 use Teknoo\East\Foundation\Router\RouterInterface;
-use Teknoo\East\Foundation\Time\Backend\Pcntl\TimerService;
+use Teknoo\East\Foundation\Time\Backend\BackendInterface;
+use Teknoo\East\Foundation\Time\Backend\Cooperative\TimerService as CooperativeTimerService;
+use Teknoo\East\Foundation\Time\Backend\Pcntl\TimerService as PcntlTimerService;
 use Teknoo\East\Foundation\Time\DatesService;
 use Teknoo\East\Foundation\Time\SleepService;
 use Teknoo\East\Foundation\Time\SleepServiceInterface;
+use Teknoo\East\Foundation\Time\TimerService;
 use Teknoo\East\Foundation\Time\TimerServiceInterface;
 
 use function DI\get;
@@ -109,20 +112,38 @@ return [
             get(TimerServiceInterface::class),
         ),
     TimerServiceInterface::class => get(TimerService::class),
+    //Timer's backends, by priority order, use `DI\add()` to add your own backend, or redefine this list
+    'teknoo.east.foundation.time.timer.backends' => [
+        get(PcntlTimerService::class),
+    ],
+    //Last chance timer's backend, used when no other backend is available, the cooperative backend is available
+    //everywhere.
+    'teknoo.east.foundation.time.timer.fallback_backend' => get(CooperativeTimerService::class),
     TimerService::class => static function (ContainerInterface $container): TimerService {
+        /** @var iterable<BackendInterface> $backends */
+        $backends = $container->get('teknoo.east.foundation.time.timer.backends');
+        /** @var BackendInterface $fallback */
+        $fallback = $container->get('teknoo.east.foundation.time.timer.fallback_backend');
+
+        return new TimerService(...[...$backends, $fallback]);
+    },
+    PcntlTimerService::class => static function (ContainerInterface $container): PcntlTimerService {
         /** @var DatesService $datesService */
         $datesService = clone $container->get(DatesService::class);
-        return new TimerService($datesService);
+        return new PcntlTimerService($datesService);
+    },
+    CooperativeTimerService::class => static function (ContainerInterface $container): CooperativeTimerService {
+        /** @var DatesService $datesService */
+        $datesService = clone $container->get(DatesService::class);
+        return new CooperativeTimerService($datesService);
     },
 
     PingServiceInterface::class => get(PingService::class),
     PingService::class => create(),
     TimeoutServiceInterface::class => get(TimeoutService::class),
     TimeoutService::class => static function (ContainerInterface $container): TimeoutService {
+        /** @var TimerServiceInterface $timerService */
         $timerService = $container->get(TimerServiceInterface::class);
-        if ($timerService instanceof TimerService && !$timerService->isAvailable()) {
-            $timerService = null;
-        }
 
         return new TimeoutService($timerService);
     },
