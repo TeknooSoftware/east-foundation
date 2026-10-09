@@ -36,9 +36,10 @@ use Teknoo\East\Foundation\Time\Exception\NoBackendAvailableException;
  * to the constructor), like :
  * - `Teknoo\East\Foundation\Time\Backend\Pcntl\TimerService`, built on the pcntl extension and SIGALRM signal,
  * - `Teknoo\East\Foundation\Time\Backend\Cooperative\TimerService`, available everywhere, like FrankenPHP in worker
- *    mode, but calls are executed only at some checkpoints (ticks, new registration).
+ *    mode, but calls are executed only at some checkpoints (`register`, `executeExpiredCalls`, ticks).
  * The backend is chosen at the first call of `register` or `unregister` and kept until the destruction of this
- * instance. Each instance does its own choice.
+ * instance. Each instance does its own choice. `executeExpiredCalls` does nothing until the backend is chosen (nothing
+ * can be registered before).
  *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
@@ -91,6 +92,14 @@ class TimerService implements TimerServiceInterface
     {
         //Without available backend, no call can be registered, so there is nothing to unregister
         $this->getBackend()?->unregister($timerId);
+
+        return $this;
+    }
+
+    public function executeExpiredCalls(): self
+    {
+        //The backend is not chosen here, without registered call, there is nothing to execute
+        $this->backend?->executeExpiredCalls();
 
         return $this;
     }

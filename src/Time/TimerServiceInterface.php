@@ -29,7 +29,8 @@ namespace Teknoo\East\Foundation\Time;
  * Simple timer service able to call asyncly a method within X seconds. Several call, at different time can be called.
  * The call is not warranty to be call exactly at X seconds and can be called after (PHP is monothread).
  * A call can be unreferenced before timeout
- * This service need the pcntl extension to be use, it is not available on Windows OS.
+ * `executeExpiredCalls` gives to the timer the opportunity to execute immediately expired calls (dispatch pending
+ * signals, execute expired calls of a cooperative timer, etc.), it must be called regularly by loops waiting a call.
  *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
@@ -41,4 +42,6 @@ interface TimerServiceInterface
     public function unregister(string $timerId): TimerServiceInterface;
 
     public function register(int $seconds, string $timerId, callable $callback): TimerServiceInterface;
+
+    public function executeExpiredCalls(): TimerServiceInterface;
 }

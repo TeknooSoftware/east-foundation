@@ -40,6 +40,7 @@ use function key;
 use function pcntl_alarm;
 use function pcntl_async_signals;
 use function pcntl_signal;
+use function pcntl_signal_dispatch;
 use function pcntl_sigprocmask;
 
 use const PHP_SAPI;
@@ -102,6 +103,7 @@ class TimerService implements BackendInterface
             && function_exists('pcntl_signal')
             && function_exists('pcntl_alarm')
             && function_exists('pcntl_sigprocmask')
+            && function_exists('pcntl_signal_dispatch')
             && defined('SIGALRM')
             && 'frankenphp' !== PHP_SAPI
             && !$this->isAlarmSignalBlocked();
@@ -136,6 +138,16 @@ class TimerService implements BackendInterface
                 },
                 preferRealDate: true,
             );
+        }
+
+        return $this;
+    }
+
+    public function executeExpiredCalls(): self
+    {
+        //Calls are executed by the SIGALRM handler, dispatch pending signals when async signals are disabled
+        if (function_exists('pcntl_signal_dispatch')) {
+            pcntl_signal_dispatch();
         }
 
         return $this;

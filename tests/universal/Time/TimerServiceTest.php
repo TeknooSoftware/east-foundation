@@ -46,6 +46,7 @@ class TimerServiceTest extends TestCase
         bool|array $available,
         int $registerCount = 0,
         int $unregisterCount = 0,
+        int $executeCount = 0,
     ): BackendInterface&MockObject {
         $backend = $this->createMock(BackendInterface::class);
 
@@ -67,6 +68,10 @@ class TimerServiceTest extends TestCase
             ->method('unregister')
             ->willReturnSelf();
 
+        $backend->expects($this->exactly($executeCount))
+            ->method('executeExpiredCalls')
+            ->willReturnSelf();
+
         return $backend;
     }
 
@@ -76,6 +81,7 @@ class TimerServiceTest extends TestCase
         $backend->expects($this->never())->method('isAvailable');
         $backend->expects($this->never())->method('register');
         $backend->expects($this->never())->method('unregister');
+        $backend->expects($this->never())->method('executeExpiredCalls');
 
         return $backend;
     }
@@ -201,6 +207,54 @@ class TimerServiceTest extends TestCase
         $this->assertSame(
             $service,
             $service->unregister('bar'),
+        );
+    }
+
+    public function testExecuteExpiredCallsWithoutChosenBackend(): void
+    {
+        $service = new TimerService(
+            $this->createNeverUsedBackend(),
+        );
+
+        $this->assertSame(
+            $service,
+            $service->executeExpiredCalls(),
+        );
+    }
+
+    public function testExecuteExpiredCallsDoesNotPreventTheChoiceOfTheBackend(): void
+    {
+        $service = new TimerService(
+            $this->createBackend(available: false),
+            $this->createBackend(available: true, registerCount: 1, executeCount: 2),
+            $this->createNeverUsedBackend(),
+        );
+
+        $service->executeExpiredCalls();
+        $service->register(
+            seconds: 5,
+            timerId: 'foo',
+            callback: static function (): void {
+            },
+        );
+
+        $this->assertSame(
+            $service,
+            $service->executeExpiredCalls(),
+        );
+        $service->executeExpiredCalls();
+    }
+
+    public function testExecuteExpiredCallsWithoutAvailableBackend(): void
+    {
+        $service = new TimerService(
+            $this->createBackend(available: false),
+        );
+
+        $service->unregister('foo');
+        $this->assertSame(
+            $service,
+            $service->executeExpiredCalls(),
         );
     }
 }

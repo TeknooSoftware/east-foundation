@@ -132,4 +132,33 @@ class TimerServiceWithoutTicksTest extends TestCase
         $this->assertTrue($called1);
         $this->assertFalse($called2);
     }
+
+    public function testExecuteExpiredCalls(): void
+    {
+        $service = new TimerService(new DatesService());
+
+        $called = false;
+        $service->register(
+            seconds: 1,
+            timerId: 'test1',
+            callback: function () use (&$called): void {
+                $called = true;
+            },
+        );
+
+        $this->assertSame(
+            $service,
+            $service->executeExpiredCalls(),
+        );
+        $this->assertFalse($called);
+
+        sleep(2);
+        $this->assertFalse($called);
+
+        $this->assertSame(
+            $service,
+            $service->executeExpiredCalls(),
+        );
+        $this->assertTrue($called);
+    }
 }

@@ -39,6 +39,7 @@ use Teknoo\East\Foundation\Time\Exception\PcntlNotAvailableException;
 
 use function in_array;
 use function pcntl_alarm;
+use function pcntl_async_signals;
 use function pcntl_sigprocmask;
 use function sleep;
 use function str_repeat;
@@ -668,6 +669,59 @@ class TimerServiceTest extends TestCase
         }
 
         $this->assertTrue($called1);
+        $this->assertTrue($called2);
+    }
+
+    public function testExecuteExpiredCallsDispatchesPendingSignals(): void
+    {
+        if (defined('PCNTL_MOCKED')) {
+            self::markTestSkipped('PCNTL is not available');
+        }
+
+        $service = new TimerService(new DatesService());
+
+        $called1 = false;
+        $called2 = false;
+        $service->register(
+            seconds: 1,
+            timerId: 'test1',
+            callback: function () use (&$called1): void {
+                $called1 = true;
+            },
+        );
+        $service->register(
+            seconds: 3,
+            timerId: 'test2',
+            callback: function () use (&$called2): void {
+                $called2 = true;
+            },
+        );
+
+        pcntl_async_signals(false);
+        try {
+            $expectedTime = time() + 2;
+            while (time() < $expectedTime) {
+                $x = str_repeat('x', 100000);
+            }
+
+            //SIGALRM is pending, the call is executed only when signals are dispatched
+            $this->assertFalse($called1);
+            $this->assertSame(
+                $service,
+                $service->executeExpiredCalls(),
+            );
+            $this->assertTrue($called1);
+            $this->assertFalse($called2);
+        } finally {
+            pcntl_async_signals(true);
+        }
+
+        //The alarm for the second call has been rearmed by the handler
+        $expectedTime = time() + 2;
+        while (time() < $expectedTime) {
+            $x = str_repeat('x', 100000);
+        }
+
         $this->assertTrue($called2);
     }
 }

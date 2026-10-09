@@ -42,10 +42,10 @@ use function unregister_tick_function;
  * pcntl extension is not functional. Several call, at different time can be called.
  * PHP can not interrupt the current execution without signal, so expired calls are executed only at checkpoints :
  * - on each call to `register` (before registering the new call),
+ * - on each call to `executeExpiredCalls` (like `Teknoo\East\Foundation\Time\SleepService` during its waiting),
  * - on each tick, thanks to a tick function registered by this service. Ticks are only emitted by the code of files
- *   declaring `declare(ticks=N);`, like `Teknoo\East\Foundation\Time\SleepService`. A developer can declare ticks in
- *   its own files to have expired calls executed during its long operations (an exception throwed by a call is
- *   propagated into the interrupted code).
+ *   declaring `declare(ticks=N);`. A developer can declare ticks in its own files to have expired calls executed
+ *   during its long operations (an exception throwed by a call is propagated into the interrupted code).
  * The call is not warranty to be call exactly at X seconds and can be called after, nothing will be executed during a
  * blocking operation (sleep, IO, SQL query, etc..) or in a code without ticks.
  * `unregister` never executes expired calls, it can be safely used in a destructor.
@@ -93,7 +93,7 @@ class TimerService implements BackendInterface
         //Weak reference to not keep this service in memory only because the tick function is registered
         $reference = WeakReference::create($this);
         $this->tickFunction = static function () use ($reference): void {
-            $reference->get()?->executeExpiredCallbacks();
+            $reference->get()?->executeExpiredCalls();
         };
 
         register_tick_function($this->tickFunction);
@@ -104,10 +104,10 @@ class TimerService implements BackendInterface
         $this->nextTimestamp = array_key_first($this->pipes);
     }
 
-    private function executeExpiredCallbacks(): void
+    public function executeExpiredCalls(): self
     {
         if ($this->isExecuting || null === $this->nextTimestamp || time() < $this->nextTimestamp) {
-            return;
+            return $this;
         }
 
         $this->isExecuting = true;
@@ -120,6 +120,8 @@ class TimerService implements BackendInterface
             $this->isExecuting = false;
             $this->updateNextTimestamp();
         }
+
+        return $this;
     }
 
     public function unregister(string $timerId): self
@@ -138,7 +140,7 @@ class TimerService implements BackendInterface
             return $this;
         }
 
-        $this->executeExpiredCallbacks();
+        $this->executeExpiredCalls();
         $this->registerTickFunction();
 
         $this->datesService->passMeTheDate(
