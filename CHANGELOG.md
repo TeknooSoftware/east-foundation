@@ -1,5 +1,43 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [9.3.0] - 2026-10-09
+### Stable Release
+
+#### Fixes
+- Timer under FrankenPHP (worker and classic modes) : FrankenPHP blocks `SIGALRM` on all its threads, `pcntl_alarm()`
+  was never triggered and calls were silently never executed. The `pcntl` backend detects it and is no longer used,
+  its `register()` throws `PcntlNotAvailableException` instead of doing nothing.
+- `SleepService::wait()` no longer requires the `pcntl` extension.
+- The DI definition of the `pcntl` timer no longer throws an exception when the extension is missing.
+
+#### Evolutions
+- Timer with several backends, the first available is used :
+  - `Time\Backend\BackendInterface` : `TimerServiceInterface` + non static `isAvailable()`.
+  - `Time\Backend\Pcntl\TimerService` : the former `pcntl` timer, moved. `pcntl_async_signals()` is enabled at the
+    first `register()` instead of the constructor.
+  - `Time\Backend\Cooperative\TimerService` (new) : without extension, available everywhere (FrankenPHP worker,
+    php-fpm, Windows). Expired calls are executed only at checkpoints : `register()`, `executeExpiredCalls()` and
+    ticks (files with `declare(ticks=N);`). Nothing runs during a blocking operation.
+- `Time\TimerService` is now a frontal service : the backend is chosen at the first `register()` / `unregister()` and
+  kept for the instance. Without available backend, `register()` throws `NoBackendAvailableException`.
+  - **BC break** : constructor takes `BackendInterface ...$backends` instead of a `DatesService`.
+  - **Deprecated** : static `TimerService::isAvailable()`, always returns `true`.
+- `TimerServiceInterface::executeExpiredCalls()` (new) : executes immediately expired calls, whatever the backend
+  (`pcntl` dispatches pending signals). Used by `SleepService` during its waiting.
+  - **BC break** : custom implementations of `TimerServiceInterface` must implement it.
+- `TimeoutService` depends on `TimerServiceInterface` and always receives a timer : without `pcntl`,
+  `TimeLimitReachedException` can be thrown at a checkpoint (e.g. during `SleepService::wait()`). The fallback with
+  `set_time_limit` is unchanged.
+- PHP-DI :
+  - `teknoo.east.foundation.time.timer.backends` : backends by priority (default : `pcntl`). A backend added with
+    `DI\add()` comes after `pcntl` and before the fallback.
+  - `teknoo.east.foundation.time.timer.fallback_backend` : last chance backend (default : cooperative).
+
+#### Documentation
+- New `Timer` section in `documentation/README.md` : backends, cooperative checkpoints, `declare(ticks)`,
+  `executeExpiredCalls()`, FrankenPHP limits, custom backend with PHP-DI.
+- README : timers are no longer described as `pcntl` only.
+
 ## [9.2.4] - 2026-09-29
 ### Stable Release
 - `GroupsTrait::filterExport()`, with lazy data, calls only closures (and arrow functions) or methods of the current

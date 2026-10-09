@@ -30,7 +30,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Teknoo\East\Foundation\Liveness\Exception\TimeLimitReachedException;
 use Teknoo\East\Foundation\Liveness\TimeoutService;
-use Teknoo\East\Foundation\Time\TimerService;
+use Teknoo\East\Foundation\Time\TimerServiceInterface;
 
 /**
  * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
@@ -39,7 +39,7 @@ use Teknoo\East\Foundation\Time\TimerService;
 #[CoversClass(TimeoutService::class)]
 class TimeoutServiceTest extends TestCase
 {
-    private ?TimerService $timer = null;
+    private ?TimerServiceInterface $timer = null;
 
     private ?int $seconds = null;
 
@@ -48,10 +48,10 @@ class TimeoutServiceTest extends TestCase
      */
     private array $secondsHistory = [];
 
-    public function getTimerMock(): TimerService&MockObject
+    public function getTimerMock(): TimerServiceInterface&MockObject
     {
         if (null === $this->timer) {
-            $this->timer = $this->createMock(TimerService::class);
+            $this->timer = $this->createMock(TimerServiceInterface::class);
         }
 
         return $this->timer;

@@ -25,19 +25,15 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\Foundation\Time;
 
-use DateTime;
-use DateTimeInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
-use Teknoo\East\Foundation\Time\DatesService;
+use Teknoo\East\Foundation\Time\Backend\BackendInterface;
+use Teknoo\East\Foundation\Time\Exception\NoBackendAvailableException;
 use Teknoo\East\Foundation\Time\TimerService;
 
-use function pcntl_alarm;
-use function sleep;
-use function str_repeat;
-use function time;
+use function count;
+use function is_array;
 
 /**
  * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
@@ -46,530 +42,220 @@ use function time;
 #[CoversClass(TimerService::class)]
 class TimerServiceTest extends TestCase
 {
-    private ?DatesService $datesService = null;
+    private function createBackend(
+        bool|array $available,
+        int $registerCount = 0,
+        int $unregisterCount = 0,
+        int $executeCount = 0,
+    ): BackendInterface&MockObject {
+        $backend = $this->createMock(BackendInterface::class);
 
-    public function getDatesServiceMock(): DatesService&MockObject
-    {
-        if (!$this->datesService instanceof \Teknoo\East\Foundation\Time\DatesService) {
-            $this->datesService = $this->createMock(DatesService::class);
+        if (is_array($available)) {
+            $backend->expects($this->exactly(count($available)))
+                ->method('isAvailable')
+                ->willReturnOnConsecutiveCalls(...$available);
+        } else {
+            $backend->expects($this->once())
+                ->method('isAvailable')
+                ->willReturn($available);
         }
 
-        return $this->datesService;
+        $backend->expects($this->exactly($registerCount))
+            ->method('register')
+            ->willReturnSelf();
+
+        $backend->expects($this->exactly($unregisterCount))
+            ->method('unregister')
+            ->willReturnSelf();
+
+        $backend->expects($this->exactly($executeCount))
+            ->method('executeExpiredCalls')
+            ->willReturnSelf();
+
+        return $backend;
     }
 
-    public function getDatesServiceStub(): DatesService&Stub
+    private function createNeverUsedBackend(): BackendInterface&MockObject
     {
-        if (!$this->datesService instanceof \Teknoo\East\Foundation\Time\DatesService) {
-            $this->datesService = $this->createStub(DatesService::class);
-        }
+        $backend = $this->createMock(BackendInterface::class);
+        $backend->expects($this->never())->method('isAvailable');
+        $backend->expects($this->never())->method('register');
+        $backend->expects($this->never())->method('unregister');
+        $backend->expects($this->never())->method('executeExpiredCalls');
 
-        return $this->datesService;
+        return $backend;
     }
 
-    public function testIsAvailable(): void
+    public function testDeprecatedStaticIsAvailable(): void
     {
         $this->assertTrue(TimerService::isAvailable());
     }
 
-    public function testUnregister(): void
+    public function testRegisterUseTheFirstAvailableBackend(): void
     {
-        $this->assertInstanceOf(
-            TimerService::class,
-            new TimerService($this->getDatesServiceStub())->unregister('foo'),
+        $callback = static function (): void {
+        };
+
+        $unavailable = $this->createBackend(available: false);
+        $available = $this->createBackend(available: true, registerCount: 1);
+        $available->expects($this->once())
+            ->method('register')
+            ->with(5, 'foo', $callback)
+            ->willReturnSelf();
+
+        $service = new TimerService(
+            $unavailable,
+            $available,
+            $this->createNeverUsedBackend(),
+        );
+
+        $this->assertSame(
+            $service,
+            $service->register(seconds: 5, timerId: 'foo', callback: $callback),
         );
     }
 
-    public function testSimpleRegisterOneFunction(): void
+    public function testUnregisterUseTheFirstAvailableBackend(): void
     {
-        if (defined('PCNTL_MOCKED')) {
-            self::markTestSkipped('PCNTL is not available');
-        }
+        $available = $this->createBackend(available: true, unregisterCount: 1);
+        $available->expects($this->once())
+            ->method('unregister')
+            ->with('foo')
+            ->willReturnSelf();
 
-        $service = new TimerService(new DatesService());
-
-        $called = false;
-        $this->assertInstanceOf(
-            TimerService::class,
-            $service->register(
-                seconds: 1,
-                timerId: 'test1',
-                callback: function () use (&$called): void {
-                    $called = true;
-                },
-            )
+        $service = new TimerService(
+            $this->createBackend(available: false),
+            $available,
+            $this->createNeverUsedBackend(),
         );
 
-        $this->assertFalse($called);
-        $expectedTime = time() + 2;
-        while (time() < $expectedTime) {
-            $x = str_repeat('x', 100000);
-        }
-
-        $this->assertTrue($called);
+        $this->assertSame(
+            $service,
+            $service->unregister('foo'),
+        );
     }
 
-    public function testSimpleRegisterOneFunctionWith0Seconds(): void
+    public function testChoiceIsKeptUntilTheDestructionOfTheInstance(): void
     {
-        if (defined('PCNTL_MOCKED')) {
-            self::markTestSkipped('PCNTL is not available');
-        }
+        $callback = static function (): void {
+        };
 
-        $service = new TimerService(new DatesService());
-
-        $called = false;
-        $this->assertInstanceOf(
-            TimerService::class,
-            $service->register(
-                seconds: 0,
-                timerId: 'test1',
-                callback: function () use (&$called): void {
-                    $called = true;
-                },
-            )
+        $service = new TimerService(
+            $this->createBackend(available: true, registerCount: 2, unregisterCount: 2),
+            $this->createNeverUsedBackend(),
         );
 
-        $this->assertTrue($called);
+        $service->unregister('foo');
+        $service->register(seconds: 5, timerId: 'foo', callback: $callback);
+        $service->register(seconds: 5, timerId: 'bar', callback: $callback);
+        $service->unregister('bar');
     }
 
-    public function testSimpleRegisterOneFunctionWithSleep(): void
+    public function testChoiceIsSpecificToEachInstance(): void
     {
-        if (defined('PCNTL_MOCKED')) {
-            self::markTestSkipped('PCNTL is not available');
-        }
+        $callback = static function (): void {
+        };
 
-        $service = new TimerService(new DatesService());
+        $first = $this->createBackend(available: [false, true], registerCount: 1);
+        $second = $this->createBackend(available: true, registerCount: 2);
 
-        $called = false;
-        $calledAt = null;
-        $this->assertInstanceOf(
-            TimerService::class,
-            $service->register(
-                seconds: 1,
-                timerId: 'test1',
-                callback: function () use (&$called, &$calledAt): void {
-                    $called = true;
-                    $calledAt = time();
-                },
-            )
-        );
+        $service1 = new TimerService($first, $second);
+        $service2 = new TimerService($first, $second);
 
-        $this->assertFalse($called);
-        $expectedTime = time() + 3;
-        sleep(3);
-        $this->assertTrue($called);
-        $this->assertLessThan($expectedTime, $calledAt);
+        $service1->register(seconds: 5, timerId: 'foo', callback: $callback);
+        $service1->register(seconds: 5, timerId: 'foo', callback: $callback);
+        $service2->register(seconds: 5, timerId: 'foo', callback: $callback);
     }
 
-    public function testSimpleRegisterOneFunctionWithSignalCalledBefore(): void
+    public function testRegisterWithoutAvailableBackend(): void
     {
-        if (defined('PCNTL_MOCKED')) {
-            self::markTestSkipped('PCNTL is not available');
-        }
-
-        $service = new TimerService(new DatesService());
-
-        $called = false;
-        $calledAt = null;
-        $this->assertInstanceOf(
-            TimerService::class,
-            $service->register(
-                seconds: 3,
-                timerId: 'test1',
-                callback: function () use (&$called, &$calledAt): void {
-                    $called = true;
-                    $calledAt = time();
-                },
-            )
+        $service = new TimerService(
+            $this->createBackend(available: false),
+            $this->createBackend(available: false),
         );
 
-        $mustBeCalledAt = time() + 3;
-        pcntl_alarm(2);
-
-        $this->assertFalse($called);
-        $expectedTime = time() + 5;
-        sleep(5);
-        $this->assertFalse($called);
-        sleep(5);
-        $this->assertTrue($called);
-        $this->assertGreaterThanOrEqual($mustBeCalledAt, $calledAt);
-        $this->assertLessThan($expectedTime, $calledAt);
+        $this->expectException(NoBackendAvailableException::class);
+        $service->register(
+            seconds: 5,
+            timerId: 'foo',
+            callback: static function (): void {
+            },
+        );
     }
 
-    public function testSimpleRegisterOneFunctionThenUnregister(): void
+    public function testRegisterWithoutBackend(): void
     {
-        if (defined('PCNTL_MOCKED')) {
-            self::markTestSkipped('PCNTL is not available');
-        }
-
-        $service = new TimerService(new DatesService());
-
-        $called = false;
-        $this->assertInstanceOf(
-            TimerService::class,
-            $service->register(
-                seconds: 1,
-                timerId: 'test1',
-                callback: function () use (&$called): void {
-                    $called = true;
-                },
-            )
+        $this->expectException(NoBackendAvailableException::class);
+        new TimerService()->register(
+            seconds: 5,
+            timerId: 'foo',
+            callback: static function (): void {
+            },
         );
-        $this->assertInstanceOf(
-            TimerService::class,
-            $service->unregister(
-                timerId: 'test1',
-            )
-        );
-
-        $this->assertFalse($called);
-        $expectedTime = time() + 2;
-        while (time() < $expectedTime) {
-            $x = str_repeat('x', 100000);
-        }
-
-        $this->assertFalse($called);
     }
 
-    public function testSimpleRegisterTwoFunction(): void
+    public function testUnregisterWithoutAvailableBackend(): void
     {
-        if (defined('PCNTL_MOCKED')) {
-            self::markTestSkipped('PCNTL is not available');
-        }
-
-        $service = new TimerService(new DatesService());
-
-        $called1 = false;
-        $called2 = false;
-        $this->assertInstanceOf(
-            TimerService::class,
-            $service->register(
-                seconds: 1,
-                timerId: 'test1',
-                callback: function () use (&$called1): void {
-                    $called1 = true;
-                },
-            )
-        );
-        $this->assertInstanceOf(
-            TimerService::class,
-            $service->register(
-                seconds: 3,
-                timerId: 'test2',
-                callback: function () use (&$called2): void {
-                    $called2 = true;
-                },
-            )
+        //Without available backend, nothing is chosen and the choice is done again at the next call
+        $service = new TimerService(
+            $this->createBackend(available: [false, false]),
         );
 
-        $this->assertFalse($called1);
-        $this->assertFalse($called2);
-
-        $expectedTime = time() + 2;
-        while (time() < $expectedTime) {
-            $x = str_repeat('x', 100000);
-        }
-
-        $this->assertTrue($called1);
-        $this->assertFalse($called2);
-
-        $expectedTime = time() + 2;
-        while (time() < $expectedTime) {
-            $x = str_repeat('x', 100000);
-        }
-
-        $this->assertTrue($called2);
+        $this->assertSame(
+            $service,
+            $service->unregister('foo'),
+        );
+        $this->assertSame(
+            $service,
+            $service->unregister('bar'),
+        );
     }
 
-    public function testSimpleRegisterTwoFunctionWithSleepAtFirst(): void
+    public function testExecuteExpiredCallsWithoutChosenBackend(): void
     {
-        if (defined('PCNTL_MOCKED')) {
-            self::markTestSkipped('PCNTL is not available');
-        }
-
-        $service = new TimerService(new DatesService());
-
-        $called1 = false;
-        $called2 = false;
-        $this->assertInstanceOf(
-            TimerService::class,
-            $service->register(
-                seconds: 1,
-                timerId: 'test1',
-                callback: function () use (&$called1): void {
-                    $called1 = true;
-                    sleep(3);
-                },
-            )
-        );
-        $this->assertInstanceOf(
-            TimerService::class,
-            $service->register(
-                seconds: 2,
-                timerId: 'test2',
-                callback: function () use (&$called2): void {
-                    $called2 = true;
-                },
-            )
+        $service = new TimerService(
+            $this->createNeverUsedBackend(),
         );
 
-        $this->assertFalse($called1);
-        $this->assertFalse($called2);
-
-        $expectedTime = time() + 2;
-        while (time() < $expectedTime) {
-            $x = str_repeat('x', 100000);
-        }
-
-        $this->assertTrue($called1);
-        $this->assertTrue($called2);
+        $this->assertSame(
+            $service,
+            $service->executeExpiredCalls(),
+        );
     }
 
-    public function testSimpleRegisterTwoFunctionSecondBeforeFirst(): void
+    public function testExecuteExpiredCallsDoesNotPreventTheChoiceOfTheBackend(): void
     {
-        if (defined('PCNTL_MOCKED')) {
-            self::markTestSkipped('PCNTL is not available');
-        }
-
-        $service = new TimerService(new DatesService());
-
-        $called1 = false;
-        $called2 = false;
-        $this->assertInstanceOf(
-            TimerService::class,
-            $service->register(
-                seconds: 3,
-                timerId: 'test1',
-                callback: function () use (&$called1): void {
-                    $called1 = true;
-                },
-            )
-        );
-        $this->assertInstanceOf(
-            TimerService::class,
-            $service->register(
-                seconds: 1,
-                timerId: 'test2',
-                callback: function () use (&$called2): void {
-                    $called2 = true;
-                },
-            )
+        $service = new TimerService(
+            $this->createBackend(available: false),
+            $this->createBackend(available: true, registerCount: 1, executeCount: 2),
+            $this->createNeverUsedBackend(),
         );
 
-        $this->assertFalse($called1);
-        $this->assertFalse($called2);
+        $service->executeExpiredCalls();
+        $service->register(
+            seconds: 5,
+            timerId: 'foo',
+            callback: static function (): void {
+            },
+        );
 
-        $expectedTime = time() + 2;
-        while (time() < $expectedTime) {
-            $x = str_repeat('x', 100000);
-        }
-
-        $this->assertFalse($called1);
-        $this->assertTrue($called2);
-
-        $expectedTime = time() + 2;
-        while (time() < $expectedTime) {
-            $x = str_repeat('x', 100000);
-        }
-
-        $this->assertTrue($called1);
+        $this->assertSame(
+            $service,
+            $service->executeExpiredCalls(),
+        );
+        $service->executeExpiredCalls();
     }
 
-    public function testSimpleRegisterTwoFunctionAndFirstRemoved(): void
+    public function testExecuteExpiredCallsWithoutAvailableBackend(): void
     {
-        if (defined('PCNTL_MOCKED')) {
-            self::markTestSkipped('PCNTL is not available');
-        }
-
-        $service = new TimerService(new DatesService());
-
-        $called1 = false;
-        $called2 = false;
-        $this->assertInstanceOf(
-            TimerService::class,
-            $service->register(
-                seconds: 1,
-                timerId: 'test1',
-                callback: function () use (&$called1): void {
-                    $called1 = true;
-                },
-            )
-        );
-        $this->assertInstanceOf(
-            TimerService::class,
-            $service->register(
-                seconds: 3,
-                timerId: 'test2',
-                callback: function () use (&$called2): void {
-                    $called2 = true;
-                },
-            )
-        );
-        $this->assertInstanceOf(
-            TimerService::class,
-            $service->unregister(
-                timerId: 'test1',
-            )
+        $service = new TimerService(
+            $this->createBackend(available: false),
         );
 
-        $this->assertFalse($called1);
-        $this->assertFalse($called2);
-
-        $expectedTime = time() + 2;
-        while (time() < $expectedTime) {
-            $x = str_repeat('x', 100000);
-        }
-
-        $this->assertFalse($called1);
-        $this->assertFalse($called2);
-
-        $expectedTime = time() + 2;
-        while (time() < $expectedTime) {
-            $x = str_repeat('x', 100000);
-        }
-
-        $this->assertFalse($called1);
-        $this->assertTrue($called2);
-    }
-
-    public function testRegisterTwoFunctionAndFirstRemovedAndReregister(): void
-    {
-        if (defined('PCNTL_MOCKED')) {
-            self::markTestSkipped('PCNTL is not available');
-        }
-
-        $service = new TimerService(new DatesService());
-
-        $called1 = false;
-        $called2 = false;
-        $this->assertInstanceOf(
-            TimerService::class,
-            $service->register(
-                seconds: 1,
-                timerId: 'test1',
-                callback: function () use (&$called1): void {
-                    $called1 = true;
-                },
-            )
+        $service->unregister('foo');
+        $this->assertSame(
+            $service,
+            $service->executeExpiredCalls(),
         );
-        $this->assertInstanceOf(
-            TimerService::class,
-            $service->register(
-                seconds: 3,
-                timerId: 'test2',
-                callback: function () use (&$called2): void {
-                    $called2 = true;
-                },
-            )
-        );
-        $this->assertInstanceOf(
-            TimerService::class,
-            $service->unregister(
-                timerId: 'test1',
-            )
-        );
-        $this->assertInstanceOf(
-            TimerService::class,
-            $service->register(
-                seconds: 5,
-                timerId: 'test1',
-                callback: function () use (&$called1): void {
-                    $called1 = true;
-                },
-            )
-        );
-
-        $this->assertFalse($called1);
-        $this->assertFalse($called2);
-
-        $expectedTime = time() + 2;
-        while (time() < $expectedTime) {
-            $x = str_repeat('x', 100000);
-        }
-
-        $this->assertFalse($called1);
-        $this->assertFalse($called2);
-
-        $expectedTime = time() + 2;
-        while (time() < $expectedTime) {
-            $x = str_repeat('x', 100000);
-        }
-
-        $this->assertFalse($called1);
-        $this->assertTrue($called2);
-        $expectedTime = time() + 2;
-        while (time() < $expectedTime) {
-            $x = str_repeat('x', 100000);
-        }
-
-        $this->assertTrue($called1);
-        $this->assertTrue($called2);
-    }
-
-    public function testRegisterTwoFunctionAndFirstReregisterWithoutUnregister(): void
-    {
-        if (defined('PCNTL_MOCKED')) {
-            self::markTestSkipped('PCNTL is not available');
-        }
-
-        $service = new TimerService(new DatesService());
-
-        $called1 = false;
-        $called2 = false;
-        $this->assertInstanceOf(
-            TimerService::class,
-            $service->register(
-                seconds: 1,
-                timerId: 'test1',
-                callback: function () use (&$called1): void {
-                    $called1 = true;
-                },
-            )
-        );
-        $this->assertInstanceOf(
-            TimerService::class,
-            $service->register(
-                seconds: 3,
-                timerId: 'test2',
-                callback: function () use (&$called2): void {
-                    $called2 = true;
-                },
-            )
-        );
-        $this->assertInstanceOf(
-            TimerService::class,
-            $service->register(
-                seconds: 5,
-                timerId: 'test1',
-                callback: function () use (&$called1): void {
-                    $called1 = true;
-                },
-            )
-        );
-
-        $this->assertFalse($called1);
-        $this->assertFalse($called2);
-
-        $expectedTime = time() + 2;
-        while (time() < $expectedTime) {
-            $x = str_repeat('x', 100000);
-        }
-
-        $this->assertFalse($called1);
-        $this->assertFalse($called2);
-
-        $expectedTime = time() + 2;
-        while (time() < $expectedTime) {
-            $x = str_repeat('x', 100000);
-        }
-
-        $this->assertFalse($called1);
-        $this->assertTrue($called2);
-        $expectedTime = time() + 2;
-        while (time() < $expectedTime) {
-            $x = str_repeat('x', 100000);
-        }
-
-        $this->assertTrue($called1);
-        $this->assertTrue($called2);
     }
 }

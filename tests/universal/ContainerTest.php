@@ -27,6 +27,7 @@ namespace Teknoo\Tests\East\Foundation;
 
 use PHPUnit\Framework\TestCase;
 use DI\Container;
+use DI\ContainerBuilder;
 use Psr\Log\LoggerInterface;
 use Teknoo\East\Foundation\Command\Executor;
 use Teknoo\East\Foundation\Extension\Manager as ExtensionManager;
@@ -49,11 +50,14 @@ use Teknoo\East\Foundation\Recipe\Plan;
 use Teknoo\East\Foundation\Recipe\PlanInterface;
 use Teknoo\East\Foundation\Recipe\RecipeInterface;
 use Teknoo\East\Foundation\Router\RouterInterface;
+use Teknoo\East\Foundation\Time\Backend\BackendInterface;
+use Teknoo\East\Foundation\Time\Backend\Cooperative\TimerService as CooperativeTimerService;
+use Teknoo\East\Foundation\Time\Backend\Pcntl\TimerService as PcntlTimerService;
 use Teknoo\East\Foundation\Time\DatesService;
 use Teknoo\East\Foundation\Time\TimerService;
 use Teknoo\East\Foundation\Time\TimerServiceInterface;
 
-use function defined;
+use function DI\add;
 
 /**
  * Class DefinitionProviderTest.
@@ -213,10 +217,6 @@ class ContainerTest extends TestCase
 
     public function testTimerService(): void
     {
-        if (defined('PCNTL_MOCKED')) {
-            self::markTestSkipped('PCNTL is not available');
-        }
-
         $container = $this->buildContainer();
         $this->assertInstanceOf(
             TimerService::class,
@@ -225,6 +225,69 @@ class ContainerTest extends TestCase
         $this->assertInstanceOf(
             TimerServiceInterface::class,
             $container->get(TimerServiceInterface::class)
+        );
+    }
+
+    public function testTimerBackends(): void
+    {
+        $container = $this->buildContainer();
+
+        $backends = $container->get('teknoo.east.foundation.time.timer.backends');
+        $this->assertIsArray($backends);
+        $this->assertCount(1, $backends);
+        $this->assertInstanceOf(PcntlTimerService::class, $backends[0]);
+
+        $this->assertInstanceOf(
+            CooperativeTimerService::class,
+            $container->get('teknoo.east.foundation.time.timer.fallback_backend')
+        );
+        $this->assertInstanceOf(
+            PcntlTimerService::class,
+            $container->get(PcntlTimerService::class)
+        );
+        $this->assertInstanceOf(
+            CooperativeTimerService::class,
+            $container->get(CooperativeTimerService::class)
+        );
+    }
+
+    public function testAddCustomTimerBackend(): void
+    {
+        $custom = $this->createStub(BackendInterface::class);
+
+        $containerDefinition = new ContainerBuilder();
+        $containerDefinition->addDefinitions(__DIR__ . '/../../src/di.php');
+        $containerDefinition->addDefinitions([
+            'teknoo.east.foundation.time.timer.backends' => add([$custom]),
+        ]);
+        $container = $containerDefinition->build();
+
+        $backends = $container->get('teknoo.east.foundation.time.timer.backends');
+        $this->assertIsArray($backends);
+        $this->assertCount(2, $backends);
+        $this->assertInstanceOf(PcntlTimerService::class, $backends[0]);
+        $this->assertSame($custom, $backends[1]);
+    }
+
+    public function testTimerServiceUsesBackendsFromContainer(): void
+    {
+        $callback = static function (): void {
+        };
+
+        $custom = $this->createMock(BackendInterface::class);
+        $custom->expects($this->once())->method('isAvailable')->willReturn(true);
+        $custom->expects($this->once())
+            ->method('register')
+            ->with(5, 'foo', $callback)
+            ->willReturnSelf();
+
+        $container = $this->buildContainer();
+        $container->set('teknoo.east.foundation.time.timer.backends', [$custom]);
+
+        $container->get(TimerServiceInterface::class)->register(
+            seconds: 5,
+            timerId: 'foo',
+            callback: $callback,
         );
     }
 

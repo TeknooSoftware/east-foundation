@@ -16,7 +16,7 @@ So your controllers and services can be independent of Symfony. This bundle reus
 to manage routes and find controller to call. It is also designed to be used with other framework.
 
 It can be also used for workers :
-* Triggering asynchronous tasks (thanks to pcntl) for timers.
+* Triggering asynchronous tasks for timers (thanks to pcntl, or a cooperative backend, like with FrankenPHP).
 * Setting up a worker health check.
 * Provides non blocking sleep method.
 
