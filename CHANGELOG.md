@@ -2,41 +2,44 @@
 
 ## [9.3.0] - 2026-10-09
 ### Stable Release
-- Timer service supports several backends, to be usable without the `pcntl` extension, like with FrankenPHP in worker
-  mode (FrankenPHP blocks `SIGALRM` on all its threads, so `pcntl_alarm()` was never triggered).
-  - Add `TimerServiceInterface::executeExpiredCalls()` to ask the timer to execute immediately expired calls, whatever
-    the backend (pending signals are dispatched with `pcntl`). **Custom implementations of `TimerServiceInterface`
-    must implement this new method**.
-  - Add `Teknoo\East\Foundation\Time\Backend\BackendInterface`, extending `TimerServiceInterface` with a non static
-    method `isAvailable()`.
-  - The `pcntl` timer is moved to `Teknoo\East\Foundation\Time\Backend\Pcntl\TimerService`. It is not available
-    when `SIGALRM` is blocked for the current thread or under the FrankenPHP SAPI : `register()` throws a
-    `PcntlNotAvailableException` instead of never executing calls. `pcntl_async_signals()` is enabled at the first
-    registration and no more in the constructor.
-  - Add `Teknoo\East\Foundation\Time\Backend\Cooperative\TimerService`, available everywhere, without extension.
-    Expired calls are executed only at checkpoints : at each `register()`, at each `executeExpiredCalls()` and at each
-    tick (only in files declaring `declare(ticks=N);`). Nothing is executed during a blocking operation.
-    `unregister()` never executes calls.
-  - `Teknoo\East\Foundation\Time\TimerService` is now a frontal service, delegating to the first available backend
-    passed to its constructor (`BackendInterface ...$backends`, instead of a `DatesService`). The backend is chosen at
-    the first call of `register()` or `unregister()` and kept for the life of the instance. `executeExpiredCalls()`
-    does nothing until the backend is chosen.
-  - Without available backend, `register()` throws `Teknoo\East\Foundation\Time\Exception\NoBackendAvailableException`
-    and `unregister()` does nothing, the choice will be done again at the next call.
-  - `Teknoo\East\Foundation\Time\TimerService::isAvailable()` (static) is deprecated and always returns `true`.
-  - Shared queue of timers in `Teknoo\East\Foundation\Time\Backend\TimersQueueTrait`.
+
+#### Security
+- No security change.
+
+#### Fixes
+- Timer under FrankenPHP (worker and classic modes) : FrankenPHP blocks `SIGALRM` on all its threads, `pcntl_alarm()`
+  was never triggered and calls were silently never executed. The `pcntl` backend detects it and is no longer used,
+  its `register()` throws `PcntlNotAvailableException` instead of doing nothing.
+- `SleepService::wait()` no longer requires the `pcntl` extension.
+- The DI definition of the `pcntl` timer no longer throws an exception when the extension is missing.
+
+#### Evolutions
+- Timer with several backends, the first available is used :
+  - `Time\Backend\BackendInterface` : `TimerServiceInterface` + non static `isAvailable()`.
+  - `Time\Backend\Pcntl\TimerService` : the former `pcntl` timer, moved. `pcntl_async_signals()` is enabled at the
+    first `register()` instead of the constructor.
+  - `Time\Backend\Cooperative\TimerService` (new) : without extension, available everywhere (FrankenPHP worker,
+    php-fpm, Windows). Expired calls are executed only at checkpoints : `register()`, `executeExpiredCalls()` and
+    ticks (files with `declare(ticks=N);`). Nothing runs during a blocking operation.
+- `Time\TimerService` is now a frontal service : the backend is chosen at the first `register()` / `unregister()` and
+  kept for the instance. Without available backend, `register()` throws `NoBackendAvailableException`.
+  - **BC break** : constructor takes `BackendInterface ...$backends` instead of a `DatesService`.
+  - **Deprecated** : static `TimerService::isAvailable()`, always returns `true`.
+- `TimerServiceInterface::executeExpiredCalls()` (new) : executes immediately expired calls, whatever the backend
+  (`pcntl` dispatches pending signals). Used by `SleepService` during its waiting.
+  - **BC break** : custom implementations of `TimerServiceInterface` must implement it.
+- `TimeoutService` depends on `TimerServiceInterface` and always receives a timer : without `pcntl`,
+  `TimeLimitReachedException` can be thrown at a checkpoint (e.g. during `SleepService::wait()`). The fallback with
+  `set_time_limit` is unchanged.
 - PHP-DI :
-  - Add `teknoo.east.foundation.time.timer.backends`, list of timer's backends by priority (by default, only the `pcntl`
-    backend). A backend added with `DI\add()` is used after the `pcntl` backend and before the cooperative backend,
-    redefine the list to put your backend first.
-  - Add `teknoo.east.foundation.time.timer.fallback_backend`, last chance backend (by default the cooperative backend).
-  - The `pcntl` backend definition does not throw an exception when the extension is missing.
-- `SleepService` calls `TimerServiceInterface::executeExpiredCalls()` during its waiting, instead of
-  `pcntl_signal_dispatch()`, works with the cooperative backend and does not require the `pcntl` extension.
-- `TimeoutService` depends on `TimerServiceInterface` instead of the concrete `TimerService` and always receives a
-  timer from the DI : without `pcntl`, the `TimeLimitReachedException` can now be thrown by the cooperative backend at
-  a checkpoint (`executeExpiredCalls()`, like in `SleepService`, tick or `register()`), the non catchable fallback with
-  `set_time_limit` is still enabled.
+  - `teknoo.east.foundation.time.timer.backends` : backends by priority (default : `pcntl`). A backend added with
+    `DI\add()` comes after `pcntl` and before the fallback.
+  - `teknoo.east.foundation.time.timer.fallback_backend` : last chance backend (default : cooperative).
+
+#### Documentation
+- New `Timer` section in `documentation/README.md` : backends, cooperative checkpoints, `declare(ticks)`,
+  `executeExpiredCalls()`, FrankenPHP limits, custom backend with PHP-DI.
+- README : timers are no longer described as `pcntl` only.
 
 ## [9.2.4] - 2026-09-29
 ### Stable Release
