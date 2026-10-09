@@ -26,34 +26,43 @@ declare(strict_types=1);
 namespace Teknoo\East\Foundation\Time\Backend\Pcntl;
 
 use DateTimeInterface;
+use Teknoo\East\Foundation\Time\Backend\BackendInterface;
 use Teknoo\East\Foundation\Time\DatesService;
 use Teknoo\East\Foundation\Time\Exception\PcntlNotAvailableException;
-use Teknoo\East\Foundation\Time\TimerServiceInterface;
 
 use function array_diff;
 use function current;
+use function defined;
 use function function_exists;
+use function in_array;
+use function is_array;
 use function key;
 use function ksort;
 use function pcntl_alarm;
 use function pcntl_async_signals;
 use function pcntl_signal;
+use function pcntl_sigprocmask;
 use function reset;
 
+use const PHP_SAPI;
+use const SIG_BLOCK;
+use const SIG_UNBLOCK;
 use const SIGALRM;
 
 /**
  * Simple timer service able to call asyncly a method within X seconds. Several call, at different time can be called.
  * The call is not warranty to be call exactly at X seconds and can be called after (PHP is monothread).
  * A call can be unreferenced before timeout
- * This service need the pcntl extension to be use, it is not available on Windows OS.
+ * This backend need the pcntl extension to be use, it is not available on Windows OS.
+ * It is also not available when the signal SIGALRM is blocked for the current thread, like with FrankenPHP (worker or
+ * classic mode, SIGALRM is blocked on all threads), or under the FrankenPHP SAPI.
  *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
  * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
-class TimerService implements TimerServiceInterface
+class TimerService implements BackendInterface
 {
     /**
      * @var array<string, callable>
@@ -65,17 +74,39 @@ class TimerService implements TimerServiceInterface
      */
     private array $pipes = [];
 
+    private bool $asyncSignalsEnabled = false;
+
     public function __construct(
         private readonly DatesService $datesService,
     ) {
-        pcntl_async_signals(true);
     }
 
-    public static function isAvailable(): bool
+    private function isAlarmSignalBlocked(): bool
+    {
+        $blockedSignals = [];
+        if (!pcntl_sigprocmask(SIG_BLOCK, [SIGALRM], $blockedSignals) || !is_array($blockedSignals)) {
+            // @codeCoverageIgnoreStart
+            return true;
+            // @codeCoverageIgnoreEnd
+        }
+
+        $alreadyBlocked = in_array(SIGALRM, $blockedSignals, true);
+        if (!$alreadyBlocked) {
+            pcntl_sigprocmask(SIG_UNBLOCK, [SIGALRM]);
+        }
+
+        return $alreadyBlocked;
+    }
+
+    public function isAvailable(): bool
     {
         return function_exists('pcntl_async_signals')
             && function_exists('pcntl_signal')
-            && function_exists('pcntl_alarm');
+            && function_exists('pcntl_alarm')
+            && function_exists('pcntl_sigprocmask')
+            && defined('SIGALRM')
+            && 'frankenphp' !== PHP_SAPI
+            && !$this->isAlarmSignalBlocked();
     }
 
     public function executeCallsBefore(DateTimeInterface $dateTime): void
@@ -146,10 +177,13 @@ class TimerService implements TimerServiceInterface
 
     public function register(int $seconds, string $timerId, callable $callback): self
     {
-        if (!self::isAvailable()) {
-            // @codeCoverageIgnoreStart
-            throw new PcntlNotAvailableException('Pcntl extension is not available');
-            // @codeCoverageIgnoreEnd
+        if (!$this->isAvailable()) {
+            throw new PcntlNotAvailableException('Pcntl extension is not available or SIGALRM is blocked');
+        }
+
+        if (!$this->asyncSignalsEnabled) {
+            pcntl_async_signals(true);
+            $this->asyncSignalsEnabled = true;
         }
 
         if (0 === $seconds) {

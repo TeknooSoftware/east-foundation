@@ -49,7 +49,6 @@ use Teknoo\East\Foundation\Recipe\RecipeInterface;
 use Teknoo\East\Foundation\Router\RouterInterface;
 use Teknoo\East\Foundation\Time\Backend\Pcntl\TimerService;
 use Teknoo\East\Foundation\Time\DatesService;
-use Teknoo\East\Foundation\Time\Exception\PcntlNotAvailableException;
 use Teknoo\East\Foundation\Time\SleepService;
 use Teknoo\East\Foundation\Time\SleepServiceInterface;
 use Teknoo\East\Foundation\Time\TimerServiceInterface;
@@ -111,12 +110,6 @@ return [
         ),
     TimerServiceInterface::class => get(TimerService::class),
     TimerService::class => static function (ContainerInterface $container): TimerService {
-        if (!TimerService::isAvailable()) {
-            // @codeCoverageIgnoreStart
-            throw new PcntlNotAvailableException("Error, the pcntl extension is available for this component");
-            // @codeCoverageIgnoreEnd
-        }
-
         /** @var DatesService $datesService */
         $datesService = clone $container->get(DatesService::class);
         return new TimerService($datesService);
@@ -126,9 +119,9 @@ return [
     PingService::class => create(),
     TimeoutServiceInterface::class => get(TimeoutService::class),
     TimeoutService::class => static function (ContainerInterface $container): TimeoutService {
-        $timerService = null;
-        if (TimerService::isAvailable()) {
-            $timerService = $container->get(TimerServiceInterface::class);
+        $timerService = $container->get(TimerServiceInterface::class);
+        if ($timerService instanceof TimerService && !$timerService->isAvailable()) {
+            $timerService = null;
         }
 
         return new TimeoutService($timerService);

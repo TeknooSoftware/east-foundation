@@ -33,11 +33,18 @@ use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 use Teknoo\East\Foundation\Time\Backend\Pcntl\TimerService;
 use Teknoo\East\Foundation\Time\DatesService;
+use Teknoo\East\Foundation\Time\Exception\PcntlNotAvailableException;
 
+use function in_array;
 use function pcntl_alarm;
+use function pcntl_sigprocmask;
 use function sleep;
 use function str_repeat;
 use function time;
+
+use const SIG_BLOCK;
+use const SIG_UNBLOCK;
+use const SIGALRM;
 
 /**
  * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
@@ -66,9 +73,61 @@ class TimerServiceTest extends TestCase
         return $this->datesService;
     }
 
+    private function isAlarmSignalBlocked(): bool
+    {
+        $blockedSignals = [];
+        pcntl_sigprocmask(SIG_BLOCK, [SIGALRM], $blockedSignals);
+        $blocked = in_array(SIGALRM, $blockedSignals, true);
+        if (!$blocked) {
+            pcntl_sigprocmask(SIG_UNBLOCK, [SIGALRM]);
+        }
+
+        return $blocked;
+    }
+
     public function testIsAvailable(): void
     {
-        $this->assertTrue(TimerService::isAvailable());
+        if (defined('PCNTL_MOCKED')) {
+            self::markTestSkipped('PCNTL is not available');
+        }
+
+        $this->assertTrue(new TimerService($this->getDatesServiceStub())->isAvailable());
+        $this->assertFalse($this->isAlarmSignalBlocked());
+    }
+
+    public function testIsNotAvailableWhenAlarmSignalIsBlocked(): void
+    {
+        if (defined('PCNTL_MOCKED')) {
+            self::markTestSkipped('PCNTL is not available');
+        }
+
+        pcntl_sigprocmask(SIG_BLOCK, [SIGALRM]);
+        try {
+            $this->assertFalse(new TimerService($this->getDatesServiceStub())->isAvailable());
+            $this->assertTrue($this->isAlarmSignalBlocked());
+        } finally {
+            pcntl_sigprocmask(SIG_UNBLOCK, [SIGALRM]);
+        }
+    }
+
+    public function testRegisterWhenAlarmSignalIsBlocked(): void
+    {
+        if (defined('PCNTL_MOCKED')) {
+            self::markTestSkipped('PCNTL is not available');
+        }
+
+        pcntl_sigprocmask(SIG_BLOCK, [SIGALRM]);
+        try {
+            $this->expectException(PcntlNotAvailableException::class);
+            new TimerService($this->getDatesServiceStub())->register(
+                seconds: 1,
+                timerId: 'test1',
+                callback: static function (): void {
+                },
+            );
+        } finally {
+            pcntl_sigprocmask(SIG_UNBLOCK, [SIGALRM]);
+        }
     }
 
     public function testUnregister(): void
