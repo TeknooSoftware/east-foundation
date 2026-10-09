@@ -49,8 +49,8 @@ use Teknoo\East\Foundation\Recipe\Plan;
 use Teknoo\East\Foundation\Recipe\PlanInterface;
 use Teknoo\East\Foundation\Recipe\RecipeInterface;
 use Teknoo\East\Foundation\Router\RouterInterface;
+use Teknoo\East\Foundation\Time\Backend\Pcntl\TimerService;
 use Teknoo\East\Foundation\Time\DatesService;
-use Teknoo\East\Foundation\Time\TimerService;
 use Teknoo\East\Foundation\Time\TimerServiceInterface;
 
 use function defined;

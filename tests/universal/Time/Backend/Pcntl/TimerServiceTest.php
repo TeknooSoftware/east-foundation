@@ -23,7 +23,7 @@
 
 declare(strict_types=1);
 
-namespace Teknoo\Tests\East\Foundation\Time;
+namespace Teknoo\Tests\East\Foundation\Time\Backend\Pcntl;
 
 use DateTime;
 use DateTimeInterface;
@@ -31,8 +31,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
+use Teknoo\East\Foundation\Time\Backend\Pcntl\TimerService;
 use Teknoo\East\Foundation\Time\DatesService;
-use Teknoo\East\Foundation\Time\TimerService;
 
 use function pcntl_alarm;
 use function sleep;

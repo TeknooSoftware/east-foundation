@@ -30,7 +30,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Teknoo\East\Foundation\Liveness\Exception\TimeLimitReachedException;
 use Teknoo\East\Foundation\Liveness\TimeoutService;
-use Teknoo\East\Foundation\Time\TimerService;
+use Teknoo\East\Foundation\Time\Backend\Pcntl\TimerService;
 
 /**
  * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License

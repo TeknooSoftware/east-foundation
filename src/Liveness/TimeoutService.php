@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace Teknoo\East\Foundation\Liveness;
 
 use Teknoo\East\Foundation\Liveness\Exception\TimeLimitReachedException;
-use Teknoo\East\Foundation\Time\TimerService;
+use Teknoo\East\Foundation\Time\Backend\Pcntl\TimerService;
 
 use function set_time_limit;
 
