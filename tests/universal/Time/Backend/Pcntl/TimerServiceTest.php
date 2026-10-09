@@ -25,8 +25,6 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\Foundation\Time\Backend\Pcntl;
 
-use DateTime;
-use DateTimeInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversTrait;
 use PHPUnit\Framework\MockObject\MockObject;
