@@ -1,5 +1,36 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [9.3.0] - 2026-10-09
+### Stable Release
+- Timer service supports several backends, to be usable without the `pcntl` extension, like with FrankenPHP in worker
+  mode (FrankenPHP blocks `SIGALRM` on all its threads, so `pcntl_alarm()` was never triggered).
+  - Add `Teknoo\East\Foundation\Time\Backend\BackendInterface`, extending `TimerServiceInterface` with a non static
+    method `isAvailable()`.
+  - The `pcntl` timer is moved to `Teknoo\East\Foundation\Time\Backend\Pcntl\TimerService`. It is not available
+    when `SIGALRM` is blocked for the current thread or under the FrankenPHP SAPI : `register()` throws a
+    `PcntlNotAvailableException` instead of never executing calls. `pcntl_async_signals()` is enabled at the first
+    registration and no more in the constructor.
+  - Add `Teknoo\East\Foundation\Time\Backend\Cooperative\TimerService`, available everywhere, without extension.
+    Expired calls are executed only at checkpoints : at each `register()` and at each tick (only in files declaring
+    `declare(ticks=N);`). Nothing is executed during a blocking operation. `unregister()` never executes calls.
+  - `Teknoo\East\Foundation\Time\TimerService` is now a frontal service, delegating to the first available backend
+    passed to its constructor (`BackendInterface ...$backends`, instead of a `DatesService`). The backend is chosen at
+    the first call of `register()` or `unregister()` and kept for the life of the instance.
+  - Without available backend, `register()` throws `Teknoo\East\Foundation\Time\Exception\NoBackendAvailableException`
+    and `unregister()` does nothing.
+  - `Teknoo\East\Foundation\Time\TimerService::isAvailable()` (static) is deprecated and always returns `true`.
+  - Shared queue of timers in `Teknoo\East\Foundation\Time\Backend\TimersQueueTrait`.
+- PHP-DI :
+  - Add `teknoo.east.foundation.time.timer.backends`, list of timer's backends by priority (by default, only the `pcntl`
+    backend). A backend added with `DI\add()` is used after the `pcntl` backend and before the cooperative backend,
+    redefine the list to put your backend first.
+  - Add `teknoo.east.foundation.time.timer.fallback_backend`, last chance backend (by default the cooperative backend).
+  - The `pcntl` backend definition does not throw an exception when the extension is missing.
+- `SleepService` declares ticks, works with the cooperative backend and does not require the `pcntl` extension.
+- `TimeoutService` depends on `TimerServiceInterface` instead of the concrete `TimerService` and always receives a
+  timer from the DI : without `pcntl`, the `TimeLimitReachedException` can now be thrown by the cooperative backend at
+  a checkpoint (tick or `register()`), the non catchable fallback with `set_time_limit` is still enabled.
+
 ## [9.2.4] - 2026-09-29
 ### Stable Release
 - `GroupsTrait::filterExport()`, with lazy data, calls only closures (and arrow functions) or methods of the current

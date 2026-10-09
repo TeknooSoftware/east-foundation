@@ -10,7 +10,7 @@ So your controllers and services can be independent of Symfony. This bundle reus
 to manage routes and find controller to call. It is also designed to be used with other framework.
 
 It can be also used for workers :
-* Triggering asynchronous tasks (thanks to pcntl) for timers.
+* Triggering asynchronous tasks for timers (thanks to pcntl, or a cooperative backend, like with FrankenPHP).
 * Setting up a worker health check.
 * Provides non blocking sleep method.
 
@@ -50,9 +50,59 @@ It provides also some contracts and default implementation with `Symfony compone
 rendering with `Twig`.
 
 East Foundation provides also a service able to return the current date, as `\DateTimeInterface` instance. Schedule an
-action on a timer (need the `pcntl` extension). And two liveness services, to set a catchable timeout (need also the 
-`pcntl` extension, but a non catchable fallback with `set_time_limit` is available) and a `PingService` to ensure 
-notifications to a watchdog to prevent kills.
+action on a timer (with the `pcntl` extension or a cooperative backend, see the next section). And two liveness 
+services, to set a catchable timeout (built on the timer, a non catchable fallback with `set_time_limit` is also 
+available) and a `PingService` to ensure notifications to a watchdog to prevent kills.
+
+Timer
+-----
+`Teknoo\East\Foundation\Time\TimerService` (`TimerServiceInterface`) can call a callable within X seconds, without
+blocking the current execution, contrary to `sleep`. The call can be executed after X seconds (PHP is monothread) and
+can be unregistered before. `Teknoo\East\Foundation\Time\SleepService` is a non blocking sleep built on this timer and
+`Teknoo\East\Foundation\Liveness\TimeoutService` uses it to throw a catchable exception when a task is too long.
+
+`TimerService` is a frontal service and delegates to a backend, implementing 
+`Teknoo\East\Foundation\Time\Backend\BackendInterface`. The backend is the first backend, in the list passed to the
+constructor, where the method `isAvailable()` returns `true`. This choice is done at the first call of `register()` or
+`unregister()` and kept until the destruction of the `TimerService` instance (each instance does its own choice).
+Two backends are provided :
+
+* `Teknoo\East\Foundation\Time\Backend\Pcntl\TimerService` : built on the `pcntl` extension and the signal `SIGALRM`.
+  Calls are executed asynchronously, even during a blocking operation. It is not available on Windows, when `SIGALRM`
+  is blocked for the current thread, or with the FrankenPHP SAPI (worker or classic mode) : FrankenPHP blocks
+  `SIGALRM` on all its threads (only its `php-cli` command unblocks it) and an alarm is unique for all threads of a
+  process.
+* `Teknoo\East\Foundation\Time\Backend\Cooperative\TimerService` : available everywhere, without any extension, like
+  with FrankenPHP in worker mode. PHP can not interrupt the current execution without signal, so calls are executed 
+  only at some checkpoints :
+  * at each call to `register()`, 
+  * at each tick, thanks to a tick function registered by this backend. Ticks are only emitted by code of files
+    declaring `declare(ticks=N);`, like `SleepService`. You can declare ticks in your own files to have expired calls
+    executed during your long operations, an exception thrown by a call is propagated into your code, like with
+    `pcntl`.
+  
+  Nothing is executed during a blocking operation (`sleep`, I/O, SQL query, etc.) or in a code without ticks.
+  `unregister()` never executes expired calls (it is safe in a destructor). With this backend, the hard limit of
+  `TimeoutService` is its fallback with `set_time_limit` (enforced per thread by FrankenPHP on Linux), a fatal error
+  will stop the task (and the FrankenPHP worker will be restarted).
+
+With the PHP-DI definitions provided by this library, backends are defined, by priority order, in the entry 
+`teknoo.east.foundation.time.timer.backends` (by default only the `pcntl` backend), and the cooperative backend is
+defined as the last chance backend in the entry `teknoo.east.foundation.time.timer.fallback_backend`. You can add your
+own backend, implementing `BackendInterface`, after the `pcntl` backend with `DI\add()` :
+
+```php
+use function DI\add;
+use function DI\get;
+
+return [
+    'teknoo.east.foundation.time.timer.backends' => add([
+        get(MyTimerBackend::class),
+    ]),
+];
+```
+
+Or redefine the entry `teknoo.east.foundation.time.timer.backends` to change the order.
 
 PSR 15
 ------
