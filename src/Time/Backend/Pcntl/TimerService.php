@@ -66,6 +66,8 @@ class TimerService implements BackendInterface
 
     private bool $asyncSignalsEnabled = false;
 
+    private bool $available = false;
+
     public function __construct(
         private readonly DatesService $datesService,
     ) {
@@ -90,7 +92,13 @@ class TimerService implements BackendInterface
 
     public function isAvailable(): bool
     {
-        return function_exists('pcntl_async_signals')
+        //Only a positive result is kept : PHP blocks all signals during the execution of signals handlers, and a
+        //callback, executed by the handler, can register a new call (or itself)
+        if ($this->available) {
+            return true;
+        }
+
+        return $this->available = function_exists('pcntl_async_signals')
             && function_exists('pcntl_signal')
             && function_exists('pcntl_alarm')
             && function_exists('pcntl_sigprocmask')

@@ -257,6 +257,42 @@ class TimerServiceTest extends TestCase
         $this->assertLessThan($expectedTime, $calledAt);
     }
 
+    public function testCallbackRegisteringItselfAgain(): void
+    {
+        if (defined('PCNTL_MOCKED')) {
+            self::markTestSkipped('PCNTL is not available');
+        }
+
+        $service = new TimerService(new DatesService());
+
+        $counter = 0;
+        $callback = null;
+        $callback = function () use ($service, &$counter, &$callback): void {
+            ++$counter;
+            $service->register(
+                seconds: 1,
+                timerId: 'loop',
+                callback: $callback,
+            );
+        };
+
+        $service->register(
+            seconds: 1,
+            timerId: 'loop',
+            callback: $callback,
+        );
+
+        $expectedTime = time() + 4;
+        while (time() < $expectedTime) {
+            $x = str_repeat('x', 100000);
+        }
+
+        $service->unregister('loop');
+
+        $this->assertGreaterThanOrEqual(3, $counter);
+        $this->assertLessThanOrEqual(4, $counter);
+    }
+
     public function testSimpleRegisterOneFunctionThenUnregister(): void
     {
         if (defined('PCNTL_MOCKED')) {
