@@ -3,9 +3,6 @@
 ## [9.3.0] - 2026-10-09
 ### Stable Release
 
-#### Security
-- No security change.
-
 #### Fixes
 - Timer under FrankenPHP (worker and classic modes) : FrankenPHP blocks `SIGALRM` on all its threads, `pcntl_alarm()`
   was never triggered and calls were silently never executed. The `pcntl` backend detects it and is no longer used,
