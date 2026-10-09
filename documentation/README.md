@@ -61,6 +61,11 @@ blocking the current execution, contrary to `sleep`. The call can be executed af
 can be unregistered before. `Teknoo\East\Foundation\Time\SleepService` is a non blocking sleep built on this timer and
 `Teknoo\East\Foundation\Liveness\TimeoutService` uses it to throw a catchable exception when a task is too long.
 
+`TimerServiceInterface::executeExpiredCalls()` gives to the timer the opportunity to execute immediately expired calls,
+whatever the backend : pending signals are dispatched with `pcntl`, expired calls are executed with the cooperative 
+backend. `SleepService` calls it regularly during its waiting, you can also call it in your own loops (for example 
+after each message or request handled by a worker).
+
 `TimerService` is a frontal service and delegates to a backend, implementing 
 `Teknoo\East\Foundation\Time\Backend\BackendInterface`. The backend is the first backend, in the list passed to the
 constructor, where the method `isAvailable()` returns `true`. This choice is done at the first call of `register()` or
@@ -76,10 +81,10 @@ Two backends are provided :
   with FrankenPHP in worker mode. PHP can not interrupt the current execution without signal, so calls are executed 
   only at some checkpoints :
   * at each call to `register()`, 
+  * at each call to `executeExpiredCalls()` (like during the waiting of `SleepService`),
   * at each tick, thanks to a tick function registered by this backend. Ticks are only emitted by code of files
-    declaring `declare(ticks=N);`, like `SleepService`. You can declare ticks in your own files to have expired calls
-    executed during your long operations, an exception thrown by a call is propagated into your code, like with
-    `pcntl`.
+    declaring `declare(ticks=N);`. You can declare ticks in your own files to have expired calls executed during your
+    long operations, an exception thrown by a call is propagated into your code, like with `pcntl`.
   
   Nothing is executed during a blocking operation (`sleep`, I/O, SQL query, etc.) or in a code without ticks.
   `unregister()` never executes expired calls (it is safe in a destructor). With this backend, the hard limit of
