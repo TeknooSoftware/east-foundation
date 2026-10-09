@@ -22,7 +22,7 @@
     the first call of `register()` or `unregister()` and kept for the life of the instance. `executeExpiredCalls()`
     does nothing until the backend is chosen.
   - Without available backend, `register()` throws `Teknoo\East\Foundation\Time\Exception\NoBackendAvailableException`
-    and `unregister()` does nothing.
+    and `unregister()` does nothing, the choice will be done again at the next call.
   - `Teknoo\East\Foundation\Time\TimerService::isAvailable()` (static) is deprecated and always returns `true`.
   - Shared queue of timers in `Teknoo\East\Foundation\Time\Backend\TimersQueueTrait`.
 - PHP-DI :

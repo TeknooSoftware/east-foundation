@@ -69,7 +69,8 @@ after each message or request handled by a worker).
 `TimerService` is a frontal service and delegates to a backend, implementing 
 `Teknoo\East\Foundation\Time\Backend\BackendInterface`. The backend is the first backend, in the list passed to the
 constructor, where the method `isAvailable()` returns `true`. This choice is done at the first call of `register()` or
-`unregister()` and kept until the destruction of the `TimerService` instance (each instance does its own choice).
+`unregister()` and kept until the destruction of the `TimerService` instance (each instance does its own choice). If
+no backend is available, the choice is done again at the next call.
 Two backends are provided :
 
 * `Teknoo\East\Foundation\Time\Backend\Pcntl\TimerService` : built on the `pcntl` extension and the signal `SIGALRM`.

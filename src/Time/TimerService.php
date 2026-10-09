@@ -38,8 +38,8 @@ use Teknoo\East\Foundation\Time\Exception\NoBackendAvailableException;
  * - `Teknoo\East\Foundation\Time\Backend\Cooperative\TimerService`, available everywhere, like FrankenPHP in worker
  *    mode, but calls are executed only at some checkpoints (`register`, `executeExpiredCalls`, ticks).
  * The backend is chosen at the first call of `register` or `unregister` and kept until the destruction of this
- * instance. Each instance does its own choice. `executeExpiredCalls` does nothing until the backend is chosen (nothing
- * can be registered before).
+ * instance. Each instance does its own choice. If no backend is available, the choice is done again at the next call.
+ * `executeExpiredCalls` does nothing until the backend is chosen (nothing can be registered before).
  *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
@@ -54,8 +54,6 @@ class TimerService implements TimerServiceInterface
     private readonly array $backends;
 
     private ?BackendInterface $backend = null;
-
-    private bool $backendSelected = false;
 
     public function __construct(BackendInterface ...$backends)
     {
@@ -73,19 +71,17 @@ class TimerService implements TimerServiceInterface
 
     private function getBackend(): ?BackendInterface
     {
-        if (!$this->backendSelected) {
-            $this->backendSelected = true;
+        if (null !== $this->backend) {
+            return $this->backend;
+        }
 
-            foreach ($this->backends as $backend) {
-                if ($backend->isAvailable()) {
-                    $this->backend = $backend;
-
-                    break;
-                }
+        foreach ($this->backends as $backend) {
+            if ($backend->isAvailable()) {
+                return $this->backend = $backend;
             }
         }
 
-        return $this->backend;
+        return null;
     }
 
     public function unregister(string $timerId): self

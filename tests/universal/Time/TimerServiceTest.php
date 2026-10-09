@@ -196,8 +196,9 @@ class TimerServiceTest extends TestCase
 
     public function testUnregisterWithoutAvailableBackend(): void
     {
+        //Without available backend, nothing is chosen and the choice is done again at the next call
         $service = new TimerService(
-            $this->createBackend(available: false),
+            $this->createBackend(available: [false, false]),
         );
 
         $this->assertSame(
