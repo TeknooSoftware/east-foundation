@@ -22,12 +22,12 @@
  */
 
 declare(strict_types=1);
+declare(ticks=1);
 
 namespace Teknoo\East\Foundation\Time;
 
 use Random\RandomException;
 use SensitiveParameter;
-use Teknoo\East\Foundation\Time\Exception\PcntlNotAvailableException;
 use Teknoo\Recipe\Promise\Promise;
 use Throwable;
 
@@ -39,6 +39,9 @@ use function usleep;
 
 /**
  * Service to perform sleeping operations to sleep without blocking other async events
+ * This file declares ticks to allow cooperative timer's backends (like
+ * `Teknoo\East\Foundation\Time\Backend\Cooperative\TimerService`) to execute expired calls during the waiting. Signals
+ * are also dispatched when the pcntl extension is available.
  *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
@@ -53,22 +56,11 @@ class SleepService implements SleepServiceInterface
     ) {
     }
 
-    private static function isAvailable(): bool
-    {
-        return function_exists('pcntl_signal_dispatch');
-    }
-
     /**
      * @throws RandomException
      */
     public function wait(int $seconds): SleepServiceInterface
     {
-        if (!self::isAvailable()) {
-            // @codeCoverageIgnoreStart
-            throw new PcntlNotAvailableException('Pcntl extension is not available');
-            // @codeCoverageIgnoreEnd
-        }
-
         $timerId = "timer-$seconds" . bin2hex(random_bytes(23));
 
         $timerFinished = new Promise(
@@ -84,9 +76,13 @@ class SleepService implements SleepServiceInterface
             callback: $timerFinished,
         );
 
+        $dispatchSignals = function_exists('pcntl_signal_dispatch');
         while (!$timerFinished->fetchResult()) {
             usleep($this->usleeepTime);
-            pcntl_signal_dispatch();
+
+            if ($dispatchSignals) {
+                pcntl_signal_dispatch();
+            }
         }
 
         return $this;
