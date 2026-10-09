@@ -86,7 +86,6 @@ class TimerService implements TimerServiceInterface
 
     public function unregister(string $timerId): self
     {
-        //Without available backend, no call can be registered, so there is nothing to unregister
         $this->getBackend()?->unregister($timerId);
 
         return $this;
@@ -94,7 +93,6 @@ class TimerService implements TimerServiceInterface
 
     public function executeExpiredCalls(): self
     {
-        //The backend is not chosen here, without registered call, there is nothing to execute
         $this->backend?->executeExpiredCalls();
 
         return $this;

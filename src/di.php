@@ -116,8 +116,6 @@ return [
     'teknoo.east.foundation.time.timer.backends' => [
         get(PcntlTimerService::class),
     ],
-    //Last chance timer's backend, used when no other backend is available, the cooperative backend is available
-    //everywhere.
     'teknoo.east.foundation.time.timer.fallback_backend' => get(CooperativeTimerService::class),
     TimerService::class => static function (ContainerInterface $container): TimerService {
         /** @var iterable<BackendInterface> $backends */
