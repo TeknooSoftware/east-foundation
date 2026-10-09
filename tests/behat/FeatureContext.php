@@ -587,6 +587,13 @@ class FeatureContext implements Context
     }
 
 
+    #[\Behat\Step\Given('the timer uses the cooperative backend')]
+    public function theTimerUsesTheCooperativeBackend(): void
+    {
+        //Without other backends, the frontal timer service will use the fallback backend, the cooperative backend
+        $this->container->set('teknoo.east.foundation.time.timer.backends', []);
+    }
+
     #[\Behat\Step\Given('a timer action to ping a message to a log each :seconds seconds')]
     public function aTimerActionToPingAMessageToALogEachSeconds(int $seconds): void
     {
