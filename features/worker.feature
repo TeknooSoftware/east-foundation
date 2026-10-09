@@ -11,6 +11,15 @@ Feature: Worker
     Then the main function has been paused for "10" seconds
     And the logs have "5" lines
 
+  Scenario: Wait a few moments without blocking with the cooperative timer, without pcntl, like with FrankenPHP
+    Given I have DI initialized
+    And the timer uses the cooperative backend
+    And a cli agent
+    And a timer action to ping a message to a log each "2" seconds
+    When the agent sleeps "10" seconds
+    Then the main function has been paused for "10" seconds
+    And the logs have "5" lines
+
   Scenario: Task in time limit
     Given I have DI initialized
     And a cli agent

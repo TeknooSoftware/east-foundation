@@ -23,25 +23,21 @@
 
 declare(strict_types=1);
 
-namespace Teknoo\East\Foundation\Time;
+namespace Teknoo\East\Foundation\Time\Backend;
+
+use Teknoo\East\Foundation\Time\TimerServiceInterface;
 
 /**
- * Simple timer service able to call asyncly a method within X seconds. Several call, at different time can be called.
- * The call is not warranty to be call exactly at X seconds and can be called after (PHP is monothread).
- * A call can be unreferenced before timeout
- * `executeExpiredCalls` gives to the timer the opportunity to execute immediately expired calls (dispatch pending
- * signals, execute expired calls of a cooperative timer, etc.), it must be called regularly by loops waiting a call.
+ * Interface to define a backend usable by the frontal timer service `Teknoo\East\Foundation\Time\TimerService`.
+ * The frontal timer service will use the first available backend, the method `isAvailable` must return true only if the
+ * backend is available and functional in the current environment (SAPI, extensions, threads, etc.).
  *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
  * @license     http://teknoo.software/license/bsd-3         3-Clause BSD License
  * @author      Richard Déloge <richard@teknoo.software>
  */
-interface TimerServiceInterface
+interface BackendInterface extends TimerServiceInterface
 {
-    public function unregister(string $timerId): TimerServiceInterface;
-
-    public function register(int $seconds, string $timerId, callable $callback): TimerServiceInterface;
-
-    public function executeExpiredCalls(): TimerServiceInterface;
+    public function isAvailable(): bool;
 }

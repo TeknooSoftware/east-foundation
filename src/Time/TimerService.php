@@ -25,26 +25,21 @@ declare(strict_types=1);
 
 namespace Teknoo\East\Foundation\Time;
 
-use DateTimeInterface;
-use Teknoo\East\Foundation\Time\Exception\PcntlNotAvailableException;
-
-use function array_diff;
-use function current;
-use function function_exists;
-use function key;
-use function ksort;
-use function pcntl_alarm;
-use function pcntl_async_signals;
-use function pcntl_signal;
-use function reset;
-
-use const SIGALRM;
+use Teknoo\East\Foundation\Time\Backend\BackendInterface;
+use Teknoo\East\Foundation\Time\Exception\NoBackendAvailableException;
 
 /**
  * Simple timer service able to call asyncly a method within X seconds. Several call, at different time can be called.
  * The call is not warranty to be call exactly at X seconds and can be called after (PHP is monothread).
  * A call can be unreferenced before timeout
- * This service need the pcntl extension to be use, it is not available on Windows OS.
+ * This service is a frontal service, it delegates calls to the first available backend (in the order of the list passed
+ * to the constructor), like :
+ * - `Teknoo\East\Foundation\Time\Backend\Pcntl\TimerService`, built on the pcntl extension and SIGALRM signal,
+ * - `Teknoo\East\Foundation\Time\Backend\Cooperative\TimerService`, available everywhere, like FrankenPHP in worker
+ *    mode, but calls are executed only at some checkpoints (`register`, `executeExpiredCalls`, ticks).
+ * The backend is chosen at the first call of `register` or `unregister` and kept until the destruction of this
+ * instance. Each instance does its own choice. If no backend is available, the choice is done again at the next call.
+ * `executeExpiredCalls` does nothing until the backend is chosen (nothing can be registered before).
  *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
@@ -54,131 +49,66 @@ use const SIGALRM;
 class TimerService implements TimerServiceInterface
 {
     /**
-     * @var array<string, callable>
+     * @var array<int|string, BackendInterface>
      */
-    private array $callbacks = [];
+    private readonly array $backends;
 
-    /**
-     * @var array<int, array<int, string>>
-     */
-    private array $pipes = [];
+    private ?BackendInterface $backend = null;
 
-    public function __construct(
-        private readonly DatesService $datesService,
-    ) {
-        pcntl_async_signals(true);
+    public function __construct(BackendInterface ...$backends)
+    {
+        $this->backends = $backends;
     }
 
+    /**
+     * @deprecated since 9.3.0, with the default configuration, a backend is always available, thanks to the
+     *  cooperative backend. Availability is now checked by each backend.
+     */
     public static function isAvailable(): bool
     {
-        return function_exists('pcntl_async_signals')
-            && function_exists('pcntl_signal')
-            && function_exists('pcntl_alarm');
+        return true;
     }
 
-    public function executeCallsBefore(DateTimeInterface $dateTime): void
+    private function getBackend(): ?BackendInterface
     {
-        $timestamp = $dateTime->getTimestamp();
-        while (false !== ($timersIds = current($this->pipes)) && key($this->pipes) <= $timestamp) {
-            if ($key = key($this->pipes)) {
-                unset($this->pipes[$key]);
-            }
-
-            foreach ($timersIds as $timerId) {
-                if (isset($this->callbacks[$timerId])) {
-                    $callback = $this->callbacks[$timerId];
-                    unset($this->callbacks[$timerId]);
-                    $callback();
-                    unset($callback);
-                }
-            }
-        }
-    }
-
-    /**
-     * Internal method called when SIGALARM is received
-     * @interal
-     */
-    public function executeCallbacks(): self
-    {
-        $mustReRun = true;
-        while (!empty($this->pipes) && true === $mustReRun) {
-            $mustReRun = false;
-            $this->datesService->passMeTheDate(
-                setter: $this->executeCallsBefore(...),
-                preferRealDate: true,
-            );
-
-            if (empty($this->pipes)) {
-                break;
-            }
-
-            $this->datesService->passMeTheDate(
-                setter: function (DateTimeInterface $dateTime) use (&$mustReRun): void {
-                    $seconds = (key($this->pipes)) - $dateTime->getTimestamp();
-                    if ($seconds <= 0) {
-                        $mustReRun = true;
-                    } else {
-                        pcntl_alarm($seconds);
-                    }
-                },
-                preferRealDate: true,
-            );
+        if (null !== $this->backend) {
+            return $this->backend;
         }
 
-        return $this;
+        foreach ($this->backends as $backend) {
+            if ($backend->isAvailable()) {
+                return $this->backend = $backend;
+            }
+        }
+
+        return null;
     }
 
     public function unregister(string $timerId): self
     {
-        if (isset($this->callbacks[$timerId])) {
-            unset($this->callbacks[$timerId]);
-        }
+        $this->getBackend()?->unregister($timerId);
 
-        foreach ($this->pipes as &$pipe) {
-            $pipe = array_diff($pipe, [$timerId]);
-        }
+        return $this;
+    }
+
+    public function executeExpiredCalls(): self
+    {
+        $this->backend?->executeExpiredCalls();
 
         return $this;
     }
 
     public function register(int $seconds, string $timerId, callable $callback): self
     {
-        if (!self::isAvailable()) {
-            // @codeCoverageIgnoreStart
-            throw new PcntlNotAvailableException('Pcntl extension is not available');
-            // @codeCoverageIgnoreEnd
+        $backend = $this->getBackend();
+        if (null === $backend) {
+            throw new NoBackendAvailableException('Error, no timer backend is available in this environment');
         }
 
-        if (0 === $seconds) {
-            $callback();
-
-            return $this;
-        }
-
-        $next = null;
-        if (!empty($this->pipes)) {
-            $next = array_key_first($this->pipes);
-        }
-
-        if (isset($this->callbacks[$timerId])) {
-            $this->unregister($timerId);
-        }
-
-        $this->callbacks[$timerId] = $callback;
-
-        $this->datesService->passMeTheDate(
-            setter: function (DateTimeInterface $dateTime) use ($seconds, $timerId, $next): void {
-                $timestamp = (int) ($dateTime->getTimestamp() + $seconds);
-                $this->pipes[$timestamp][] = $timerId;
-                ksort($this->pipes);
-
-                if (null === $next || $next > $timestamp) {
-                    pcntl_signal(SIGALRM, $this->executeCallbacks(...));
-                    pcntl_alarm($seconds);
-                }
-            },
-            preferRealDate: true,
+        $backend->register(
+            seconds: $seconds,
+            timerId: $timerId,
+            callback: $callback,
         );
 
         return $this;
