@@ -22,7 +22,6 @@
  */
 
 declare(strict_types=1);
-declare(ticks=1);
 
 namespace Teknoo\East\Foundation\Time;
 
@@ -32,16 +31,13 @@ use Teknoo\Recipe\Promise\Promise;
 use Throwable;
 
 use function bin2hex;
-use function function_exists;
-use function pcntl_signal_dispatch;
 use function random_bytes;
 use function usleep;
 
 /**
  * Service to perform sleeping operations to sleep without blocking other async events
- * This file declares ticks to allow cooperative timer's backends (like
- * `Teknoo\East\Foundation\Time\Backend\Cooperative\TimerService`) to execute expired calls during the waiting. Signals
- * are also dispatched when the pcntl extension is available.
+ * During the waiting, the timer is regularly asked to execute expired calls, thanks to
+ * `TimerServiceInterface::executeExpiredCalls()`.
  *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
@@ -76,13 +72,9 @@ class SleepService implements SleepServiceInterface
             callback: $timerFinished,
         );
 
-        $dispatchSignals = function_exists('pcntl_signal_dispatch');
         while (!$timerFinished->fetchResult()) {
             usleep($this->usleeepTime);
-
-            if ($dispatchSignals) {
-                pcntl_signal_dispatch();
-            }
+            $this->timer->executeExpiredCalls();
         }
 
         return $this;

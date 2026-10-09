@@ -91,6 +91,45 @@ class SleepServiceTest extends TestCase
         );
     }
 
+    public function testWaitAsksTheTimerToExecuteExpiredCalls(): void
+    {
+        $timer = $this->getTimerServiceMockObject();
+
+        $registered = null;
+        $timer->expects($this->once())
+            ->method('register')
+            ->willReturnCallback(
+                function (int $seconds, string $timerId, callable $callback) use (&$registered, $timer) {
+                    $registered = $callback;
+
+                    return $timer;
+                }
+            );
+
+        $calls = 0;
+        $timer->expects($this->exactly(3))
+            ->method('executeExpiredCalls')
+            ->willReturnCallback(
+                function () use (&$registered, &$calls, $timer) {
+                    if (3 === ++$calls) {
+                        ($registered)();
+                    }
+
+                    return $timer;
+                }
+            );
+
+        $t = time();
+        $this->assertInstanceOf(
+            SleepService::class,
+            new SleepService($timer)->wait(5),
+        );
+        $this->assertLessThanOrEqual(
+            $t + 1,
+            time(),
+        );
+    }
+
     public function testWaitWithTimer(): void
     {
         if (defined('PCNTL_MOCKED')) {
