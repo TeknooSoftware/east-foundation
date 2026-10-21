@@ -141,6 +141,46 @@ The first Plan `Teknoo\East\Foundation\Recipe\Plan`, instantiated with an instan
   * It will do the same with parameters from the request or message.
   * The second step of this subrecipe is a dynamic step, executing the dertemined controller fron the request.
 
+Symfony UX Live Components
+--------------------------
+The Symfony router of East Foundation (`Teknoo\East\FoundationBundle\Router\Router`) re-runs, for a Symfony UX Live
+Component request (the route `ux_live_component`, `/_components/...`), the recipe of the route of the page displaying
+the component. Components using the trait `Teknoo\East\FoundationBundle\UX\Components\LiveTrait` keep the path of this
+page in their prop `originalPath`. Props are accepted only if their checksum, signed with the `kernel.secret`, is valid.
+
+`originalPath` keeps also the query string of the page (`/user/list?order=email&direction=ASC`) : the router matches
+only the path (without front controller) and restores the query parameters into the request, before the query
+parameters of the Live Component request, so a sorted or filtered list stays sorted or filtered after a re-render.
+
+### Access rules of the targeted route
+
+The Symfony firewall checks only the path of the Live Component request (`/_components/...`), not the path in
+`originalPath`. Before re-running the recipe, the router calls an access checker
+(`Teknoo\East\FoundationBundle\Router\AccessCheckerInterface`) with the path and the routing parameters of the targeted
+route. The default checker, `Teknoo\East\FoundationBundle\Router\AccessControlChecker`, asks the firewall if this page
+is authorized : as Symfony UX does for its sub-requests, the current Symfony request is duplicated for the path of the
+page, with its method and the routing attributes of the route, and passed to the access listener of the firewall
+(`security.access_listener`), which runs the `access_control` rules of your security configuration. A route reserved,
+for example, to `ROLE_ADMIN` with `{ path: ^/admin, roles: ROLE_ADMIN }` is refused to other users : Symfony returns a
+403 response, or starts the authentication when the user is not authenticated. Rules defined on the route name
+(`route` option) are also supported.
+
+The firewall runs before the kernel listener of East Foundation, the token of the current user is available. Without
+the `SecurityBundle` (or without security configuration), the checker is removed from the container and the router
+does not check access rules. To use your own checker, define the alias
+`Teknoo\East\FoundationBundle\Router\AccessCheckerInterface` to your service.
+
+### Props in the request
+
+The scalar props and the updated fields (`updated`) sent by the client are copied into the request's attributes, when
+the request has not already an attribute with the same name, to be usable in the recipe. Keys starting with `@` (like
+the checksum) or `_` (internal attributes, like `_route` or `_controller`) and `originalPath` are ignored.
+
+`RecipeEndPoint` replaces an attribute starting with `@` by the service with this id. A value sent by the client must
+stay a string : a value starting with `@` (like a Twig template `@Ns/form.html.twig`) is escaped by the router with
+`@@`, and `RecipeEndPoint` removes this escape, the recipe receives the original string. A callable controller, not
+executed by `RecipeEndPoint`, or a `RecipeEndPoint` without container, receives the escaped value.
+
 Credits
 -------
 EIRL Richard Déloge - <https://deloge.io> - Lead developer.

@@ -53,6 +53,7 @@ use function is_string;
 use function json_decode;
 use function json_encode;
 use function ksort;
+use function parse_str;
 use function preg_match;
 use function str_starts_with;
 use function str_contains;
@@ -66,6 +67,10 @@ use const JSON_THROW_ON_ERROR;
  * This router reuse the Symfony matcher component to find controller and routes to use. Only controller as service
  * (The matcher returns a callable and not the controller's identifier Controller::Action). If the controller is not
  * a callable, this router ignores the route.
+ *
+ * For a Symfony UX Live Component request, the router re-runs the recipe of the route targeted by the prop
+ * `originalPath`, after checking, with the access checker when it is defined, that the current user can access to it.
+ * The query string kept in `originalPath` is restored into the query parameters of the request.
  *
  * All public method of the manager must only return the self client or a clone instance.
  *
@@ -89,6 +94,7 @@ class Router implements RouterInterface
         array $excludePaths = [],
         private readonly string $symfonyUxLiveRoute = 'ux_live_component',
         #[SensitiveParameter] private string $secret = '',
+        private readonly ?AccessCheckerInterface $accessChecker = null,
     ) {
         if (!empty($excludePaths)) {
             $this->excludePathsRegex = '#^(' . implode('|', $excludePaths) . ')#S';
@@ -173,6 +179,42 @@ class Router implements RouterInterface
     }
 
     /**
+     * Values of the props and of the updated fields, sent by the client, are copied into the request's attributes,
+     * without the checksum, internal keys (starting with `@` or `_`) and the original path. A string starting with
+     * `@` is a service id for `RecipeEndPoint`, a value sent by the client must stay a string : it is escaped with
+     * `@@`, `RecipeEndPoint` removes this escape.
+     *
+     * @param array<string|int, mixed> $values
+     */
+    private function copyToAttributes(
+        ServerRequestInterface $request,
+        array $values,
+        bool $onlyScalar,
+    ): ServerRequestInterface {
+        foreach ($values as $key => $value) {
+            if (
+                !is_string($key)
+                || '' === $key
+                || '@' === $key[0]
+                || '_' === $key[0]
+                || 'originalPath' === $key
+                || ($onlyScalar && !is_scalar($value))
+                || null !== $request->getAttribute($key, null)
+            ) {
+                continue;
+            }
+
+            if (is_string($value) && str_starts_with($value, '@')) {
+                $value = '@' . $value;
+            }
+
+            $request = $request->withAttribute($key, $value);
+        }
+
+        return $request;
+    }
+
+    /**
      * @param ServerRequestInterface $request
      * @return array<string, mixed>|null
      * @throws JsonException|ResourceNotFoundException
@@ -224,10 +266,21 @@ class Router implements RouterInterface
             return $originalParameters;
         }
 
-        $realPath = $this->cleanSymfonyHandler($body['props']['originalPath']);
+        // `originalPath` keeps also the query string of the original request
+        [$originalPathInfo, $originalQuery] = explode('?', $body['props']['originalPath'], 2) + [1 => ''];
+        $realPath = $this->cleanSymfonyHandler($originalPathInfo);
 
         /** @var array<string, mixed> $realParameters */
         $realParameters = $this->matcher->match($realPath);
+
+        // The firewall has checked only the path of the Live Component request, not the path of the targeted route
+        $this->accessChecker?->check($request, $realPath, $realParameters);
+
+        if ('' !== $originalQuery) {
+            parse_str($originalQuery, $originalQueryParams);
+            $request = $request->withQueryParams($originalQueryParams + $request->getQueryParams());
+        }
+
         $realParameters['_live_parameters'] = $originalParameters;
         $realParameters['_live_body'] = $body;
 
@@ -235,25 +288,10 @@ class Router implements RouterInterface
             !empty($body['updated'])
             && is_array($body['updated'])
         ) {
-            foreach ($body['updated'] as $key => $value) {
-                if (is_string($key) && null === $request->getAttribute($key, null)) {
-                    $request = $request->withAttribute($key, $value);
-                }
-            }
+            $request = $this->copyToAttributes($request, $body['updated'], false);
         }
 
-        foreach ($body['props'] as $key => $value) {
-            if (
-                is_string($key)
-                && is_scalar($value)
-                && null === $request->getAttribute($key, null)
-                && '@' !== $key[0]
-                && '_' !== $key[0]
-                && 'originalPath' !== $key
-            ) {
-                $request = $request->withAttribute($key, $value);
-            }
-        }
+        $request = $this->copyToAttributes($request, $body['props'], true);
 
         return $realParameters;
     }

@@ -21,7 +21,18 @@ services:
             - '%teknoo.east.symfony.router.excluded_paths%'
             - '%teknoo.east.symfony.router.symfony_ux_live_route%'
             - '%teknoo.east.symfony.router.secret%'
+            - '@?Teknoo\East\FoundationBundle\Router\AccessCheckerInterface'
         public: true
+
+    #Access rules of the route targeted by a Live Component request, removed without the Symfony firewall
+    Teknoo\East\FoundationBundle\Router\AccessCheckerInterface:
+        alias: 'Teknoo\East\FoundationBundle\Router\AccessControlChecker'
+
+    Teknoo\East\FoundationBundle\Router\AccessControlChecker:
+        class: 'Teknoo\East\FoundationBundle\Router\AccessControlChecker'
+        arguments:
+            - '@security.access_listener'
+            - '@http_kernel'
 
     Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface:
         class: 'Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory'

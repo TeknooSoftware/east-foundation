@@ -44,10 +44,25 @@ use Psr\Http\Server\MiddlewareInterface as PsrMiddleware;
 use Psr\Http\Server\RequestHandlerInterface;
 use RuntimeException;
 use Symfony\Component\DependencyInjection\Container as SymfonyContainer;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
+use Symfony\Component\HttpFoundation\RequestMatcher\PathRequestMatcher;
+use Symfony\Component\HttpKernel\Controller\ControllerResolver;
+use Symfony\Component\HttpKernel\HttpKernel;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Core\Authorization\AccessDecisionManager;
+use Symfony\Component\Security\Core\Authorization\Voter\RoleVoter;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Core\User\InMemoryUser;
+use Symfony\Component\Security\Http\AccessMap;
+use Symfony\Component\Security\Http\Firewall\AccessListener;
+use Teknoo\East\FoundationBundle\Router\AccessCheckerInterface;
+use Teknoo\East\FoundationBundle\Router\AccessControlChecker;
 use Teknoo\East\FoundationBundle\Router\Router as SymfonyUxRouter;
 use Teknoo\East\Foundation\Command\Executor;
 use Teknoo\East\Foundation\Http\Bowl\PSR15\FiberHandlerBowl;
@@ -74,6 +89,7 @@ use Teknoo\East\Foundation\Middleware\MiddlewareInterface;
 use Throwable;
 
 use function base64_encode;
+use function array_map;
 use function dirname;
 use function explode;
 use function file_put_contents;
@@ -101,6 +117,8 @@ class FeatureContext implements Context
     private ?RouterInterface $router = null;
 
     private string $liveSecret = '';
+
+    private ?TokenStorage $liveTokenStorage = null;
 
     private ?ClientInterface $client = null;
 
@@ -705,6 +723,40 @@ class FeatureContext implements Context
     #[Given('I register a Symfony UX live component router with secret :secret')]
     public function iRegisterASymfonyUxLiveComponentRouterWithSecret(string $secret): void
     {
+        $this->registerLiveComponentRouter($secret, null);
+    }
+
+    #[Given('I register a Symfony UX live component router with secret :secret and the path :path reserved to :role')]
+    public function iRegisterASymfonyUxLiveComponentRouterWithSecretAndThePathReservedTo(
+        string $secret,
+        string $path,
+        string $role,
+    ): void {
+        $accessMap = new AccessMap();
+        $accessMap->add(new PathRequestMatcher($path), [$role]);
+
+        $this->liveTokenStorage = new TokenStorage();
+
+        $checker = new AccessControlChecker(
+            new AccessListener($this->liveTokenStorage, new AccessDecisionManager([new RoleVoter()]), $accessMap),
+            new HttpKernel(new EventDispatcher(), new ControllerResolver()),
+        );
+
+        $this->registerLiveComponentRouter($secret, $checker);
+    }
+
+    #[Given('I am authenticated with the roles :roles')]
+    public function iAmAuthenticatedWithTheRoles(string $roles): void
+    {
+        $roles = array_map(trim(...), explode(',', $roles));
+
+        $this->liveTokenStorage?->setToken(
+            new UsernamePasswordToken(new InMemoryUser('john_doe', null, $roles), 'main', $roles)
+        );
+    }
+
+    private function registerLiveComponentRouter(string $secret, ?AccessCheckerInterface $checker): void
+    {
         $this->liveSecret = $secret;
 
         $routes = new RouteCollection();
@@ -728,6 +780,53 @@ class FeatureContext implements Context
                 ],
             ),
         );
+        // A target route reading the query string of the original request.
+        $routes->add(
+            'user_list',
+            new Route(
+                '/user/list',
+                [
+                    '_controller' => function (ClientInterface $client, ServerRequest $request): void {
+                        $query = $request->getQueryParams();
+                        $client->acceptResponse(
+                            new TextResponse('Sorted by ' . $query['order'] . ' ' . $query['direction'])
+                        );
+                    },
+                ],
+            ),
+        );
+        // A target route executing a recipe, with the container to fetch services.
+        $routes->add(
+            'user_theme',
+            new Route(
+                '/user/theme',
+                [
+                    '_controller' => new RecipeEndPoint(
+                        (new Recipe())->cook(
+                            function (ClientInterface $client, string $formTheme): void {
+                                $client->acceptResponse(new TextResponse('Theme ' . $formTheme));
+                            },
+                            'theme',
+                        ),
+                        $this->container,
+                    ),
+                ],
+            ),
+        );
+        // A target route reserved to administrators by the access rules.
+        $routes->add(
+            'admin_user',
+            new Route(
+                '/admin/user/{id}',
+                [
+                    '_controller' => function (ClientInterface $client, ServerRequest $request): void {
+                        $client->acceptResponse(
+                            new TextResponse('Hello admin ' . $request->getAttribute('username'))
+                        );
+                    },
+                ],
+            ),
+        );
 
         $router = new SymfonyUxRouter(
             new UrlMatcher($routes, new RequestContext()),
@@ -735,6 +834,7 @@ class FeatureContext implements Context
             [],
             'ux_live_component',
             $secret,
+            $checker,
         );
 
         $this->router = $router;
@@ -759,12 +859,29 @@ class FeatureContext implements Context
         $this->dispatchLiveComponentRequest($component, $originalPath, 'invalid');
     }
 
-    private function dispatchLiveComponentRequest(string $component, string $originalPath, string $mode): void
-    {
+    #[When('a live component :component requests :originalPath with the prop :name set to :value')]
+    public function aLiveComponentRequestsWithThePropSetTo(
+        string $component,
+        string $originalPath,
+        string $name,
+        string $value,
+    ): void {
+        $this->dispatchLiveComponentRequest($component, $originalPath, 'ux3', [$name => $value]);
+    }
+
+    /**
+     * @param array<string, string> $otherProps
+     */
+    private function dispatchLiveComponentRequest(
+        string $component,
+        string $originalPath,
+        string $mode,
+        array $otherProps = [],
+    ): void {
         $props = [
             'originalPath' => $originalPath,
             'username' => 'john_doe',
-        ];
+        ] + $otherProps;
 
         $props['@checksum'] = match ($mode) {
             'ux3' => $this->liveChecksum($props, $component),
@@ -784,12 +901,26 @@ class FeatureContext implements Context
         $request = (new ServerRequest())
             ->withUri(new Uri('https://foo.com/_components'))
             ->withMethod('POST')
-            ->withParsedBody(['data' => $json]);
+            ->withParsedBody(['data' => $json])
+            // The Symfony request, injected by the kernel listener of the bundle
+            ->withAttribute('request', SymfonyRequest::create('https://foo.com/_components', 'POST'));
 
-        $manager->receiveRequest(
-            $this->client,
-            $request,
-        );
+        try {
+            $manager->receiveRequest(
+                $this->client,
+                $request,
+            );
+        } catch (Throwable $error) {
+            // Like the Symfony kernel, which turns an AccessDeniedException into a 403 response
+            $this->error = $error;
+        }
+    }
+
+    #[Then('the access to the targeted route must be denied')]
+    public function theAccessToTheTargetedRouteMustBeDenied(): void
+    {
+        Assert::assertNull($this->response);
+        Assert::assertInstanceOf(AccessDeniedException::class, $this->error);
     }
 
     /**

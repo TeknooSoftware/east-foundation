@@ -28,11 +28,14 @@ namespace Teknoo\East\FoundationBundle\DependencyInjection;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Reference;
+use Teknoo\East\FoundationBundle\Router\AccessCheckerInterface;
+use Teknoo\East\FoundationBundle\Router\AccessControlChecker;
 use Teknoo\East\Twig\Template\Engine;
 
 /**
  * Class EastFoundationCompilerPass
- * Compiler pass to inject service container to east framework controller.
+ * Compiler pass to inject service container to east framework controller, and to remove the access checker of the
+ * router, for Live Component requests, when the Symfony firewall (and its access listener) is not available.
  *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
@@ -41,7 +44,23 @@ use Teknoo\East\Twig\Template\Engine;
  */
 class EastFoundationCompilerPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container): void
+    private function removeAccessCheckerWithoutFirewall(ContainerBuilder $container): void
+    {
+        if ($container->has('security.access_listener')) {
+            return;
+        }
+
+        $container->removeDefinition(AccessControlChecker::class);
+
+        if (
+            $container->hasAlias(AccessCheckerInterface::class)
+            && AccessControlChecker::class === (string) $container->getAlias(AccessCheckerInterface::class)
+        ) {
+            $container->removeAlias(AccessCheckerInterface::class);
+        }
+    }
+
+    private function injectTemplating(ContainerBuilder $container): void
     {
         $taggedControllers = $container->findTaggedServiceIds('east.endpoint.template');
 
@@ -59,5 +78,11 @@ class EastFoundationCompilerPass implements CompilerPassInterface
                 [new Reference(Engine::class)]
             );
         }
+    }
+
+    public function process(ContainerBuilder $container): void
+    {
+        $this->removeAccessCheckerWithoutFirewall($container);
+        $this->injectTemplating($container);
     }
 }

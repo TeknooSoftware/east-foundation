@@ -27,7 +27,9 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
 
 /**
- * Trait to help to create component usable with East Recipe
+ * Trait to help to create component usable with East Recipe. The prop `originalPath` keeps the path (without front
+ * controller) and the query string of the request displaying the component : East Foundation's router re-runs the
+ * recipe of this path, with these query parameters, for a Live Component request.
  *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
@@ -47,6 +49,12 @@ trait LiveTrait
 
     private function updateOriginalPath(): void
     {
-        $this->originalPath = $this->requestStack->getCurrentRequest()?->getPathInfo();
+        $request = $this->requestStack->getCurrentRequest();
+        $this->originalPath = $request?->getPathInfo();
+
+        $queryString = $request?->getQueryString();
+        if (null !== $queryString && '' !== $queryString) {
+            $this->originalPath .= '?' . $queryString;
+        }
     }
 }
