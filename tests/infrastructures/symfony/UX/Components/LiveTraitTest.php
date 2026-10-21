@@ -103,4 +103,36 @@ class LiveTraitTest extends TestCase
 
         $this->assertEquals('', $instance->originalPath);
     }
+
+    public function testConstructorKeepsTheQueryString(): void
+    {
+        $request = Request::create('/user/list?order=email&direction=ASC');
+
+        $requestStack = new RequestStack();
+        $requestStack->push($request);
+
+        $instance = $this->createTraitInstance($requestStack);
+
+        // Query string normalized by Symfony (sorted parameters)
+        $this->assertEquals('/user/list?direction=ASC&order=email', $instance->originalPath);
+    }
+
+    public function testConstructorWithEmptyQueryString(): void
+    {
+        $request = Request::create('/user/list?');
+
+        $requestStack = new RequestStack();
+        $requestStack->push($request);
+
+        $instance = $this->createTraitInstance($requestStack);
+
+        $this->assertEquals('/user/list', $instance->originalPath);
+    }
+
+    public function testConstructorWithoutRequest(): void
+    {
+        $instance = $this->createTraitInstance(new RequestStack());
+
+        $this->assertNull($instance->originalPath);
+    }
 }

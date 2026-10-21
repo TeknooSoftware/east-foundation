@@ -1,5 +1,50 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [9.4.0] - 2026-10-21
+### Stable Release
+
+#### Fixes
+- Symfony UX Live Component requests bypassed the access rules of the targeted route : the Symfony firewall checks
+  only the path `/_components/...`, the `Router` re-ran the recipe of the route of `originalPath` even when its
+  `access_control` rules (like `^/admin` with `ROLE_ADMIN`) refuse the current user. With the Symfony firewall, these
+  rules are now checked before, a refused access returns a 403 response (or starts the authentication for an
+  anonymous user).
+- A string prop, or an updated field, of a Live Component starting with `@` (like a Twig template
+  `@Ns/form.html.twig`) was resolved as a service id by `RecipeEndPoint` and failed with "The service ... is not
+  available in the container". The `Router` escapes it with `@@`, the recipe of a `RecipeEndPoint` with a container
+  receives the original string.
+  - A callable controller, or a `RecipeEndPoint` without container, receives the escaped value (`@@...`).
+- `LiveTrait` dropped the query string of the original request : a Live re-render of a list lost its query parameters
+  (like `order` and `direction`). The query string (normalized by Symfony) is kept in `originalPath` and restored by
+  the `Router`.
+
+#### Evolutions
+- Symfony :
+  - `Router\AccessCheckerInterface` (new) : contract to check the access to the route targeted by a Live Component
+    request, called by the `Router` with the PSR request, the path and the routing parameters of this route, after a
+    valid checksum.
+  - `Router\AccessControlChecker` (new) : asks the access listener of the firewall (`security.access_listener`) if
+    the page is authorized. The current Symfony request (the attribute `request` of the PSR request, set by the
+    `KernelListener`) is duplicated, as Symfony UX does for its sub-requests, for the path of the page, with its
+    method, without its query and body parameters, with the routing attributes of the route, and passed to the
+    listener in a `RequestEvent` of sub-request (with `http_kernel`). A refused access throws Symfony's
+    `AccessDeniedException`, as without the Symfony request in the PSR request.
+  - `Router` : new optional 6th constructor argument, the access checker (the service
+    `Teknoo\East\FoundationBundle\Router\AccessCheckerInterface`, an alias to `AccessControlChecker`).
+  - `EastFoundationCompilerPass` removes the access checker when the firewall is not available (no `SecurityBundle`,
+    or no security configuration, so no `security.access_listener`) : the `Router` does not check access rules. An
+    alias of `AccessCheckerInterface` to another service is kept.
+  - `Router` : only the path of `originalPath` is matched. Its query string is restored into the query parameters of
+    the request : they take precedence over the query parameters of the Live Component request.
+  - `Router` : keys of the updated fields are filtered like keys of props : keys starting with `@` or `_`,
+    `originalPath` and empty keys are ignored (empty keys of props too). A client can no longer define internal
+    attributes not defined by the matched route, like `_locale` or `_format`.
+- `symfony/security-http` added to dev requirements, dev requirements sorted.
+
+#### Documentation
+- New `Symfony UX Live Components` section in `documentation/README.md` : re-routing of Live Component requests,
+  access rules of the targeted route, props copied into the request and `@@` escape, query string of `originalPath`.
+
 ## [9.3.0] - 2026-10-09
 ### Stable Release
 

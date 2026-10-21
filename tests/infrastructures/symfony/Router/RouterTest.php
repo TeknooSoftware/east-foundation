@@ -41,7 +41,9 @@ use Teknoo\East\Foundation\Client\ClientInterface;
 use Teknoo\East\Foundation\Manager\ManagerInterface;
 use Teknoo\East\Foundation\Router\ResultInterface;
 use Teknoo\East\Foundation\Router\RouterInterface;
+use Teknoo\East\FoundationBundle\Router\AccessCheckerInterface;
 use Teknoo\East\FoundationBundle\Router\Router;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController as SymfonyAbstractController;
 use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 
@@ -140,7 +142,7 @@ class RouterTest extends TestCase
     /**
      * @return Router
      */
-    private function buildRouter(array $excludedPaths = []): Router
+    private function buildRouter(array $excludedPaths = [], ?AccessCheckerInterface $accessChecker = null): Router
     {
         return new Router(
             $this->getUrlMatcherMock(),
@@ -148,6 +150,7 @@ class RouterTest extends TestCase
             $excludedPaths,
             'ux_live_component',
             self::TEST_SECRET,
+            $accessChecker,
         );
     }
 
@@ -1783,5 +1786,339 @@ class RouterTest extends TestCase
             $this->getRouterClass(),
             $this->buildRouter()->execute($client, $request, $manager)
         );
+    }
+
+    /**
+     * @param array<string, mixed> $props
+     */
+    private function buildLiveRequest(
+        string $path,
+        array $props,
+        ?string $checksum = null,
+    ): ServerRequestInterface&Stub {
+        $uri = $this->createStub(UriInterface::class);
+        $uri->method('getPath')->willReturn($path);
+
+        $props['@checksum'] = $checksum ?? $this->calculateChecksumV3($props, 'UserProfile');
+
+        $request = $this->createStub(ServerRequestInterface::class);
+        $request->method('getUri')->willReturn($uri);
+        $request->method('getParsedBody')->willReturn([
+            'data' => json_encode(['props' => $props]),
+        ]);
+        $request->method('getAttribute')->willReturn(null);
+        $request->method('withAttribute')->willReturnSelf();
+
+        return $request;
+    }
+
+    private function matchLiveAndTargetedRoutes(string $targetedPath, string $targetedRoute): void
+    {
+        $this->getUrlMatcherMock()->method('match')->willReturnCallback(
+            fn (string $path): array => match ($path) {
+                '/_components' => [
+                    '_route' => 'ux_live_component',
+                    '_live_component' => 'UserProfile',
+                ],
+                $targetedPath => [
+                    '_route' => $targetedRoute,
+                    '_controller' => function (): void {},
+                    'id' => '42',
+                ],
+                default => [],
+            }
+        );
+    }
+
+    public function testExecuteWithLiveComponentRouteChecksTheAccessToTheTargetedRoute(): void
+    {
+        $request = $this->buildLiveRequest('/_components', ['originalPath' => '/admin/user/42']);
+        $this->matchLiveAndTargetedRoutes('/admin/user/42', 'admin_user');
+
+        $checker = $this->createMock(AccessCheckerInterface::class);
+        $checker->expects($this->once())
+            ->method('check')
+            ->with(
+                $request,
+                '/admin/user/42',
+                $this->callback(
+                    fn (array $parameters): bool => 'admin_user' === $parameters['_route']
+                        && '42' === $parameters['id']
+                        && !isset($parameters['_live_parameters'])
+                ),
+            )
+            ->willReturnSelf();
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects($this->once())->method('updateWorkPlan')->willReturnSelf();
+        $manager->expects($this->once())->method('updateMessage')->willReturnSelf();
+
+        $this->assertInstanceOf(
+            $this->getRouterClass(),
+            $this->buildRouter([], $checker)->execute($this->createStub(ClientInterface::class), $request, $manager)
+        );
+    }
+
+    public function testExecuteWithLiveComponentRouteChecksTheAccessToTheCleanedPath(): void
+    {
+        $request = $this->buildLiveRequest('/_components', ['originalPath' => '/app.php/admin/user/42']);
+        $this->matchLiveAndTargetedRoutes('/admin/user/42', 'admin_user');
+
+        $checker = $this->createMock(AccessCheckerInterface::class);
+        $checker->expects($this->once())
+            ->method('check')
+            ->with($request, '/admin/user/42', $this->isArray())
+            ->willReturnSelf();
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects($this->once())->method('updateWorkPlan')->willReturnSelf();
+
+        $this->buildRouter([], $checker)->execute($this->createStub(ClientInterface::class), $request, $manager);
+    }
+
+    public function testExecuteWithLiveComponentRouteAccessDenied(): void
+    {
+        $request = $this->buildLiveRequest('/_components', ['originalPath' => '/admin/user/42']);
+        $this->matchLiveAndTargetedRoutes('/admin/user/42', 'admin_user');
+
+        $checker = $this->createStub(AccessCheckerInterface::class);
+        $checker->method('check')->willThrowException(new AccessDeniedException());
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects($this->never())->method('updateWorkPlan');
+        $manager->expects($this->never())->method('updateMessage');
+
+        $this->expectException(AccessDeniedException::class);
+        $this->buildRouter([], $checker)->execute($this->createStub(ClientInterface::class), $request, $manager);
+    }
+
+    public function testExecuteWithLiveComponentRouteInvalidChecksumDoesNotCheckTheAccess(): void
+    {
+        $request = $this->buildLiveRequest(
+            '/_components',
+            ['originalPath' => '/admin/user/42'],
+            'an-invalid-checksum',
+        );
+        $this->matchLiveAndTargetedRoutes('/admin/user/42', 'admin_user');
+
+        $checker = $this->createMock(AccessCheckerInterface::class);
+        $checker->expects($this->never())->method('check');
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects($this->never())->method('updateWorkPlan');
+
+        $this->buildRouter([], $checker)->execute($this->createStub(ClientInterface::class), $request, $manager);
+    }
+
+    public function testExecuteWithNormalRequestDoesNotCheckTheAccess(): void
+    {
+        $request = $this->buildLiveRequest('/admin/user/42', []);
+        $this->matchLiveAndTargetedRoutes('/admin/user/42', 'admin_user');
+
+        $checker = $this->createMock(AccessCheckerInterface::class);
+        $checker->expects($this->never())->method('check');
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects($this->once())->method('updateWorkPlan')->willReturnSelf();
+
+        $this->buildRouter([], $checker)->execute($this->createStub(ClientInterface::class), $request, $manager);
+    }
+
+    public function testExecuteWithLiveComponentRouteEscapesValuesStartingWithAnAt(): void
+    {
+        $uri = $this->createStub(UriInterface::class);
+        $uri->method('getPath')->willReturn('/_components');
+
+        $props = [
+            'originalPath' => '/user/profile/456',
+            'formTheme' => '@Foo/bar.html.twig',
+            'escaped' => '@@already',
+            'at' => '@',
+            'plain' => 'foo',
+            'number' => 42,
+        ];
+        $props['@checksum'] = $this->calculateChecksumV3($props, 'UserProfile');
+
+        $request = $this->createStub(ServerRequestInterface::class);
+        $request->method('getUri')->willReturn($uri);
+        $request->method('getParsedBody')->willReturn([
+            'data' => json_encode([
+                'props' => $props,
+                'updated' => [
+                    'theme' => '@security.token_storage',
+                    'list' => ['@foo'],
+                ],
+            ]),
+        ]);
+        $request->method('getAttribute')->willReturn(null);
+
+        $addedAttributes = [];
+        $request->method('withAttribute')->willReturnCallback(
+            function (string $key, $value) use ($request, &$addedAttributes) {
+                $addedAttributes[$key] = $value;
+
+                return $request;
+            }
+        );
+
+        $this->matchLiveAndTargetedRoutes('/user/profile/456', 'user_profile');
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects($this->once())->method('updateWorkPlan')->willReturnSelf();
+
+        $this->buildRouter()->execute($this->createStub(ClientInterface::class), $request, $manager);
+
+        // Strings starting with `@` are escaped with `@@`, RecipeEndPoint removes this escape
+        $this->assertSame('@@Foo/bar.html.twig', $addedAttributes['formTheme']);
+        $this->assertSame('@@@already', $addedAttributes['escaped']);
+        $this->assertSame('@@', $addedAttributes['at']);
+        $this->assertSame('@@security.token_storage', $addedAttributes['theme']);
+        // Other values are copied as is
+        $this->assertSame('foo', $addedAttributes['plain']);
+        $this->assertSame(42, $addedAttributes['number']);
+        $this->assertSame(['@foo'], $addedAttributes['list']);
+    }
+
+    public function testExecuteWithLiveComponentRouteSpecialPrefixedUpdatedFieldsIgnored(): void
+    {
+        $uri = $this->createStub(UriInterface::class);
+        $uri->method('getPath')->willReturn('/_components');
+
+        $props = [
+            'originalPath' => '/user/profile/456',
+            '' => 'empty key',
+        ];
+        $props['@checksum'] = $this->calculateChecksumV3($props, 'UserProfile');
+
+        $request = $this->createStub(ServerRequestInterface::class);
+        $request->method('getUri')->willReturn($uri);
+        $request->method('getParsedBody')->willReturn([
+            'data' => json_encode([
+                'props' => $props,
+                'updated' => [
+                    'username' => 'john_doe',
+                    '_route' => 'admin_user',
+                    '_controller' => 'an.other.controller',
+                    '@checksum' => 'foo',
+                    'originalPath' => '/admin/user/42',
+                    '' => 'empty key',
+                ],
+            ]),
+        ]);
+        $request->method('getAttribute')->willReturn(null);
+
+        $addedAttributes = [];
+        $request->method('withAttribute')->willReturnCallback(
+            function (string $key, $value) use ($request, &$addedAttributes) {
+                $addedAttributes[$key][] = $value;
+
+                return $request;
+            }
+        );
+
+        $this->matchLiveAndTargetedRoutes('/user/profile/456', 'user_profile');
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects($this->once())->method('updateWorkPlan')->willReturnSelf();
+
+        $this->buildRouter()->execute($this->createStub(ClientInterface::class), $request, $manager);
+
+        $this->assertSame(['john_doe'], $addedAttributes['username']);
+        // Internal attributes come only from the matched route
+        $this->assertSame(['user_profile'], $addedAttributes['_route']);
+        $this->assertCount(1, $addedAttributes['_controller']);
+        $this->assertNotSame('an.other.controller', $addedAttributes['_controller'][0]);
+        $this->assertArrayNotHasKey('@checksum', $addedAttributes);
+        $this->assertArrayNotHasKey('originalPath', $addedAttributes);
+        $this->assertArrayNotHasKey('', $addedAttributes);
+    }
+
+    public function testExecuteWithLiveComponentRouteRestoresTheQueryString(): void
+    {
+        $uri = $this->createStub(UriInterface::class);
+        $uri->method('getPath')->willReturn('/_components');
+
+        $props = [
+            'originalPath' => '/app.php/user/list?order=email&direction=ASC&page=2',
+        ];
+        $props['@checksum'] = $this->calculateChecksumV3($props, 'UserProfile');
+
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->method('getUri')->willReturn($uri);
+        $request->method('getParsedBody')->willReturn([
+            'data' => json_encode(['props' => $props]),
+        ]);
+        $request->method('getAttribute')->willReturn(null);
+        $request->method('withAttribute')->willReturnSelf();
+        $request->method('getQueryParams')->willReturn(['foo' => 'bar', 'order' => 'id']);
+        $request->expects($this->once())
+            ->method('withQueryParams')
+            ->with([
+                'order' => 'email',
+                'direction' => 'ASC',
+                'page' => '2',
+                'foo' => 'bar',
+            ])
+            ->willReturnSelf();
+
+        $matched = [];
+        $this->getUrlMatcherMock()->method('match')->willReturnCallback(
+            function (string $path) use (&$matched): array {
+                $matched[] = $path;
+
+                return match ($path) {
+                    '/_components' => [
+                        '_route' => 'ux_live_component',
+                        '_live_component' => 'UserProfile',
+                    ],
+                    '/user/list' => [
+                        '_route' => 'user_list',
+                        '_controller' => function (): void {},
+                    ],
+                    default => [],
+                };
+            }
+        );
+
+        $checker = $this->createMock(AccessCheckerInterface::class);
+        $checker->expects($this->once())
+            ->method('check')
+            ->with($request, '/user/list', $this->isArray())
+            ->willReturnSelf();
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects($this->once())->method('updateWorkPlan')->willReturnSelf();
+
+        $this->buildRouter([], $checker)->execute($this->createStub(ClientInterface::class), $request, $manager);
+
+        // Only the path is matched, without front controller and query string
+        $this->assertSame(['/_components', '/user/list'], $matched);
+    }
+
+    public function testExecuteWithLiveComponentRouteWithAnEmptyQueryString(): void
+    {
+        $uri = $this->createStub(UriInterface::class);
+        $uri->method('getPath')->willReturn('/_components');
+
+        $props = [
+            'originalPath' => '/user/list?',
+        ];
+        $props['@checksum'] = $this->calculateChecksumV3($props, 'UserProfile');
+
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->method('getUri')->willReturn($uri);
+        $request->method('getParsedBody')->willReturn([
+            'data' => json_encode(['props' => $props]),
+        ]);
+        $request->method('getAttribute')->willReturn(null);
+        $request->method('withAttribute')->willReturnSelf();
+        $request->expects($this->never())->method('withQueryParams');
+
+        $this->matchLiveAndTargetedRoutes('/user/list', 'user_list');
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects($this->once())->method('updateWorkPlan')->willReturnSelf();
+
+        $this->buildRouter()->execute($this->createStub(ClientInterface::class), $request, $manager);
     }
 }

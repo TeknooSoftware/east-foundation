@@ -31,8 +31,12 @@ use stdClass;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\Reference;
 use Teknoo\East\FoundationBundle\DependencyInjection\EastFoundationCompilerPass;
 use Symfony\Component\DependencyInjection\Definition;
+use Teknoo\East\FoundationBundle\Router\AccessCheckerInterface;
+use Teknoo\East\FoundationBundle\Router\AccessControlChecker;
 
 /**
  * Class EastFoundationCompilerPassTest.
@@ -139,5 +143,58 @@ class EastFrameworkCompilerPassTest extends TestCase
     {
         $this->expectException(TypeError::class);
         $this->buildCompilerPass()->process(new stdClass());
+    }
+
+    private function buildContainerWithAccessChecker(): ContainerBuilder
+    {
+        $container = new ContainerBuilder();
+        $container->register(AccessControlChecker::class, AccessControlChecker::class)
+            ->setArguments([new Reference('security.access_listener'), new Reference('http_kernel')]);
+        $container->setAlias(AccessCheckerInterface::class, AccessControlChecker::class);
+        $container->register('router', stdClass::class)
+            ->setPublic(true)
+            ->setArguments([
+                new Reference(AccessCheckerInterface::class, ContainerInterface::IGNORE_ON_INVALID_REFERENCE),
+            ]);
+
+        return $container;
+    }
+
+    public function testProcessRemovesTheAccessCheckerWithoutFirewall(): void
+    {
+        $container = $this->buildContainerWithAccessChecker();
+
+        $this->buildCompilerPass()->process($container);
+
+        $this->assertFalse($container->hasDefinition(AccessControlChecker::class));
+        $this->assertFalse($container->hasAlias(AccessCheckerInterface::class));
+
+        // The router is built without access checker
+        $container->compile();
+        $this->assertSame([null], $container->getDefinition('router')->getArguments());
+    }
+
+    public function testProcessKeepsTheAccessCheckerWithFirewall(): void
+    {
+        $container = $this->buildContainerWithAccessChecker();
+        $container->register('security.access_listener', stdClass::class);
+
+        $this->buildCompilerPass()->process($container);
+
+        $this->assertTrue($container->hasDefinition(AccessControlChecker::class));
+        $this->assertTrue($container->hasAlias(AccessCheckerInterface::class));
+    }
+
+    public function testProcessKeepsAnotherAccessCheckerWithoutFirewall(): void
+    {
+        $container = $this->buildContainerWithAccessChecker();
+        $container->register('app.access_checker', stdClass::class);
+        $container->setAlias(AccessCheckerInterface::class, 'app.access_checker');
+
+        $this->buildCompilerPass()->process($container);
+
+        $this->assertFalse($container->hasDefinition(AccessControlChecker::class));
+        $this->assertTrue($container->hasAlias(AccessCheckerInterface::class));
+        $this->assertSame('app.access_checker', (string) $container->getAlias(AccessCheckerInterface::class));
     }
 }
