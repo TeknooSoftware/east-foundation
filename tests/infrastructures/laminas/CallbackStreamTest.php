@@ -28,6 +28,7 @@ namespace Teknoo\Tests\East\Diactoros;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Teknoo\East\Diactoros\CallbackStream;
+use Teknoo\East\Foundation\Http\Message\CallbackStreamInterface;
 
 /**
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
@@ -53,5 +54,30 @@ class CallbackStreamTest extends TestCase
             CallbackStream::class,
             new CallbackStream(function (): void {})->unbind()
         );
+    }
+
+    public function testGetMetadataOfACallbackStream(): void
+    {
+        $stream = new CallbackStream(static fn (): string => 'foo');
+
+        $this->assertSame(
+            ['eof' => false, 'stream_type' => 'callback', 'seekable' => false],
+            $stream->getMetadata()
+        );
+        $this->assertSame('callback', $stream->getMetadata('stream_type'));
+        $this->assertFalse($stream->getMetadata('eof'));
+        $this->assertNull($stream->getMetadata('foo'));
+    }
+
+    public function testGetMetadataWithAStreamType(): void
+    {
+        $stream = new CallbackStream(static fn (): string => 'foo', CallbackStreamInterface::SSE_STREAM_TYPE);
+
+        $this->assertSame(
+            ['eof' => false, 'stream_type' => 'sse', 'seekable' => false],
+            $stream->getMetadata()
+        );
+        $this->assertSame('sse', $stream->getMetadata('stream_type'));
+        $this->assertFalse($stream->getMetadata('seekable'));
     }
 }

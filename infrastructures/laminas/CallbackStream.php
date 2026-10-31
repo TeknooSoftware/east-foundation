@@ -28,8 +28,14 @@ namespace Teknoo\East\Diactoros;
 use Laminas\Diactoros\CallbackStream as DiactorosCallbackStream;
 use Teknoo\East\Foundation\Http\Message\CallbackStreamInterface;
 
+use function is_array;
+
 /**
  * Adapter of Laminas\Diactoros\CallbackStream for CallbackStreamInterface
+ *
+ * The metadata `stream_type` is `callback`, or the type given to the constructor
+ * (`CallbackStreamInterface::CHUNK_STREAM_TYPE` or `CallbackStreamInterface::SSE_STREAM_TYPE` for a stream of a
+ * generator).
  *
  * @copyright   Copyright (c) EIRL Richard Déloge (https://deloge.io - richard@deloge.io)
  * @copyright   Copyright (c) SASU Teknoo Software (https://teknoo.software - contact@teknoo.software)
@@ -38,6 +44,27 @@ use Teknoo\East\Foundation\Http\Message\CallbackStreamInterface;
  */
 class CallbackStream extends DiactorosCallbackStream implements CallbackStreamInterface
 {
+    public function __construct(
+        callable $callback,
+        private readonly string $streamType = 'callback',
+    ) {
+        parent::__construct($callback);
+    }
+
+    public function getMetadata(?string $key = null): mixed
+    {
+        if ('stream_type' === $key) {
+            return $this->streamType;
+        }
+
+        $metadata = parent::getMetadata($key);
+        if (is_array($metadata)) {
+            $metadata['stream_type'] = $this->streamType;
+        }
+
+        return $metadata;
+    }
+
     public function bind(callable $callback): CallbackStreamInterface
     {
         $this->attach($callback);

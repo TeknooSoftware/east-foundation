@@ -48,3 +48,13 @@ The project relies on:
 - `Teknoo/Immutable`
 - `Teknoo/States`
 - `Teknoo/Recipe`
+
+## 6. Streamed responses
+- `ChunkGeneratorInterface` (an `IteratorAggregate` of string chunks) and `SseGeneratorInterface` (key: name of the
+  event, value: data, key `COMMENT`: a comment) are in `src/Http/Message/`.
+- `CallbackStreamFactoryInterface::createStreamFromGenerator()` gives a `CallbackStream` (`infrastructures/laminas/`).
+  Its callback writes and flushes each chunk, and stops when the HTTP client closes the connection. Its metadata
+  `stream_type` is `chunk` or `sse`.
+- `Teknoo\East\FoundationBundle\Http\HttpFoundationFactory` (the service of the Symfony `HttpFoundationFactory`) gives
+  a Symfony `StreamedResponse` for these 2 stream types, and the current responses for other bodies.
+- The step sets the status and the headers before `acceptResponse()`. The generator runs after the recipe.

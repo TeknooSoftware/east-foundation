@@ -1,5 +1,13 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [9.5.0] - 2026-10-31
+### Stable Release
+
+#### Evolutions
+- Streamed responses : `CallbackStreamFactoryInterface::createStreamFromGenerator()` (new method, to add to other
+  implementations) sends the chunks of a `ChunkGeneratorInterface`, or the events of a `SseGeneratorInterface`, one by
+  one. The Symfony bundle sends them with a `StreamedResponse`.
+
 ## [9.4.0] - 2026-10-21
 ### Stable Release
 
