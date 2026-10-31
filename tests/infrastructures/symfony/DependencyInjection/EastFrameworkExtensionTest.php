@@ -30,8 +30,10 @@ use TypeError;
 use stdClass;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\Stub;
+use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory as SymfonyHttpFoundationFactory;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Teknoo\East\FoundationBundle\DependencyInjection\EastFoundationExtension;
+use Teknoo\East\FoundationBundle\Http\HttpFoundationFactory;
 
 /**
  * Class EastFoundationExtensionTest.
@@ -84,5 +86,16 @@ class EastFrameworkExtensionTest extends TestCase
     {
         $this->expectException(TypeError::class);
         $this->buildExtension()->load(new stdClass(), $this->getContainerBuilderStub());
+    }
+
+    public function testLoadGivesTheHttpFoundationFactoryOfTheStreams(): void
+    {
+        $container = new ContainerBuilder();
+        $this->buildExtension()->load([], $container);
+
+        $this->assertSame(
+            HttpFoundationFactory::class,
+            $container->getDefinition(SymfonyHttpFoundationFactory::class)->getClass()
+        );
     }
 }

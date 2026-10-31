@@ -37,4 +37,9 @@ use Psr\Http\Message\StreamFactoryInterface;
  */
 interface CallbackStreamFactoryInterface extends StreamFactoryInterface
 {
+    /*
+     * Create a stream that sends the chunks of the generator one by one, at the sending of the response. With a
+     * `SseGeneratorInterface`, the chunks are server-sent events.
+     */
+    public function createStreamFromGenerator(ChunkGeneratorInterface $generator): CallbackStreamInterface;
 }

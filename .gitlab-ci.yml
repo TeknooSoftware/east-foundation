@@ -33,3 +33,14 @@ test:8.5-upper:
   script:
     - make test
     - make qa
+
+test:frankenphp:
+  image: dunglas/frankenphp:1.13-php8.5
+  before_script:
+    - install-php-extensions @composer pcntl zip
+    #As php.ini-production : the stream must flush the output buffer of PHP
+    - echo 'output_buffering = 4096' > "$PHP_INI_DIR/conf.d/output-buffering.ini"
+    - make
+  script:
+    - php tests/frankenphp/check.php worker
+    - php tests/frankenphp/check.php classic
