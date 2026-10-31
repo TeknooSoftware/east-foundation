@@ -45,15 +45,10 @@ class HttpFoundationFactory extends SymfonyHttpFoundationFactory
 {
     public function createResponse(ResponseInterface $psrResponse, bool $streamed = false): Response
     {
-        $streamType = $psrResponse->getBody()->getMetadata('stream_type');
-
-        if (CallbackStreamInterface::CHUNK_STREAM_TYPE === $streamType) {
-            $streamed = true;
-        }
-
-        if (CallbackStreamInterface::SSE_STREAM_TYPE === $streamType) {
-            $streamed = true;
-        }
+        $streamed = match ($psrResponse->getBody()->getMetadata('stream_type')) {
+            CallbackStreamInterface::CHUNK_STREAM_TYPE, CallbackStreamInterface::SSE_STREAM_TYPE => true,
+            default => $streamed,
+        };
 
         return parent::createResponse($psrResponse, $streamed);
     }
