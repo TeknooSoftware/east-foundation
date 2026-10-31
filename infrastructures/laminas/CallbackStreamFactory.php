@@ -107,35 +107,54 @@ class CallbackStreamFactory implements StreamFactoryInterface, CallbackStreamFac
     {
         $connectionAborted = $this->connectionAbortedCallable;
 
-        $streamType = CallbackStreamInterface::CHUNK_STREAM_TYPE;
         if ($generator instanceof SseGeneratorInterface) {
-            $streamType = CallbackStreamInterface::SSE_STREAM_TYPE;
+            return new CallbackStream(
+                static function () use ($generator, $connectionAborted): string {
+                    //In the classic mode of PHP, the script must not stop at the close of the connection
+                    $previousIgnoreUserAbort = ignore_user_abort(true);
+
+                    try {
+                        foreach ($generator as $event => $data) {
+                            $field = 'data';
+                            $chunk = '';
+                            if (SseGeneratorInterface::COMMENT === $event) {
+                                $field = '';
+                            } elseif (is_string($event)) {
+                                $chunk = 'event: ' . $event . "\n";
+                            }
+
+                            foreach (explode("\n", str_replace(["\r\n", "\r"], "\n", $data)) as $line) {
+                                $chunk .= $field . ': ' . $line . "\n";
+                            }
+
+                            echo $chunk . "\n";
+                            if (0 < ob_get_level()) {
+                                ob_flush();
+                            }
+
+                            flush();
+
+                            if (1 === $connectionAborted()) {
+                                break;
+                            }
+                        }
+                    } finally {
+                        ignore_user_abort((bool) $previousIgnoreUserAbort);
+                    }
+
+                    return '';
+                },
+                CallbackStreamInterface::SSE_STREAM_TYPE,
+            );
         }
 
         return new CallbackStream(
-            static function () use ($generator, $streamType, $connectionAborted): string {
+            static function () use ($generator, $connectionAborted): string {
                 //In the classic mode of PHP, the script must not stop at the close of the connection
                 $previousIgnoreUserAbort = ignore_user_abort(true);
 
                 try {
-                    foreach ($generator as $key => $chunk) {
-                        if (CallbackStreamInterface::SSE_STREAM_TYPE === $streamType) {
-                            $field = 'data';
-                            $event = '';
-                            if (SseGeneratorInterface::COMMENT === $key) {
-                                $field = '';
-                            } elseif (is_string($key)) {
-                                $event = 'event: ' . $key . "\n";
-                            }
-
-                            $lines = '';
-                            foreach (explode("\n", str_replace(["\r\n", "\r"], "\n", $chunk)) as $line) {
-                                $lines .= $field . ': ' . $line . "\n";
-                            }
-
-                            $chunk = $event . $lines . "\n";
-                        }
-
+                    foreach ($generator as $chunk) {
                         echo $chunk;
                         if (0 < ob_get_level()) {
                             ob_flush();
@@ -153,7 +172,7 @@ class CallbackStreamFactory implements StreamFactoryInterface, CallbackStreamFac
 
                 return '';
             },
-            $streamType,
+            CallbackStreamInterface::CHUNK_STREAM_TYPE,
         );
     }
 }

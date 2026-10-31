@@ -300,4 +300,110 @@ class CallbackStreamFactoryTest extends TestCase
         $this->assertSame('Generator error', $error->getMessage());
         $this->assertSame(0, ignore_user_abort((bool) $previous));
     }
+
+    public function testCreateStreamFromSseGeneratorStopsAfterAClosedConnection(): void
+    {
+        $generator = new class () implements SseGeneratorInterface {
+            /**
+             * @var list<string>
+             */
+            public array $produced = [];
+
+            public bool $stopped = false;
+
+            public function getIterator(): Generator
+            {
+                try {
+                    foreach (['foo', 'bar', 'baz'] as $data) {
+                        $this->produced[] = $data;
+
+                        yield $data;
+                    }
+                } finally {
+                    $this->stopped = true;
+                }
+            }
+        };
+
+        $factory = $this->buildFactory();
+        $calls = 0;
+        $property = new ReflectionProperty(CallbackStreamFactory::class, 'connectionAbortedCallable');
+        $property->setValue(
+            $factory,
+            static function () use (&$calls): int {
+                ++$calls;
+
+                if (2 <= $calls) {
+                    return 1;
+                }
+
+                return 0;
+            }
+        );
+
+        $stream = $factory->createStreamFromGenerator($generator);
+
+        $this->assertSame(
+            ["data: foo\n\n", "data: bar\n\n"],
+            $this->flushedChunks($stream)
+        );
+        $this->assertSame(['foo', 'bar'], $generator->produced);
+        $this->assertTrue($generator->stopped);
+        $this->assertSame(2, $calls);
+    }
+
+    public function testCreateStreamFromSseGeneratorIgnoresUserAbortDuringTheLoop(): void
+    {
+        $generator = new class () implements SseGeneratorInterface {
+            /**
+             * @var list<int>
+             */
+            public array $ignoreUserAbort = [];
+
+            public function getIterator(): Generator
+            {
+                $this->ignoreUserAbort[] = ignore_user_abort();
+
+                yield 'foo';
+            }
+        };
+
+        $previous = ignore_user_abort(false);
+
+        $stream = $this->buildFactory()->createStreamFromGenerator($generator);
+        $this->assertSame(["data: foo\n\n"], $this->flushedChunks($stream));
+
+        $this->assertSame([1], $generator->ignoreUserAbort);
+        $this->assertSame(0, ignore_user_abort((bool) $previous));
+    }
+
+    public function testCreateStreamFromSseGeneratorRestoresUserAbortAfterAnError(): void
+    {
+        $generator = new class () implements SseGeneratorInterface {
+            public function getIterator(): Generator
+            {
+                yield 'foo';
+
+                throw new RuntimeException('Generator error');
+            }
+        };
+
+        $previous = ignore_user_abort(false);
+
+        $stream = $this->buildFactory()->createStreamFromGenerator($generator);
+
+        $error = null;
+        ob_start(static fn (string $buffer): string => '');
+        try {
+            $stream->getContents();
+        } catch (RuntimeException $exception) {
+            $error = $exception;
+        } finally {
+            ob_end_clean();
+        }
+
+        $this->assertInstanceOf(RuntimeException::class, $error);
+        $this->assertSame('Generator error', $error->getMessage());
+        $this->assertSame(0, ignore_user_abort((bool) $previous));
+    }
 }
