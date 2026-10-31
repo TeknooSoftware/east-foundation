@@ -26,16 +26,31 @@ declare(strict_types=1);
 namespace Teknoo\Tests\East\Foundation\Behat;
 
 use Behat\Behat\Context\Context;
+use Behat\Gherkin\Node\PyStringNode;
 use Behat\Hook\BeforeScenario;
 use Behat\Step\Given;
 use Behat\Step\Then;
 use Behat\Step\When;
 use DI\Container;
+use Generator;
 use JsonSerializable;
 use Laminas\Diactoros\Request;
+use Laminas\Diactoros\Response;
 use Laminas\Diactoros\Response\TextResponse;
+use Laminas\Diactoros\ResponseFactory;
 use Laminas\Diactoros\ServerRequest;
+use Laminas\Diactoros\StreamFactory;
 use Laminas\Diactoros\Uri;
+use ReflectionProperty;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Teknoo\East\Diactoros\CallbackStreamFactory;
+use Teknoo\East\Foundation\Http\Message\ChunkGeneratorInterface;
+use Teknoo\East\Foundation\Http\Message\SseGeneratorInterface;
+use Teknoo\East\FoundationBundle\Http\Client as SymfonyClient;
+use Teknoo\East\FoundationBundle\Http\HttpFoundationFactory;
 use PHPUnit\Framework\Assert;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -97,7 +112,10 @@ use function hash_hmac;
 use function is_array;
 use function json_decode;
 use function json_encode;
+use function implode;
 use function ksort;
+use function ob_end_clean;
+use function ob_start;
 use function parse_str;
 use function set_time_limit;
 use function sleep;
@@ -140,6 +158,17 @@ class FeatureContext implements Context
     private int $timeBeforeSleeping = 0;
 
     private ?Executor $executor = null;
+
+    private ?CallbackStreamFactory $callbackStreamFactory = null;
+
+    private ?SymfonyResponse $symfonyResponse = null;
+
+    /**
+     * @var list<string>
+     */
+    public array $producedChunks = [];
+
+    public bool $generatorStopped = false;
 
     #[BeforeScenario]
     public function clean(): void
@@ -921,6 +950,192 @@ class FeatureContext implements Context
     {
         Assert::assertNull($this->response);
         Assert::assertInstanceOf(AccessDeniedException::class, $this->error);
+    }
+
+    private function registerStreamRoute(string $url, ChunkGeneratorInterface $generator, string $contentType): void
+    {
+        $this->callbackStreamFactory = new CallbackStreamFactory();
+        $factory = $this->callbackStreamFactory;
+
+        $recipe = new Recipe();
+        $recipe = $recipe->cook(
+            static function (ClientInterface $client) use ($factory, $generator, $contentType): void {
+                $response = new Response();
+                $response = $response->withHeader('content-type', $contentType);
+
+                $client->acceptResponse(
+                    $response->withBody($factory->createStreamFromGenerator($generator))
+                );
+            },
+            'body',
+        );
+
+        $this->router->registerRoute($url, new RecipeEndPoint($recipe));
+    }
+
+    #[Given('The router can process the request :url to a generator of the chunks :chunks')]
+    public function theRouterCanProcessTheRequestToAGeneratorOfTheChunks(string $url, string $chunks): void
+    {
+        $generator = new class (explode(',', $chunks), $this) implements ChunkGeneratorInterface {
+            /**
+             * @param list<string> $chunks
+             */
+            public function __construct(
+                private readonly array $chunks,
+                private readonly FeatureContext $context,
+            ) {
+            }
+
+            public function getIterator(): Generator
+            {
+                try {
+                    foreach ($this->chunks as $chunk) {
+                        $this->context->producedChunks[] = $chunk;
+
+                        yield $chunk;
+                    }
+                } finally {
+                    $this->context->generatorStopped = true;
+                }
+            }
+        };
+
+        $this->registerStreamRoute($url, $generator, 'text/plain');
+    }
+
+    #[Given('The router can process the request :url to a generator of server-sent events')]
+    public function theRouterCanProcessTheRequestToAGeneratorOfServerSentEvents(string $url): void
+    {
+        $generator = new class () implements SseGeneratorInterface {
+            public function getIterator(): Generator
+            {
+                yield 'message_start' => '{"type":"message_start"}';
+                yield SseGeneratorInterface::COMMENT => 'keep-alive';
+                yield "foo\nbar";
+            }
+        };
+
+        $this->registerStreamRoute($url, $generator, 'text/event-stream');
+    }
+
+    #[Given('The HTTP client closes the connection after the chunk :number')]
+    public function theHttpClientClosesTheConnectionAfterTheChunk(int $number): void
+    {
+        $counter = 0;
+        $property = new ReflectionProperty(CallbackStreamFactory::class, 'connectionAbortedCallable');
+        $property->setValue(
+            $this->callbackStreamFactory,
+            static function () use (&$counter, $number): int {
+                ++$counter;
+
+                if ($number <= $counter) {
+                    return 1;
+                }
+
+                return 0;
+            },
+        );
+    }
+
+    private function sendWithTheSymfonyBridge(): void
+    {
+        if (null !== $this->symfonyResponse) {
+            return;
+        }
+
+        $kernel = new class () implements HttpKernelInterface {
+            public function handle(
+                SymfonyRequest $request,
+                int $type = self::MAIN_REQUEST,
+                bool $catch = true,
+            ): SymfonyResponse {
+                return new SymfonyResponse();
+            }
+        };
+
+        $requestEvent = new RequestEvent(
+            $kernel,
+            SymfonyRequest::create('https://foo.com/stream'),
+            HttpKernelInterface::MAIN_REQUEST,
+        );
+
+        $client = new SymfonyClient(
+            new HttpFoundationFactory(),
+            new ResponseFactory(),
+            new StreamFactory(),
+            $requestEvent,
+        );
+
+        $client->sendResponse($this->response);
+
+        $this->symfonyResponse = $requestEvent->getResponse();
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function flushedChunks(): array
+    {
+        $this->sendWithTheSymfonyBridge();
+
+        $flushed = [];
+        ob_start(
+            static function (string $buffer) use (&$flushed): string {
+                if ('' !== $buffer) {
+                    $flushed[] = $buffer;
+                }
+
+                return '';
+            }
+        );
+
+        $this->symfonyResponse->sendContent();
+        ob_end_clean();
+
+        return $flushed;
+    }
+
+    #[Then('The Symfony bridge must send a streamed response with the status :status and the content type :type')]
+    public function theSymfonyBridgeMustSendAStreamedResponse(int $status, string $type): void
+    {
+        $this->sendWithTheSymfonyBridge();
+
+        Assert::assertInstanceOf(StreamedResponse::class, $this->symfonyResponse);
+        Assert::assertSame($status, $this->symfonyResponse->getStatusCode());
+        Assert::assertSame($type, $this->symfonyResponse->headers->get('content-type'));
+    }
+
+    #[Then('The Symfony bridge must flush the chunks :chunks one by one')]
+    public function theSymfonyBridgeMustFlushTheChunksOneByOne(string $chunks): void
+    {
+        Assert::assertSame(explode(',', $chunks), $this->flushedChunks());
+    }
+
+    #[Then('The Symfony bridge must flush the events:')]
+    public function theSymfonyBridgeMustFlushTheEvents(PyStringNode $events): void
+    {
+        $expected = [];
+        foreach (explode("\n\n", $events->getRaw()) as $event) {
+            $expected[] = $event . "\n\n";
+        }
+
+        Assert::assertSame($expected, $this->flushedChunks());
+    }
+
+    #[Then('The generator must be stopped after the chunks :chunks')]
+    public function theGeneratorMustBeStoppedAfterTheChunks(string $chunks): void
+    {
+        Assert::assertSame(explode(',', $chunks), $this->producedChunks);
+        Assert::assertTrue($this->generatorStopped);
+    }
+
+    #[Then('The Symfony bridge must send a response with the body :body')]
+    public function theSymfonyBridgeMustSendAResponseWithTheBody(string $body): void
+    {
+        $this->sendWithTheSymfonyBridge();
+
+        Assert::assertNotInstanceOf(StreamedResponse::class, $this->symfonyResponse);
+        Assert::assertSame($body, $this->symfonyResponse->getContent());
     }
 
     /**

@@ -88,7 +88,7 @@ services:
 
     #HTTP
     Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory:
-        class: 'Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory'
+        class: 'Teknoo\East\FoundationBundle\Http\HttpFoundationFactory'
 
     Teknoo\East\FoundationBundle\Http\Client:
         class: 'Teknoo\East\FoundationBundle\Http\Client'

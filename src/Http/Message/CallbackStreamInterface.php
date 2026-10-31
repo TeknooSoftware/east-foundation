@@ -38,6 +38,13 @@ use Psr\Http\Message\StreamInterface;
 interface CallbackStreamInterface extends StreamInterface
 {
     /*
+     * Values of the metadata `stream_type` of a stream that sends the chunks of a generator.
+     */
+    final public const CHUNK_STREAM_TYPE = 'chunk';
+
+    final public const SSE_STREAM_TYPE = 'sse';
+
+    /*
      * Attach a new callback to the instance.
      */
     public function bind(callable $callback): CallbackStreamInterface;

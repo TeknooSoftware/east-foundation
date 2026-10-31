@@ -181,6 +181,48 @@ stay a string : a value starting with `@` (like a Twig template `@Ns/form.html.t
 `@@`, and `RecipeEndPoint` removes this escape, the recipe receives the original string. A callable controller, not
 executed by `RecipeEndPoint`, or a `RecipeEndPoint` without container, receives the escaped value.
 
+Streamed responses
+------------------
+A response can send its body chunk by chunk, without a buffer of the full body, for example a stream of server-sent
+events (SSE). The step gives a generator of chunks to the stream factory, and puts the stream in the body of its PSR-7
+response :
+
+* `Teknoo\East\Foundation\Http\Message\ChunkGeneratorInterface` : an `IteratorAggregate` of string chunks.
+* `Teknoo\East\Foundation\Http\Message\SseGeneratorInterface` : a chunk generator for SSE. The key is the name of the
+  event, and the value is its data. A value without key has only the data. The key `SseGeneratorInterface::COMMENT`
+  gives a comment, for example a keep-alive.
+* `CallbackStreamFactoryInterface::createStreamFromGenerator()` : it creates a `CallbackStreamInterface`. Its callback
+  reads the generator with a `foreach`, writes each chunk with `echo`, then calls `ob_flush()` (when PHP has an output
+  buffer) and `flush()`. After each chunk, when `connection_aborted()` returns `1`, the callback stops : PHP destroys
+  the generator and runs its `finally` blocks. During the loop, `ignore_user_abort()` is on, then the callback puts back
+  its previous value : so the generator stops also in the classic mode of PHP. The metadata `stream_type` of the stream
+  is `chunk`, or `sse` for a SSE generator.
+
+```php
+$response = $responseFactory->createResponse(200)
+    ->withHeader('content-type', 'text/event-stream')
+    ->withHeader('cache-control', 'no-cache')
+    ->withBody($callbackStreamFactory->createStreamFromGenerator($generator));
+
+$client->acceptResponse($response);
+```
+
+The step sets the status and the headers before `acceptResponse()`. They are sent before the first chunk, and they
+cannot change after. The library adds no header. The generator runs when the response is sent, after the recipe : it
+must get all its data before. The callback does not catch an exception of the generator : the generator writes its
+error chunk itself.
+
+A SSE chunk is written as `event: <key>` (for a string key only), then one `data: <line>` for each line of the value,
+then an empty line. A comment is written as `: <value>`, then an empty line.
+
+### With Symfony
+
+The service `Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory` of the bundle is
+`Teknoo\East\FoundationBundle\Http\HttpFoundationFactory`. It converts a response with a body of the stream type
+`chunk` or `sse` into a Symfony `StreamedResponse` : Symfony sends the status and the headers, then the callback of the
+body sends the chunks. It converts the other responses, for example a rendered template in a `CallbackStream`, into a
+buffered `Response`, as before.
+
 Credits
 -------
 EIRL Richard Déloge - <https://deloge.io> - Lead developer.
