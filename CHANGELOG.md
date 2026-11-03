@@ -1,5 +1,13 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [9.5.1] - 2026-11-03
+### Stable Release
+
+#### Security
+- A client could define the ingredient `formOptions` (like `csrf_protection`), or an ingredient named by a class name
+  (a key with a `\`), in the query or the body of a request. The `Processor` now ignores these parameters, only
+  attributes of the request (like route defaults) can define them. A parsed body that is an object is also ignored.
+
 ## [9.5.0] - 2026-10-31
 ### Stable Release
 

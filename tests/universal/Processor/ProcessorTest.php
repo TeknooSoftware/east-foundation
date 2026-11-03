@@ -209,6 +209,300 @@ class ProcessorTest extends TestCase
         );
     }
 
+    public function testExecuteRequestWithAttributesParsedBodyAndQueryParams(): void
+    {
+        $clientMock = $this->createMock(ClientInterface::class);
+        $clientMock->expects($this->once())->method('mustSendAResponse');
+        $clientMock->expects($this->once())->method('sendAResponseIsOptional');
+
+        $requestMock = $this->createStub(ServerRequestInterface::class);
+        $requestMock->method('getAttributes')->willReturn([
+            'foo' => 'attribute',
+        ]);
+        $requestMock->method('getParsedBody')->willReturn([
+            'foo' => 'body',
+            'bar' => 'body',
+            0 => 'body',
+        ]);
+        $requestMock->method('getQueryParams')->willReturn([
+            'foo' => 'query',
+            'bar' => 'query',
+            'baz' => 'query',
+            1 => 'query',
+        ]);
+
+        $routerResult = $this->createStub(ResultInterface::class);
+        $routerResult->method('getController')->willReturn($controller = new class {
+            public function __invoke(): void
+            {
+            }
+        });
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects($this->once())
+            ->method('updateWorkPlan')
+            ->with([
+                'foo' => 'attribute',
+                'bar' => 'body',
+                'baz' => 'query',
+                ProcessorInterface::WORK_PLAN_CONTROLLER_KEY => $controller,
+                'request' => $requestMock,
+                ClientInterface::class => $clientMock,
+                MessageInterface::class => $requestMock,
+                ManagerInterface::class => $manager,
+            ]);
+
+        $this->assertInstanceOf(
+            ProcessorInterface::class,
+            $this->buildProcessor()->execute(
+                $clientMock,
+                $requestMock,
+                $manager,
+                $routerResult
+            )
+        );
+    }
+
+    public function testExecuteRequestIgnoresFormOptionsFromParsedBodyAndQueryParams(): void
+    {
+        $clientMock = $this->createMock(ClientInterface::class);
+        $clientMock->expects($this->once())->method('mustSendAResponse');
+        $clientMock->expects($this->once())->method('sendAResponseIsOptional');
+
+        $requestMock = $this->createStub(ServerRequestInterface::class);
+        $requestMock->method('getAttributes')->willReturn([]);
+        $requestMock->method('getParsedBody')->willReturn([
+            'foo' => 'body',
+            'formOptions' => ['csrf_protection' => false],
+        ]);
+        $requestMock->method('getQueryParams')->willReturn([
+            'bar' => 'query',
+            'formOptions' => ['validation_groups' => false],
+        ]);
+
+        $routerResult = $this->createStub(ResultInterface::class);
+        $routerResult->method('getController')->willReturn($controller = new class {
+            public function __invoke(): void
+            {
+            }
+        });
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects($this->once())
+            ->method('updateWorkPlan')
+            ->with([
+                'foo' => 'body',
+                'bar' => 'query',
+                ProcessorInterface::WORK_PLAN_CONTROLLER_KEY => $controller,
+                'request' => $requestMock,
+                ClientInterface::class => $clientMock,
+                MessageInterface::class => $requestMock,
+                ManagerInterface::class => $manager,
+            ]);
+
+        $this->assertInstanceOf(
+            ProcessorInterface::class,
+            $this->buildProcessor()->execute(
+                $clientMock,
+                $requestMock,
+                $manager,
+                $routerResult
+            )
+        );
+    }
+
+    public function testExecuteRequestIgnoresParametersNamedWithANamespaceFromParsedBodyAndQueryParams(): void
+    {
+        $clientMock = $this->createMock(ClientInterface::class);
+        $clientMock->expects($this->once())->method('mustSendAResponse');
+        $clientMock->expects($this->once())->method('sendAResponseIsOptional');
+
+        $requestMock = $this->createStub(ServerRequestInterface::class);
+        $requestMock->method('getAttributes')->willReturn([]);
+        $requestMock->method('getParsedBody')->willReturn([
+            'foo' => 'body',
+            'Foo\\Bar' => 'body',
+            '\\Foo' => 'body',
+        ]);
+        $requestMock->method('getQueryParams')->willReturn([
+            'bar' => 'query',
+            'Bar\\Foo' => 'query',
+            'Psr\\Http\\Message\\UriInterface' => 'query',
+        ]);
+
+        $routerResult = $this->createStub(ResultInterface::class);
+        $routerResult->method('getController')->willReturn($controller = new class {
+            public function __invoke(): void
+            {
+            }
+        });
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects($this->once())
+            ->method('updateWorkPlan')
+            ->with([
+                'foo' => 'body',
+                'bar' => 'query',
+                ProcessorInterface::WORK_PLAN_CONTROLLER_KEY => $controller,
+                'request' => $requestMock,
+                ClientInterface::class => $clientMock,
+                MessageInterface::class => $requestMock,
+                ManagerInterface::class => $manager,
+            ]);
+
+        $this->assertInstanceOf(
+            ProcessorInterface::class,
+            $this->buildProcessor()->execute(
+                $clientMock,
+                $requestMock,
+                $manager,
+                $routerResult
+            )
+        );
+    }
+
+    public function testExecuteRequestKeepsFormOptionsAndParametersNamedWithANamespaceFromAttributes(): void
+    {
+        $clientMock = $this->createMock(ClientInterface::class);
+        $clientMock->expects($this->once())->method('mustSendAResponse');
+        $clientMock->expects($this->once())->method('sendAResponseIsOptional');
+
+        $requestMock = $this->createStub(ServerRequestInterface::class);
+        $requestMock->method('getAttributes')->willReturn([
+            'formOptions' => ['csrf_protection' => true],
+            'Foo\\Bar' => 'attribute',
+        ]);
+        $requestMock->method('getParsedBody')->willReturn([
+            'formOptions' => ['csrf_protection' => false],
+            'Foo\\Bar' => 'body',
+        ]);
+        $requestMock->method('getQueryParams')->willReturn([
+            'formOptions' => ['csrf_protection' => false],
+            'Foo\\Bar' => 'query',
+        ]);
+
+        $routerResult = $this->createStub(ResultInterface::class);
+        $routerResult->method('getController')->willReturn($controller = new class {
+            public function __invoke(): void
+            {
+            }
+        });
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects($this->once())
+            ->method('updateWorkPlan')
+            ->with([
+                'formOptions' => ['csrf_protection' => true],
+                'Foo\\Bar' => 'attribute',
+                ProcessorInterface::WORK_PLAN_CONTROLLER_KEY => $controller,
+                'request' => $requestMock,
+                ClientInterface::class => $clientMock,
+                MessageInterface::class => $requestMock,
+                ManagerInterface::class => $manager,
+            ]);
+
+        $this->assertInstanceOf(
+            ProcessorInterface::class,
+            $this->buildProcessor()->execute(
+                $clientMock,
+                $requestMock,
+                $manager,
+                $routerResult
+            )
+        );
+    }
+
+    public function testExecuteRequestIgnoresAnObjectAsParsedBody(): void
+    {
+        $clientMock = $this->createMock(ClientInterface::class);
+        $clientMock->expects($this->once())->method('mustSendAResponse');
+        $clientMock->expects($this->once())->method('sendAResponseIsOptional');
+
+        $requestMock = $this->createStub(ServerRequestInterface::class);
+        $requestMock->method('getAttributes')->willReturn([]);
+        $requestMock->method('getParsedBody')->willReturn(
+            (object) [
+                'foo' => 'body',
+                'formOptions' => ['csrf_protection' => false],
+            ]
+        );
+        $requestMock->method('getQueryParams')->willReturn([
+            'bar' => 'query',
+        ]);
+
+        $routerResult = $this->createStub(ResultInterface::class);
+        $routerResult->method('getController')->willReturn($controller = new class {
+            public function __invoke(): void
+            {
+            }
+        });
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects($this->once())
+            ->method('updateWorkPlan')
+            ->with([
+                'bar' => 'query',
+                ProcessorInterface::WORK_PLAN_CONTROLLER_KEY => $controller,
+                'request' => $requestMock,
+                ClientInterface::class => $clientMock,
+                MessageInterface::class => $requestMock,
+                ManagerInterface::class => $manager,
+            ]);
+
+        $this->assertInstanceOf(
+            ProcessorInterface::class,
+            $this->buildProcessor()->execute(
+                $clientMock,
+                $requestMock,
+                $manager,
+                $routerResult
+            )
+        );
+    }
+
+    public function testExecuteRequestWithoutParsedBody(): void
+    {
+        $clientMock = $this->createMock(ClientInterface::class);
+        $clientMock->expects($this->once())->method('mustSendAResponse');
+        $clientMock->expects($this->once())->method('sendAResponseIsOptional');
+
+        $requestMock = $this->createStub(ServerRequestInterface::class);
+        $requestMock->method('getAttributes')->willReturn([]);
+        $requestMock->method('getParsedBody')->willReturn(null);
+        $requestMock->method('getQueryParams')->willReturn([
+            'bar' => 'query',
+        ]);
+
+        $routerResult = $this->createStub(ResultInterface::class);
+        $routerResult->method('getController')->willReturn($controller = new class {
+            public function __invoke(): void
+            {
+            }
+        });
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects($this->once())
+            ->method('updateWorkPlan')
+            ->with([
+                'bar' => 'query',
+                ProcessorInterface::WORK_PLAN_CONTROLLER_KEY => $controller,
+                'request' => $requestMock,
+                ClientInterface::class => $clientMock,
+                MessageInterface::class => $requestMock,
+                ManagerInterface::class => $manager,
+            ]);
+
+        $this->assertInstanceOf(
+            ProcessorInterface::class,
+            $this->buildProcessor()->execute(
+                $clientMock,
+                $requestMock,
+                $manager,
+                $routerResult
+            )
+        );
+    }
+
     public function testExecuteMessageWithNoResultInSilentMode(): void
     {
         /**

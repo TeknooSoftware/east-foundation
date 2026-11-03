@@ -134,3 +134,41 @@ Feature: HTTP
     And The router can process the request "/foo/bar" to controller "closureFoo"
     When The server will receive the request "https://foo.com/foo/bar?bar=fooBar"
     Then The client must accept an error
+
+  Scenario: Ignore the form options in the query of a request mapped by the router to a recipe
+    Given I have DI initialized
+    And I register a router
+    And The router can process the request "/foo/bar" to recipe "parameters" to return a "psr" response
+    When The server will receive the request "https://foo.com/foo/bar?test=barFoo&formOptions[csrf_protection]=0"
+    Then The client must accept a psr response
+    And I should get as response "barFoo [] without uri"
+
+  Scenario: Ignore the parameters named with a namespace in the query of a request mapped by the router to a recipe
+    Given I have DI initialized
+    And I register a router
+    And The router can process the request "/foo/bar" to recipe "parameters" to return a "psr" response
+    When The server will receive the request "https://foo.com/foo/bar?test=barFoo&Psr%5CHttp%5CMessage%5CUriInterface=foo"
+    Then The client must accept a psr response
+    And I should get as response "barFoo [] without uri"
+
+  Scenario: Ignore the form options and the parameters named with a namespace in the parsed body of a request
+    Given I have DI initialized
+    And I register a router
+    And The router can process the request "/foo/bar" to recipe "parameters" to return a "psr" response
+    When The server will receive the request "https://foo.com/foo/bar" with the parsed body:
+    """
+    {"test": "barFoo", "formOptions": {"csrf_protection": false}, "Psr\\Http\\Message\\UriInterface": "foo"}
+    """
+    Then The client must accept a psr response
+    And I should get as response "barFoo [] without uri"
+
+  Scenario: Ignore an object as parsed body of a request mapped by the router to a recipe
+    Given I have DI initialized
+    And I register a router
+    And The router can process the request "/foo/bar" to recipe "parameters" to return a "psr" response
+    When The server will receive the request "https://foo.com/foo/bar?test=barFoo" with an object as parsed body:
+    """
+    {"test": "fooBar", "formOptions": {"csrf_protection": false}}
+    """
+    Then The client must accept a psr response
+    And I should get as response "barFoo [] without uri"

@@ -55,6 +55,7 @@ use PHPUnit\Framework\Assert;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UriInterface;
 use Psr\Http\Server\MiddlewareInterface as PsrMiddleware;
 use Psr\Http\Server\RequestHandlerInterface;
 use RuntimeException;
@@ -352,6 +353,29 @@ class FeatureContext implements Context
             );
         }
 
+        if ('parameters' === $controllerName) {
+            $recipe = $recipe->cook(
+                function (
+                    ClientInterface $client,
+                    string $test,
+                    array $formOptions = [],
+                    ?UriInterface $uri = null,
+                ): void {
+                    $uriValue = 'without uri';
+                    if (null !== $uri) {
+                        $uriValue = 'with uri';
+                    }
+
+                    $client->acceptResponse(
+                        new TextResponse(
+                            $test . ' ' . json_encode($formOptions, JSON_THROW_ON_ERROR) . ' ' . $uriValue
+                        )
+                    );
+                },
+                'body',
+            );
+        }
+
         if ('empty' === $controllerName) {
             $recipe = $recipe->cook(
                 function (ClientInterface $client, ServerRequest $request, $test): void {
@@ -448,8 +472,7 @@ class FeatureContext implements Context
         };
     }
 
-    #[When('The server will receive the request :url')]
-    public function theServerWillReceiveTheRequest($url): void
+    private function receiveRequest(string $url, array|object|null $parsedBody): void
     {
         $manager = new Manager($this->container->get(PlanInterface::class));
 
@@ -465,10 +488,32 @@ class FeatureContext implements Context
         parse_str($request->getUri()->getQuery(), $query);
         $request = $request->withQueryParams($query);
 
+        if (null !== $parsedBody) {
+            $request = $request->withParsedBody($parsedBody);
+        }
+
         $manager->receiveRequest(
             $this->client,
             $request
         );
+    }
+
+    #[When('The server will receive the request :url')]
+    public function theServerWillReceiveTheRequest($url): void
+    {
+        $this->receiveRequest($url, null);
+    }
+
+    #[When('The server will receive the request :url with the parsed body:')]
+    public function theServerWillReceiveTheRequestWithTheParsedBody(string $url, PyStringNode $body): void
+    {
+        $this->receiveRequest($url, json_decode($body->getRaw(), true, 512, JSON_THROW_ON_ERROR));
+    }
+
+    #[When('The server will receive the request :url with an object as parsed body:')]
+    public function theServerWillReceiveTheRequestWithAnObjectAsParsedBody(string $url, PyStringNode $body): void
+    {
+        $this->receiveRequest($url, json_decode($body->getRaw(), false, 512, JSON_THROW_ON_ERROR));
     }
 
     #[Then('The client must not accept a response.')]

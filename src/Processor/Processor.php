@@ -35,7 +35,9 @@ use Teknoo\Immutable\ImmutableInterface;
 use Teknoo\Immutable\ImmutableTrait;
 
 use function array_filter;
+use function is_array;
 use function is_string;
+use function str_contains;
 
 use const ARRAY_FILTER_USE_KEY;
 
@@ -93,13 +95,37 @@ class Processor implements ProcessorInterface, ImmutableInterface
     }
 
     /**
+     * @param array<mixed, mixed>|object|null $parameters
+     * @return array<string, mixed>
+     */
+    private function filterParameters(array|null|object $parameters): array
+    {
+        if (!is_array($parameters)) {
+            return [];
+        }
+
+        if (isset($parameters['formOptions'])) {
+            unset($parameters['formOptions']);
+        }
+
+        $final = [];
+        foreach ($parameters as $name => &$value) {
+            if (is_string($name) && !str_contains($name, '\\')) {
+                $final[$name] = $value;
+            }
+        }
+
+        return $final;
+    }
+
+    /**
      * @return array<string, mixed>
      */
     private function getParameters(ServerRequestInterface $request): array
     {
         $values = $request->getAttributes()
-            + (array) $request->getParsedBody()
-            + $request->getQueryParams();
+            + $this->filterParameters($request->getParsedBody())
+            + $this->filterParameters($request->getQueryParams());
 
         return array_filter(
             array: $values,
