@@ -34,7 +34,9 @@ use Teknoo\East\Foundation\Router\ResultInterface;
 use Teknoo\Immutable\ImmutableInterface;
 use Teknoo\Immutable\ImmutableTrait;
 
+use function array_diff_key;
 use function array_filter;
+use function array_flip;
 use function is_array;
 use function is_string;
 use function str_contains;
@@ -54,8 +56,18 @@ class Processor implements ProcessorInterface, ImmutableInterface
 {
     use ImmutableTrait;
 
+    /**
+     * @param string[] $protectedParameters
+     */
     public function __construct(
         private readonly bool $clientInSilentMode = false,
+        private readonly array $protectedParameters = [
+            'formOptions',
+            'errorCode',
+            'errorMessage',
+            'workPlanKey',
+            'constructorArguments',
+        ],
     ) {
     }
 
@@ -104,9 +116,7 @@ class Processor implements ProcessorInterface, ImmutableInterface
             return [];
         }
 
-        if (isset($parameters['formOptions'])) {
-            unset($parameters['formOptions']);
-        }
+        $parameters = array_diff_key($parameters, array_flip($this->protectedParameters));
 
         $final = [];
         foreach ($parameters as $name => &$value) {

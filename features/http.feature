@@ -172,3 +172,31 @@ Feature: HTTP
     """
     Then The client must accept a psr response
     And I should get as response "barFoo [] without uri"
+
+  Scenario: Ignore the error and the work plan parameters in the query of a request mapped by the router to a recipe
+    Given I have DI initialized
+    And I register a router
+    And The router can process the request "/foo/bar" to recipe "protected" to return a "psr" response
+    When The server will receive the request "https://foo.com/foo/bar?test=barFoo&errorCode=500&errorMessage=foo&workPlanKey=bar&constructorArguments=baz"
+    Then The client must accept a psr response
+    And I should get as response "barFoo none none none none"
+
+  Scenario: Ignore the error and the work plan parameters in the parsed body of a request mapped by the router to a recipe
+    Given I have DI initialized
+    And I register a router
+    And The router can process the request "/foo/bar" to recipe "protected" to return a "psr" response
+    When The server will receive the request "https://foo.com/foo/bar" with the parsed body:
+    """
+    {"test": "barFoo", "errorCode": "500", "errorMessage": "foo", "workPlanKey": "bar", "constructorArguments": "baz"}
+    """
+    Then The client must accept a psr response
+    And I should get as response "barFoo none none none none"
+
+  Scenario: Ignore only the protected parameters configured in the DI in the query of a request mapped to a recipe
+    Given I have DI initialized
+    And the processor protects only the parameters "errorMessage,workPlanKey"
+    And I register a router
+    And The router can process the request "/foo/bar" to recipe "protected" to return a "psr" response
+    When The server will receive the request "https://foo.com/foo/bar?test=barFoo&errorCode=500&errorMessage=foo&workPlanKey=bar&constructorArguments=baz"
+    Then The client must accept a psr response
+    And I should get as response "barFoo 500 none none baz"

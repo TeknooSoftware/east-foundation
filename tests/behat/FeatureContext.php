@@ -193,6 +193,12 @@ class FeatureContext implements Context
         $this->container->set('teknoo.east.client.must_send_response', false);
     }
 
+    #[Given('the processor protects only the parameters :parameters')]
+    public function theProcessorProtectsOnlyTheParameters(string $parameters): void
+    {
+        $this->container->set('teknoo.east.processor.protected_parameters', explode(',', $parameters));
+    }
+
     #[Given('I register a router')]
     public function iRegisterARouter(): void
     {
@@ -369,6 +375,26 @@ class FeatureContext implements Context
                     $client->acceptResponse(
                         new TextResponse(
                             $test . ' ' . json_encode($formOptions, JSON_THROW_ON_ERROR) . ' ' . $uriValue
+                        )
+                    );
+                },
+                'body',
+            );
+        }
+
+        if ('protected' === $controllerName) {
+            $recipe = $recipe->cook(
+                function (
+                    ClientInterface $client,
+                    string $test,
+                    string $errorCode = 'none',
+                    string $errorMessage = 'none',
+                    string $workPlanKey = 'none',
+                    string $constructorArguments = 'none',
+                ): void {
+                    $client->acceptResponse(
+                        new TextResponse(
+                            implode(' ', [$test, $errorCode, $errorMessage, $workPlanKey, $constructorArguments])
                         )
                     );
                 },

@@ -25,10 +25,14 @@ declare(strict_types=1);
 
 namespace Teknoo\Tests\East\Foundation;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use DI\Container;
 use DI\ContainerBuilder;
+use Psr\Http\Message\MessageInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
+use Teknoo\East\Foundation\Client\ClientInterface;
 use Teknoo\East\Foundation\Command\Executor;
 use Teknoo\East\Foundation\Extension\Manager as ExtensionManager;
 use Teknoo\East\Foundation\Extension\ManagerInterface as ExtensionManagerInterface;
@@ -49,6 +53,7 @@ use Teknoo\East\Foundation\Recipe\Recipe;
 use Teknoo\East\Foundation\Recipe\Plan;
 use Teknoo\East\Foundation\Recipe\PlanInterface;
 use Teknoo\East\Foundation\Recipe\RecipeInterface;
+use Teknoo\East\Foundation\Router\ResultInterface;
 use Teknoo\East\Foundation\Router\RouterInterface;
 use Teknoo\East\Foundation\Time\Backend\BackendInterface;
 use Teknoo\East\Foundation\Time\Backend\Cooperative\TimerService as CooperativeTimerService;
@@ -115,6 +120,116 @@ class ContainerTest extends TestCase
         );
 
         $this->assertSame($processor1, $processor2);
+    }
+
+    /**
+     * @param array<string, mixed> $parsedBody
+     * @param array<string, mixed> $expectedParameters
+     */
+    private function executeProcessorFromContainer(
+        Container $container,
+        array $parsedBody,
+        array $expectedParameters,
+    ): void {
+        $clientMock = $this->createMock(ClientInterface::class);
+        $clientMock->expects($this->once())->method('mustSendAResponse');
+        $clientMock->expects($this->once())->method('sendAResponseIsOptional');
+
+        $requestMock = $this->createStub(ServerRequestInterface::class);
+        $requestMock->method('getAttributes')->willReturn([]);
+        $requestMock->method('getParsedBody')->willReturn($parsedBody);
+        $requestMock->method('getQueryParams')->willReturn([]);
+
+        $routerResult = $this->createStub(ResultInterface::class);
+        $routerResult->method('getController')->willReturn($controller = new class {
+            public function __invoke(): void
+            {
+            }
+        });
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects($this->once())
+            ->method('updateWorkPlan')
+            ->with(
+                [
+                    ClientInterface::class => $clientMock,
+                    MessageInterface::class => $requestMock,
+                    ManagerInterface::class => $manager,
+                    'request' => $requestMock,
+                    ProcessorInterface::WORK_PLAN_CONTROLLER_KEY => $controller,
+                ] + $expectedParameters
+            );
+
+        $this->assertInstanceOf(
+            ProcessorInterface::class,
+            $container->get(ProcessorInterface::class)->execute(
+                $clientMock,
+                $requestMock,
+                $manager,
+                $routerResult
+            )
+        );
+    }
+
+    public function testCreateProcessorWithDefaultProtectedParameters(): void
+    {
+        $container = $this->buildContainer();
+
+        $this->executeProcessorFromContainer(
+            $container,
+            [
+                'foo' => 'body',
+                'formOptions' => ['csrf_protection' => false],
+                'errorCode' => 500,
+                'errorMessage' => 'body',
+                'workPlanKey' => 'body',
+                'constructorArguments' => ['body'],
+            ],
+            [
+                'foo' => 'body',
+            ],
+        );
+    }
+
+    public function testCreateProcessorWithCustomProtectedParameters(): void
+    {
+        $container = $this->buildContainer();
+        $container->set('teknoo.east.processor.protected_parameters', ['custom']);
+
+        $this->executeProcessorFromContainer(
+            $container,
+            [
+                'foo' => 'body',
+                'custom' => 'body',
+                'formOptions' => ['csrf_protection' => false],
+            ],
+            [
+                'foo' => 'body',
+                'formOptions' => ['csrf_protection' => false],
+            ],
+        );
+    }
+
+    public function testCreateProcessorWithProtectedParametersNotAnArray(): void
+    {
+        $container = $this->buildContainer();
+        $container->set('teknoo.east.processor.protected_parameters', 'formOptions');
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('teknoo.east.processor.error.protected_parameters.must_array');
+
+        $container->get(ProcessorInterface::class);
+    }
+
+    public function testCreateProcessorWithProtectedParametersNotStrings(): void
+    {
+        $container = $this->buildContainer();
+        $container->set('teknoo.east.processor.protected_parameters', ['formOptions', 123]);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('teknoo.east.processor.error.protected_parameters.must_string');
+
+        $container->get(ProcessorInterface::class);
     }
 
     public function testLoopDetector(): void

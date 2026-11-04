@@ -1,5 +1,16 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [9.5.2] - 2026-11-04
+### Stable Release
+
+#### Security
+- The `Processor` also ignores the ingredients `errorCode`, `errorMessage`, `workPlanKey` and `constructorArguments`
+  defined in the query or the body of a request, like `formOptions`. Only attributes of the request can define them.
+
+#### Evolutions
+- The list of these protected parameters can be changed with the DI entry `teknoo.east.processor.protected_parameters`
+  (an array of strings, it replaces the default list), or with the new 2nd argument of the `Processor` constructor.
+
 ## [9.5.1] - 2026-11-03
 ### Stable Release
 

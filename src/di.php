@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace Teknoo\East\Foundation;
 
+use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 use Teknoo\East\Foundation\Command\Executor;
 use Teknoo\East\Foundation\Extension\Manager as ExtensionManager;
@@ -46,6 +47,7 @@ use Teknoo\East\Foundation\Recipe\Recipe;
 use Teknoo\East\Foundation\Recipe\Plan;
 use Teknoo\East\Foundation\Recipe\PlanInterface;
 use Teknoo\East\Foundation\Recipe\RecipeInterface;
+use Teknoo\East\Foundation\Router\ParameterInterface;
 use Teknoo\East\Foundation\Router\RouterInterface;
 use Teknoo\East\Foundation\Time\Backend\BackendInterface;
 use Teknoo\East\Foundation\Time\Backend\Cooperative\TimerService as CooperativeTimerService;
@@ -59,6 +61,8 @@ use Teknoo\East\Foundation\Time\TimerServiceInterface;
 use function DI\get;
 use function DI\create;
 use function DI\value;
+use function is_array;
+use function is_string;
 
 return [
     'teknoo.east.client.must_send_response' => value(true),
@@ -78,7 +82,32 @@ return [
 
     Processor::class => get(ProcessorInterface::class),
     ProcessorInterface::class => static function (ContainerInterface $container): ProcessorInterface {
-        return new Processor(!$container->get('teknoo.east.client.must_send_response'));
+        $protectedParameters = [
+            'formOptions',
+            'errorCode',
+            'errorMessage',
+            'workPlanKey',
+            'constructorArguments',
+        ];
+
+        if ($container->has('teknoo.east.processor.protected_parameters')) {
+            $protectedParameters = $container->get('teknoo.east.processor.protected_parameters');
+        }
+
+        if (!is_array($protectedParameters)) {
+            throw new InvalidArgumentException('teknoo.east.processor.error.protected_parameters.must_array');
+        }
+
+        foreach ($protectedParameters as $parameter) {
+            if (!is_string($parameter)) {
+                throw new InvalidArgumentException('teknoo.east.processor.error.protected_parameters.must_string');
+            }
+        }
+
+        return new Processor(
+            !$container->get('teknoo.east.client.must_send_response'),
+            $protectedParameters,
+        );
     },
 
     ProcessorRecipeInterface::class => static function (): ProcessorRecipeInterface {
