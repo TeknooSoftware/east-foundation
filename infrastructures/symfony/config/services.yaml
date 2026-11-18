@@ -22,6 +22,8 @@ services:
             - '%teknoo.east.symfony.router.symfony_ux_live_route%'
             - '%teknoo.east.symfony.router.secret%'
             - '@?Teknoo\East\FoundationBundle\Router\AccessCheckerInterface'
+            # The PHP-DI entry of `src/di.php`, exported by the bridge as a parameter: the same list as the `Processor`
+            - '%teknoo.east.processor.protected_parameters%'
         public: true
 
     #Access rules of the route targeted by a Live Component request, removed without the Symfony firewall

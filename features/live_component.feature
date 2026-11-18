@@ -2,7 +2,8 @@ Feature: Symfony UX Live Component routing
   As a developer using the East Foundation Symfony router, I need the router to resolve
   a Symfony UX Live Component request back to its original controller only when the
   signed props checksum is valid, supporting both the Symfony UX 3 checksum format and
-  the legacy Symfony UX 2 format.
+  the legacy Symfony UX 2 format, only for a request with the headers of Symfony UX, and
+  without giving to the recipe a protected parameter sent by the client.
 
   Scenario: Route a live component request signed with a valid Symfony UX 3 checksum
     Given I have DI initialized
@@ -60,3 +61,16 @@ Feature: Symfony UX Live Component routing
     When a live component "UserProfile" requests "/user/list?order=email&direction=ASC" with a valid UX3 checksum
     Then The client must accept a psr response
     And I should get as response "Sorted by email ASC"
+
+  Scenario: Refuse a live component request without the header of Symfony UX
+    Given I have DI initialized
+    And I register a Symfony UX live component router with secret "a-real-secret-value"
+    When a live component "UserProfile" requests "/user/profile/456" without the header of Symfony UX
+    Then The client must not accept a response.
+
+  Scenario: Give the recipe of the targeted route no protected parameter sent by the client
+    Given I have DI initialized
+    And I register a Symfony UX live component router with secret "a-real-secret-value"
+    When a live component "UserProfile" requests "/user/message" with the updated field "errorMessage" set to "forged"
+    Then The client must accept a psr response
+    And I should get as response "Message none"

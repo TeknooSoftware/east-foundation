@@ -46,6 +46,7 @@ use function base64_encode;
 use function explode;
 use function hash_hmac;
 use function implode;
+use function in_array;
 use function is_array;
 use function is_callable;
 use function is_scalar;
@@ -57,8 +58,10 @@ use function parse_str;
 use function preg_match;
 use function str_starts_with;
 use function str_contains;
+use function strtolower;
 use function substr;
 use function trigger_deprecation;
+use function trim;
 
 use const JSON_THROW_ON_ERROR;
 
@@ -71,6 +74,13 @@ use const JSON_THROW_ON_ERROR;
  * For a Symfony UX Live Component request, the router re-runs the recipe of the route targeted by the prop
  * `originalPath`, after checking, with the access checker when it is defined, that the current user can access to it.
  * The query string kept in `originalPath` is restored into the query parameters of the request.
+ * As Symfony UX, the router handles a request of a component only when it has the header
+ * `X-Requested-With: XMLHttpRequest` and accepts `application/vnd.live-component+html`: this header is not
+ * safelisted by CORS, a request of another origin needs a preflight, never answered, so a forged request can not run
+ * the recipe.
+ * The values of the props and of the updated fields sent by the client are copied into the attributes of the request,
+ * except the protected parameters, the same as those of the `Processor` (`teknoo.east.processor.protected_parameters`),
+ * and the names of classes.
  *
  * All public method of the manager must only return the self client or a clone instance.
  *
@@ -83,10 +93,13 @@ class Router implements RouterInterface
 {
     private const string CHECKSUM_KEY = '@checksum';
 
+    private const string LIVE_CONTENT_TYPE = 'application/vnd.live-component+html';
+
     private ?string $excludePathsRegex = null;
 
     /**
      * @param array<int, string> $excludePaths
+     * @param string[] $protectedParameters values a client can not give to a recipe, as for the `Processor`
      */
     public function __construct(
         private readonly UrlMatcherInterface $matcher,
@@ -95,6 +108,13 @@ class Router implements RouterInterface
         private readonly string $symfonyUxLiveRoute = 'ux_live_component',
         #[SensitiveParameter] private string $secret = '',
         private readonly ?AccessCheckerInterface $accessChecker = null,
+        private readonly array $protectedParameters = [
+            'formOptions',
+            'errorCode',
+            'errorMessage',
+            'workPlanKey',
+            'constructorArguments',
+        ],
     ) {
         if (!empty($excludePaths)) {
             $this->excludePathsRegex = '#^(' . implode('|', $excludePaths) . ')#S';
@@ -180,8 +200,9 @@ class Router implements RouterInterface
 
     /**
      * Values of the props and of the updated fields, sent by the client, are copied into the request's attributes,
-     * without the checksum, internal keys (starting with `@` or `_`) and the original path. A string starting with
-     * `@` is a service id for `RecipeEndPoint`, a value sent by the client must stay a string : it is escaped with
+     * without the checksum, internal keys (starting with `@` or `_`), the original path, the protected parameters and
+     * the names of classes (a key with a `\`), which only the attributes of the route can define. A string starting
+     * with `@` is a service id for `RecipeEndPoint`, a value sent by the client must stay a string : it is escaped with
      * `@@`, `RecipeEndPoint` removes this escape.
      *
      * @param array<string|int, mixed> $values
@@ -198,6 +219,8 @@ class Router implements RouterInterface
                 || '@' === $key[0]
                 || '_' === $key[0]
                 || 'originalPath' === $key
+                || str_contains($key, '\\')
+                || in_array($key, $this->protectedParameters, true)
                 || ($onlyScalar && !is_scalar($value))
                 || null !== $request->getAttribute($key, null)
             ) {
@@ -212,6 +235,25 @@ class Router implements RouterInterface
         }
 
         return $request;
+    }
+
+    /*
+     * The same rule as Symfony UX: the header `X-Requested-With`, not safelisted by CORS, and the content type of the
+     * components among the accepted ones.
+     */
+    private function isALiveRequest(ServerRequestInterface $request): bool
+    {
+        if ('XMLHttpRequest' !== $request->getHeaderLine('X-Requested-With')) {
+            return false;
+        }
+
+        foreach (explode(',', $request->getHeaderLine('Accept')) as $acceptedType) {
+            if (self::LIVE_CONTENT_TYPE === strtolower(trim(explode(';', $acceptedType, 2)[0]))) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -236,6 +278,7 @@ class Router implements RouterInterface
             !empty($originalParameters['_controller'])
             || $this->symfonyUxLiveRoute !== ($originalParameters['_route'] ?? '')
             || empty($originalParameters['_live_component'])
+            || !$this->isALiveRequest($request)
         ) {
             return $originalParameters;
         }

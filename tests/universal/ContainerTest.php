@@ -191,6 +191,15 @@ class ContainerTest extends TestCase
         );
     }
 
+    public function testDefaultProtectedParameters(): void
+    {
+        // The Symfony router reads this entry too, exported by the bridge as a parameter
+        $this->assertSame(
+            ['formOptions', 'errorCode', 'errorMessage', 'workPlanKey', 'constructorArguments'],
+            $this->buildContainer()->get('teknoo.east.processor.protected_parameters'),
+        );
+    }
+
     public function testCreateProcessorWithCustomProtectedParameters(): void
     {
         $container = $this->buildContainer();

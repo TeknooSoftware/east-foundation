@@ -80,6 +80,17 @@ return [
     LoopDetector::class => get(LoopDetectorInterface::class),
     LoopDetectorInterface::class => create(LoopDetector::class),
 
+    // The parameters a client can not define, in the query or the body of a request, nor in the values of a Symfony UX
+    // Live request (the Symfony router reads this list too): only the attributes of the request define them. An
+    // application replaces this list by defining this entry again
+    'teknoo.east.processor.protected_parameters' => [
+        'formOptions',
+        'errorCode',
+        'errorMessage',
+        'workPlanKey',
+        'constructorArguments',
+    ],
+
     Processor::class => get(ProcessorInterface::class),
     ProcessorInterface::class => static function (ContainerInterface $container): ProcessorInterface {
         $protectedParameters = [

@@ -913,6 +913,24 @@ class FeatureContext implements Context
                 ],
             ),
         );
+        // A target route executing a recipe which reads an ingredient protected from the client.
+        $routes->add(
+            'user_message',
+            new Route(
+                '/user/message',
+                [
+                    '_controller' => new RecipeEndPoint(
+                        (new Recipe())->cook(
+                            function (ClientInterface $client, ?string $errorMessage = null): void {
+                                $client->acceptResponse(new TextResponse('Message ' . ($errorMessage ?? 'none')));
+                            },
+                            'message',
+                        ),
+                        $this->container,
+                    ),
+                ],
+            ),
+        );
         // A target route reserved to administrators by the access rules.
         $routes->add(
             'admin_user',
@@ -953,6 +971,23 @@ class FeatureContext implements Context
         $this->dispatchLiveComponentRequest($component, $originalPath, 'legacy');
     }
 
+    #[When('a live component :component requests :originalPath without the header of Symfony UX')]
+    public function aLiveComponentRequestsWithoutTheHeaderOfSymfonyUx(string $component, string $originalPath): void
+    {
+        // As a form or a script of another origin, which can not send `X-Requested-With` without a preflight
+        $this->dispatchLiveComponentRequest($component, $originalPath, 'ux3', liveHeaders: false);
+    }
+
+    #[When('a live component :component requests :originalPath with the updated field :name set to :value')]
+    public function aLiveComponentRequestsWithTheUpdatedFieldSetTo(
+        string $component,
+        string $originalPath,
+        string $name,
+        string $value,
+    ): void {
+        $this->dispatchLiveComponentRequest($component, $originalPath, 'ux3', updated: [$name => $value]);
+    }
+
     #[When('a live component :component requests :originalPath with an invalid checksum')]
     public function aLiveComponentRequestsWithAnInvalidChecksum(string $component, string $originalPath): void
     {
@@ -977,6 +1012,8 @@ class FeatureContext implements Context
         string $originalPath,
         string $mode,
         array $otherProps = [],
+        array $updated = [],
+        bool $liveHeaders = true,
     ): void {
         $props = [
             'originalPath' => $originalPath,
@@ -989,7 +1026,7 @@ class FeatureContext implements Context
             default => 'an-invalid-checksum-value',
         };
 
-        $json = (string) json_encode(['props' => $props], JSON_THROW_ON_ERROR);
+        $json = (string) json_encode(['props' => $props, 'updated' => $updated], JSON_THROW_ON_ERROR);
 
         $manager = new Manager($this->container->get(PlanInterface::class));
 
@@ -1004,6 +1041,13 @@ class FeatureContext implements Context
             ->withParsedBody(['data' => $json])
             // The Symfony request, injected by the kernel listener of the bundle
             ->withAttribute('request', SymfonyRequest::create('https://foo.com/_components', 'POST'));
+
+        if ($liveHeaders) {
+            // The headers that Symfony UX Live sends with each request of a component
+            $request = $request
+                ->withHeader('X-Requested-With', 'XMLHttpRequest')
+                ->withHeader('Accept', 'application/vnd.live-component+html');
+        }
 
         try {
             $manager->receiveRequest(

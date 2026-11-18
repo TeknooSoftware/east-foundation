@@ -142,8 +142,26 @@ class RouterTest extends TestCase
     /**
      * @return Router
      */
-    private function buildRouter(array $excludedPaths = [], ?AccessCheckerInterface $accessChecker = null): Router
-    {
+    /**
+     * @param array<int, string> $excludedPaths
+     * @param string[]|null $protectedParameters null to keep the default list of the router
+     */
+    private function buildRouter(
+        array $excludedPaths = [],
+        ?AccessCheckerInterface $accessChecker = null,
+        ?array $protectedParameters = null,
+    ): Router {
+        if (null === $protectedParameters) {
+            return new Router(
+                $this->getUrlMatcherMock(),
+                $this->getContainerMock(),
+                $excludedPaths,
+                'ux_live_component',
+                self::TEST_SECRET,
+                $accessChecker,
+            );
+        }
+
         return new Router(
             $this->getUrlMatcherMock(),
             $this->getContainerMock(),
@@ -151,7 +169,79 @@ class RouterTest extends TestCase
             'ux_live_component',
             self::TEST_SECRET,
             $accessChecker,
+            $protectedParameters,
         );
+    }
+
+    /*
+     * The headers that Symfony UX Live sends with each request of a component
+     */
+    private function sendTheHeadersOfALiveRequest(
+        MockObject|Stub $request,
+        string $requestedWith = 'XMLHttpRequest',
+        string $accept = 'application/vnd.live-component+html',
+    ): void {
+        $request->method('getHeaderLine')->willReturnCallback(
+            static fn (string $name): string => match (strtolower($name)) {
+                'x-requested-with' => $requestedWith,
+                'accept' => $accept,
+                default => '',
+            },
+        );
+    }
+
+    /**
+     * A Live request of the component `UserProfile` targeting `/user/profile/123`, with a valid checksum. The values
+     * copied into the attributes of the request are collected in `$addedAttributes`.
+     *
+     * @param array<string, mixed> $props
+     * @param array<string, mixed> $updated
+     * @param array<string, mixed> $addedAttributes
+     */
+    private function buildALiveRequest(
+        array $props,
+        array $updated,
+        array &$addedAttributes,
+    ): ServerRequestInterface&Stub {
+        $uri = $this->createStub(UriInterface::class);
+        $uri->method('getPath')->willReturn('/_components');
+
+        $request = $this->createStub(ServerRequestInterface::class);
+        $request->method('getUri')->willReturn($uri);
+
+        $props = ['originalPath' => '/user/profile/123'] + $props;
+        $props['@checksum'] = $this->calculateChecksum($props);
+
+        $request->method('getParsedBody')->willReturn([
+            'data' => json_encode(['props' => $props, 'updated' => $updated]),
+        ]);
+        $request->method('getAttribute')->willReturn(null);
+        $request->method('withAttribute')->willReturnCallback(
+            function (string $key, mixed $value) use ($request, &$addedAttributes): ServerRequestInterface {
+                $addedAttributes[$key] = $value;
+
+                return $request;
+            }
+        );
+
+        $this->getUrlMatcherMock()->method('match')->willReturnCallback(
+            static function (string $path): array {
+                if ('/_components' === $path) {
+                    return [
+                        '_route' => 'ux_live_component',
+                        '_live_component' => 'UserProfile',
+                    ];
+                }
+
+                return [
+                    '_controller' => static function (): void {
+                    },
+                    'id' => '123',
+                ];
+            }
+        );
+
+        return $request;
     }
 
     private function getRouterClass(): string
@@ -792,6 +882,7 @@ class RouterTest extends TestCase
         $client = $this->createStub(ClientInterface::class);
         $request = $this->createMock(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
+        $this->sendTheHeadersOfALiveRequest($request);
 
         $props = [
             'originalPath' => '/user/profile/456'
@@ -867,6 +958,7 @@ class RouterTest extends TestCase
         $client = $this->createStub(ClientInterface::class);
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
+        $this->sendTheHeadersOfALiveRequest($request);
         $request->method('getParsedBody')->willReturn([
             'data' => 12345  // Not a string
         ]);
@@ -893,6 +985,7 @@ class RouterTest extends TestCase
         $client = $this->createStub(ClientInterface::class);
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
+        $this->sendTheHeadersOfALiveRequest($request);
         $request->method('getParsedBody')->willReturn([
             'data' => json_encode([
                 'props' => []  // No originalPath
@@ -921,6 +1014,7 @@ class RouterTest extends TestCase
         $client = $this->createStub(ClientInterface::class);
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
+        $this->sendTheHeadersOfALiveRequest($request);
         $request->method('getParsedBody')->willReturn([
             'data' => json_encode([])  // No props
         ]);
@@ -947,6 +1041,7 @@ class RouterTest extends TestCase
         $client = $this->createStub(ClientInterface::class);
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
+        $this->sendTheHeadersOfALiveRequest($request);
 
         $props = [
             'originalPath' => '/app.php/user/profile/789'
@@ -1001,6 +1096,7 @@ class RouterTest extends TestCase
         $client = $this->createStub(ClientInterface::class);
         $request = $this->createMock(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
+        $this->sendTheHeadersOfALiveRequest($request);
 
         $props = [
             'originalPath' => '/product/view/999'
@@ -1092,6 +1188,7 @@ class RouterTest extends TestCase
         $client = $this->createStub(ClientInterface::class);
         $request = $this->createMock(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
+        $this->sendTheHeadersOfALiveRequest($request);
 
         $props = [
             'originalPath' => '/user/profile/111'
@@ -1159,6 +1256,7 @@ class RouterTest extends TestCase
         $client = $this->createStub(ClientInterface::class);
         $request = $this->createMock(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
+        $this->sendTheHeadersOfALiveRequest($request);
 
         $props = [
             'originalPath' => '/user/profile/333'
@@ -1240,6 +1338,7 @@ class RouterTest extends TestCase
         $client = $this->createStub(ClientInterface::class);
         $request = $this->createMock(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
+        $this->sendTheHeadersOfALiveRequest($request);
 
         $props = [
             'originalPath' => '/user/profile/444'
@@ -1329,6 +1428,7 @@ class RouterTest extends TestCase
         $client = $this->createStub(ClientInterface::class);
         $request = $this->createMock(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
+        $this->sendTheHeadersOfALiveRequest($request);
 
 
         // Props without checksum
@@ -1365,6 +1465,7 @@ class RouterTest extends TestCase
         $client = $this->createStub(ClientInterface::class);
         $request = $this->createMock(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
+        $this->sendTheHeadersOfALiveRequest($request);
 
         // Props with invalid checksum
         $request->method('getParsedBody')->willReturn([
@@ -1401,6 +1502,7 @@ class RouterTest extends TestCase
         $client = $this->createStub(ClientInterface::class);
         $request = $this->createMock(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
+        $this->sendTheHeadersOfALiveRequest($request);
 
         $props = [
             'originalPath' => '/product/list/123',
@@ -1475,6 +1577,7 @@ class RouterTest extends TestCase
         $client = $this->createStub(ClientInterface::class);
         $request = $this->createMock(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
+        $this->sendTheHeadersOfALiveRequest($request);
 
         $props = [
             'originalPath' => '/product/view/789',
@@ -1543,6 +1646,7 @@ class RouterTest extends TestCase
         $client = $this->createStub(ClientInterface::class);
         $request = $this->createMock(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
+        $this->sendTheHeadersOfALiveRequest($request);
 
         $props = [
             'originalPath' => '/user/settings/999',
@@ -1612,6 +1716,7 @@ class RouterTest extends TestCase
         $client = $this->createStub(ClientInterface::class);
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
+        $this->sendTheHeadersOfALiveRequest($request);
 
         $props = [
             'originalPath' => '/user/profile/456'
@@ -1669,6 +1774,7 @@ class RouterTest extends TestCase
         $client = $this->createStub(ClientInterface::class);
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
+        $this->sendTheHeadersOfALiveRequest($request);
 
         $props = [
             'originalPath' => '/user/profile/456'
@@ -1724,6 +1830,7 @@ class RouterTest extends TestCase
         $client = $this->createStub(ClientInterface::class);
         $request = $this->createMock(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
+        $this->sendTheHeadersOfALiveRequest($request);
 
         // Checksum is not a string: must be rejected
         $request->method('getParsedBody')->willReturn([
@@ -1759,6 +1866,7 @@ class RouterTest extends TestCase
         $client = $this->createStub(ClientInterface::class);
         $request = $this->createMock(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
+        $this->sendTheHeadersOfALiveRequest($request);
 
         $props = [
             'originalPath' => '/user/profile/777'
@@ -1803,6 +1911,7 @@ class RouterTest extends TestCase
 
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
+        $this->sendTheHeadersOfALiveRequest($request);
         $request->method('getParsedBody')->willReturn([
             'data' => json_encode(['props' => $props]),
         ]);
@@ -1941,6 +2050,7 @@ class RouterTest extends TestCase
 
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
+        $this->sendTheHeadersOfALiveRequest($request);
         $request->method('getParsedBody')->willReturn([
             'data' => json_encode([
                 'props' => $props,
@@ -1992,6 +2102,7 @@ class RouterTest extends TestCase
 
         $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
+        $this->sendTheHeadersOfALiveRequest($request);
         $request->method('getParsedBody')->willReturn([
             'data' => json_encode([
                 'props' => $props,
@@ -2045,6 +2156,7 @@ class RouterTest extends TestCase
 
         $request = $this->createMock(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
+        $this->sendTheHeadersOfALiveRequest($request);
         $request->method('getParsedBody')->willReturn([
             'data' => json_encode(['props' => $props]),
         ]);
@@ -2107,6 +2219,7 @@ class RouterTest extends TestCase
 
         $request = $this->createMock(ServerRequestInterface::class);
         $request->method('getUri')->willReturn($uri);
+        $this->sendTheHeadersOfALiveRequest($request);
         $request->method('getParsedBody')->willReturn([
             'data' => json_encode(['props' => $props]),
         ]);
@@ -2120,5 +2233,110 @@ class RouterTest extends TestCase
         $manager->expects($this->once())->method('updateWorkPlan')->willReturnSelf();
 
         $this->buildRouter()->execute($this->createStub(ClientInterface::class), $request, $manager);
+    }
+
+    public function testExecuteWithLiveComponentRouteWithoutTheHeaderOfSymfonyUx(): void
+    {
+        $addedAttributes = [];
+        $request = $this->buildALiveRequest(['username' => 'john'], [], $addedAttributes);
+        // A request of another origin can not send `X-Requested-With` without a preflight, never accepted
+        $this->sendTheHeadersOfALiveRequest($request, requestedWith: '');
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects($this->never())->method('updateWorkPlan');
+
+        $this->assertInstanceOf(
+            $this->getRouterClass(),
+            $this->buildRouter()->execute($this->createStub(ClientInterface::class), $request, $manager)
+        );
+        $this->assertSame([], $addedAttributes);
+    }
+
+    public function testExecuteWithLiveComponentRouteWithoutTheContentTypeOfSymfonyUx(): void
+    {
+        $addedAttributes = [];
+        $request = $this->buildALiveRequest(['username' => 'john'], [], $addedAttributes);
+        $this->sendTheHeadersOfALiveRequest($request, accept: 'text/html');
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects($this->never())->method('updateWorkPlan');
+
+        $this->assertInstanceOf(
+            $this->getRouterClass(),
+            $this->buildRouter()->execute($this->createStub(ClientInterface::class), $request, $manager)
+        );
+        $this->assertSame([], $addedAttributes);
+    }
+
+    public function testExecuteWithLiveComponentRouteAcceptingTheContentTypeOfSymfonyUxAmongOthers(): void
+    {
+        $addedAttributes = [];
+        $request = $this->buildALiveRequest(['username' => 'john'], [], $addedAttributes);
+        $this->sendTheHeadersOfALiveRequest(
+            $request,
+            accept: 'text/html;q=0.9, Application/Vnd.Live-Component+HTML ;q=1',
+        );
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects($this->once())->method('updateWorkPlan')->willReturnSelf();
+        $manager->expects($this->once())->method('updateMessage')->willReturnSelf();
+
+        $this->buildRouter()->execute($this->createStub(ClientInterface::class), $request, $manager);
+
+        $this->assertSame('john', $addedAttributes['username'] ?? null);
+    }
+
+    public function testExecuteWithLiveComponentRouteProtectedValuesAreNotCopied(): void
+    {
+        $addedAttributes = [];
+        $request = $this->buildALiveRequest(
+            ['workPlanKey' => 'forged', 'username' => 'john'],
+            [
+                'formOptions' => ['csrf_protection' => false],
+                'errorCode' => 200,
+                'errorMessage' => 'forged',
+                'constructorArguments' => ['forged'],
+                'Foo\\Bar' => 'forged',
+                'email' => 'john@example.com',
+            ],
+            $addedAttributes,
+        );
+        $this->sendTheHeadersOfALiveRequest($request);
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects($this->once())->method('updateWorkPlan')->willReturnSelf();
+        $manager->expects($this->once())->method('updateMessage')->willReturnSelf();
+
+        $this->buildRouter()->execute($this->createStub(ClientInterface::class), $request, $manager);
+
+        $this->assertSame('john', $addedAttributes['username'] ?? null);
+        $this->assertSame('john@example.com', $addedAttributes['email'] ?? null);
+        foreach (['workPlanKey', 'formOptions', 'errorCode', 'errorMessage', 'constructorArguments', 'Foo\\Bar'] as $key) {
+            $this->assertArrayNotHasKey($key, $addedAttributes);
+        }
+    }
+
+    public function testExecuteWithLiveComponentRouteWithItsOwnListOfProtectedValues(): void
+    {
+        $addedAttributes = [];
+        $request = $this->buildALiveRequest(
+            ['chatAction' => 'forged'],
+            ['conversationHosted' => true, 'formOptions' => ['label' => 'kept'], 'email' => 'john@example.com'],
+            $addedAttributes,
+        );
+        $this->sendTheHeadersOfALiveRequest($request);
+
+        $manager = $this->createMock(ManagerInterface::class);
+        $manager->expects($this->once())->method('updateWorkPlan')->willReturnSelf();
+        $manager->expects($this->once())->method('updateMessage')->willReturnSelf();
+
+        $this->buildRouter(protectedParameters: ['chatAction', 'conversationHosted'])
+            ->execute($this->createStub(ClientInterface::class), $request, $manager);
+
+        $this->assertArrayNotHasKey('chatAction', $addedAttributes);
+        $this->assertArrayNotHasKey('conversationHosted', $addedAttributes);
+        // The list replaces the default one, as for the `Processor`
+        $this->assertSame(['label' => 'kept'], $addedAttributes['formOptions'] ?? null);
+        $this->assertSame('john@example.com', $addedAttributes['email'] ?? null);
     }
 }

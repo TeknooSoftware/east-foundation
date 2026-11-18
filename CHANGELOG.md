@@ -1,5 +1,20 @@
 # Teknoo Software - East Foundation - Change Log
 
+## [9.5.3] - Release pending
+### Stable Release
+
+#### Security
+- The Symfony router runs the recipe of a Symfony UX Live request only when the request has the headers of Symfony UX,
+  `X-Requested-With: XMLHttpRequest` and `Accept: application/vnd.live-component+html`, as Symfony UX itself: a request
+  forged by another origin ran it. Tests sending Live requests without these headers must add them.
+- The props and the updated fields of a Live request are no longer copied into the attributes of the request when
+  their name is a protected parameter (`teknoo.east.processor.protected_parameters`) or a class name, as for the query
+  and the body of a request.
+
+#### Evolutions
+- `teknoo.east.processor.protected_parameters` is defined with its default list, given to the router too (its new 7th
+  constructor argument). An application still replaces it by defining this entry.
+
 ## [9.5.2] - 2026-11-04
 ### Stable Release
 
